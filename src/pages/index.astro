@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import WidgetStrip from '@/components/WidgetStrip';
+import PhotoFrame from '@/components/widgets/PhotoFrame';
+import SnapsWidget from '@/components/widgets/SnapsWidget';
+
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<Base title="Shreyas — Designer. Mushroom grower. Cat dad.">
+  <main class="bg-bg-home min-h-screen flex justify-center px-6">
+    <div class="w-full max-w-[727px] flex flex-col items-center gap-section-gap pt-[75px] pb-20">
+
+      <!-- Hero -->
+      <section class="w-full flex flex-col items-start gap-4">
+        <p class="font-kyoto font-medium italic text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0">Shrey is</p>
+        <h1 class="font-kyoto font-[800] text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0">Designer. Mushroom grower.<br/>Cat dad.</h1>
+      </section>
+
+      <!-- Widget Strip (React island with Lenis horizontal scroll) -->
+      <section class="w-screen max-w-[970px] shrink-0">
+        <WidgetStrip client:visible>
+          {/* Photo Frame 1 */}
+          <PhotoFrame src="https://picsum.photos/seed/shrey1/300/200" idPrefix="postit1" />
+
+          {/* Snaps */}
+          <SnapsWidget />
+
+          {/* Photo Frame 2 */}
+          <PhotoFrame src="https://picsum.photos/seed/shrey2/300/200" idPrefix="postit2" />
+        </WidgetStrip>
+      </section>
+
+      <!-- Notes -->
+      <section class="w-full flex flex-col items-start gap-[36px]">
+        <h2 class="font-kyoto font-[800] text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0">Notes</h2>
+        <div class="flex flex-col gap-6">
+          {notes.map((note) => (
+            <article class="flex flex-col gap-3 transition-transform duration-200 ease-out hover:translate-x-1.5 cursor-pointer">
+              <h3 class="font-inter font-medium text-[clamp(22px,3vw,28px)] leading-[1.2] tracking-[-0.02em] text-text-primary m-0">{note.data.title}</h3>
+              <p class="font-inter font-normal text-[clamp(16px,2.5vw,20px)] leading-[1.2] text-text-secondary m-0">{note.data.subtitle}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* ── Fonts ────────────────────────────────────── */
+
+@font-face {
+  font-family: "PP Kyoto";
+  src: url("/fonts/PPKyoto-MediumItalic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Kyoto";
+  src: url("/fonts/PPKyoto-Extrabold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/EBGaramond-Variable.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter Variable";
+  src: url("/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Tailwind v4 Theme ────────────────────────── */
+
+@theme {
+  /* Colors */
+  --color-bg-home: #a7bbc3;
+  --color-text-hero: #222a37;
+  --color-text-primary: #242a2d;
+  --color-text-secondary: #354b54;
+  --color-green-label: #7f964c;
+  --color-green-dark: #607139;
+  --color-snaps-bg: #bdda7d;
+  --color-halftone-base: #fbfaf5;
+  --color-bg-blog: #e5e8d8;
+
+  /* Fonts */
+  --font-kyoto: "PP Kyoto", serif;
+  --font-garamond: "EB Garamond", serif;
+  --font-inter: "Inter Variable", system-ui, sans-serif;
+
+  /* Spacing */
+  --spacing-widget-gap: 35px;
+  --spacing-section-gap: 72px;
+}
