@@ -1,4 +1,5 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import '@/styles/global.css';
 import AgentationToolbar from '@/components/AgentationToolbar';
 import DebugOverlay from '@/components/DebugOverlay';
@@ -17,13 +18,30 @@ const isDev = import.meta.env.DEV;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <ViewTransitions />
     <link rel="preload" href="/fonts/PPKyoto-Extrabold.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/PPKyoto-MediumItalic.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/EBGaramond-Variable.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <slot />
     {isDev && <AgentationToolbar client:only="react" />}
     {isDev && <DebugOverlay client:only="react" />}
+    <script>
+      // Fast view transition loader — bypasses Astro's default loader which
+      // waits for all scripts/styles to evaluate (slow in Vite dev mode).
+      // Fetches and parses HTML only; scripts hydrate after the swap.
+      document.addEventListener('astro:before-preparation', (event) => {
+        const originalLoader = event.loader;
+        event.loader = async () => {
+          const res = await fetch(event.to.href, {
+            signal: event.signal,
+          });
+          const html = await res.text();
+          event.newDocument = new DOMParser().parseFromString(html, 'text/html');
+        };
+      });
+    </script>
   </body>
 </html>

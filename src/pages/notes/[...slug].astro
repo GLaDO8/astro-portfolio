@@ -15,10 +15,13 @@ const { Content } = await render(note);
 ---
 
 <Base title={note.data.title}>
-  <main class="bg-bg-blog min-h-screen flex justify-center px-6">
+  <main transition:name="page-main" transition:animate="fade" class="bg-bg-blog min-h-screen flex justify-center px-6">
     <article class="w-full max-w-[727px] pt-[75px] pb-20">
       <a href="/" class="font-inter text-sm text-text-secondary hover:text-text-primary transition-colors">&larr; Back</a>
-      <h1 class="font-kyoto font-[800] text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary mt-8 mb-2">{note.data.title}</h1>
+      <h1 transition:name={`note-title-${note.id}`} class="font-inter font-medium text-[clamp(32px,5vw,48px)] leading-[1.2] tracking-[-0.02em] text-text-primary mt-8 mb-2">{note.data.title}</h1>
+      <p transition:name={`note-subtitle-${note.id}`} class="font-inter font-normal text-[clamp(16px,2.5vw,20px)] leading-[1.2] text-text-secondary mb-4">
+        {note.data.subtitle}
+      </p>
       <p class="font-inter text-text-secondary mb-12">
         {note.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
       </p>

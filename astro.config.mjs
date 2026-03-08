@@ -5,6 +5,9 @@ import { defineConfig } from "astro/config";
 
 export default defineConfig({
 	integrations: [react(), markdoc()],
+	prefetch: {
+		prefetchAll: true,
+	},
 	vite: {
 		plugins: [tailwindcss()],
 	},
