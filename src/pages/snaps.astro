@@ -7,10 +7,12 @@ import Base from "@/layouts/Base.astro";
 const snapsDir = path.join(process.cwd(), "public", "snaps");
 let photos: string[] = [];
 try {
-	const files = await fs.readdir(snapsDir);
-	photos = files.filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f)).sort();
+    const files = await fs.readdir(snapsDir);
+    photos = files
+        .filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f))
+        .sort();
 } catch {
-	// Directory empty or missing — that's fine
+    // Directory empty or missing — that's fine
 }
 ---
 
@@ -27,7 +29,7 @@ try {
             </a>
 
             <h1
-                class="font-kyoto font-[800] text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0"
+                class="font-kyoto font-extrabold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0"
             >
                 Snaps
             </h1>

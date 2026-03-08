@@ -78,7 +78,7 @@ export default function MusicWidget({ songData }: Props) {
       {/* iOS chat bubble — anchored top-left, overflows container */}
       {songData.message && (
         <div className="absolute -left-25 -top-5 z-30">
-          <div className="chat-bubble-tail relative bg-[#0b93f6] text-white font-inter text-[13px] leading-[18px] rounded-[20px] px-4 py-2 max-w-50">
+          <div className="chat-bubble-tail relative bg-[#0b93f6] text-white font-inter text-[13px] leading-4.5 rounded-[20px] px-4 py-2 max-w-50">
             {songData.message}
           </div>
         </div>
@@ -86,13 +86,13 @@ export default function MusicWidget({ songData }: Props) {
 
       {/* Song info text — flex-pushed to bottom */}
       <div className="flex flex-col pl-6 pb-6">
-        <span className="font-inter font-bold text-[12px] text-green-label tracking-[-0.3px] uppercase">
+        <span className="font-inter font-bold text-[12px] text-green-label tracking-[-0.3px] uppercase pb-2">
           {songData.label}
         </span>
-        <span className="font-inter font-bold text-[30px] tracking-[-0.6px] text-black leading-none">
+        <span className="font-inter font-bold text-[24px] tracking-[-0.4px] text-black leading-none pb-1">
           {songData.artist}
         </span>
-        <span className="font-inter font-regular text-[24px] tracking-[-0.48px] text-gray-400">
+        <span className="font-inter font-regular text-[20px] tracking-[-0.48px] text-gray-400">
           {songData.title}
         </span>
       </div>
@@ -154,7 +154,7 @@ export default function MusicWidget({ songData }: Props) {
         <img
           src="/tonearm.png"
           alt=""
-          className="absolute -left-12 top-[75px] w-[130px] -rotate-[90deg] origin-[30%_15%] pointer-events-none z-10"
+          className="absolute -left-12 top-[75px] w-[130px] -rotate-90 origin-[30%_15%] pointer-events-none z-10"
           draggable={false}
         />
       </div>

@@ -20,35 +20,47 @@ interface MusicToml {
 	};
 }
 
-/** Extract iTunes track ID from an Apple Music URL (the ?i= param or /album/name/ID pattern) */
-function extractTrackId(url: string): string | null {
+/** Extract ID and country code from an Apple Music URL */
+function parseAppleMusicUrl(url: string): {
+	id: string;
+	country: string;
+	isTrack: boolean;
+} | null {
 	try {
 		const parsed = new URL(url);
+		const segments = parsed.pathname.split("/").filter(Boolean);
 		// ?i=1065096755 — track ID param on album URLs
 		const trackParam = parsed.searchParams.get("i");
-		if (trackParam) return trackParam;
+		// Country code is first path segment (e.g. /in/album/...)
+		const country =
+			segments[0] && /^[a-z]{2}$/i.test(segments[0]) ? segments[0].toLowerCase() : "us";
+		if (trackParam) return { id: trackParam, country, isTrack: true };
 		// /album/name/ID or /song/name/ID — last path segment
-		const segments = parsed.pathname.split("/").filter(Boolean);
 		const last = segments[segments.length - 1];
-		if (last && /^\d+$/.test(last)) return last;
+		if (last && /^\d+$/.test(last)) {
+			const isTrack = segments.includes("song");
+			return { id: last, country, isTrack };
+		}
 	} catch {}
 	return null;
 }
 
-async function fetchFromiTunes(config: MusicToml["song"]): Promise<{
+interface iTunesResult {
 	artistName: string;
-	trackName: string;
+	trackName?: string;
 	collectionName: string;
 	artworkUrl100: string;
-}> {
+}
+
+async function fetchFromiTunes(config: MusicToml["song"]): Promise<iTunesResult> {
 	let apiUrl: string;
 
 	if (config.url) {
-		const trackId = extractTrackId(config.url);
-		if (trackId) {
-			apiUrl = `https://itunes.apple.com/lookup?id=${trackId}`;
+		const parsed = parseAppleMusicUrl(config.url);
+		if (parsed) {
+			apiUrl = `https://itunes.apple.com/lookup?id=${parsed.id}&country=${parsed.country}`;
 		} else {
-			throw new Error(`Could not extract track ID from URL: ${config.url}`);
+			throw new Error(`Could not parse Apple Music URL: ${config.url}`);
 		}
 	} else if (config.query) {
 		apiUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(config.query)}&media=music&entity=musicTrack&limit=1`;
@@ -58,9 +70,9 @@ async function fetchFromiTunes(config: MusicToml["song"]): Promise<{
 
 	const res = await fetch(apiUrl);
 	const data = await res.json();
-	const track = data.results?.[0];
-	if (!track) throw new Error(`No iTunes results`);
-	return track;
+	const result = data.results?.[0];
+	if (!result) throw new Error(`No iTunes results`);
+	return result;
 }
 
 export async function getSongData(): Promise<SongData> {
@@ -71,12 +83,12 @@ export async function getSongData(): Promise<SongData> {
 	const { message, label } = config.song;
 
 	try {
-		const track = await fetchFromiTunes(config.song);
+		const result = await fetchFromiTunes(config.song);
 		return {
-			artist: track.artistName,
-			title: track.trackName,
-			album: track.collectionName,
-			albumArt: track.artworkUrl100.replace("100x100bb", "600x600bb"),
+			artist: result.artistName,
+			title: result.trackName ?? result.collectionName,
+			album: result.collectionName,
+			albumArt: result.artworkUrl100.replace("100x100bb", "600x600bb"),
 			message,
 			label,
 		};
