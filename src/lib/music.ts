@@ -11,13 +11,19 @@ export interface SongData {
 	label: string;
 }
 
-interface MusicToml {
+export interface PhotoFrameData {
+	src: string;
+	alt?: string;
+}
+
+interface WidgetToml {
 	song: {
 		url?: string;
 		query?: string;
 		message: string;
 		label: string;
 	};
+	photoframe: PhotoFrameData;
 }
 
 /** Extract ID and country code from an Apple Music URL */
@@ -52,7 +58,7 @@ interface iTunesResult {
 	artworkUrl100: string;
 }
 
-async function fetchFromiTunes(config: MusicToml["song"]): Promise<iTunesResult> {
+async function fetchFromiTunes(config: WidgetToml["song"]): Promise<iTunesResult> {
 	let apiUrl: string;
 
 	if (config.url) {
@@ -75,10 +81,18 @@ async function fetchFromiTunes(config: MusicToml["song"]): Promise<iTunesResult>
 	return result;
 }
 
-export async function getSongData(): Promise<SongData> {
+function readWidgetToml(): WidgetToml {
 	const tomlPath = join(process.cwd(), "widget.toml");
 	const tomlContent = readFileSync(tomlPath, "utf-8");
-	const config = parse(tomlContent) as unknown as MusicToml;
+	return parse(tomlContent) as unknown as WidgetToml;
+}
+
+export function getWidgetConfig(): WidgetToml {
+	return readWidgetToml();
+}
+
+export async function getSongData(): Promise<SongData> {
+	const config = readWidgetToml();
 
 	const { message, label } = config.song;
 
