@@ -7,7 +7,7 @@
   src: url("/fonts/PPKyoto-MediumItalic.woff2") format("woff2");
   font-weight: 500;
   font-style: italic;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -15,7 +15,7 @@
   src: url("/fonts/PPKyoto-Extrabold.woff2") format("woff2");
   font-weight: 800;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -23,7 +23,7 @@
   src: url("/fonts/EBGaramond-Variable.woff2") format("woff2");
   font-weight: 400 800;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -31,7 +31,7 @@
   src: url("/fonts/InterVariable.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 /* ── Tailwind v4 Theme ────────────────────────── */
