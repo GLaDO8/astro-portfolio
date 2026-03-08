@@ -1,17 +1,16 @@
 ---
-import Base from "@/layouts/Base.astro";
+/// <reference types="node" />
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import Base from "@/layouts/Base.astro";
 
 const snapsDir = path.join(process.cwd(), "public", "snaps");
 let photos: string[] = [];
 try {
-    const files = await fs.readdir(snapsDir);
-    photos = files
-        .filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f))
-        .sort();
+	const files = await fs.readdir(snapsDir);
+	photos = files.filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f)).sort();
 } catch {
-    // Directory empty or missing — that's fine
+	// Directory empty or missing — that's fine
 }
 ---
 

@@ -1,11 +1,11 @@
 ---
 import { getCollection } from "astro:content";
-import Base from "@/layouts/Base.astro";
 import WidgetStrip from "@/components/WidgetStrip";
+import Base from "@/layouts/Base.astro";
 import { getSongData } from "@/lib/music";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
 const songData = await getSongData();
@@ -18,7 +18,7 @@ const songData = await getSongData();
         class="bg-bg-home min-h-screen flex justify-center px-6"
     >
         <div
-            class="w-full max-w-[727px] flex flex-col items-center gap-16 pt-[75px] pb-20"
+            class="w-full max-w-[727px] flex flex-col items-center gap-8 pt-[75px] pb-20"
         >
             <!-- Hero -->
             <section class="w-full flex flex-col items-start gap-4">

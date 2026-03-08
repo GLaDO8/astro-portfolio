@@ -1,13 +1,13 @@
 ---
-import { getCollection, render } from 'astro:content';
-import Base from '@/layouts/Base.astro';
+import { getCollection, render } from "astro:content";
+import Base from "@/layouts/Base.astro";
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes', ({ data }) => !data.draft);
-  return notes.map((note) => ({
-    params: { slug: note.id },
-    props: { note },
-  }));
+	const notes = await getCollection("notes", ({ data }) => !data.draft);
+	return notes.map((note) => ({
+		params: { slug: note.id },
+		props: { note },
+	}));
 }
 
 const { note } = Astro.props;
