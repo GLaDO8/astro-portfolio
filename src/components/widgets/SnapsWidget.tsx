@@ -1,7 +1,12 @@
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 import { useEffect, useState } from "react";
-import { scrollVelocity } from "@/lib/scroll-velocity";
 import { useSpringConfig } from "@/lib/spring-config";
+
+const POLAROID_THUMBS = [
+	"/snaps/DSCF4135-Enhanced-NR-2.webp",
+	"/snaps/DSCF4283.webp",
+	"/snaps/DSCF4449.webp",
+];
 
 const POLAROIDS = [
 	{ rotate: 23.83, tx: 257.6, ty: -34.2 },
@@ -26,6 +31,7 @@ function InstantPhoto({
 	isHovered,
 	index,
 	fanConfig,
+	src,
 }: {
 	baseRotate: number;
 	baseTx: number;
@@ -36,10 +42,8 @@ function InstantPhoto({
 	isHovered: boolean;
 	index: number;
 	fanConfig: { stiffness: number; damping: number; mass: number };
+	src: string;
 }) {
-	const scrollShift = useMotionValue(0);
-	const springShift = useSpring(scrollShift, fanConfig);
-
 	const targetRotate = useMotionValue(baseRotate);
 	const targetTx = useMotionValue(baseTx);
 	const targetTy = useMotionValue(baseTy);
@@ -51,12 +55,6 @@ function InstantPhoto({
 	});
 	const springTx = useSpring(targetTx, fanConfig);
 	const springTy = useSpring(targetTy, fanConfig);
-
-	// Combine spring position with scroll shuffle
-	const finalTx = useTransform(
-		[springTx, springShift],
-		([tx, shift]: number[]) => tx + shift,
-	);
 
 	useEffect(() => {
 		if (isHovered) {
@@ -81,33 +79,21 @@ function InstantPhoto({
 		targetTy,
 	]);
 
-	// Scroll velocity → shuffle shift
-	useEffect(() => {
-		let rafId: number;
-		function update() {
-			const sv = scrollVelocity.get();
-			scrollShift.set(sv * 0.3 * (index + 1));
-			rafId = requestAnimationFrame(update);
-		}
-		rafId = requestAnimationFrame(update);
-		return () => cancelAnimationFrame(rafId);
-	}, [scrollShift, index]);
-
 	return (
 		<motion.div
 			className="absolute w-[96px] h-[120px] bg-white origin-[0%_0%] overflow-hidden"
 			style={{
 				rotate: springRotate,
-				x: finalTx,
+				x: springTx,
 				y: springTy,
 				boxShadow:
 					"0px 4px 18px 2px rgba(93, 93, 93, 0.25), 0px 0px 4px rgba(0, 0, 0, 0.18)",
 			}}
 		>
 			{/* Inner photo area */}
-			<div className="m-[5px] w-[86px] h-[86px] bg-gray-200 rounded-[2px] overflow-hidden">
+			<div className="m-[5px] w-[86px] h-[86px] bg-gray-200 overflow-hidden">
 				<img
-					src={`https://picsum.photos/seed/snap${index}/86/86`}
+					src={src}
 					alt={`Snap ${index + 1}`}
 					className="w-full h-full object-cover"
 				/>
@@ -148,6 +134,7 @@ export default function SnapsWidget() {
 					isHovered={isHovered}
 					index={i}
 					fanConfig={fanConfig}
+					src={POLAROID_THUMBS[i]}
 				/>
 			))}
 		</div>

@@ -9,8 +9,6 @@ import {
 } from "@/lib/spring-config";
 
 const LABELS: Record<keyof SpringConfigMap, string> = {
-	postItTilt: "Post-it Tilt",
-	postItLift: "Post-it Lift",
 	photoFrameTilt: "Photo Frame Tilt",
 	polaroidFan: "Polaroid Fan",
 };

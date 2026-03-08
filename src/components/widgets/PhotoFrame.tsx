@@ -5,14 +5,9 @@ import PostItNote from "./PostItNote";
 interface PhotoFrameProps {
 	src: string;
 	alt?: string;
-	idPrefix?: string;
 }
 
-export default function PhotoFrame({
-	src,
-	alt = "Photo",
-	idPrefix = "frame",
-}: PhotoFrameProps) {
+export default function PhotoFrame({ src, alt = "Photo" }: PhotoFrameProps) {
 	const frameConfig = useSpringConfig("photoFrameTilt");
 	const rotateX = useMotionValue(0);
 	const rotateY = useMotionValue(0);
@@ -52,7 +47,7 @@ export default function PhotoFrame({
 					className="w-full h-full object-cover contrast-[1.2] grayscale-[0.15]"
 				/>
 			</div>
-			<PostItNote idPrefix={idPrefix} />
+			<PostItNote />
 		</motion.div>
 	);
 }
