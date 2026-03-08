@@ -15,8 +15,18 @@ export default function WidgetStrip({ songData, photoFrame, children }: Props) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const innerRef = useRef<HTMLDivElement>(null);
 	const [dragRight, setDragRight] = useState(0);
+	const [isMobile, setIsMobile] = useState(false);
 
 	useEffect(() => {
+		const mql = window.matchMedia("(max-width: 768px)");
+		const onChange = () => setIsMobile(mql.matches);
+		onChange();
+		mql.addEventListener("change", onChange);
+		return () => mql.removeEventListener("change", onChange);
+	}, []);
+
+	useEffect(() => {
+		if (!isMobile) return;
 		const measure = () => {
 			const container = containerRef.current;
 			const inner = innerRef.current;
@@ -27,20 +37,27 @@ export default function WidgetStrip({ songData, photoFrame, children }: Props) {
 		measure();
 		window.addEventListener("resize", measure);
 		return () => window.removeEventListener("resize", measure);
-	}, []);
+	}, [isMobile]);
 
 	return (
-		<div ref={containerRef} className="overflow-hidden overflow-y-visible py-12 w-full">
+		<div
+			ref={containerRef}
+			className={`overflow-y-visible py-12 w-full ${isMobile ? "overflow-hidden" : "overflow-x-auto"}`}
+		>
 			<motion.div
 				ref={innerRef}
-				drag="x"
-				dragConstraints={{ left: dragRight, right: 0 }}
-				dragElastic={0.35}
-				dragTransition={{
-					bounceStiffness: 300,
-					bounceDamping: 40,
-				}}
-				className="flex gap-6 items-center w-max pr-16 pl-32 cursor-grab active:cursor-grabbing"
+				{...(isMobile
+					? {
+							drag: "x" as const,
+							dragConstraints: { left: dragRight, right: 0 },
+							dragElastic: 0.35,
+							dragTransition: {
+								bounceStiffness: 300,
+								bounceDamping: 40,
+							},
+						}
+					: {})}
+				className={`flex gap-6 items-center w-max pr-16 pl-32 ${isMobile ? "cursor-grab active:cursor-grabbing" : ""}`}
 			>
 				<MusicWidget songData={songData} />
 				<a href="/about" className="no-underline mx-5">
