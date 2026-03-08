@@ -1,1 +1,0 @@
-plans/phase-1-homepage.md
