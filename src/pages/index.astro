@@ -2,8 +2,6 @@
 import { getCollection } from "astro:content";
 import Base from "@/layouts/Base.astro";
 import WidgetStrip from "@/components/WidgetStrip";
-import PhotoFrame from "@/components/widgets/PhotoFrame";
-import SnapsWidget from "@/components/widgets/SnapsWidget";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
@@ -31,19 +29,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
 
             <!-- Widget Strip (React island with Lenis horizontal scroll) -->
             <section class="w-screen shrink-0" transition:persist="widget-strip">
-                <WidgetStrip client:visible>
-                    {/* Photo Frame 1 */}
-                    <PhotoFrame
-                        src="/halftone-me.webp"
-                        alt="Halftone portrait of Shreyas"
-                        idPrefix="postit1"
-                    />
-
-                    {/* Snaps */}
-                    <a href="/snaps" class="no-underline">
-                        <SnapsWidget />
-                    </a>
-                </WidgetStrip>
+                <WidgetStrip client:visible />
             </section>
 
             <!-- Notes -->
