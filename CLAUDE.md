@@ -9,16 +9,6 @@
 - **Markdoc** — Blog content with custom tags (file-based CMS, Obsidian-compatible later)
 - **Cloudflare Pages** — Deployment
 
-## Docs Index (progressive disclosure — read what you need)
-| Doc | When to read |
-|-----|-------------|
-| `docs/architecture.md` | Stack decisions, data flow, performance model |
-| `docs/design.md` | Design tokens, fonts, colors, spacing — sourced from Paper |
-| `docs/widgets.md` | Widget specs, interactions, spring params, signal mapping |
-| `docs/blog.md` | Markdoc setup, content collections, blog page layout |
-| `plans/` | Implementation plans by phase |
-| `plan.md` | Symlink to current active plan |
-
 ## Hard Rules
 - **Strictly Tailwind v4 utility classes** — no inline styles, no `<style>` blocks, no CSS modules
 - Paper MCP is our source of truth, liberally use it to check for visual parity. 
