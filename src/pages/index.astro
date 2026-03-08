@@ -40,12 +40,6 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
 
                     {/* Snaps */}
                     <SnapsWidget />
-
-                    {/* Photo Frame 2 */}
-                    <PhotoFrame
-                        src="https://picsum.photos/seed/shrey2/300/200"
-                        idPrefix="postit2"
-                    />
                 </WidgetStrip>
             </section>
 
