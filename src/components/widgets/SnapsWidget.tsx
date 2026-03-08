@@ -1,110 +1,40 @@
-import { motion, useMotionValue, useSpring } from "motion/react";
-import { useEffect, useState } from "react";
+import { motion } from "motion/react";
+import { useState } from "react";
 import { useSpringConfig } from "@/lib/spring-config";
 
-const POLAROID_THUMBS = [
-	"/snaps/DSCF4135-Enhanced-NR-2.webp",
-	"/snaps/DSCF4283.webp",
-	"/snaps/DSCF4449.webp",
-];
-
 const POLAROIDS = [
-	{ rotate: 23.83, tx: 257.6, ty: -34.2 },
-	{ rotate: -17.18, tx: 140.7, ty: 12.9 },
-	{ rotate: 10.45, tx: 200.9, ty: 45.3 },
+	{
+		src: "/snaps/DSCF4135-Enhanced-NR-2.webp",
+		rotate: 23.83,
+		tx: 257.6,
+		ty: -34.2,
+		fanRotate: 35,
+		fanTx: 270,
+		fanTy: -50,
+	},
+	{
+		src: "/snaps/DSCF4283.webp",
+		rotate: -17.18,
+		tx: 140.7,
+		ty: 12.9,
+		fanRotate: -30,
+		fanTx: 110,
+		fanTy: 5,
+	},
+	{
+		src: "/snaps/DSCF4449.webp",
+		rotate: 10.45,
+		tx: 200.9,
+		ty: 45.3,
+		fanRotate: 18,
+		fanTx: 225,
+		fanTy: 60,
+	},
 ] as const;
-
-// Fan-out targets on hover (rotation offset + translate offset)
-const FAN_TARGETS = [
-	{ rotate: 35, tx: 270, ty: -50 },
-	{ rotate: -30, tx: 110, ty: 5 },
-	{ rotate: 18, tx: 225, ty: 60 },
-] as const;
-
-function InstantPhoto({
-	baseRotate,
-	baseTx,
-	baseTy,
-	fanRotate,
-	fanTx,
-	fanTy,
-	isHovered,
-	index,
-	fanConfig,
-	src,
-}: {
-	baseRotate: number;
-	baseTx: number;
-	baseTy: number;
-	fanRotate: number;
-	fanTx: number;
-	fanTy: number;
-	isHovered: boolean;
-	index: number;
-	fanConfig: { stiffness: number; damping: number; mass: number };
-	src: string;
-}) {
-	const targetRotate = useMotionValue(baseRotate);
-	const targetTx = useMotionValue(baseTx);
-	const targetTy = useMotionValue(baseTy);
-
-	const springRotate = useSpring(targetRotate, {
-		...fanConfig,
-		// Stagger: higher index = slightly slower response
-		damping: fanConfig.damping + index * 2,
-	});
-	const springTx = useSpring(targetTx, fanConfig);
-	const springTy = useSpring(targetTy, fanConfig);
-
-	useEffect(() => {
-		if (isHovered) {
-			targetRotate.set(fanRotate);
-			targetTx.set(fanTx);
-			targetTy.set(fanTy);
-		} else {
-			targetRotate.set(baseRotate);
-			targetTx.set(baseTx);
-			targetTy.set(baseTy);
-		}
-	}, [
-		isHovered,
-		baseRotate,
-		baseTx,
-		baseTy,
-		fanRotate,
-		fanTx,
-		fanTy,
-		targetRotate,
-		targetTx,
-		targetTy,
-	]);
-
-	return (
-		<motion.div
-			className="absolute w-[96px] h-[120px] bg-white origin-[0%_0%] overflow-hidden"
-			style={{
-				rotate: springRotate,
-				x: springTx,
-				y: springTy,
-				boxShadow:
-					"0px 4px 18px 2px rgba(93, 93, 93, 0.25), 0px 0px 4px rgba(0, 0, 0, 0.18)",
-			}}
-		>
-			{/* Inner photo area */}
-			<div className="m-[5px] w-[86px] h-[86px] bg-gray-200 overflow-hidden">
-				<img
-					src={src}
-					alt={`Snap ${index + 1}`}
-					className="w-full h-full object-cover"
-				/>
-			</div>
-		</motion.div>
-	);
-}
 
 export default function SnapsWidget() {
 	const [isHovered, setIsHovered] = useState(false);
-	const fanConfig = useSpringConfig("polaroidFan");
+	const spring = useSpringConfig("polaroidFan");
 
 	return (
 		<div
@@ -123,19 +53,32 @@ export default function SnapsWidget() {
 				Kodak Charmera
 			</span>
 			{POLAROIDS.map((p, i) => (
-				<InstantPhoto
+				<motion.div
 					key={p.rotate}
-					baseRotate={p.rotate}
-					baseTx={p.tx}
-					baseTy={p.ty}
-					fanRotate={FAN_TARGETS[i].rotate}
-					fanTx={FAN_TARGETS[i].tx}
-					fanTy={FAN_TARGETS[i].ty}
-					isHovered={isHovered}
-					index={i}
-					fanConfig={fanConfig}
-					src={POLAROID_THUMBS[i]}
-				/>
+					className="absolute w-[96px] h-[120px] bg-white origin-[0%_0%] overflow-hidden shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
+					animate={{
+						rotate: isHovered ? p.fanRotate : p.rotate,
+						x: isHovered ? p.fanTx : p.tx,
+						y: isHovered ? p.fanTy : p.ty,
+					}}
+					transition={{
+						type: "spring",
+						...spring,
+						rotate: {
+							type: "spring",
+							...spring,
+							damping: spring.damping + i * 2,
+						},
+					}}
+				>
+					<div className="m-[5px] w-[86px] h-[86px] bg-gray-200 overflow-hidden">
+						<img
+							src={p.src}
+							alt={`Snap ${i + 1}`}
+							className="w-full h-full object-cover"
+						/>
+					</div>
+				</motion.div>
 			))}
 		</div>
 	);
