@@ -40,20 +40,23 @@ export default function SnapsWidget() {
       onPointerEnter={() => setIsHovered(true)}
       onPointerLeave={() => setIsHovered(false)}
     >
-      <span className="absolute left-[33px] top-[26px] font-inter font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
-        Snaps
-      </span>
-      <span className="absolute left-8 top-32 font-inter font-bold text-[12px] leading-4 tracking-[-0.02em] text-green-dark">
-        Fuji X100V
-        <br />
-        iPhone
-        <br />
-        Kodak Charmera
-      </span>
+      {/* Text content — flexbox column */}
+      <div className="flex flex-col gap-4 pt-[26px] pl-[33px]">
+        <span className="font-inter font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
+          Snaps
+        </span>
+        <span className="font-inter font-bold text-[12px] leading-4 tracking-[-0.02em] text-green-dark">
+          Fuji X100V
+          <br />
+          iPhone
+          <br />
+          Kodak Charmera
+        </span>
+      </div>
       {POLAROIDS.map((p, i) => (
         <motion.div
           key={p.rotate}
-          className="absolute w-24 h-30 bg-white origin-[0%_0%] overflow-hidden shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
+          className="absolute top-0 left-0 w-24 h-30 bg-white origin-[0%_0%] overflow-hidden shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
           animate={{
             rotate: isHovered ? p.fanRotate : p.rotate,
             x: isHovered ? p.fanTx : p.tx,
