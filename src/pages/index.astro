@@ -2,10 +2,13 @@
 import { getCollection } from "astro:content";
 import Base from "@/layouts/Base.astro";
 import WidgetStrip from "@/components/WidgetStrip";
+import { getSongData } from "@/lib/music";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
+
+const songData = await getSongData();
 ---
 
 <Base title="Shreyas — Designer. Mushroom grower. Cat dad.">
@@ -36,7 +39,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
                 class="w-screen shrink-0"
                 transition:persist="widget-strip"
             >
-                <WidgetStrip client:visible />
+                <WidgetStrip songData={songData} client:visible />
             </section>
 
             <!-- Notes -->
