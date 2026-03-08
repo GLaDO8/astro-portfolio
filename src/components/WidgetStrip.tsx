@@ -1,6 +1,6 @@
 import { ReactLenis } from "lenis/react";
 import type { ReactNode } from "react";
-import HalftonePhoto from "./widgets/HalftonePhoto";
+import HalftonePhoto from "./widgets/PhotoFrameWidget";
 import SnapsWidget from "./widgets/SnapsWidget";
 
 interface WidgetStripProps {
