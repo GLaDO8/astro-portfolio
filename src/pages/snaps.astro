@@ -1,0 +1,60 @@
+---
+import Base from "@/layouts/Base.astro";
+import { promises as fs } from "node:fs";
+import path from "node:path";
+
+const snapsDir = path.join(process.cwd(), "public", "snaps");
+let photos: string[] = [];
+try {
+    const files = await fs.readdir(snapsDir);
+    photos = files
+        .filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f))
+        .sort();
+} catch {
+    // Directory empty or missing — that's fine
+}
+---
+
+<Base title="Snaps — Shreyas">
+    <main class="bg-bg-home min-h-screen flex justify-center px-6">
+        <div
+            class="w-full max-w-[727px] flex flex-col items-start gap-[36px] pt-[75px] pb-20"
+        >
+            <a
+                href="/"
+                class="font-inter text-[14px] text-text-secondary no-underline hover:text-text-primary transition-colors"
+            >
+                &larr; Back
+            </a>
+
+            <h1
+                class="font-kyoto font-[800] text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0"
+            >
+                Snaps
+            </h1>
+
+            {
+                photos.length > 0 ? (
+                    <div class="w-full columns-2 gap-4 sm:columns-3">
+                        {photos.map((photo) => (
+                            <img
+                                src={`/snaps/${photo}`}
+                                alt={photo.replace(/\.[^.]+$/, "")}
+                                class="w-full mb-4 rounded-[8px]"
+                                loading="lazy"
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <p class="font-inter text-[16px] text-text-secondary">
+                        No snaps yet. Drop photos into{" "}
+                        <code class="bg-black/5 px-1.5 py-0.5 rounded text-[14px]">
+                            public/snaps/
+                        </code>{" "}
+                        to see them here.
+                    </p>
+                )
+            }
+        </div>
+    </main>
+</Base>
