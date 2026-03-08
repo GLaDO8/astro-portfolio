@@ -65,4 +65,13 @@
   /* Spacing */
   --spacing-widget-gap: 35px;
   --spacing-section-gap: 72px;
+
+  /* Animations */
+  --animate-vinyl: vinyl-spin 1.8182s linear infinite;
+}
+
+@keyframes vinyl-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
