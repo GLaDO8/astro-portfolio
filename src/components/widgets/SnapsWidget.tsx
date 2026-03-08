@@ -36,14 +36,14 @@ export default function SnapsWidget() {
 
 	return (
 		<div
-			className="w-[300px] h-[200px] rounded-2xl shadow-lg shrink-0 relative bg-snaps-bg overflow-visible cursor-pointer"
+			className="w-75 h-50 rounded-2xl shadow-lg shrink-0 relative bg-snaps-bg overflow-visible cursor-pointer"
 			onPointerEnter={() => setIsHovered(true)}
 			onPointerLeave={() => setIsHovered(false)}
 		>
-			<span className="absolute left-[33px] top-[26px] font-inter font-bold text-[30px] leading-[36px] tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
+			<span className="absolute left-[33px] top-[26px] font-inter font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
 				Snaps
 			</span>
-			<span className="absolute left-[32px] top-[128px] font-inter font-bold text-[12px] leading-[16px] tracking-[-0.02em] text-green-dark">
+			<span className="absolute left-8 top-32 font-inter font-bold text-[12px] leading-4 tracking-[-0.02em] text-green-dark">
 				Fuji X100V
 				<br />
 				iPhone
@@ -53,7 +53,7 @@ export default function SnapsWidget() {
 			{POLAROIDS.map((p, i) => (
 				<motion.div
 					key={p.rotate}
-					className="absolute w-[96px] h-[120px] bg-white origin-[0%_0%] overflow-hidden shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
+					className="absolute w-24 h-30 bg-white origin-[0%_0%] overflow-hidden shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
 					animate={{
 						rotate: isHovered ? p.fanRotate : p.rotate,
 						x: isHovered ? p.fanTx : p.tx,
