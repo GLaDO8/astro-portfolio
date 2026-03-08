@@ -77,9 +77,9 @@ void main() {
   float canvasAspect = u_resolution.x / u_resolution.y;
   vec2 uv = v_uv;
   if (canvasAspect > u_imageAspect) {
-    uv.y = (uv.y - 0.5) * canvasAspect / u_imageAspect + 0.5;
+    uv.y = (uv.y - 0.5) * u_imageAspect / canvasAspect + 0.5;
   } else {
-    uv.x = (uv.x - 0.5) * u_imageAspect / canvasAspect + 0.5;
+    uv.x = (uv.x - 0.5) * canvasAspect / u_imageAspect + 0.5;
   }
   uv.y = 1.0 - uv.y;
 
@@ -350,8 +350,7 @@ export default function HalftonePhoto({
 				ref={canvasRef}
 				aria-label={alt}
 				role="img"
-				className="w-full h-full rounded-[16px] bg-halftone-base shadow-[color(display-p3_0.608_0.657_0.681)_0px_2px_32px_4px]"
-				style={{ display: "block" }}
+				className="block w-full h-full rounded-[16px] bg-halftone-base shadow-[color(display-p3_0.608_0.657_0.681)_0px_2px_32px_4px]"
 			/>
 			<PostItNote idPrefix={idPrefix} />
 		</motion.div>
