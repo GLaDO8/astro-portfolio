@@ -18,7 +18,7 @@ export default function WidgetStrip({ children }: WidgetStripProps) {
 		>
 			<div className="flex gap-widget-gap items-center w-max px-6">
 				<HalftonePhoto
-					src="/my-photo-sm.jpg"
+					src="/halftone-photo.webp"
 					alt="Halftone portrait of Shreyas"
 				/>
 				<a href="/snaps" className="no-underline">
