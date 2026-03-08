@@ -1,6 +1,5 @@
-import { motion, useMotionValue, useSpring } from "motion/react";
+import { useSpring } from "motion/react";
 import { useEffect, useRef } from "react";
-import { useSpringConfig } from "@/lib/spring-config";
 import PostItNote from "./PostItNote";
 
 // ── GLSL (WebGL 1, single texture sample per fragment) ──────────────
@@ -167,26 +166,14 @@ const SPRING = { stiffness: 150, damping: 20, mass: 1 };
 interface Props {
 	src: string;
 	alt?: string;
-	idPrefix?: string;
 }
 
-export default function HalftonePhoto({
-	src,
-	alt = "Photo",
-	idPrefix = "frame",
-}: Props) {
+export default function HalftonePhoto({ src, alt = "Photo" }: Props) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const glCtx = useRef<{
 		gl: WebGLRenderingContext;
 		u: Record<string, WebGLUniformLocation | null>;
 	} | null>(null);
-
-	// 3D tilt (reuses existing spring config from PhotoFrame)
-	const frameConfig = useSpringConfig("photoFrameTilt");
-	const rotateX = useMotionValue(0);
-	const rotateY = useMotionValue(0);
-	const springX = useSpring(rotateX, frameConfig);
-	const springY = useSpring(rotateY, frameConfig);
 
 	// Shader hover springs
 	const dotSize = useSpring(RESTING.dotSize, SPRING);
@@ -238,7 +225,8 @@ export default function HalftonePhoto({
 		const program = link(gl);
 		if (!program) return;
 
-		gl["useProgram"](program);
+		// biome-ignore lint/correctness/useHookAtTopLevel: WebGL API, not a React hook
+		gl.useProgram(program);
 		quad(gl, program);
 		gl.viewport(0, 0, canvas.width, canvas.height);
 
@@ -312,14 +300,6 @@ export default function HalftonePhoto({
 
 	// ── Pointer handlers ───────────────────────────────────────────────
 
-	function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
-		const rect = e.currentTarget.getBoundingClientRect();
-		const cx = rect.left + rect.width / 2;
-		const cy = rect.top + rect.height / 2;
-		rotateY.set(((e.clientX - cx) / (rect.width / 2)) * 4);
-		rotateX.set(((e.clientY - cy) / (rect.height / 2)) * -4);
-	}
-
 	function handlePointerEnter() {
 		dotSize.set(HOVERED.dotSize);
 		softness.set(HOVERED.softness);
@@ -327,22 +307,14 @@ export default function HalftonePhoto({
 	}
 
 	function handlePointerLeave() {
-		rotateX.set(0);
-		rotateY.set(0);
 		dotSize.set(RESTING.dotSize);
 		softness.set(RESTING.softness);
 		gridNoise.set(RESTING.gridNoise);
 	}
 
 	return (
-		<motion.div
+		<div
 			className="w-[300px] h-[200px] shrink-0 relative"
-			style={{
-				rotateX: springX,
-				rotateY: springY,
-				transformPerspective: 800,
-			}}
-			onPointerMove={handlePointerMove}
 			onPointerEnter={handlePointerEnter}
 			onPointerLeave={handlePointerLeave}
 		>
@@ -352,7 +324,7 @@ export default function HalftonePhoto({
 				role="img"
 				className="block w-full h-full rounded-[16px] bg-halftone-base shadow-[color(display-p3_0.608_0.657_0.681)_0px_2px_32px_4px]"
 			/>
-			<PostItNote idPrefix={idPrefix} />
-		</motion.div>
+			<PostItNote />
+		</div>
 	);
 }

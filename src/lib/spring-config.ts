@@ -7,15 +7,11 @@ export interface SpringConfig {
 }
 
 export interface SpringConfigMap {
-	postItTilt: SpringConfig;
-	postItLift: SpringConfig;
 	photoFrameTilt: SpringConfig;
 	polaroidFan: SpringConfig;
 }
 
 const defaults: SpringConfigMap = {
-	postItTilt: { stiffness: 100, damping: 10, mass: 1 },
-	postItLift: { stiffness: 150, damping: 15, mass: 1 },
 	photoFrameTilt: { stiffness: 120, damping: 18, mass: 1 },
 	polaroidFan: { stiffness: 180, damping: 12, mass: 1 },
 };
