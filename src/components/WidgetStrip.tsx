@@ -20,10 +20,10 @@ export default function WidgetStrip({ children }: WidgetStripProps) {
 				orientation: "horizontal",
 				gestureOrientation: "both",
 			}}
-			className="overflow-visible"
+			className="overflow-x-auto overflow-y-visible scrollbar-hide py-16"
 		>
 			<VelocityBridge />
-			<div className="flex gap-widget-gap justify-center items-center">
+			<div className="flex gap-widget-gap items-center w-max px-6">
 				{children}
 			</div>
 		</ReactLenis>

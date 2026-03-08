@@ -36,6 +36,15 @@
 
 /* ── Tailwind v4 Theme ────────────────────────── */
 
+/* Hide scrollbar but keep scroll functional */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @theme {
   /* Colors */
   --color-bg-home: #a7bbc3;
