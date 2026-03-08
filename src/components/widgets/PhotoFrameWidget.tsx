@@ -1,30 +1,30 @@
 import { motion } from "motion/react";
 
 interface Props {
-	src: string;
-	alt?: string;
+  src: string;
+  alt?: string;
 }
 
 export default function HalftonePhoto({ src, alt = "Photo" }: Props) {
-	return (
-		<motion.div
-			className="w-[300px] h-[200px] shrink-0 relative"
-			whileHover={{ rotate: -4 }}
-			transition={{ type: "spring", stiffness: 300, damping: 20 }}
-		>
-			<img
-				src={src}
-				alt={alt}
-				className="block w-full h-full -rotate-2 border-5 border-white bg-halftone-base object-cover shadow-lg rounded-sm"
-			/>
-			<div className="absolute left-[216px] top-[127px]">
-				<img
-					src="/postit-me.svg"
-					alt="Post-it note saying Me!"
-					width={97}
-					height={105}
-				/>
-			</div>
-		</motion.div>
-	);
+  return (
+    <motion.div
+      className="w-[300px] h-[200px] shrink-0 relative"
+      whileHover={{ rotate: -4 }}
+      transition={{ type: "spring", stiffness: 600, damping: 20 }}
+    >
+      <img
+        src={src}
+        alt={alt}
+        className="block w-full h-full -rotate-2 border-5 border-white bg-halftone-base object-cover shadow-lg rounded-sm"
+      />
+      <div className="absolute left-[216px] top-[127px]">
+        <img
+          src="/postit-me.svg"
+          alt="Post-it note saying Me!"
+          width={97}
+          height={105}
+        />
+      </div>
+    </motion.div>
+  );
 }

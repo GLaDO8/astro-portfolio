@@ -2,7 +2,6 @@
 import { ViewTransitions } from 'astro:transitions';
 import '@/styles/global.css';
 import AgentationToolbar from '@/components/AgentationToolbar';
-import DebugOverlay from '@/components/DebugOverlay';
 
 interface Props {
   title: string;
@@ -27,7 +26,6 @@ const isDev = import.meta.env.DEV;
   <body>
     <slot />
     {isDev && <AgentationToolbar client:only="react" />}
-    {isDev && <DebugOverlay client:only="react" />}
     <script>
       // Fast view transition loader — bypasses Astro's default loader which
       // waits for all scripts/styles to evaluate (slow in Vite dev mode).
