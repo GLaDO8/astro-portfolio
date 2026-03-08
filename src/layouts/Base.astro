@@ -42,6 +42,21 @@ const isDev = import.meta.env.DEV;
           event.newDocument = new DOMParser().parseFromString(html, 'text/html');
         };
       });
+
+      // Scroll restoration across view transitions.
+      // Saves scroll position before leaving a page; restores it on back navigation.
+      const scrollPositions = new Map();
+
+      document.addEventListener('astro:before-preparation', () => {
+        scrollPositions.set(location.href, window.scrollY);
+      });
+
+      document.addEventListener('astro:after-swap', () => {
+        const y = scrollPositions.get(location.href);
+        if (y != null) {
+          requestAnimationFrame(() => window.scrollTo(0, y));
+        }
+      });
     </script>
   </body>
 </html>
