@@ -9,9 +9,13 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
 ---
 
 <Base title="Shreyas — Designer. Mushroom grower. Cat dad.">
-    <main transition:name="page-main" transition:animate="fade" class="bg-bg-home min-h-screen flex justify-center px-6">
+    <main
+        transition:name="page-main"
+        transition:animate="fade"
+        class="bg-bg-home min-h-screen flex justify-center px-6"
+    >
         <div
-            class="w-full max-w-[727px] flex flex-col items-center gap-section-gap pt-[75px] pb-20"
+            class="w-full max-w-[727px] flex flex-col items-center gap-16 pt-[75px] pb-20"
         >
             <!-- Hero -->
             <section class="w-full flex flex-col items-start gap-4">
@@ -28,7 +32,10 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
             </section>
 
             <!-- Widget Strip (React island with Lenis horizontal scroll) -->
-            <section class="w-screen shrink-0" transition:persist="widget-strip">
+            <section
+                class="w-screen shrink-0"
+                transition:persist="widget-strip"
+            >
                 <WidgetStrip client:visible />
             </section>
 
@@ -44,10 +51,16 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
                         notes.map((note) => (
                             <a href={`/notes/${note.id}`} class="no-underline">
                                 <article class="flex flex-col gap-3 cursor-pointer">
-                                    <h3 transition:name={`note-title-${note.id}`} class="font-inter font-medium text-[clamp(22px,3vw,28px)] leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
+                                    <h3
+                                        transition:name={`note-title-${note.id}`}
+                                        class="font-inter font-medium text-[clamp(22px,3vw,28px)] leading-[1.2] tracking-[-0.02em] text-text-primary m-0"
+                                    >
                                         {note.data.title}
                                     </h3>
-                                    <p transition:name={`note-subtitle-${note.id}`} class="font-inter font-normal text-[clamp(16px,2.5vw,20px)] leading-[1.2] text-text-secondary m-0">
+                                    <p
+                                        transition:name={`note-subtitle-${note.id}`}
+                                        class="font-inter font-normal text-[clamp(16px,2.5vw,20px)] leading-[1.2] text-text-secondary m-0"
+                                    >
                                         {note.data.subtitle}
                                     </p>
                                 </article>

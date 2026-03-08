@@ -8,20 +8,18 @@ const SONG = {
 
 export default function MusicWidget() {
   return (
-    <div className="w-[300px] h-[200px] shrink-0 relative">
-      {/* White card background */}
-      <div className="absolute inset-0 bg-white rounded-2xl shadow-lg" />
-
-      {/* Song info text — rendered before record so record layers on top */}
-      <span className="absolute left-[23px] top-[97px] font-inter font-bold text-[12px] text-green-label tracking-wider uppercase">
-        {SONG.label}
-      </span>
-      <span className="absolute left-[24px] top-[114px] font-inter font-bold text-[30px] tracking-[-0.6px] text-black leading-none">
-        {SONG.artist}
-      </span>
-      <span className="absolute left-[24px] top-[154px] font-inter font-medium text-[24px] tracking-[-0.48px] text-black leading-none">
-        {SONG.title}
-      </span>
+    <div className="w-[300px] h-[200px] shrink-0 relative rounded-2xl bg-white shadow-lg">
+      <div className="flex flex-col pl-6 pb-4">
+        <div className="font-inter font-bold text-[12px] text-green-label tracking-[-0.3px] uppercase">
+          {SONG.label}
+        </div>
+        <div className="font-inter font-bold text-[30px] tracking-[-0.6px] text-black">
+          {SONG.artist}
+        </div>
+        <div className="font-inter font-medium text-[24px] tracking-[-0.48px] text-black">
+          {SONG.title}
+        </div>
+      </div>
 
       {/* Record player assembly */}
       <div className="absolute left-[140px] top-[-65px] w-[220px] h-[220px]">

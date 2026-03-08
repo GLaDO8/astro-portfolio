@@ -15,7 +15,7 @@ export default function WidgetStrip({ children }: WidgetStripProps) {
         orientation: "horizontal",
         gestureOrientation: "both",
       }}
-      className="overflow-x-auto overflow-y-visible scrollbar-hide py-16"
+      className="overflow-x-auto overflow-y-visible scrollbar-hide py-12"
     >
       <div className="flex gap-8 items-center w-max px-16">
         <MusicWidget />
