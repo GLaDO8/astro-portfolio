@@ -2,7 +2,7 @@
 
 ## Content System: Markdoc
 
-Using Markdoc (not MDX) for blog content. Markdoc provides:
+Use Markdoc (not MDX) for blog content. Markdoc provides:
 - Custom tags for injecting components into content
 - Clean separation between content and presentation
 - File-based CMS (just `.mdoc` files in `src/content/notes/`)
