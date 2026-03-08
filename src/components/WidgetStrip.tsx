@@ -17,10 +17,12 @@ export default function WidgetStrip({ children }: WidgetStripProps) {
 			className="overflow-x-auto overflow-y-visible scrollbar-hide py-16"
 		>
 			<div className="flex gap-widget-gap items-center w-max px-6">
-				<HalftonePhoto
-					src="/halftone-photo.webp"
-					alt="Halftone portrait of Shreyas"
-				/>
+				<a href="/about" className="no-underline">
+					<HalftonePhoto
+						src="/halftone-photo.webp"
+						alt="Halftone portrait of Shreyas"
+					/>
+				</a>
 				<a href="/snaps" className="no-underline">
 					<SnapsWidget />
 				</a>
