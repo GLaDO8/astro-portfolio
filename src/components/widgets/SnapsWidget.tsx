@@ -95,11 +95,13 @@ function InstantPhoto({
 
 	return (
 		<motion.div
-			className="absolute w-[96px] h-[120px] bg-white origin-[0%_0%] shadow-[#5d5d5d40_0px_4px_18px_2px,#0000002e_0px_0px_4px] overflow-hidden"
+			className="absolute w-[96px] h-[120px] bg-white origin-[0%_0%] overflow-hidden"
 			style={{
 				rotate: springRotate,
 				x: finalTx,
 				y: springTy,
+				boxShadow:
+					"0px 4px 18px 2px rgba(93, 93, 93, 0.25), 0px 0px 4px rgba(0, 0, 0, 0.18)",
 			}}
 		>
 			{/* Inner photo area */}
@@ -120,7 +122,7 @@ export default function SnapsWidget() {
 
 	return (
 		<div
-			className="w-[300px] h-[200px] rounded-[16px] shrink-0 relative bg-snaps-bg shadow-[color(display-p3_0.608_0.657_0.681)_0px_2px_32px_4px] overflow-visible"
+			className="w-[300px] h-[200px] rounded-[16px] shrink-0 relative bg-snaps-bg shadow-[color(display-p3_0.608_0.657_0.681)_0px_2px_32px_4px] overflow-visible cursor-pointer"
 			onPointerEnter={() => setIsHovered(true)}
 			onPointerLeave={() => setIsHovered(false)}
 		>
