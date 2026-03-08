@@ -5,15 +5,12 @@ Build the homepage to match the Paper design (frame `3D-0`) with working interac
 
 ## Reference
 - Paper design: `app.paper.design/file/01KJN5YBZRWM0KKM608GZEWZGE` node `3D-0`
-- Design tokens: `docs/design.md`
-- Widget specs: `docs/widgets.md`
-- Architecture: `docs/architecture.md`
 
 ---
 
 ## Step 1: Project Bootstrap
 **Status:** Done
-- [x] Astro + React + Tailwind V4 + Markdoc + Motion + Lenis scaffold
+- [x] Astro + React + Tailwind V4 + Markdoc + Motion scaffold
 - [x] Directory structure, tsconfig, package.json
 - [x] Base layout, index page skeleton
 - [x] Global CSS with `@theme` design tokens (Tailwind v4)
@@ -41,12 +38,11 @@ Build the homepage to match the Paper design (frame `3D-0`) with working interac
 - [x] All styles use Tailwind v4 utility classes (no inline styles)
 - [x] Verified layout matches Paper frame at 1512px viewport
 
-## Step 3: Widget Strip — Lenis Horizontal Scroll
+## Step 3: Widget Strip — Horizontal Scroll
 **Status:** Done
 - [x] `WidgetStrip.tsx` React component
-  - ReactLenis with `orientation: 'horizontal'`, `gestureOrientation: 'both'`
-  - VelocityBridge component reads `lenis.velocity` per frame
-  - Writes to shared `scrollVelocity` MotionValue (`src/lib/scroll-velocity.ts`)
+  - Motion drag with `drag: 'x'` (replaced Lenis in commit `0823c8b`)
+  - Velocity shared via `scrollVelocity` MotionValue (`src/lib/scroll-velocity.ts`)
 - [x] Mount as `<WidgetStrip client:visible />` in index.astro
 - [x] Velocity shared via module-level MotionValue (no React context needed)
 
@@ -87,9 +83,10 @@ Build the homepage to match the Paper design (frame `3D-0`) with working interac
   - Scroll velocity → shuffle shift via rAF + scrollVelocity MotionValue
 - [x] Shadows: dual-layer `#5D5D5D40 0px 4px 18px 2px, #0000002E 0px 0px 4px`
 
-## ~~Step 6: Music Widget~~ — SKIPPED (not in frame `3D-0`)
-Music widget is from previous iteration (node `80-0`). Not present in current design.
-Deferred to Phase 2+ if reintroduced.
+## Step 6a: Music Widget — IMPLEMENTED (added post-plan)
+**Status:** Done
+- [x] `MusicWidget.tsx` — iTunes fetch, typography, padding refinements
+- [x] Widget config in `widget.toml`
 
 ## Step 6: Notes Section (was Step 7)
 **Status:** Done
@@ -117,7 +114,7 @@ Deferred to Phase 2+ if reintroduced.
 - [x] Widget strip: `w-screen max-w-[970px]` — fills viewport, capped at design width
 - [x] Text scaling: `clamp()` for hero, notes heading, note titles/subtitles
   - Hero: `clamp(32px, 5vw, 48px)`, titles: `clamp(22px, 3vw, 28px)`, subtitles: `clamp(16px, 2.5vw, 20px)`
-- [x] Widget strip touch drag: already handled by Lenis `gestureOrientation: 'both'`
+- [x] Widget strip touch drag: handled by Motion `drag="x"` gesture
 - [x] Font preloads: 3 critical fonts already preloaded in Base.astro
 - [x] Build verified: clean compilation, 1 page in 1.04s
 - [ ] Performance audit: verify <16ms frame time (manual testing needed)
@@ -139,7 +136,7 @@ Step 8 (polish) ✅ (manual perf/screenshot testing remains)
 
 ## Current JS Bundle Sizes (gzipped)
 - `client.js`: 57.51 KB (Astro runtime)
-- `WidgetStrip.js`: 7.29 KB (React + Lenis + Motion springs + spring-config store)
+- `WidgetStrip.js`: 7.29 KB (React + Motion drag + springs + spring-config store)
 - `index.js`: 3.10 KB + 1.52 KB (island hydration)
 - `jsx-runtime.js`: 0.46 KB
 - `DebugOverlay.js`: 1.26 KB (dev-only, not in prod)
@@ -148,10 +145,10 @@ Step 8 (polish) ✅ (manual perf/screenshot testing remains)
 
 ## Definition of Done (Phase 1)
 - Homepage matches Paper design at 1512px
-- Widget strip scrolls horizontally with smooth Lenis
+- Widget strip scrolls horizontally with Motion drag
 - Post-it note reacts to: scroll velocity, mouse velocity, hover
 - Polaroids fan on hover, shift on scroll
 - Notes section shows blog entries from Markdoc content
 - Debug overlay allows live spring tuning
-- <60KB total interactive JS (React + Motion + Lenis + widgets)
+- <60KB total interactive JS (React + Motion + widgets)
 - <16ms frame time during peak interaction (scroll + hover)
