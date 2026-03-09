@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import HeroSection from "@/components/HeroSection";
 import WidgetStrip from "@/components/WidgetStrip";
 import Base from "@/layouts/Base.astro";
 import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
@@ -23,18 +24,7 @@ const photoFrame = widgetConfig.photoframe;
             class="w-full max-w-[727px] flex flex-col items-center gap-8 pt-[75px] pb-20"
         >
             <!-- Hero -->
-            <section class="w-full flex flex-col items-start gap-4">
-                <p
-                    class="font-kyoto font-medium italic text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0"
-                >
-                    Shrey is
-                </p>
-                <h1
-                    class="font-kyoto font-[800] text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0"
-                >
-                    Designer. Mushroom grower.<br />Cat dad.
-                </h1>
-            </section>
+            <HeroSection client:visible />
 
             <!-- Widget Strip (React island with Lenis horizontal scroll) -->
             <section
