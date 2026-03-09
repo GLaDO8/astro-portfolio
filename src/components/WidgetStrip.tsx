@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import type { PhotoFrameData, SongData } from "@/lib/music";
+import type { PhotoFrameData, SongData } from "@/lib/widgetConfig";
 import MusicWidget from "./widgets/MusicWidget";
 import PhotoFrameWidget from "./widgets/PhotoFrameWidget";
 import SnapsWidget from "./widgets/SnapsWidget";
