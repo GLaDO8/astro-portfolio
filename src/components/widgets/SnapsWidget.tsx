@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 
 const POLAROIDS = [
@@ -54,35 +54,37 @@ export default function SnapsWidget() {
         </span>
       </div>
       {POLAROIDS.map((p, i) => (
-        <motion.div
-          key={p.rotate}
-          className="absolute top-0 left-0 w-24 h-30 bg-white origin-[0%_0%] overflow-hidden shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
-          animate={{
-            rotate: isHovered ? p.fanRotate : p.rotate,
-            x: isHovered ? p.fanTx : p.tx,
-            y: isHovered ? p.fanTy : p.ty,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 500,
-            damping: 32,
-            mass: 1,
-            rotate: {
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={p.rotate}
+            className="absolute top-0 left-0 w-24 h-30 bg-white origin-[0%_0%] overflow-hidden shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
+            animate={{
+              rotate: isHovered ? p.fanRotate : p.rotate,
+              x: isHovered ? p.fanTx : p.tx,
+              y: isHovered ? p.fanTy : p.ty,
+            }}
+            transition={{
               type: "spring",
               stiffness: 500,
               damping: 32,
               mass: 1,
-            },
-          }}
-        >
-          <div className="m-[5px] w-[86px] h-[86px] bg-gray-200 overflow-hidden">
-            <img
-              src={p.src}
-              alt={`Snap ${i + 1}`}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </motion.div>
+              rotate: {
+                type: "spring",
+                stiffness: 500,
+                damping: 32,
+                mass: 1,
+              },
+            }}
+          >
+            <div className="m-[5px] w-[86px] h-[86px] bg-gray-200 overflow-hidden">
+              <img
+                src={p.src}
+                alt={`Snap ${i + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </motion.div>
+        </AnimatePresence>
       ))}
     </div>
   );
