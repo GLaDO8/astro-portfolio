@@ -9,7 +9,8 @@ const descriptions = [
   "has ADHD and two mechanical keyboards.",
   "works at Wayground and studied machine learning.",
   "likes rogue-like video games and has 5 tattoos.",
-  "is a privacy nerd and likes self-hosting.",
+  "is a privacy freak and likes self-hosting.",
+  "is a design engineer and a productivity nerd.",
 ];
 
 // Uses the shuffle bag algorithm by Fisher-Yates. Bag starts empty, adds all descriptions and then pops them till it's empty again.
@@ -63,7 +64,7 @@ export default function HeroSection() {
         <button
           type="button"
           onClick={cycle}
-          className="bg-white rounded-full px-6 py-2 font-inter font-semibold text-xl tracking-[-0.02em] text-text-secondary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15)] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25)] transition-shadow"
+          className="bg-white rounded-full px-5 py-2 font-inter font-semibold text-xl tracking-[-0.02em] text-text-secondary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15)] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25)] transition-shadow"
         >
           What else?
         </button>
