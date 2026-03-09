@@ -1,37 +1,60 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 const descriptions = [
-  "a designer, mushroom grower and a cat dad.",
-  "a tinkerer, home cook and a vinyl collector.",
-  "a builder, plant parent and a chai snob.",
-  "a photographer, trail runner and a type nerd.",
-  "a reader, synth enthusiast and a map lover.",
+  "is a designer and grows mushrooms for fun.",
+  "is a scuba diver and collects vinyls.",
+  "loves brewing coffee and has two cats.",
+  "is into 3D printing and does photography.",
+  "has ADHD and two mechanical keyboards.",
+  "works at Wayground and studied machine learning.",
+  "likes rogue-like video games and has 5 tattoos.",
+  "is a privacy nerd and likes self-hosting.",
 ];
 
-export default function HeroSection() {
-  const [index, setIndex] = useState(0);
-  const directionRef = useRef(1);
+// Uses the shuffle bag algorithm by Fisher-Yates. Bag starts empty, adds all descriptions and then pops them till it's empty again.
+function shuffled(arr: string[]) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-  const cycle = () => {
-    directionRef.current = 1;
-    setIndex((prev) => (prev + 1) % descriptions.length);
-  };
+export default function HeroSection() {
+  const bagRef = useRef<string[]>([]);
+  const [text, setText] = useState(descriptions[0]);
+
+  const cycle = useCallback(() => {
+    if (bagRef.current.length === 0) {
+      bagRef.current = shuffled(descriptions.filter((d) => d !== text));
+    }
+    setText(bagRef.current.pop()!);
+  }, [text]);
 
   return (
     <section className="w-full flex flex-col items-start gap-6">
       <h1 className="font-kyoto text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0">
-        <span className="font-[800]">Shreyas</span>{" "}
+        <span className="font-extrabold">Shreyas Gupta</span>{" "}
+        {/*initial false skips aniimation on first render*/}
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
-            key={index}
-            className="font-[500] italic inline"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
+            key={text}
+            className="font-medium italic inline-block"
+            initial={{ opacity: 0, y: 12, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -12, filter: "blur(8px)" }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 18,
+              mass: 1,
+              opacity: { duration: 0.2 },
+              filter: { duration: 0.2 },
+            }}
           >
-            is {descriptions[index]}
+            {text}
           </motion.span>
         </AnimatePresence>
       </h1>
