@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import type { GithubData } from "@/lib/github";
 import type { PhotoFrameData, SongData } from "@/lib/widgetConfig";
+import GithubWidget from "./widgets/GithubWidget";
 import MusicWidget from "./widgets/MusicWidget";
 import PhotoFrameWidget from "./widgets/PhotoFrameWidget";
 import SnapsWidget from "./widgets/SnapsWidget";
@@ -8,10 +10,11 @@ import SnapsWidget from "./widgets/SnapsWidget";
 interface Props {
 	songData: SongData;
 	photoFrame: PhotoFrameData;
+	githubData: GithubData;
 	children?: ReactNode;
 }
 
-export default function WidgetStrip({ songData, photoFrame, children }: Props) {
+export default function WidgetStrip({ songData, photoFrame, githubData, children }: Props) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const innerRef = useRef<HTMLDivElement>(null);
 	const [dragRight, setDragRight] = useState(0);
@@ -42,7 +45,7 @@ export default function WidgetStrip({ songData, photoFrame, children }: Props) {
 	return (
 		<div
 			ref={containerRef}
-			className={`overflow-y-visible py-12 w-full ${isMobile ? "overflow-hidden" : "overflow-x-auto"}`}
+			className={`overflow-y-visible py-12 w-full ${isMobile ? "overflow-hidden" : "overflow-x-auto scrollbar-hide"}`}
 		>
 			<motion.div
 				ref={innerRef}
@@ -57,7 +60,7 @@ export default function WidgetStrip({ songData, photoFrame, children }: Props) {
 							},
 						}
 					: {})}
-				className={`flex gap-6 items-center w-max pr-16 pl-32 ${isMobile ? "cursor-grab active:cursor-grabbing" : ""}`}
+				className={`flex gap-6 items-top w-max pr-16 pl-32 ${isMobile ? "cursor-grab active:cursor-grabbing" : ""}`}
 			>
 				<MusicWidget songData={songData} />
 				<a href="/about" className="no-underline mx-5">
@@ -66,6 +69,9 @@ export default function WidgetStrip({ songData, photoFrame, children }: Props) {
 				<a href="/snaps" className="no-underline">
 					<SnapsWidget />
 				</a>
+				<div className="px-8">
+					<GithubWidget data={githubData} />
+				</div>
 
 				{children}
 			</motion.div>

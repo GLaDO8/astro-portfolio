@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import HeroSection from "@/components/HeroSection";
 import WidgetStrip from "@/components/WidgetStrip";
 import Base from "@/layouts/Base.astro";
+import { getGithubData } from "@/lib/github";
 import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
@@ -12,6 +13,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
 const songData = await getSongData();
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;
+const githubData = await getGithubData();
 ---
 
 <Base title="Shreyas Gupta">
@@ -34,6 +36,7 @@ const photoFrame = widgetConfig.photoframe;
                 <WidgetStrip
                     songData={songData}
                     photoFrame={photoFrame}
+                    githubData={githubData}
                     client:visible
                 />
             </section>
