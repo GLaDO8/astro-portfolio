@@ -14,10 +14,8 @@ const { note } = Astro.props;
 const { Content } = await render(note);
 ---
 
-<Base title={note.data.title}>
+<Base title={note.data.title} bodyClass="bg-bg-blog">
     <main
-        transition:name="page-main"
-        transition:animate="fade"
         class="bg-bg-blog min-h-screen flex justify-center px-6"
     >
         <article class="w-full max-w-[727px] pt-[75px] pb-20">
@@ -27,7 +25,6 @@ const { Content } = await render(note);
                 >&larr; Back</a
             >
             <h1
-                transition:name={`note-title-${note.id}`}
                 class="font-inter font-medium text-[clamp(32px,5vw,48px)] leading-[1.2] tracking-[-0.02em] text-text-primary mt-8 mb-2"
             >
                 {note.data.title}

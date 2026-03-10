@@ -32,8 +32,6 @@ function cellRadius(row: number, col: number): string {
 
 function ContributionGrid({ days }: { days: ContributionDay[] }) {
   const max = Math.max(...days.map((d) => d.count), 1);
-
-  // Arrange into a 4×8 grid (column-major: fill top→bottom, left→right)
   const grid: ContributionDay[][] = Array.from({ length: ROWS }, () => []);
   for (let col = 0; col < COLS; col++) {
     for (let row = 0; row < ROWS; row++) {

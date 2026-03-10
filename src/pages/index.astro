@@ -16,20 +16,15 @@ const photoFrame = widgetConfig.photoframe;
 const githubData = await getGithubData();
 ---
 
-<Base title="Shreyas Gupta">
+<Base title="Shreyas Gupta" bodyClass="bg-bg-home">
     <main
-        transition:name="page-main"
-        transition:animate="fade"
         class="bg-bg-home min-h-screen flex justify-center px-6"
     >
         <div
             class="w-full max-w-[727px] flex flex-col items-center gap-8 pt-[75px] pb-20"
         >
             <HeroSection client:visible />
-            <section
-                class="w-screen shrink-0"
-                transition:persist="widget-strip"
-            >
+            <section class="w-screen shrink-0">
                 <WidgetStrip
                     songData={songData}
                     photoFrame={photoFrame}
@@ -50,7 +45,6 @@ const githubData = await getGithubData();
                             <a href={`/notes/${note.id}`} class="no-underline">
                                 <article class="flex flex-col gap-3 cursor-pointer">
                                     <h3
-                                        transition:name={`note-title-${note.id}`}
                                         class="font-inter font-semibold text-2xl leading-[1.2] tracking-[-0.02em] text-text-primary m-0"
                                     >
                                         {note.data.title}
