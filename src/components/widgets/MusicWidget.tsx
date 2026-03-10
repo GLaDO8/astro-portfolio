@@ -78,7 +78,7 @@ export default function MusicWidget({ songData }: Props) {
       {/* iOS chat bubble — anchored top-left, overflows container */}
       {songData.message && (
         <div className="absolute -left-25 -top-5 z-30">
-          <div className="chat-bubble-tail relative bg-[#0b93f6] text-white font-inter text-[13px] leading-4.5 rounded-[16px] px-4 py-2 max-w-50">
+          <div className="chat-bubble-tail relative bg-[#0b93f6] text-white font-inter text-[13px] leading-4.5 rounded-2xl px-4 py-2 max-w-50">
             {songData.message}
           </div>
         </div>

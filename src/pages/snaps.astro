@@ -11,9 +11,7 @@ try {
     photos = files
         .filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f))
         .sort();
-} catch {
-    // Directory empty or missing — that's fine
-}
+} catch {}
 ---
 
 <Base title="Snaps — Shreyas">

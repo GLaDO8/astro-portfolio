@@ -25,10 +25,7 @@ const githubData = await getGithubData();
         <div
             class="w-full max-w-[727px] flex flex-col items-center gap-8 pt-[75px] pb-20"
         >
-            <!-- Hero -->
             <HeroSection client:visible />
-
-            <!-- Widget Strip (React island with Lenis horizontal scroll) -->
             <section
                 class="w-screen shrink-0"
                 transition:persist="widget-strip"
@@ -41,7 +38,6 @@ const githubData = await getGithubData();
                 />
             </section>
 
-            <!-- Notes -->
             <section class="w-full flex flex-col items-start gap-9">
                 <h2
                     class="font-kyoto font-extrabold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
