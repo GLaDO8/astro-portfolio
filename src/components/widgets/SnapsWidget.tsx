@@ -41,17 +41,17 @@ export default function SnapsWidget() {
       onPointerLeave={() => setIsHovered(false)}
     >
       {/* Text content — flexbox column */}
-      <div className="flex flex-col gap-4 pt-[26px] pl-[33px]">
-        <span className="font-inter font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
+      <div className="flex flex-col justify-between h-full p-6">
+        <div className="font-inter font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
           Snaps
-        </span>
-        <span className="font-inter font-bold text-[12px] leading-4 tracking-[-0.02em] text-green-dark">
+        </div>
+        <div className="font-inter font-bold text-[12px] leading-4 tracking-[-0.02em] text-green-dark">
           Fuji X100V
           <br />
           iPhone
           <br />
           Kodak Charmera
-        </span>
+        </div>
       </div>
       {POLAROIDS.map((p, i) => (
         <AnimatePresence initial={false}>
