@@ -41,7 +41,7 @@ const photoFrame = widgetConfig.photoframe;
             <!-- Notes -->
             <section class="w-full flex flex-col items-start gap-9">
                 <h2
-                    class="font-kyoto font-[800] text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
+                    class="font-kyoto font-extrabold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
                 >
                     Notes
                 </h2>
@@ -52,16 +52,10 @@ const photoFrame = widgetConfig.photoframe;
                                 <article class="flex flex-col gap-3 cursor-pointer">
                                     <h3
                                         transition:name={`note-title-${note.id}`}
-                                        class="font-inter font-medium text-[clamp(22px,3vw,28px)] leading-[1.2] tracking-[-0.02em] text-text-primary m-0"
+                                        class="font-inter font-semibold text-2xl leading-[1.2] tracking-[-0.02em] text-text-primary m-0"
                                     >
                                         {note.data.title}
                                     </h3>
-                                    <p
-                                        transition:name={`note-subtitle-${note.id}`}
-                                        class="font-inter font-normal text-[clamp(16px,2.5vw,20px)] leading-[1.2] text-text-secondary m-0"
-                                    >
-                                        {note.data.subtitle}
-                                    </p>
                                 </article>
                             </a>
                         ))

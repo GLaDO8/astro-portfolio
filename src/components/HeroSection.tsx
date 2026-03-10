@@ -42,7 +42,7 @@ export default function HeroSection() {
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={text}
-            className="font-medium italic inline-block"
+            className="font-medium italic inline-block pt-2"
             initial={{ opacity: 0, y: 12, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -12, filter: "blur(8px)" }}
@@ -64,7 +64,7 @@ export default function HeroSection() {
         <button
           type="button"
           onClick={cycle}
-          className="bg-white rounded-full px-5 py-2 font-inter font-semibold text-xl tracking-[-0.02em] text-text-secondary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15)] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25)] transition-shadow"
+          className="bg-white rounded-full px-5 py-1.5 font-inter font-semibold text-xl tracking-[-0.02em] text-text-secondary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15)] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25)] transition-shadow"
         >
           What else?
         </button>
