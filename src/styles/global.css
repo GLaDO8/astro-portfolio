@@ -19,13 +19,6 @@
     font-display: block;
 }
 
-@font-face {
-    font-family: "EB Garamond";
-    src: url("/fonts/EBGaramond-Variable.woff2") format("woff2");
-    font-weight: 400 800;
-    font-style: normal;
-    font-display: block;
-}
 
 @font-face {
     font-family: "Inter Variable";
@@ -60,8 +53,9 @@
 
     /* Fonts */
     --font-kyoto: "PP Kyoto", serif;
-    --font-garamond: "EB Garamond", serif;
+
     --font-inter: "Inter Variable", system-ui, sans-serif;
+    --font-mono: "TX-02", ui-monospace, monospace;
 
     /* Animations */
     --animate-vinyl: vinyl-spin 1.8182s linear infinite;
