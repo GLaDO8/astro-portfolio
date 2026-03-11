@@ -103,6 +103,16 @@
     --font-sans: "Commissioner", sans-serif;
     --font-mono: "TX-02", ui-monospace, monospace;
 
+    /* Fluid Type Scale — Utopia 360→1440 */
+    --text-xs: clamp(0.6944rem, 0.6593rem + 0.1564vw, 0.8rem);
+    --text-sm: clamp(0.8333rem, 0.7778rem + 0.2469vw, 1rem);
+    --text-base: clamp(1rem, 0.9167rem + 0.3704vw, 1.25rem);
+    --text-lg: clamp(1.2rem, 1.0792rem + 0.537vw, 1.5625rem);
+    --text-xl: clamp(1.44rem, 1.269rem + 0.7602vw, 1.9531rem);
+    --text-2xl: clamp(1.728rem, 1.4902rem + 1.0569vw, 2.4414rem);
+    --text-3xl: clamp(2.0736rem, 1.7475rem + 1.4491vw, 3.0518rem);
+    --text-4xl: clamp(2.4883rem, 2.0462rem + 1.965vw, 3.8147rem);
+
     /* Animations */
     --animate-vinyl: vinyl-spin 1.8182s linear infinite;
 }
