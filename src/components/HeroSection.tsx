@@ -64,7 +64,7 @@ export default function HeroSection() {
         <button
           type="button"
           onClick={cycle}
-          className="bg-white rounded-full px-5 py-1.5 font-sans font-semibold text-base tracking-[-0.02em] text-text-secondary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15)] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25)] transition-shadow"
+          className="bg-white rounded-full px-5 py-1.5 font-sans font-semibold text-base tracking-[-0.02em] text-text-secondary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15)] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25)] transition-all active:scale-[0.97]"
         >
           What else ?
         </button>
@@ -73,7 +73,7 @@ export default function HeroSection() {
           href="https://github.com/GLaDO8"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-text-hero hover:text-text-secondary transition-colors"
+          className="text-text-hero hover:text-text-secondary transition-all active:scale-[0.97]"
         >
           <svg
             width="28"
@@ -90,7 +90,7 @@ export default function HeroSection() {
           href="https://x.com/wutamelonshrey"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-text-hero hover:text-text-secondary transition-colors"
+          className="text-text-hero hover:text-text-secondary transition-all active:scale-[0.97]"
         >
           <svg
             width="24"

@@ -69,9 +69,7 @@ export default function WidgetStrip({ songData, photoFrame, githubData, children
 				<a href="/snaps" className="no-underline">
 					<SnapsWidget />
 				</a>
-				<div className="px-8">
-					<GithubWidget data={githubData} />
-				</div>
+				<GithubWidget data={githubData} />
 
 				{children}
 			</motion.div>

@@ -117,6 +117,15 @@
     --animate-vinyl: vinyl-spin 1.8182s linear infinite;
 }
 
+/* Widget strip fluid scale — 360px → 1024px, non-linear via pow()
+   t = 0→1 across viewport range
+   pow(t, 0.4) = front-loaded curve: grows fast from mobile, plateaus toward desktop
+   Adjust exponent: lower = more front-loaded, higher = more back-loaded */
+:root {
+    --widget-t: clamp(0, (100vw - 22.5rem) / (41.5rem), 1);
+    --widget-scale: calc(0.8 + 0.2 * pow(var(--widget-t), 0.1));
+}
+
 @keyframes vinyl-spin {
     to {
         transform: rotate(360deg);

@@ -26,13 +26,21 @@ const githubData = await getGithubData();
             class="w-full max-w-[727px] flex flex-col items-center gap-8 pt-[75px] pb-20"
         >
             <HeroSection client:visible />
-            <section class="w-screen shrink-0">
-                <WidgetStrip
-                    songData={songData}
-                    photoFrame={photoFrame}
-                    githubData={githubData}
-                    client:visible
-                />
+            <section
+                class="w-screen shrink-0 overflow-x-clip overflow-y-visible"
+                style="height: calc(var(--widget-scale) * 20rem);"
+            >
+                <div
+                    class="origin-top-left"
+                    style="transform: scale(var(--widget-scale)); width: calc(100vw / var(--widget-scale));"
+                >
+                    <WidgetStrip
+                         songData={songData}
+                        photoFrame={photoFrame}
+                        githubData={githubData}
+                        client:visible
+                    />
+                </div>
             </section>
 
             <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">

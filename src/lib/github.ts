@@ -12,9 +12,9 @@ export interface PrivateRepo {
 }
 
 export interface GithubData {
-	/** Last 32 days of contributions (for a 4×8 grid, column-major) */
+	/** Last 40 days of contributions (for a 5×8 grid, column-major) */
 	contributions: ContributionDay[];
-	/** Up to 2 most recently active private repos */
+	/** Up to 4 most recently active private repos */
 	privateRepos: PrivateRepo[];
 }
 
@@ -115,15 +115,15 @@ export async function getGithubData(): Promise<GithubData> {
 	const allDays = viewer.contributionsCollection.contributionCalendar.weeks.flatMap(
 		(w) => w.contributionDays,
 	);
-	const recentDays = allDays.slice(-24).map((d) => ({
+	const recentDays = allDays.slice(-40).map((d) => ({
 		count: d.contributionCount,
 		date: d.date,
 	}));
 
-	// Map private repos (skip repos with no default branch, take top 2)
+	// Map private repos (skip repos with no default branch, take top 4)
 	const privateRepos = viewer.repositories.nodes
 		.filter((r) => r.defaultBranchRef !== null)
-		.slice(0, 2)
+		.slice(0, 4)
 		.map((r) => ({
 			name: r.name,
 			totalCommits: r.defaultBranchRef?.target.history.totalCount ?? 0,
