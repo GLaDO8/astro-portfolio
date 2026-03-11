@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useMotionValue } from "motion/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { GithubData } from "@/lib/github";
 import type { PhotoFrameData, SongData } from "@/lib/widgetConfig";
@@ -17,8 +17,10 @@ interface Props {
 export default function WidgetStrip({ songData, photoFrame, githubData, children }: Props) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const innerRef = useRef<HTMLDivElement>(null);
-	const [dragRight, setDragRight] = useState(0);
+	const photoRef = useRef<HTMLAnchorElement>(null);
 	const [isMobile, setIsMobile] = useState(false);
+	const [dragLeft, setDragLeft] = useState(0);
+	const dragX = useMotionValue(0);
 
 	useEffect(() => {
 		const mql = window.matchMedia("(max-width: 768px)");
@@ -29,18 +31,29 @@ export default function WidgetStrip({ songData, photoFrame, githubData, children
 	}, []);
 
 	useEffect(() => {
-		if (!isMobile) return;
+		const container = containerRef.current;
+		const inner = innerRef.current;
+		const photo = photoRef.current;
+		if (!container || !inner || !photo) return;
+
 		const measure = () => {
-			const container = containerRef.current;
-			const inner = innerRef.current;
-			if (!container || !inner) return;
-			const overflow = inner.scrollWidth - container.clientWidth;
-			setDragRight(overflow > 0 ? -overflow : 0);
+			const containerWidth = container.clientWidth;
+			const photoCenter = photo.offsetLeft + photo.offsetWidth / 1.5;
+
+			if (isMobile) {
+				// Center the PhotoFrame slightly left of viewport center
+				const offset = -(photoCenter - containerWidth / 2) + 24;
+				const overflow = inner.scrollWidth - containerWidth;
+				const minX = overflow > 0 ? -overflow : 0;
+				setDragLeft(minX);
+				dragX.set(Math.max(minX, Math.min(0, offset)));
+			}
 		};
+
 		measure();
 		window.addEventListener("resize", measure);
 		return () => window.removeEventListener("resize", measure);
-	}, [isMobile]);
+	}, [isMobile, dragX]);
 
 	return (
 		<div
@@ -49,10 +62,11 @@ export default function WidgetStrip({ songData, photoFrame, githubData, children
 		>
 			<motion.div
 				ref={innerRef}
+				style={isMobile ? { x: dragX } : undefined}
 				{...(isMobile
 					? {
 							drag: "x" as const,
-							dragConstraints: { left: dragRight, right: 0 },
+							dragConstraints: { left: dragLeft, right: 0 },
 							dragElastic: 0.35,
 							dragTransition: {
 								bounceStiffness: 300,
@@ -60,10 +74,10 @@ export default function WidgetStrip({ songData, photoFrame, githubData, children
 							},
 						}
 					: {})}
-				className={`flex gap-6 items-top w-max pr-16 pl-32 ${isMobile ? "cursor-grab active:cursor-grabbing" : ""}`}
+				className={`flex gap-6 items-top w-max px-8 md:pl-36 md:pr-16 ${isMobile ? "cursor-grab active:cursor-grabbing" : ""}`}
 			>
 				<MusicWidget songData={songData} />
-				<a href="/about" className="no-underline mx-5">
+				<a ref={photoRef} href="/about" className="no-underline mx-5">
 					<PhotoFrameWidget src={photoFrame.src} alt={photoFrame.alt} />
 				</a>
 				<a href="/snaps" className="no-underline">

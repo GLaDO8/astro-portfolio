@@ -123,7 +123,8 @@
    Adjust exponent: lower = more front-loaded, higher = more back-loaded */
 :root {
     --widget-t: clamp(0, (100vw - 22.5rem) / (41.5rem), 1);
-    --widget-scale: calc(0.8 + 0.2 * pow(var(--widget-t), 0.1));
+    --widget-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1));
+    --lp-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1)) * -4rem;
 }
 
 @keyframes vinyl-spin {

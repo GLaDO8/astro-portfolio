@@ -28,14 +28,14 @@ const githubData = await getGithubData();
             <HeroSection client:visible />
             <section
                 class="w-screen shrink-0 overflow-x-clip overflow-y-visible"
-                style="height: calc(var(--widget-scale) * 20rem);"
+                style="height: calc(var(--widget-scale) * 18rem); padding: calc(var(--lp-scale))"
             >
                 <div
                     class="origin-top-left"
                     style="transform: scale(var(--widget-scale)); width: calc(100vw / var(--widget-scale));"
                 >
                     <WidgetStrip
-                         songData={songData}
+                        songData={songData}
                         photoFrame={photoFrame}
                         githubData={githubData}
                         client:visible
