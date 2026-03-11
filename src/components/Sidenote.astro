@@ -1,0 +1,22 @@
+---
+interface Props {
+	caption?: boolean;
+}
+
+const { caption = false } = Astro.props;
+---
+
+<aside
+	class:list={[
+		"sidenote",
+		"font-sans font-medium text-sm leading-normal text-[#333f46]",
+		"lg:float-right lg:clear-right lg:w-[280px] lg:ml-10 lg:mb-4 lg:-mr-[328px]",
+		"rounded-lg p-4 my-4 bg-[#c0e0e0]",
+		caption
+			? "lg:bg-[#c0e0e0] lg:p-4 lg:rounded-lg"
+			: "lg:bg-transparent lg:p-0 lg:rounded-none",
+		"lg:my-0",
+	]}
+>
+	<slot />
+</aside>

@@ -113,6 +113,9 @@
     --text-3xl: clamp(2.0736rem, 1.7475rem + 1.4491vw, 3.0518rem);
     --text-4xl: clamp(2.4883rem, 2.0462rem + 1.965vw, 3.8147rem);
 
+    /* Grid */
+    --grid-template-columns-16: repeat(16, minmax(0, 1fr));
+
     /* Animations */
     --animate-vinyl: vinyl-spin 1.8182s linear infinite;
 }

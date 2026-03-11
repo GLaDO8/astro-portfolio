@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import HeroSection from "@/components/HeroSection";
 import WidgetStrip from "@/components/WidgetStrip";
-import Base from "@/layouts/Base.astro";
+import Page from "@/layouts/Page.astro";
 import { getGithubData } from "@/lib/github";
 import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
 
@@ -20,78 +20,78 @@ const photoFrame = widgetConfig.photoframe;
 const githubData = await getGithubData();
 ---
 
-<Base title="Shreyas Gupta" bodyClass="bg-bg-home">
-    <main class="bg-bg-home min-h-screen flex justify-center px-6">
+<Page title="Shreyas Gupta" bodyClass="bg-bg-home" class="bg-bg-home gap-y-8">
+    <!-- Hero -->
+    <div class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4">
+        <HeroSection client:visible />
+    </div>
+
+    <!-- Widget Strip (full bleed) -->
+    <section
+        class="col-span-full -mx-4 md:-mx-8 lg:-mx-12 overflow-x-clip overflow-y-visible"
+        style="height: calc(var(--widget-scale) * 18rem); padding: calc(var(--lp-scale))"
+    >
         <div
-            class="w-full max-w-[727px] flex flex-col items-center gap-8 pt-[75px] pb-20"
+            class="origin-top-left"
+            style="transform: scale(var(--widget-scale)); width: calc(100vw / var(--widget-scale));"
         >
-            <HeroSection client:visible />
-            <section
-                class="w-screen shrink-0 overflow-x-clip overflow-y-visible"
-                style="height: calc(var(--widget-scale) * 18rem); padding: calc(var(--lp-scale))"
-            >
-                <div
-                    class="origin-top-left"
-                    style="transform: scale(var(--widget-scale)); width: calc(100vw / var(--widget-scale));"
-                >
-                    <WidgetStrip
-                        songData={songData}
-                        photoFrame={photoFrame}
-                        githubData={githubData}
-                        client:visible
-                    />
-                </div>
-            </section>
-
-            <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">
-                <section class="flex flex-col items-start gap-9">
-                    <h2
-                        class="font-serif font-bold text-3xl leading-[1.2] text-text-primary m-0"
-                    >
-                        Notes
-                    </h2>
-                    <div class="flex flex-col gap-6">
-                        {
-                            notes.map((note) => (
-                                <a
-                                    href={`/notes/${note.id}`}
-                                    class="no-underline"
-                                >
-                                    <article class="flex flex-col gap-3 cursor-pointer">
-                                        <h3 class="font-serif font-semibold text-lg leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
-                                            {note.data.title}
-                                        </h3>
-                                    </article>
-                                </a>
-                            ))
-                        }
-                    </div>
-                </section>
-
-                <section class="flex flex-col items-start gap-9">
-                    <h2
-                        class="font-serif font-bold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
-                    >
-                        Work
-                    </h2>
-                    <div class="flex flex-col gap-6">
-                        {
-                            caseStudies.map((study) => (
-                                <a
-                                    href={`/case-studies/${study.id}`}
-                                    class="no-underline"
-                                >
-                                    <article class="flex flex-col gap-1 cursor-pointer">
-                                        <h3 class="font-serif font-semibold text-lg leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
-                                            {study.data.title}
-                                        </h3>
-                                    </article>
-                                </a>
-                            ))
-                        }
-                    </div>
-                </section>
-            </div>
+            <WidgetStrip
+                songData={songData}
+                photoFrame={photoFrame}
+                githubData={githubData}
+                client:visible
+            />
         </div>
-    </main>
-</Base>
+    </section>
+
+    <!-- Notes & Work -->
+    <div class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">
+        <section class="flex flex-col items-start gap-9">
+            <h2
+                class="font-serif font-bold text-3xl leading-[1.2] text-text-primary m-0"
+            >
+                Notes
+            </h2>
+            <div class="flex flex-col gap-6">
+                {
+                    notes.map((note) => (
+                        <a
+                            href={`/notes/${note.id}`}
+                            class="no-underline"
+                        >
+                            <article class="flex flex-col gap-3 cursor-pointer">
+                                <h3 class="font-serif font-semibold text-lg leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
+                                    {note.data.title}
+                                </h3>
+                            </article>
+                        </a>
+                    ))
+                }
+            </div>
+        </section>
+
+        <section class="flex flex-col items-start gap-9">
+            <h2
+                class="font-serif font-bold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
+            >
+                Work
+            </h2>
+            <div class="flex flex-col gap-6">
+                {
+                    caseStudies.map((study) => (
+                        <a
+                            href={`/case-studies/${study.id}`}
+                            class="no-underline"
+                        >
+                            <article class="flex flex-col gap-1 cursor-pointer">
+                                <h3 class="font-serif font-semibold text-lg leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
+                                    {study.data.title}
+                                </h3>
+                            </article>
+                        </a>
+                    ))
+                }
+            </div>
+        </section>
+    </div>
+</Page>

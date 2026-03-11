@@ -1,0 +1,12 @@
+import { component, defineMarkdocConfig } from "@astrojs/markdoc/config";
+
+export default defineMarkdocConfig({
+	tags: {
+		sidenote: {
+			render: component("./src/components/Sidenote.astro"),
+			attributes: {
+				caption: { type: Boolean, default: false },
+			},
+		},
+	},
+});

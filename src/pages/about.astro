@@ -1,24 +1,22 @@
 ---
-import Base from "@/layouts/Base.astro";
+import Page from "@/layouts/Page.astro";
 ---
 
-<Base title="About — Shreyas" bodyClass="bg-bg-home">
-    <main class="bg-bg-home min-h-screen flex justify-center px-6">
-        <article class="w-full max-w-[727px] pt-[75px] pb-20">
-            <h1
-                class="font-serif font-bold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero mt-8 mb-6"
-            >
-                About
-            </h1>
+<Page title="About — Shreyas" bodyClass="bg-bg-home" class="bg-bg-home">
+    <article class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5">
+        <h1
+            class="font-serif font-bold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero mt-8 mb-6"
+        >
+            About
+        </h1>
 
-            <div
-                class="font-sans text-base leading-relaxed text-text-primary flex flex-col gap-6"
-            >
-                <p class="m-0">
-                    Hi, I'm Shreyas. Designer, mushroom grower, and cat dad.
-                </p>
-                <p class="m-0">More coming soon.</p>
-            </div>
-        </article>
-    </main>
-</Base>
+        <div
+            class="font-sans text-base leading-relaxed text-text-primary flex flex-col gap-6"
+        >
+            <p class="m-0">
+                Hi, I'm Shreyas. Designer, mushroom grower, and cat dad.
+            </p>
+            <p class="m-0">More coming soon.</p>
+        </div>
+    </article>
+</Page>

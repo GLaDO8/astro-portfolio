@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
-import Base from "@/layouts/Base.astro";
+import Page from "@/layouts/Page.astro";
 
 export async function getStaticPaths() {
     const notes = await getCollection("notes", ({ data }) => !data.draft);
@@ -14,28 +14,28 @@ const { note } = Astro.props;
 const { Content } = await render(note);
 ---
 
-<Base title={note.data.title} bodyClass="bg-bg-home">
-    <main class="bg-bg-home min-h-screen flex justify-center px-6">
-        <article class="w-full max-w-[727px] pt-[75px] pb-20">
-            <h1
-                class="font-serif font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-text-primary mt-8 mb-2"
-            >
-                {note.data.title}
-            </h1>
-            <p class="font-sans text-text-secondary mb-12">
-                {
-                    note.data.date.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                    })
-                }
-            </p>
-            <div
-                class="prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal font-sans text-base leading-relaxed text-text-primary text-pretty"
-            >
-                <Content />
-            </div>
-        </article>
-    </main>
-</Base>
+<Page title={note.data.title} bodyClass="bg-bg-home" class="bg-bg-home">
+    <article
+        class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-3"
+    >
+        <h1
+            class="font-serif font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-text-primary mt-8 mb-2"
+        >
+            {note.data.title}
+        </h1>
+        <p class="font-sans text-text-secondary mb-12">
+            {
+                note.data.date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                })
+            }
+        </p>
+        <div
+            class="prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal font-sans text-base leading-relaxed text-text-primary text-pretty overflow-visible"
+        >
+            <Content />
+        </div>
+    </article>
+</Page>
