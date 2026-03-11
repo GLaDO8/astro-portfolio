@@ -38,7 +38,7 @@ const githubData = await getGithubData();
             <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">
                 <section class="flex flex-col items-start gap-9">
                     <h2
-                        class="font-serif font-bold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
+                        class="font-serif font-bold text-3xl leading-[1.2] text-text-primary m-0"
                     >
                         Notes
                     </h2>
@@ -50,7 +50,7 @@ const githubData = await getGithubData();
                                     class="no-underline"
                                 >
                                     <article class="flex flex-col gap-3 cursor-pointer">
-                                        <h3 class="font-serif font-semibold text-2xl leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
+                                        <h3 class="font-serif font-semibold text-lg leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
                                             {note.data.title}
                                         </h3>
                                     </article>
@@ -64,7 +64,7 @@ const githubData = await getGithubData();
                     <h2
                         class="font-serif font-bold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
                     >
-                        Projects
+                        Work
                     </h2>
                     <div class="flex flex-col gap-6">
                         {
@@ -74,7 +74,7 @@ const githubData = await getGithubData();
                                     class="no-underline"
                                 >
                                     <article class="flex flex-col gap-1 cursor-pointer">
-                                        <h3 class="font-serif font-semibold text-2xl leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
+                                        <h3 class="font-serif font-semibold text-lg leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
                                             {study.data.title}
                                         </h3>
                                     </article>
