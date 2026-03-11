@@ -1,0 +1,50 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "@/layouts/Base.astro";
+
+export async function getStaticPaths() {
+    const studies = await getCollection(
+        "caseStudies",
+        ({ data }) => !data.draft,
+    );
+    return studies.map((study) => ({
+        params: { slug: study.id },
+        props: { study },
+    }));
+}
+
+const { study } = Astro.props;
+const { Content } = await render(study);
+---
+
+<Base title={study.data.title} bodyClass="bg-bg-blog">
+    <main class="bg-bg-blog min-h-screen flex justify-center px-6">
+        <article class="w-full max-w-[727px] pt-[75px] pb-20">
+            <a
+                href="/"
+                class="font-inter text-sm text-text-secondary hover:text-text-primary transition-colors"
+                >&larr; Back</a
+            >
+            <p
+                class="font-inter text-sm font-medium text-green-label uppercase tracking-widest mt-8 mb-2"
+            >
+                Case Study
+            </p>
+            <h1
+                class="font-inter font-medium text-[clamp(32px,5vw,48px)] leading-[1.2] tracking-[-0.02em] text-text-primary mb-1"
+            >
+                {study.data.title}
+            </h1>
+            <p
+                class="font-inter text-xl text-text-secondary mb-12"
+            >
+                {study.data.subtitle}
+            </p>
+            <div
+                class="prose font-garamond text-lg leading-relaxed text-text-primary"
+            >
+                <Content />
+            </div>
+        </article>
+    </main>
+</Base>

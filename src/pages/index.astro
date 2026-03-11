@@ -10,6 +10,10 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
+const caseStudies = (
+    await getCollection("caseStudies", ({ data }) => !data.draft)
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
 const songData = await getSongData();
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;
@@ -17,9 +21,7 @@ const githubData = await getGithubData();
 ---
 
 <Base title="Shreyas Gupta" bodyClass="bg-bg-home">
-    <main
-        class="bg-bg-home min-h-screen flex justify-center px-6"
-    >
+    <main class="bg-bg-home min-h-screen flex justify-center px-6">
         <div
             class="w-full max-w-[727px] flex flex-col items-center gap-8 pt-[75px] pb-20"
         >
@@ -33,28 +35,55 @@ const githubData = await getGithubData();
                 />
             </section>
 
-            <section class="w-full flex flex-col items-start gap-9">
-                <h2
-                    class="font-kyoto font-extrabold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
-                >
-                    Notes
-                </h2>
-                <div class="flex flex-col gap-6">
-                    {
-                        notes.map((note) => (
-                            <a href={`/notes/${note.id}`} class="no-underline">
-                                <article class="flex flex-col gap-3 cursor-pointer">
-                                    <h3
-                                        class="font-inter font-semibold text-2xl leading-[1.2] tracking-[-0.02em] text-text-primary m-0"
-                                    >
-                                        {note.data.title}
-                                    </h3>
-                                </article>
-                            </a>
-                        ))
-                    }
-                </div>
-            </section>
+            <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">
+                <section class="flex flex-col items-start gap-9">
+                    <h2
+                        class="font-kyoto font-extrabold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
+                    >
+                        Notes
+                    </h2>
+                    <div class="flex flex-col gap-6">
+                        {
+                            notes.map((note) => (
+                                <a
+                                    href={`/notes/${note.id}`}
+                                    class="no-underline"
+                                >
+                                    <article class="flex flex-col gap-3 cursor-pointer">
+                                        <h3 class="font-inter font-semibold text-2xl leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
+                                            {note.data.title}
+                                        </h3>
+                                    </article>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </section>
+
+                <section class="flex flex-col items-start gap-9">
+                    <h2
+                        class="font-kyoto font-extrabold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-primary m-0"
+                    >
+                        Projects
+                    </h2>
+                    <div class="flex flex-col gap-6">
+                        {
+                            caseStudies.map((study) => (
+                                <a
+                                    href={`/case-studies/${study.id}`}
+                                    class="no-underline"
+                                >
+                                    <article class="flex flex-col gap-1 cursor-pointer">
+                                        <h3 class="font-inter font-semibold text-2xl leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
+                                            {study.data.title}
+                                        </h3>
+                                    </article>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </section>
+            </div>
         </div>
     </main>
 </Base>

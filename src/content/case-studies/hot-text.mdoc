@@ -1,0 +1,95 @@
+---
+title: "Hot Text"
+subtitle: "Bringing State Test Parity to Wayground"
+date: 2025-06-01
+tags: ["product-design", "edtech"]
+---
+
+Hot Text is a commonly used question type for English & Language Arts in US state tests. One of Wayground's key differentiator moats is engaging classroom learning while preparing students for state tests. Building Hot Text was important to bring parity with state test question type coverage, as ELA is amongst the top subjects on Wayground.
+
+State test parity matters because it sits at the intersection of what districts pay for (test preparedness and better scores) and what teachers need (engaged students in the classroom). Hot Text was a missing piece.
+
+[image: diagram showing Wayground's positioning between engagement and assessment rigor, with Hot Text filling the gap]
+
+## The Initial Miss
+
+The team's first approach was to repurpose the existing Drag & Drop question type UI for Hot Text. This worked for a narrow slice of the problem — sentences with individual words as selectable options.
+
+When I was pulled in, I did a deep dive into how Hot Text actually manifests across state tests (CAASPP, STAAR, and others). The data was clear: **~70–80% of real Hot Text questions use paragraphs with sentences or multi-line chunks as options**, not single words. We had optimized for the minority use case.
+
+[image: side-by-side comparison — word-level options (what we built) vs. sentence-level options in paragraphs (what state tests actually use)]
+
+## Defining Design Principles
+
+This gap prompted me to lay out principles for how Wayground should approach building question types in general — something we didn't have before:
+
+1. **State parity** — the question type must support the full range of how it appears in real state tests.
+2. **Engagement** — it should be more fun than the state test version, not a carbon copy.
+3. **Readability & accessibility** — it should work across themes, screen sizes, and reading levels.
+
+[image: the three principles as a framework visual]
+
+## The Technical Problem
+
+State tests render Hot Text options as simple `<span>` elements with background color highlights. When selected, the color changes. Straightforward — but visually flat and boring.
+
+I wanted options to feel like actual interactive elements — with borders, depth, and visual affordance. The problem: applying a border to a `<span>` that wraps across multiple lines produces a border on *each line individually*, not a single cohesive bounding box around the option. Multi-line spans break visually.
+
+[image: visual showing the span border-breaking problem on multi-line text]
+
+I prototyped a solution using `getBoundingClientRect()` to dynamically generate SVG bounding boxes around each option. This worked in isolation but had two issues: the SVG needed to be redrawn on viewport resize (expensive repaints), and the existing student gameplay architecture made it difficult to inject client-side SVG into the rendering pipeline. Dead end.
+
+## Iteration Cycle
+
+With the SVG approach off the table, I went through a rapid iteration cycle to find the right balance between visual clarity and engagement.
+
+**Background color on spans with adjusted margins** — Reduced gaps between highlighted lines by matching margin to line-height, making multi-line options feel more cohesive. Functional, but still flat.
+
+[image: iteration — margin-matched background color spans]
+
+**Paper sheet metaphor** — What if the passage rendered as a sheet of paper that animates up from the bottom? This gave the question type a physical, tactile quality.
+
+[image: iteration — paper sheet concept]
+
+**Highlighter effect on paper** — Building on the paper metaphor: what if options looked like a teacher had highlighted key sentences with a marker? I mocked SVG-based organic highlights. The aesthetic was compelling, but highlighter strokes are notoriously hard to make look natural at scale, and the SVG generation wasn't robust enough across varying text lengths.
+
+[image: iteration — highlighter effect mockups on paper]
+
+**Back to background color, new problem** — Returning to simpler background-color options surfaced a different issue: in many Hot Text questions, the *entire paragraph is options* with no non-option text between them. Adjacent options with the same background color blended together, making it impossible to tell where one ended and another began.
+
+[image: iteration — adjacent options blending together]
+
+I iterated through several demarcation strategies:
+
+- **Margins at span boundaries** — created gaps, but students still had to scan for breaks.
+- **Thick strokes + margins** — better, but not sufficient.
+- **Numbered badges at the start of each option** — now you could scan and count options instantly, knowing exactly where each starts.
+- **Multi-color options** — each option gets a distinct color. I initially resisted this because it risked implying that color *means* something (correct/incorrect). But playtesting with students showed they found it intuitive and fun. Color became a wayfinding tool, not a semantic signal.
+
+[image: progression strip showing the demarcation iterations — margins → strokes → badges → multi-color]
+
+## Validation
+
+We playtested the multi-color approach with students and ran it by teachers. Students found the question type engaging and easy to parse. Teachers appreciated the state test parity without the state test boredom.
+
+[image: final Hot Text question type design — multi-color options with badges on the paper metaphor]
+
+## The Unsolved Edge: Answer Feedback
+
+After a student submits, they need to see which options they selected were correct, which were wrong, and which correct options they missed — especially when partial marking is enabled. This is deceptively complex for inline options embedded in a paragraph of text.
+
+[image: answer feedback animation from MSQ question type showing the complexity of the interaction]
+
+We explored multiple approaches but couldn't find a solution that met our quality bar without compromising readability. We shipped without answer feedback for this question type — a deliberate decision to not degrade the experience with a half-baked solution.
+
+## Outcome
+
+Hot Text shipped and was well-received across the board — students, teachers, and in sales demos. It brought Wayground closer to full state test question type coverage for ELA, directly supporting the platform's move into more serious assessment use cases.
+
+[image: screenshot of the shipped Hot Text question type in a real assessment]
+
+[metric: state test question type coverage before and after Hot Text]
+
+## My Role
+
+I was brought in after the initial design pass, identified the use-case gap through state test research, defined the question type design principles that the team now uses broadly, prototyped and iterated through 8+ design directions (including technical prototypes), ran playtests with students, and drove the design to ship.

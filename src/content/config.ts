@@ -13,4 +13,18 @@ const notes = defineCollection({
 	}),
 });
 
-export const collections = { notes };
+const caseStudies = defineCollection({
+	loader: glob({
+		pattern: "**/*.mdoc",
+		base: "./src/content/case-studies",
+	}),
+	schema: z.object({
+		title: z.string(),
+		subtitle: z.string(),
+		date: z.date(),
+		draft: z.boolean().default(false),
+		tags: z.array(z.string()).default([]),
+	}),
+});
+
+export const collections = { notes, caseStudies };
