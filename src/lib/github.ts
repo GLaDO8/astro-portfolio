@@ -2,6 +2,7 @@ const GITHUB_GRAPHQL = "https://api.github.com/graphql";
 
 export interface ContributionDay {
 	count: number;
+	level: number;
 	date: string;
 }
 
@@ -12,7 +13,7 @@ export interface PrivateRepo {
 }
 
 export interface GithubData {
-	/** Last 40 days of contributions (for a 5×8 grid, column-major) */
+	/** Last 40 days of contributions, sequential (filled column-wise in grid) */
 	contributions: ContributionDay[];
 	/** Up to 4 most recently active private repos */
 	privateRepos: PrivateRepo[];
@@ -25,6 +26,7 @@ const QUERY = `{
         weeks {
           contributionDays {
             contributionCount
+            contributionLevel
             date
           }
         }
@@ -60,6 +62,7 @@ interface GraphQLResponse {
 					weeks: {
 						contributionDays: {
 							contributionCount: number;
+							contributionLevel: string;
 							date: string;
 						}[];
 					}[];
@@ -81,6 +84,14 @@ interface GraphQLResponse {
 		};
 	};
 }
+
+const CONTRIBUTION_LEVELS: Record<string, number> = {
+	NONE: 0,
+	FIRST_QUARTILE: 1,
+	SECOND_QUARTILE: 2,
+	THIRD_QUARTILE: 3,
+	FOURTH_QUARTILE: 4,
+};
 
 // biome-ignore lint/style/useConst: reassigned for caching
 let cached: GithubData | null = null;
@@ -111,12 +122,13 @@ export async function getGithubData(): Promise<GithubData> {
 	const json = (await res.json()) as GraphQLResponse;
 	const viewer = json.data.viewer;
 
-	// Flatten contribution days and take the last 32
+	// Flatten all contribution days and take the last 40
 	const allDays = viewer.contributionsCollection.contributionCalendar.weeks.flatMap(
 		(w) => w.contributionDays,
 	);
 	const recentDays = allDays.slice(-40).map((d) => ({
 		count: d.contributionCount,
+		level: CONTRIBUTION_LEVELS[d.contributionLevel] ?? 0,
 		date: d.date,
 	}));
 
@@ -132,17 +144,6 @@ export async function getGithubData(): Promise<GithubData> {
 
 	cached = { contributions: recentDays, privateRepos };
 	return cached;
-}
-
-/** Map contribution count to a color level (0–4) */
-export function contributionLevel(count: number, max: number): number {
-	if (count === 0) return 0;
-	if (max <= 0) return 1;
-	const ratio = count / max;
-	if (ratio <= 0.25) return 1;
-	if (ratio <= 0.5) return 2;
-	if (ratio <= 0.75) return 3;
-	return 4;
 }
 
 /** Format a date string as relative time (e.g. "2 hrs ago") */
