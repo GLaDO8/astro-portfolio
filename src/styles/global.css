@@ -4,25 +4,72 @@
 /* ── Fonts ────────────────────────────────────── */
 
 @font-face {
-    font-family: "PP Kyoto";
-    src: url("/fonts/PPKyoto-MediumItalic.woff2") format("woff2");
+    font-family: "Zilla Slab";
+    src: url("/fonts/ZillaSlab-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Zilla Slab";
+    src: url("/fonts/ZillaSlab-LightItalic.woff2") format("woff2");
+    font-weight: 300;
+    font-style: italic;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Zilla Slab";
+    src: url("/fonts/ZillaSlab-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Zilla Slab";
+    src: url("/fonts/ZillaSlab-MediumItalic.woff2") format("woff2");
     font-weight: 500;
     font-style: italic;
     font-display: block;
 }
 
 @font-face {
-    font-family: "PP Kyoto";
-    src: url("/fonts/PPKyoto-Extrabold.woff2") format("woff2");
-    font-weight: 800;
+    font-family: "Zilla Slab";
+    src: url("/fonts/ZillaSlab-SemiBold.woff2") format("woff2");
+    font-weight: 600;
     font-style: normal;
     font-display: block;
 }
 
+@font-face {
+    font-family: "Zilla Slab";
+    src: url("/fonts/ZillaSlab-SemiBoldItalic.woff2") format("woff2");
+    font-weight: 600;
+    font-style: italic;
+    font-display: block;
+}
 
 @font-face {
-    font-family: "Inter Variable";
-    src: url("/fonts/InterVariable.woff2") format("woff2");
+    font-family: "Zilla Slab";
+    src: url("/fonts/ZillaSlab-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Zilla Slab";
+    src: url("/fonts/ZillaSlab-BoldItalic.woff2") format("woff2");
+    font-weight: 700;
+    font-style: italic;
+    font-display: block;
+}
+
+@font-face {
+    font-family: "Commissioner";
+    src: url("/fonts/Commissioner-Variable.woff2") format("woff2");
     font-weight: 100 900;
     font-style: normal;
     font-display: block;
@@ -41,7 +88,7 @@
 
 @theme {
     /* Colors */
-    --color-bg-home: #b7dcdc;
+    --color-bg-home: #d1eeee;
     --color-text-hero: #222a37;
     --color-text-primary: #242a2d;
     --color-text-secondary: #354b54;
@@ -52,9 +99,8 @@
     --color-bg-blog: #e5e8d8;
 
     /* Fonts */
-    --font-kyoto: "PP Kyoto", serif;
-
-    --font-inter: "Inter Variable", system-ui, sans-serif;
+    --font-serif: "Zilla Slab", serif;
+    --font-sans: "Commissioner", sans-serif;
     --font-mono: "TX-02", ui-monospace, monospace;
 
     /* Animations */

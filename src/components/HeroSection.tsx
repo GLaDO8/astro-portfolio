@@ -36,13 +36,13 @@ export default function HeroSection() {
 
   return (
     <section className="w-full flex flex-col items-start gap-6">
-      <h1 className="font-kyoto text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0">
-        <span className="font-extrabold">Shreyas Gupta</span>{" "}
+      <h1 className="font-serif font-semibold text-[clamp(32px,5vw,48px)] leading-[1.2] text-text-hero m-0">
+        <span>Shreyas Gupta</span>{" "}
         {/*initial false skips aniimation on first render*/}
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={text}
-            className="font-medium italic inline-block pt-2"
+            className="inline-block pt-2"
             initial={{ opacity: 0, y: 12, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -12, filter: "blur(8px)" }}
@@ -64,9 +64,9 @@ export default function HeroSection() {
         <button
           type="button"
           onClick={cycle}
-          className="bg-white rounded-full px-5 py-1.5 font-inter font-semibold text-xl tracking-[-0.02em] text-text-secondary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15)] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25)] transition-shadow"
+          className="bg-white rounded-full px-5 py-1.5 font-sans font-semibold text-xl tracking-[-0.02em] text-text-secondary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15)] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25)] transition-shadow"
         >
-          What else?
+          What else ?
         </button>
 
         <a

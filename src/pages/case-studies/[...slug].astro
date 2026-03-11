@@ -22,20 +22,20 @@ const { Content } = await render(study);
         <article class="w-full max-w-[727px] pt-[75px] pb-20">
             <a
                 href="/"
-                class="font-inter text-sm text-text-secondary hover:text-text-primary transition-colors"
+                class="font-sans text-sm text-text-secondary hover:text-text-primary transition-colors"
                 >&larr; Back</a
             >
 
             <h1
-                class="font-inter font-medium text-[clamp(32px,5vw,48px)] leading-[1.2] tracking-[-0.02em] text-text-primary mb-1"
+                class="font-sans font-medium text-[clamp(32px,5vw,48px)] leading-[1.2] tracking-[-0.02em] text-text-primary mb-1"
             >
                 {study.data.title}
             </h1>
-            <p class="font-inter text-xl text-text-secondary mb-12">
+            <p class="font-sans text-xl text-text-secondary mb-12">
                 {study.data.subtitle}
             </p>
             <div
-                class="prose prose-headings:font-kyoto prose-headings:font-extrabold prose-headings:tracking-normal font-inter text-base leading-relaxed text-text-primary"
+                class="prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal font-sans text-base leading-relaxed text-text-primary"
             >
                 <Content />
             </div>
