@@ -14,9 +14,9 @@ const { note } = Astro.props;
 const { Content } = await render(note);
 ---
 
-<Base title={note.data.title} bodyClass="bg-bg-blog">
+<Base title={note.data.title} bodyClass="bg-bg-home">
     <main
-        class="bg-bg-blog min-h-screen flex justify-center px-6"
+        class="bg-bg-home min-h-screen flex justify-center px-6"
     >
         <article class="w-full max-w-[727px] pt-[75px] pb-20">
             <a
