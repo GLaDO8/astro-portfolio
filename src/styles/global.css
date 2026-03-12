@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* ── Fonts ────────────────────────────────────── */
-
 @font-face {
     font-family: "Zilla Slab";
     src: url("/fonts/ZillaSlab-Light.woff2") format("woff2");
@@ -75,9 +73,6 @@
     font-display: block;
 }
 
-/* ── Tailwind v4 Theme ────────────────────────── */
-
-/* Hide scrollbar but keep scroll functional */
 @utility scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -134,6 +129,22 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+/* ── Font Variation Utilities (Commissioner axes) ── */
+
+@utility flare-* {
+    --tw-fvar-flar: *;
+    font-variation-settings:
+        "FLAR" var(--tw-fvar-flar, 0),
+        "VOLM" var(--tw-fvar-volm, 0);
+}
+
+@utility volm-* {
+    --tw-fvar-volm: *;
+    font-variation-settings:
+        "FLAR" var(--tw-fvar-flar, 0),
+        "VOLM" var(--tw-fvar-volm, 0);
 }
 
 /* iOS-style chat bubble tail (bottom-right) */
