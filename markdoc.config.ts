@@ -6,6 +6,7 @@ export default defineMarkdocConfig({
 			render: component("./src/components/Sidenote.astro"),
 			attributes: {
 				caption: { type: Boolean, default: false },
+				image: { type: String },
 			},
 		},
 	},
