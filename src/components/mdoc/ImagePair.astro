@@ -1,0 +1,50 @@
+---
+interface Props {
+	src1: string;
+	src2: string;
+	alt1?: string;
+	alt2?: string;
+	caption1?: string;
+	caption2?: string;
+}
+
+const {
+	src1,
+	src2,
+	alt1 = "",
+	alt2 = "",
+	caption1,
+	caption2,
+} = Astro.props;
+---
+
+<div class="not-prose grid grid-cols-2 gap-4 my-6">
+	<figure class="m-0">
+		<img
+			src={src1}
+			alt={alt1}
+			loading="lazy"
+			decoding="async"
+			class="w-full rounded-lg"
+		/>
+		{caption1 && (
+			<figcaption class="font-sans text-sm text-text-secondary mt-2">
+				{caption1}
+			</figcaption>
+		)}
+	</figure>
+	<figure class="m-0">
+		<img
+			src={src2}
+			alt={alt2}
+			loading="lazy"
+			decoding="async"
+			class="w-full rounded-lg"
+		/>
+		{caption2 && (
+			<figcaption class="font-sans text-sm text-text-secondary mt-2">
+				{caption2}
+			</figcaption>
+		)}
+	</figure>
+</div>
