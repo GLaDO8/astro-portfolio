@@ -2,9 +2,10 @@
 interface Props {
     caption?: boolean;
     image?: string;
+    citation?: boolean;
 }
 
-const { caption = false, image } = Astro.props;
+const { caption = false, image, citation = false } = Astro.props;
 const hasBox = caption || !!image;
 ---
 
@@ -18,6 +19,7 @@ const hasBox = caption || !!image;
             ? "lg:bg-[#c0e0e0] lg:p-4 lg:rounded-lg"
             : "lg:bg-transparent lg:p-0 lg:rounded-none",
         "lg:my-0",
+        citation && "sidenote-citation",
     ]}
 >
     {image && <img src={image} alt="" class="rounded w-full mb-2" />}

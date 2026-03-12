@@ -7,7 +7,13 @@ export default defineMarkdocConfig({
 			attributes: {
 				caption: { type: Boolean, default: false },
 				image: { type: String },
+				citation: { type: Boolean, default: false },
 			},
+		},
+		ref: {
+			render: component("./src/components/Ref.astro"),
+			selfClosing: true,
+			inline: true,
 		},
 	},
 });

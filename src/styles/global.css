@@ -68,7 +68,8 @@
 @font-face {
     font-family: "Commissioner";
     src:
-        url("/fonts/Commissioner-Variable.woff2") format("woff2") tech("variations"),
+        url("/fonts/Commissioner-Variable.woff2") format("woff2")
+            tech("variations"),
         url("/fonts/Commissioner-Variable.woff2") format("woff2-variations");
     font-weight: 100 900;
     font-stretch: 75% 125%;
@@ -132,6 +133,29 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+/* ── Sidenote Citation Counters ─────────────────── */
+
+.prose {
+    counter-reset: sidenote;
+}
+
+.sidenote-ref {
+    counter-increment: sidenote;
+
+    &::after {
+        content: counter(sidenote);
+        font-size: 0.75em;
+    }
+}
+
+.sidenote-citation::before {
+    content: counter(sidenote);
+    font-weight: 600;
+    vertical-align: super;
+    font-size: 0.75em;
+    margin-right: 0.25em;
 }
 
 /* ── Font Variation Utilities (Commissioner axes) ── */
