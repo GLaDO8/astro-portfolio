@@ -1,12 +1,19 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@layer base {
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
 @font-face {
     font-family: "Zilla Slab";
     src: url("/fonts/ZillaSlab-Light.woff2") format("woff2");
     font-weight: 300;
     font-style: normal;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -14,7 +21,7 @@
     src: url("/fonts/ZillaSlab-LightItalic.woff2") format("woff2");
     font-weight: 300;
     font-style: italic;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -22,7 +29,7 @@
     src: url("/fonts/ZillaSlab-Regular.woff2") format("woff2");
     font-weight: 400;
     font-style: normal;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -30,7 +37,7 @@
     src: url("/fonts/ZillaSlab-MediumItalic.woff2") format("woff2");
     font-weight: 500;
     font-style: italic;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -38,7 +45,7 @@
     src: url("/fonts/ZillaSlab-SemiBold.woff2") format("woff2");
     font-weight: 600;
     font-style: normal;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -46,7 +53,7 @@
     src: url("/fonts/ZillaSlab-SemiBoldItalic.woff2") format("woff2");
     font-weight: 600;
     font-style: italic;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -54,7 +61,7 @@
     src: url("/fonts/ZillaSlab-Bold.woff2") format("woff2");
     font-weight: 700;
     font-style: normal;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -62,7 +69,7 @@
     src: url("/fonts/ZillaSlab-BoldItalic.woff2") format("woff2");
     font-weight: 700;
     font-style: italic;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -74,7 +81,7 @@
     font-weight: 100 900;
     font-stretch: 75% 125%;
     font-style: normal;
-    font-display: block;
+    font-display: optional;
 }
 
 @font-face {
@@ -85,7 +92,7 @@
         url("/fonts/Recursive-Variable.woff2") format("woff2-variations");
     font-weight: 300 1000;
     font-style: oblique 0deg 15deg;
-    font-display: block;
+    font-display: optional;
 }
 
 @utility scrollbar-hide {
@@ -137,12 +144,18 @@
 :root {
     --widget-t: clamp(0, (100vw - 22.5rem) / (41.5rem), 1);
     --widget-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1));
-    --lp-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1)) * -4rem;
+    --lp-scale: calc((0.9 + 0.2 * pow(var(--widget-t), 0.1)) * -4rem);
 }
 
 @keyframes vinyl-spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --animate-vinyl: none;
     }
 }
 

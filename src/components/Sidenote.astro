@@ -2,10 +2,11 @@
 interface Props {
     caption?: boolean;
     image?: string;
+    imageAlt?: string;
     citation?: boolean;
 }
 
-const { caption = false, image, citation = false } = Astro.props;
+const { caption = false, image, imageAlt = "", citation = false } = Astro.props;
 const hasBox = caption || !!image;
 ---
 
@@ -22,6 +23,6 @@ const hasBox = caption || !!image;
         citation && "sidenote-citation",
     ]}
 >
-    {image && <img src={image} alt="" class="rounded w-full mb-2" />}
+    {image && <img src={image} alt={imageAlt} loading="lazy" decoding="async" class="rounded w-full mb-2" />}
     <slot />
 </aside>

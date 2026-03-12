@@ -1,4 +1,4 @@
-import { motion, useAnimationFrame, useMotionValue } from "motion/react";
+import { motion, useAnimationFrame, useMotionValue, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useId, useRef } from "react";
 import type { SongData } from "@/lib/widgetConfig";
 
@@ -19,6 +19,7 @@ export default function MusicWidget({ songData }: Props) {
 	const cachedRect = useRef<DOMRect | null>(null);
 	const recordRef = useRef<HTMLDivElement>(null);
 	const clipId = useId();
+	const shouldReduceMotion = useReducedMotion();
 
 	useEffect(() => {
 		if (!recordRef.current) return;
@@ -31,6 +32,7 @@ export default function MusicWidget({ songData }: Props) {
 
 	// Auto-rotate at 33 RPM when not scratching and visible
 	useAnimationFrame((_, delta) => {
+		if (shouldReduceMotion) return;
 		if (!isScratching.current && isVisible.current) {
 			rotation.set((rotation.get() + DEG_PER_MS * delta) % 360);
 		}
@@ -92,7 +94,7 @@ export default function MusicWidget({ songData }: Props) {
 				<span className="font-sans font-bold text-[24px] tracking-[-0.4px] text-black leading-none pb-1">
 					{songData.artist}
 				</span>
-				<span className="font-sans font-regular text-[20px] tracking-[-0.48px] text-gray-400">
+				<span className="font-sans font-normal text-[20px] tracking-[-0.48px] text-gray-400">
 					{songData.title}
 				</span>
 			</div>
@@ -105,7 +107,7 @@ export default function MusicWidget({ songData }: Props) {
 				</div>
 				{/* Spinning/scratchable record + album art — circular hit area */}
 				<motion.div
-					className="relative w-full h-full cursor-grab active:cursor-grabbing [clip-path:circle(36%)]"
+					className="relative w-full h-full cursor-grab active:cursor-grabbing [clip-path:circle(36%)] touch-action-none"
 					style={{ rotate: rotation }}
 					onPointerDown={handlePointerDown}
 					onPointerMove={handlePointerMove}

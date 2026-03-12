@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 interface Props {
 	src: string;
@@ -6,10 +6,12 @@ interface Props {
 }
 
 export default function PhotoFrameWidget({ src, alt = "Photo" }: Props) {
+	const shouldReduceMotion = useReducedMotion();
+
 	return (
 		<motion.div
 			className="w-75 h-50 shrink-0 relative"
-			whileHover={{ rotate: -4 }}
+			whileHover={shouldReduceMotion ? undefined : { rotate: -4 }}
 			transition={{ type: "spring", stiffness: 600, damping: 20 }}
 		>
 			<img
