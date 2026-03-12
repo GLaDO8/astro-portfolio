@@ -7,6 +7,7 @@ const notes = defineCollection({
 	schema: z.object({
 		title: z.string(),
 		subtitle: z.string(),
+		description: z.string().optional(),
 		date: z.date(),
 		draft: z.boolean().default(false),
 		tags: z.array(z.string()).default([]),
@@ -21,6 +22,7 @@ const caseStudies = defineCollection({
 	schema: z.object({
 		title: z.string(),
 		subtitle: z.string(),
+		description: z.string().optional(),
 		date: z.date(),
 		draft: z.boolean().default(false),
 		tags: z.array(z.string()).default([]),

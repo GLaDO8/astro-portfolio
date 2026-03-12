@@ -1,47 +1,65 @@
 ---
+import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
 import AgentationToolbar from "@/components/AgentationToolbar";
 
 interface Props {
-    title: string;
-    bodyClass?: string;
+	title: string;
+	description: string;
+	bodyClass?: string;
+	seo?: {
+		ogType?: "website" | "article";
+		ogImage?: string;
+		ogImageAlt?: string;
+		article?: {
+			publishedTime: string;
+			tags?: string[];
+		};
+		noindex?: boolean;
+		jsonLd?: Record<string, unknown>;
+	};
 }
 
-const { title, bodyClass } = Astro.props;
+const { title, description, bodyClass, seo = {} } = Astro.props;
 const isDev = import.meta.env.DEV;
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{title}</title>
-        <link
-            rel="preload"
-            href="/fonts/ZillaSlab-Bold.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin
-        />
-        <link
-            rel="preload"
-            href="/fonts/ZillaSlab-MediumItalic.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin
-        />
-        <link
-            rel="preload"
-            href="/fonts/Commissioner-Variable.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin
-        />
-    </head>
-    <body class={bodyClass}>
-        <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-text-primary">Skip to content</a>
-        <slot />
-        {isDev && <AgentationToolbar client:only="react" />}
-    </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{title}</title>
+		<SEO title={title} description={description} {...seo} />
+		<link
+			rel="preload"
+			href="/fonts/ZillaSlab-Bold.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+		<link
+			rel="preload"
+			href="/fonts/ZillaSlab-MediumItalic.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+		<link
+			rel="preload"
+			href="/fonts/Commissioner-Variable.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+	</head>
+	<body class={bodyClass}>
+		<a
+			href="#main-content"
+			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-text-primary"
+			>Skip to content</a
+		>
+		<slot />
+		{isDev && <AgentationToolbar client:only="react" />}
+	</body>
 </html>

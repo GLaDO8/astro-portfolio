@@ -7,14 +7,17 @@ import Page from "@/layouts/Page.astro";
 const snapsDir = path.join(process.cwd(), "public", "snaps");
 let photos: string[] = [];
 try {
-    const files = await fs.readdir(snapsDir);
-    photos = files
-        .filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f))
-        .sort();
+	const files = await fs.readdir(snapsDir);
+	photos = files.filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f)).sort();
 } catch {}
 ---
 
-<Page title="Snaps — Shreyas" bodyClass="bg-bg-home" class="bg-bg-home">
+<Page
+	title="Snaps — Shreyas Gupta"
+	description="A collection of photographs by Shreyas Gupta."
+	bodyClass="bg-bg-home"
+	class="bg-bg-home"
+>
     <div
         class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 flex flex-col items-start gap-9"
     >

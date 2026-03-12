@@ -2,22 +2,34 @@
 import Base from "./Base.astro";
 
 interface Props {
-    title: string;
-    bodyClass?: string;
-    class?: string;
+	title: string;
+	description: string;
+	bodyClass?: string;
+	class?: string;
+	seo?: {
+		ogType?: "website" | "article";
+		ogImage?: string;
+		ogImageAlt?: string;
+		article?: {
+			publishedTime: string;
+			tags?: string[];
+		};
+		noindex?: boolean;
+		jsonLd?: Record<string, unknown>;
+	};
 }
 
-const { title, bodyClass, class: className } = Astro.props;
+const { title, description, bodyClass, class: className, seo } = Astro.props;
 ---
 
-<Base title={title} bodyClass={bodyClass}>
-    <main
-        id="main-content"
-        class:list={[
-            "grid grid-cols-4 md:grid-cols-12 lg:grid-cols-16 gap-x-4 md:gap-x-5 lg:gap-x-6 px-4 md:px-8 lg:px-12 max-w-360 mx-auto min-h-dvh pt-18 pb-20 content-start",
-            className,
-        ]}
-    >
-        <slot />
-    </main>
+<Base title={title} description={description} bodyClass={bodyClass} seo={seo}>
+	<main
+		id="main-content"
+		class:list={[
+			"grid grid-cols-4 md:grid-cols-12 lg:grid-cols-16 gap-x-4 md:gap-x-5 lg:gap-x-6 px-4 md:px-8 lg:px-12 max-w-360 mx-auto min-h-dvh pt-18 pb-20 content-start",
+			className,
+		]}
+	>
+		<slot />
+	</main>
 </Base>

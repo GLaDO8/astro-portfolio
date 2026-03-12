@@ -13,6 +13,7 @@
 	"dependencies": {
 		"@astrojs/markdoc": "^0.14.0",
 		"@astrojs/react": "^4.2.0",
+		"@astrojs/sitemap": "^3.7.1",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.2.1",
 		"agentation": "^2.3.0",
