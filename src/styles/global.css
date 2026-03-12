@@ -67,8 +67,11 @@
 
 @font-face {
     font-family: "Commissioner";
-    src: url("/fonts/Commissioner-Variable.woff2") format("woff2");
+    src:
+        url("/fonts/Commissioner-Variable.woff2") format("woff2") tech("variations"),
+        url("/fonts/Commissioner-Variable.woff2") format("woff2-variations");
     font-weight: 100 900;
+    font-stretch: 75% 125%;
     font-style: normal;
     font-display: block;
 }
