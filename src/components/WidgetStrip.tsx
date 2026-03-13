@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useReducedMotion } from "motion/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/cn";
 import type { GithubData } from "@/lib/github";
 import type { PhotoFrameData, SongData } from "@/lib/widgetConfig";
 import GithubWidget from "./widgets/GithubWidget";
@@ -60,7 +61,10 @@ export default function WidgetStrip({ songData, photoFrame, githubData, children
 		<section
 			ref={containerRef}
 			aria-label="Widget strip"
-			className={`overflow-y-visible py-12 w-full ${isMobile ? "overflow-hidden" : "overflow-x-auto scrollbar-hide"}`}
+			className={cn(
+				"overflow-y-visible py-12 w-full",
+				isMobile ? "overflow-hidden" : "overflow-x-auto scrollbar-hide",
+			)}
 		>
 			<motion.div
 				ref={innerRef}
@@ -78,7 +82,10 @@ export default function WidgetStrip({ songData, photoFrame, githubData, children
 									},
 						}
 					: {})}
-				className={`flex gap-8 items-top w-max px-8 md:pl-36 md:pr-16 ${isMobile ? "cursor-grab active:cursor-grabbing select-none touch-action-pan-y" : ""}`}
+				className={cn(
+					"flex gap-8 items-top w-max px-8 md:pl-36 md:pr-16",
+					isMobile && "cursor-grab active:cursor-grabbing select-none touch-action-pan-y",
+				)}
 			>
 				<MusicWidget songData={songData} />
 				<a ref={photoRef} href="/about" aria-label="About me" className="no-underline mx-5">

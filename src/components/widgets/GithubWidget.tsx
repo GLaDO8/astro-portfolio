@@ -1,3 +1,4 @@
+import { cn } from "@/lib/cn";
 import {
 	type ContributionDay,
 	type GithubData,
@@ -33,7 +34,7 @@ function ContributionGrid({ days }: { days: ContributionDay[] }) {
 						<div
 							key={ci}
 							role="img"
-							className={`size-5 shrink-0 rounded-md ${LEVEL_COLORS[day.level]}`}
+							className={cn("size-5 shrink-0 rounded-md", LEVEL_COLORS[day.level])}
 							title={day.date ? `${day.date}: ${day.count} contributions` : undefined}
 							aria-label={day.date ? `${day.date}: ${day.count} contributions` : undefined}
 						/>

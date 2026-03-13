@@ -18,10 +18,12 @@
 		"@tailwindcss/vite": "^4.2.1",
 		"agentation": "^2.3.0",
 		"astro": "^5.5.0",
+		"clsx": "^2.1.1",
 		"motion": "^12.4.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"smol-toml": "^1.6.0",
+		"tailwind-merge": "^3.5.0",
 		"tailwindcss": "^4.0.0"
 	},
 	"devDependencies": {
