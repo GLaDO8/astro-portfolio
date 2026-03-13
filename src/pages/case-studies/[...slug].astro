@@ -3,59 +3,63 @@ import { getCollection, render } from "astro:content";
 import Page from "@/layouts/Page.astro";
 
 export async function getStaticPaths() {
-	const studies = await getCollection("caseStudies", ({ data }) => !data.draft);
-	return studies.map((study) => ({
-		params: { slug: study.id },
-		props: { study },
-	}));
+    const studies = await getCollection(
+        "caseStudies",
+        ({ data }) => !data.draft,
+    );
+    return studies.map((study) => ({
+        params: { slug: study.id },
+        props: { study },
+    }));
 }
 
 const { study } = Astro.props;
 const { Content } = await render(study);
 
-const description = study.data.description || study.data.subtitle || study.data.title;
+const description =
+    study.data.description || study.data.subtitle || study.data.title;
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "CreativeWork",
-	name: study.data.title,
-	description,
-	datePublished: study.data.date.toISOString(),
-	author: {
-		"@type": "Person",
-		"@id": "https://shrey.fyi/#person",
-		name: "Shreyas Gupta",
-	},
-	url: `https://shrey.fyi/case-studies/${study.id}`,
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: study.data.title,
+    description,
+    datePublished: study.data.date.toISOString(),
+    author: {
+        "@type": "Person",
+        "@id": "https://shrey.fyi/#person",
+        name: "Shreyas Gupta",
+    },
+    url: `https://shrey.fyi/case-studies/${study.id}`,
 };
 ---
 
 <Page
-	title={`${study.data.title} — Shreyas Gupta`}
-	description={description}
-	bodyClass="bg-bg-home"
-	class="bg-bg-home"
-	seo={{
-		ogType: "article",
-		article: {
-			publishedTime: study.data.date.toISOString(),
-			tags: study.data.tags,
-		},
-		jsonLd,
-	}}
+    title={`${study.data.title} — Shreyas Gupta`}
+    description={description}
+    bodyClass="bg-bg-home"
+    class="bg-bg-home"
+    seo={{
+        ogType: "article",
+        article: {
+            publishedTime: study.data.date.toISOString(),
+            tags: study.data.tags,
+        },
+        jsonLd,
+    }}
 >
-	<article
-		class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-3"
-	>
-		<h1
-			class="font-serif font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-text-primary mb-1 text-balance"
-		>
-			{study.data.title}
-		</h1>
-		<div
-			class="prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal prose-li:marker:text-text-primary prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#b0d8d8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal font-sans text-base leading-relaxed text-text-primary text-pretty overflow-visible"
-		>
-			<Content />
-		</div>
-	</article>
+    <article
+        class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-3"
+    >
+        <h1
+            class="font-serif font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-text-primary mb-1 text-balance"
+        >
+            {study.data.title}
+        </h1>
+        <div
+            class="prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal prose-li:marker:text-text-primary prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#b0d8d8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal font-sans text-base leading-relaxed text-text-primary text-pretty overflow-visible prose-img:rounded-lg"
+        >
+            <Content />
+        </div>
+    </article>
 </Page>
