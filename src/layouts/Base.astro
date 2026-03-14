@@ -4,20 +4,20 @@ import "@/styles/global.css";
 import AgentationToolbar from "@/components/AgentationToolbar";
 
 interface Props {
-	title: string;
-	description: string;
-	bodyClass?: string;
-	seo?: {
-		ogType?: "website" | "article";
-		ogImage?: string;
-		ogImageAlt?: string;
-		article?: {
-			publishedTime: string;
-			tags?: string[];
-		};
-		noindex?: boolean;
-		jsonLd?: Record<string, unknown>;
-	};
+    title: string;
+    description: string;
+    bodyClass?: string;
+    seo?: {
+        ogType?: "website" | "article";
+        ogImage?: string;
+        ogImageAlt?: string;
+        article?: {
+            publishedTime: string;
+            tags?: string[];
+        };
+        noindex?: boolean;
+        jsonLd?: Record<string, unknown>;
+    };
 }
 
 const { title, description, bodyClass, seo = {} } = Astro.props;
@@ -26,40 +26,59 @@ const isDev = import.meta.env.DEV;
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{title}</title>
-		<SEO title={title} description={description} {...seo} />
-		<link
-			rel="preload"
-			href="/fonts/ZillaSlab-Bold.woff2"
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
-		<link
-			rel="preload"
-			href="/fonts/ZillaSlab-MediumItalic.woff2"
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
-		<link
-			rel="preload"
-			href="/fonts/Commissioner-Variable.woff2"
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
-	</head>
-	<body class={bodyClass}>
-		<a
-			href="#main-content"
-			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-text-primary"
-			>Skip to content</a
-		>
-		<slot />
-		{isDev && <AgentationToolbar client:only="react" />}
-	</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{title}</title>
+        <SEO title={title} description={description} {...seo} />
+        <link
+            rel="preload"
+            href="/fonts/ZillaSlab-Bold.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link
+            rel="preload"
+            href="/fonts/ZillaSlab-MediumItalic.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link
+            rel="preload"
+            href="/fonts/Commissioner-Variable.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+    </head>
+    <body class={bodyClass}>
+        <a
+            href="#main-content"
+            class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-text-primary"
+            >Skip to content</a
+        >
+        <slot />
+        {isDev && <AgentationToolbar client:only="react" />}
+
+        <script>
+            import Lenis from "lenis";
+
+            const lenis = new Lenis({
+                lerp: 0.2, // Lower = smoother/slower (0.03–0.2). Set to undefined to use duration instead.
+                // duration: 1.2, // Higher = slower. Only used when lerp is undefined.
+                smoothWheel: true,
+                easing: (t: number) =>
+                    Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            });
+
+            function raf(time: number) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+
+            requestAnimationFrame(raf);
+        </script>
+    </body>
 </html>
