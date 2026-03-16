@@ -1,0 +1,81 @@
+---
+title: "Rethinking creation: simplifying how teachers build resources on Wayground"
+subtitle: "From a confusing decision tree to a single upload box"
+description: "A design case study on simplifying the AI-assisted content creation experience for teachers on Wayground, improving publish rates from 68% to ~78%."
+date: 2025-10-01
+tags: ["product-design", "edtech", "ai"]
+draft: true
+---
+
+{% sidenote %}Wayground is an edtech platform that helps teachers and admins get better student outcomes. It gives teachers tools to teach, practice, review, and prep students for state tests — all wrapped in a game-like experience.{% /sidenote %}
+
+Wayground largely runs on a creator-driven content model, although we are trying to slowly diversify. Roughly 20% of Teachers are creators who create resources that are added to the public library by default. Rest of our teacher userbase mostly consumes content from our public library. This case study is about making that creation experience significantly better.
+
+**Role:** Lead Product Designer (also making product decisions alongside PM)
+ **Timeline:** 4 months
+**Team:** 3 designers (myself + 1 junior designer on the creation flow, 1 designer on the editor), 1 PM
+
+## The problem
+
+[add flow chart diagram of decisions teachers have to make to create a resource - annotate the pain points in the diagram itself, show that each decision point asks teachers to translate their intent into wayground's internal taxonomy]
+
+% sidenote %}We found this through drop-off analysis: resources entering the extract flow that were better suited for generation, and vice versa. Mismatched resources had significantly lower publish rates.{% /sidenote %}
+
+The root cause was that "extract" and "generate" were *our* categories, not theirs. They reflected the underlying LLM pipeline — different API calls for structured extraction versus open-ended generation. We had surfaced an engineering distinction as a user-facing decision.
+
+**Teachers think in modalities, not in processes.** They think: "I have a worksheet." "I have a link." "I have some text." They don't think about whether questions should be extracted or generated from the content. The system should figure that out.
+
+### Resource type confusion for new users
+
+A parallel problem: new teachers had no mental model for Wayground's resource types. We observed creative misuse — teachers running worksheet-style activities through presentations because they wanted to present problems to the class, even though assessments were the better fit. The resource type taxonomy was Wayground's internal language, not the teacher's.
+
+## Why this mattered
+
+{% sidenote %}BYOC = Bring Your Own Content — teachers uploading their own documents, worksheets, or links to create Wayground resources.{% /sidenote %}
+An L0 analysis revealed a direct relationship between publish rates and platform health:
+
+- A **10% increase in publish rate** correlated with a **1.6–7% increase in games per MAT** (our north star metric).
+- **5% of users who adopt BYOC become high-frequency users** — the most valuable cohort on the platform.
+
+Investing in creation wasn't just a UX improvement. It was a growth lever. We were sitting at a **68–69% publish rate** for the generate/extract flow. We believed we could do meaningfully better.
+
+## Design principles
+
+Before solutioning, I established a framework for how to think about AI-assisted creation. The core idea: segment everything that's in the teacher's head and handle each layer in the right place.
+
+### 1. Institutional & pedagogical knowledge → System prompt
+
+Factual correctness, state-standard language, appropriate verbosity, grade-level difficulty — this is domain knowledge that applies universally. It belongs in the LLM's system prompt, not in the teacher's decision space. Teachers shouldn't have to specify "make the questions factually correct" every time.
+
+### 2. Teacher preferences → Smart input capture
+
+Difficulty level, number of questions, subject, grade — these are personal to each teacher and each session. The challenge was finding the right input modality for each preference. Is DOK (Depth of Knowledge) the right proxy for difficulty, or is it too jargon-heavy? Should we use sliders, presets, or natural language?
+
+### 3. Last-mile gaps → The editor
+
+No LLM output is perfect. There's always a last 10–20% that needs human refinement — a question worded awkwardly, a wrong distractor, a misaligned standard. Rather than trying to make generation flawless, we should make the editor fast enough that teachers can close those gaps in seconds and hit publish.
+
+**[image: diagram of the three-layer framework — system prompt, teacher preferences, editor]**
+
+## Solution
+
+*[To be continued — will cover the phased approach: first simplifying the existing creation flow by merging extract and generate into a single modality-based entry point]*
+
+## Unified BYOC
+
+*[To be continued — will cover collapsing the entire decision tree into a single upload box where the LLM determines the right resource type and whether to extract or generate, with teacher override]*
+
+## Editor improvements
+
+*[To be continued — will cover last-mile editing experience that enabled faster publish after generation]*
+
+## Results
+
+*[To be continued — will cover:]*
+- *Publish rate improvement from 68% to ~78% (+10pp)*
+- *Impact on games per MAT (1.6–7% increase)*
+- *High-frequency user conversion from BYOC adopters*
+
+## Reflections
+
+*[To be continued — will cover key learnings about exposing internal models to users, modality-first thinking, and the three-layer framework]*
