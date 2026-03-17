@@ -12,8 +12,7 @@ WidgetStrip (`src/components/WidgetStrip.tsx`) is the container for all widgets.
 2. Import and add it inside WidgetStrip's `<motion.div>` children
 3. If the widget needs build-time config, add a `[section]` to `widget.toml` and parse it in `src/lib/widgetConfig.ts` (or create a new lib file)
 4. If the widget needs data in index.astro, pass it as a prop through WidgetStrip
-
-
+5. Use @src/lib/ for shared logic or utility functions.
 
 ## Data Flow
 ```
