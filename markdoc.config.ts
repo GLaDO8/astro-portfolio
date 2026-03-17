@@ -34,5 +34,47 @@ export default defineMarkdocConfig({
 				images: { type: String, required: true },
 			},
 		},
+		marquee: {
+			render: component("./src/components/mdoc/ImageMarquee.astro"),
+			selfClosing: true,
+			attributes: {
+				images: { type: String, required: true },
+				speed: {
+					type: String,
+					default: "default",
+					matches: ["slow", "default", "fast"],
+				},
+				direction: {
+					type: String,
+					default: "left",
+					matches: ["left", "right"],
+				},
+				gap: { type: String, default: "1rem" },
+				height: {
+					type: String,
+					default: "lg",
+					matches: ["sm", "md", "lg", "xl"],
+				},
+			},
+		},
+		figure: {
+			render: component("./src/components/mdoc/Figure.astro"),
+			selfClosing: true,
+			attributes: {
+				src: { type: String, required: true },
+				alt: { type: String },
+				caption: { type: String },
+				width: {
+					type: String,
+					default: "default",
+					matches: ["default", "wide", "full"],
+				},
+				align: {
+					type: String,
+					default: "center",
+					matches: ["center", "left", "right"],
+				},
+			},
+		},
 	},
 });
