@@ -17,17 +17,20 @@ const {
     align = "center",
 } = Astro.props;
 
+const isBreakout = width === "wide" || width === "full";
+
 const wrapperClass = cn(
     "not-prose my-24",
-    width === "wide" && "lg:-mx-64",
-    width === "full" && "lg:-mx-72",
     align === "center" && "flex flex-col items-center",
     align === "left" && "flex flex-col items-start",
     align === "right" && "flex flex-col items-end",
 );
 ---
 
-<figure class={wrapperClass}>
+<figure
+    class={wrapperClass}
+    {...isBreakout ? { "data-figure-breakout": width } : {}}
+>
     <img
         src={src}
         alt={alt}
@@ -43,3 +46,41 @@ const wrapperClass = cn(
         )
     }
 </figure>
+
+<script>
+    function positionBreakoutFigures() {
+        const main = document.querySelector("main");
+        if (!main) return;
+        const vw = document.documentElement.clientWidth;
+
+        document
+            .querySelectorAll<HTMLElement>("[data-figure-breakout]")
+            .forEach((el) => {
+                const variant = el.dataset.figureBreakout;
+
+                // Reset to measure true position
+                el.style.marginLeft = "0";
+                el.style.width = "";
+
+                const elLeft = el.getBoundingClientRect().left;
+
+                if (variant === "full") {
+                    el.style.width = `${vw}px`;
+                    el.style.marginLeft = `${-elLeft}px`;
+                } else {
+                    // "wide": span the main grid content area (padding to padding)
+                    const mainRect = main.getBoundingClientRect();
+                    const mainStyle = getComputedStyle(main);
+                    const padL = parseFloat(mainStyle.paddingLeft);
+                    const padR = parseFloat(mainStyle.paddingRight);
+                    const targetWidth = mainRect.width - padL - padR;
+                    const targetLeft = mainRect.left + padL;
+
+                    el.style.width = `${targetWidth}px`;
+                    el.style.marginLeft = `${targetLeft - elLeft}px`;
+                }
+            });
+    }
+    positionBreakoutFigures();
+    window.addEventListener("resize", positionBreakoutFigures);
+</script>

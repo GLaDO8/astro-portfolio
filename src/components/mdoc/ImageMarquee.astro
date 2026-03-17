@@ -40,7 +40,6 @@ const animDirection = direction === "right" ? "reverse" : "normal";
 
 <div
     class="not-prose overflow-hidden my-12"
-    style="width: 100vw"
     data-marquee
     role="marquee"
     aria-label="Scrolling image gallery"
@@ -85,11 +84,14 @@ const animDirection = direction === "right" ? "reverse" : "normal";
 
 <script>
     function positionMarquees() {
+        const vw = document.documentElement.clientWidth;
         document
             .querySelectorAll<HTMLElement>("[data-marquee]")
             .forEach((el) => {
                 el.style.marginLeft = "0";
+                el.style.width = "";
                 const left = el.getBoundingClientRect().left;
+                el.style.width = `${vw}px`;
                 el.style.marginLeft = `${-left}px`;
             });
     }
