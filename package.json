@@ -8,7 +8,9 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"check": "biome check .",
-		"check:fix": "biome check --write ."
+		"check:fix": "biome check --write .",
+		"images": "node scripts/optimize-images.mjs",
+		"images:watch": "node scripts/optimize-images.mjs --watch"
 	},
 	"dependencies": {
 		"@astrojs/markdoc": "^0.14.0",
@@ -32,6 +34,7 @@
 		"@types/node": "^25.3.5",
 		"@types/react": "^19.0.0",
 		"@types/react-dom": "^19.0.0",
+		"sharp": "^0.34.5",
 		"typescript": "^5.7.0"
 	}
 }
