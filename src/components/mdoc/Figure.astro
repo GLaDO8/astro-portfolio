@@ -1,0 +1,45 @@
+---
+import { cn } from "@/lib/cn";
+
+interface Props {
+    src: string;
+    alt?: string;
+    caption?: string;
+    width?: "default" | "wide" | "full";
+    align?: "center" | "left" | "right";
+}
+
+const {
+    src,
+    alt = "",
+    caption,
+    width = "default",
+    align = "center",
+} = Astro.props;
+
+const wrapperClass = cn(
+    "not-prose my-24",
+    width === "wide" && "lg:-mx-64",
+    width === "full" && "lg:-mx-72",
+    align === "center" && "flex flex-col items-center",
+    align === "left" && "flex flex-col items-start",
+    align === "right" && "flex flex-col items-end",
+);
+---
+
+<figure class={wrapperClass}>
+    <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        class="w-full rounded-lg"
+    />
+    {
+        caption && (
+            <figcaption class="font-sans text-sm text-text-secondary mt-2">
+                {caption}
+            </figcaption>
+        )
+    }
+</figure>
