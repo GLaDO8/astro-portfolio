@@ -1,6 +1,15 @@
 ---
 import { getCollection, render } from "astro:content";
+import { cn } from "@/lib/cn";
 import Page from "@/layouts/Page.astro";
+
+const baseProseClass =
+    "prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal prose-li:marker:text-text-primary prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#b0d8d8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal leading-relaxed text-text-primary text-pretty overflow-visible prose-img:rounded-lg prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl";
+
+const themeStyles: Record<string, string> = {
+    "hot-text":
+        "prose-h2:text-base prose-h2:text-[#DA0288] font-sans text-base font-medium prose-h2:uppercase",
+};
 
 export async function getStaticPaths() {
     const studies = await getCollection(
@@ -15,6 +24,8 @@ export async function getStaticPaths() {
 
 const { study } = Astro.props;
 const { Content } = await render(study);
+const theme = study.data.theme;
+const proseClass = cn(baseProseClass, theme && themeStyles[theme]);
 
 const description =
     study.data.description || study.data.subtitle || study.data.title;
@@ -37,8 +48,8 @@ const jsonLd = {
 <Page
     title={`${study.data.title} — Shreyas Gupta`}
     description={description}
-    bodyClass="bg-bg-home"
-    class="bg-bg-home"
+    bodyClass="bg-white"
+    class="bg-white"
     seo={{
         ogType: "article",
         article: {
@@ -56,9 +67,7 @@ const jsonLd = {
         >
             {study.data.title}
         </h1>
-        <div
-            class="prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal prose-li:marker:text-text-primary prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#b0d8d8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal font-sans text-base leading-relaxed text-text-primary text-pretty overflow-visible prose-img:rounded-lg prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl"
-        >
+        <div class={proseClass}>
             <Content />
         </div>
     </article>
