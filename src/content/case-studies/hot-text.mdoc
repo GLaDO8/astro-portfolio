@@ -17,15 +17,16 @@ We have been adding various question types that appear in US state tests to our 
 Hot Text is a common question type on English US state tests, and we needed to add support for it.
 
 {% figure src="/case-studies/hottext/ht-image1.png" alt="image-1" width="wide" /%}
+
 ## How Hot text works
 Hot Text is simple - students select specific words, phrases, or sentences from a provided text to answer a question. It's basically prettier MCQs.
 
 {% figure src="/case-studies/hottext/ht-image2.png" alt="image-2" width="wide" /%}
 
 ## Making Hot text fun
-We wanted Wayground’s Hot text to be visually engaging and fun for students without losing functional parity with state tests, while working around a technical constraint - multi-line text selections built with spans don’t render as one clean bordered shape when they wrap.
+We wanted Wayground’s Hot text to be visually engaging and fun for students without losing functional parity with state tests.
 
-I initially prototyped a solution where we dynamically generate SVG bounding boxes to create options that look like one cohesive option using getBoundingClientRect() function. This worked well, but we didn’t take this approach because of technical constraints on our student platform. 
+I iterated over a variety of approaches before landing on “paper with highlighter markings as options” metaphor. This evoked a feeling a tangibility and playfulness that the team liked. Below are some cherry picked ideas that played around with.
 
 {% figure src="/case-studies/hottext/ht-image3.png" alt="image-3" width="wide" /%}
 
@@ -34,21 +35,3 @@ I iterated over a variety of approaches before landing on “paper with highligh
 {% marquee images="/case-studies/hottext/paper-sheet-01.png,,/case-studies/hottext/paper-sheet-02.png,,/case-studies/hottext/paper-sheet-03.png,,/case-studies/hottext/paper-sheet-04.png,,/case-studies/hottext/paper-sheet-05.png,,/case-studies/hottext/paper-sheet-06.png,,/case-studies/hottext/paper-sheet-07.png" speed="slow" height="xl"/%}
 
 ## Final approach
-{% sidenote %}
-We follow 4 principles when designing question types
-
-1. Support all functionalities present in state tests QTs.
-2. Should be more fun than state tests.
-3. Works across themes, screen sizes, and reading levels.
-4. Creation experience should be as WYSIWYG as possible.
-{% /sidenote %}
-
-We finally went with multi-color highlights created with bg-color on span. play-tested the multi-colour approach with students, who found the question type intuitive and fun. Teachers 
-
-![iteration 1](/case-studies/hottext/iteration-1.png)
-
-After digging around, I prototyped a solution using `getBoundingClientRect()` function to dynamically generate SVG bounding boxes around each option. 
-
-{% sidenote %}`getBoundingClientRect()` gives you the size and coordinates of any DOM rectangle. Codepen link to prototype [here](https://codepen.io/XshreyasguptaX/pen/pvyZyyy). {% /sidenote %}
-
-![iteration 2](/case-studies/hottext/codepen.png)

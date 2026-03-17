@@ -27,13 +27,6 @@ export default defineMarkdocConfig({
 				caption2: { type: String },
 			},
 		},
-		carousel: {
-			render: component("./src/components/mdoc/ImageCarouselWrapper.astro"),
-			selfClosing: true,
-			attributes: {
-				images: { type: String, required: true },
-			},
-		},
 		marquee: {
 			render: component("./src/components/mdoc/ImageMarquee.astro"),
 			selfClosing: true,
