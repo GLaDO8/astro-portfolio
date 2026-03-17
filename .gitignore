@@ -3,4 +3,5 @@ dist/
 .astro/
 .env
 .env.*
+.openlogs/
 .DS_Store
