@@ -7,6 +7,7 @@ interface Props {
     caption?: string;
     width?: "default" | "wide" | "full";
     align?: "center" | "left" | "right";
+    maxWidth?: string;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
     caption,
     width = "default",
     align = "center",
+    maxWidth,
 } = Astro.props;
 
 const isBreakout = width === "wide" || width === "full";
@@ -30,6 +32,7 @@ const wrapperClass = cn(
 <figure
     class={wrapperClass}
     {...isBreakout ? { "data-figure-breakout": width } : {}}
+    {...maxWidth ? { "data-figure-max-width": maxWidth } : {}}
 >
     <img
         src={src}
@@ -64,9 +67,14 @@ const wrapperClass = cn(
 
                 const elLeft = el.getBoundingClientRect().left;
 
+                const maxW = el.dataset.figureMaxWidth
+                    ? parseFloat(el.dataset.figureMaxWidth)
+                    : null;
+
                 if (variant === "full") {
-                    el.style.width = `${vw}px`;
-                    el.style.marginLeft = `${-elLeft}px`;
+                    const w = maxW ? Math.min(vw, maxW) : vw;
+                    el.style.width = `${w}px`;
+                    el.style.marginLeft = `${-elLeft + (vw - w) / 2}px`;
                 } else {
                     // "wide": span the main grid content area (padding to padding)
                     const mainRect = main.getBoundingClientRect();
@@ -76,8 +84,10 @@ const wrapperClass = cn(
                     const targetWidth = mainRect.width - padL - padR;
                     const targetLeft = mainRect.left + padL;
 
-                    el.style.width = `${targetWidth}px`;
-                    el.style.marginLeft = `${targetLeft - elLeft}px`;
+                    const w = maxW ? Math.min(targetWidth, maxW) : targetWidth;
+                    const offset = (targetWidth - w) / 2;
+                    el.style.width = `${w}px`;
+                    el.style.marginLeft = `${targetLeft - elLeft + offset}px`;
                 }
             });
     }

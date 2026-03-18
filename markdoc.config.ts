@@ -67,6 +67,7 @@ export default defineMarkdocConfig({
 					default: "center",
 					matches: ["center", "left", "right"],
 				},
+				maxWidth: { type: String },
 			},
 		},
 	},
