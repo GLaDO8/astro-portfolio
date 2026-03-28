@@ -31,11 +31,13 @@ A parallel problem: new teachers had no mental model for Wayground's resource ty
 
 ## Why this mattered
 
-{% sidenote %}BYOC = Bring Your Own Content — teachers uploading their own documents, worksheets, or links to create Wayground resources.{% /sidenote %}
+{% sidenote %}BYOC = Bring Your Own Content — teachers uploading their own documents, worksheets, or links to create Wayground resources. BYOC is especially valuable when Wayground's supply library is weak for a topic and the teacher needs something very specific.{% /sidenote %}
 An L0 analysis revealed a direct relationship between publish rates and platform health:
 
-- A **10% increase in publish rate** correlated with a **1.6–7% increase in games per MAT** (our north star metric).
-- **5% of users who adopt BYOC become high-frequency users** — the most valuable cohort on the platform.
+- A **10pp increase in publish rate** → +0.2 games per monthly active AI teacher → **13.6% relative increase in games hosted** → **1.7% increase in games per MAT** (our north star, sitting at ~4 games/MAT).
+- A non-BYOC teacher who adopts BYOC sees a **45% increase in games/month**.
+- **10pp increase in BYOC adoption** → **4.83% relative increase in low-frequency to high-frequency user movement**.
+- **5% of teachers who adopt BYOC become high-frequency BYOC adopters**.
 
 Investing in creation wasn't just a UX improvement. It was a growth lever. We were sitting at a **68–69% publish rate** for the generate/extract flow. We believed we could do meaningfully better.
 
@@ -59,7 +61,19 @@ No LLM output is perfect. There's always a last 10–20% that needs human refine
 
 ## Solution
 
-*[To be continued — will cover the phased approach: first simplifying the existing creation flow by merging extract and generate into a single modality-based entry point]*
+### Phase 1: The document classifier
+
+Rather than forcing teachers to choose between extract and generate, we built a document classifier that sat between the teacher's upload and the backend pipelines. The classifier categorized uploaded documents into predefined categories — vocabulary lists, worksheets, raw content passages, and others — then automatically routed to the correct backend pipeline (extract or generate), each with their own specialized prompts, vision/OCR mechanisms, and evals.
+
+The extract and generate flows remained distinct under the hood — they had to be, since their prompts, OCR pipelines, and evaluation criteria were fundamentally different. But teachers no longer needed to know or care about that distinction.
+
+{% sidenote %}The biggest document segment by volume was worksheets — teachers digitizing their existing paper-based classroom materials.{% /sidenote %}
+Results from the classifier alone were strong:
+- **+14pp publish rate** for vocabulary list documents
+- **+1.4pp publish rate** for worksheets (the largest document segment)
+- Overall, generate publish rates improved by **5–6pp** and extract by **3–4pp**, combining the classifier with a series of other prompt and flow experiments.
+
+*[To be continued — will cover the preference capture redesign and other experiments that contributed to the overall improvement]*
 
 ## Unified BYOC
 
@@ -71,10 +85,14 @@ No LLM output is perfect. There's always a last 10–20% that needs human refine
 
 ## Results
 
-*[To be continued — will cover:]*
-- *Publish rate improvement from 68% to ~78% (+10pp)*
-- *Impact on games per MAT (1.6–7% increase)*
-- *High-frequency user conversion from BYOC adopters*
+{% sidenote %}We started working on these experiments in May 2025. Back to School is in August 2025, so the BTS 2025 numbers reflect ~3 months of compounding experiments alongside other platform improvements.{% /sidenote %}
+
+- **Publish rate:** 68% → ~78% (+10pp) across generate and extract flows.
+- **No-manual-edit publish rate:** 36.8% → 50.5% (BTS 2024 → BTS 2025) — the share of teachers who published generated assessments without any edits, a direct indicator of generation quality.
+- **Document classifier impact:** +14pp publish rate for vocabulary lists, +1.4pp for worksheets.
+- **Generate flow:** +5–6pp publish rate. **Extract flow:** +3–4pp publish rate.
+
+*[To be continued — will add qualitative feedback and longer-term BYOC adoption metrics]*
 
 ## Reflections
 
