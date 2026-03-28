@@ -1,0 +1,20 @@
+---
+import { Code } from "astro:components";
+
+interface Props {
+	content: string;
+	language?: string;
+	maxHeight?: string;
+}
+
+const { content, language, maxHeight } = Astro.props;
+const trimmed = content.replace(/\n$/, "");
+---
+
+<div
+	class="codeblock-reset not-prose bg-[#fffcfe] border border-[#fbe5f3] rounded-lg px-4 py-6 overflow-auto font-mono mono-1 text-sm leading-relaxed"
+	style={maxHeight ? `max-height: ${maxHeight}` : undefined}
+	data-lenis-prevent={maxHeight ? "" : undefined}
+>
+	<Code code={trimmed} lang={language || "text"} theme="github-light" />
+</div>

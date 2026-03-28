@@ -1,7 +1,24 @@
 import { component, defineMarkdocConfig } from "@astrojs/markdoc/config";
 
 export default defineMarkdocConfig({
+	nodes: {
+		fence: {
+			render: component("./src/components/mdoc/CodeBlock.astro"),
+			attributes: {
+				content: { type: String, required: true },
+				language: { type: String },
+				maxHeight: { type: String },
+			},
+		},
+	},
 	tags: {
+		accordion: {
+			render: component("./src/components/mdoc/Accordion.astro"),
+			attributes: {
+				title: { type: String, required: true },
+				subtitle: { type: String },
+			},
+		},
 		sidenote: {
 			render: component("./src/components/mdoc/Sidenote.astro"),
 			attributes: {
