@@ -50,48 +50,68 @@ const jsonLd = {
     bodyClass="bg-bg-home"
     seo={{ jsonLd }}
 >
-    <div class="flex max-w-7xl mx-auto min-h-dvh gap-8">
+    <!-- borders -->
+    <div
+        class="absolute top-16 inset-x-0 border-b border-border-sidebar pointer-events-none z-50"
+    >
+    </div>
+    <div
+        class="absolute top-24 inset-x-0 border-b border-border-sidebar pointer-events-none z-50"
+    >
+    </div>
+    <div
+        class="relative flex max-w-7xl mx-auto min-h-dvh gap-18 border-t border-border-sidebar"
+    >
         <!-- Sidebar — fixed to viewport, full height -->
         <aside
-            class="hidden lg:flex flex-col gap-8 lg:w-80 xl:w-[28rem] shrink-0 px-5 py-6 bg-bg-sidebar border-x border-border-sidebar sticky top-0 h-dvh overflow-y-auto scrollbar-hide"
+            class="hidden lg:flex flex-col lg:w-[29rem] shrink-0 bg-bg-sidebar border-x border-border-sidebar sticky top-0 h-dvh overflow-y-auto scrollbar-hide"
         >
-            <PhotoFrameWidget
-                src={photoFrame.src}
-                alt={photoFrame.alt}
-                client:visible
-            />
+            <div class="flex items-start h-8 px-5 shrink-0 pt-16 bg-amber-200">
+                <div
+                    class="font-sans text-sm tracking-tight text-text-secondary font-medium"
+                >
+                    v1.2
+                </div>
+            </div>
 
-            <HeroSection client:visible />
+            <div class="flex flex-col gap-8 px-5 pt-36 pb-6">
+                <PhotoFrameWidget
+                    src={photoFrame.src}
+                    alt={photoFrame.alt}
+                    client:visible
+                />
 
-            <div
-                class="font-sans font-medium text-base leading-relaxed text-text-primary"
-            >
-                <p>
-                    I build tools at <a
-                        href="https://wayground.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
-                        >Wayground</a
-                    > that stand between teachers and everything else that isn't teaching.
-                </p>
-                <p class="mt-4">
-                    I used to work on conversational intelligence for sales
-                    teams at Clari and built a context-rich SQL editor at Atlan.
-                </p>
+                <HeroSection client:visible />
+
+                <div
+                    class="font-sans font-medium text-lg leading-[1.4] text-text-primary"
+                >
+                    <p class="text-pretty">
+                        I build tools at <a
+                            href="https://wayground.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
+                            >Wayground</a
+                        > that stand between teachers and everything else that isn't
+                        teaching.
+                    </p>
+                    <p class="mt-4 text-pretty">
+                        I used to work on conversational intelligence for sales
+                        teams at Clari and built a context-rich SQL editor at
+                        Atlan.
+                    </p>
+                </div>
             </div>
         </aside>
 
         <!-- Right column: nav + content, with its own borders -->
         <div
-            class="flex-1 min-w-0 flex flex-col border-x lg:border-x border-border-sidebar"
+            class="flex-1 min-w-0 flex flex-col border-x border-border-sidebar pt-16"
         >
             <Navbar currentPath="/" />
 
-            <main
-                id="main-content"
-                class="flex-1 px-5 md:px-8 lg:px-10 py-6 lg:py-10"
-            >
+            <main id="main-content" class="flex-1 px-5 pt-32 pb-10">
                 <!-- Mobile-only: photo + hero (visible below lg) -->
                 <div class="lg:hidden flex flex-col gap-6 mb-12">
                     <PhotoFrameWidget
@@ -103,7 +123,7 @@ const jsonLd = {
                     <HeroSection client:visible />
 
                     <div
-                        class="font-sans font-medium text-base leading-relaxed text-text-primary"
+                        class="font-sans font-medium text-xl leading-[1.4] text-text-primary"
                     >
                         <p>
                             I build tools at <a
@@ -126,7 +146,7 @@ const jsonLd = {
                 <!-- Work -->
                 <section class="flex flex-col gap-6 mb-16">
                     <h2
-                        class="font-serif font-bold text-3xl leading-tight text-text-primary"
+                        class="font-serif font-bold text-2xl leading-tight text-text-primary"
                     >
                         Work
                     </h2>
@@ -137,25 +157,7 @@ const jsonLd = {
                                     href={`/case-studies/${study.id}`}
                                     class="group block no-underline"
                                 >
-                                    <article class="relative overflow-hidden bg-pink-500 p-6 pb-48 md:pb-56">
-                                        <h3 class="font-serif font-semibold text-xl md:text-2xl leading-tight text-white max-w-lg relative z-10">
-                                            {study.data.title}
-                                        </h3>
-                                        {study.data.theme === "hot-text" && (
-                                            <div class="absolute bottom-0 right-0 w-3/4 h-3/4 pointer-events-none">
-                                                <img
-                                                    src="/case-studies/hottext/paper-sheet-01.png"
-                                                    alt=""
-                                                    class="absolute bottom-[-10%] right-[-5%] w-2/3 rotate-6 opacity-90 group-hover:rotate-3 transition-transform duration-300"
-                                                />
-                                                <img
-                                                    src="/case-studies/hottext/paper-sheet-03.png"
-                                                    alt=""
-                                                    class="absolute bottom-[-5%] right-[15%] w-2/3 -rotate-3 opacity-80 group-hover:-rotate-6 transition-transform duration-300"
-                                                />
-                                            </div>
-                                        )}
-                                    </article>
+                                    <img class="" src="/cs-card-1.png" alt="" />
                                 </a>
                             ))
                         }
@@ -165,7 +167,7 @@ const jsonLd = {
                 <!-- Notes -->
                 <section class="flex flex-col gap-6">
                     <h2
-                        class="font-serif font-bold text-3xl leading-tight text-text-primary"
+                        class="font-serif font-bold text-2xl leading-tight text-text-primary"
                     >
                         Notes
                     </h2>
@@ -176,7 +178,7 @@ const jsonLd = {
                                     href={`/notes/${note.id}`}
                                     class="no-underline group"
                                 >
-                                    <h3 class="font-serif font-semibold text-lg leading-snug tracking-tight text-text-primary group-hover:text-text-secondary transition-colors">
+                                    <h3 class="font-sans font-medium text-lg leading-snug tracking-tight text-text-primary group-hover:text-text-secondary transition-colors">
                                         {note.data.title}
                                     </h3>
                                 </a>
