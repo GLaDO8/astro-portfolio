@@ -1,0 +1,39 @@
+---
+import Navbar from "./Navbar.astro";
+
+interface Props {
+    currentPath: string;
+    containerClass?: string;
+    mainClass?: string;
+}
+
+const { currentPath, containerClass, mainClass } = Astro.props;
+---
+
+<!-- Full-width horizontal borders -->
+<div
+    class="absolute top-16 inset-x-0 border-b border-border-sidebar pointer-events-none z-50"
+>
+</div>
+<div
+    class="absolute top-24 inset-x-0 border-b border-border-sidebar pointer-events-none z-50"
+>
+</div>
+
+<div
+    class:list={[
+        "relative flex max-w-7xl mx-auto min-h-dvh border-border-sidebar",
+        containerClass,
+    ]}
+>
+    <slot name="sidebar" />
+
+    <div
+        class="flex-1 min-w-0 flex flex-col border-x border-border-sidebar pt-16"
+    >
+        <Navbar currentPath={currentPath} />
+        <main id="main-content" class:list={["flex-1", mainClass]}>
+            <slot />
+        </main>
+    </div>
+</div>

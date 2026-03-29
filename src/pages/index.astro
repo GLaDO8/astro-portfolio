@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "@/layouts/Base.astro";
-import Navbar from "@/components/Navbar.astro";
+import SiteShell from "@/components/SiteShell.astro";
 import HeroSection from "@/components/HeroSection";
 import PhotoFrameWidget from "@/components/widgets/PhotoFrameWidget";
 import { getWidgetConfig } from "@/lib/widgetConfig";
@@ -50,20 +50,13 @@ const jsonLd = {
     bodyClass="bg-bg-home"
     seo={{ jsonLd }}
 >
-    <!-- borders -->
-    <div
-        class="absolute top-16 inset-x-0 border-b border-border-sidebar pointer-events-none z-50"
+    <SiteShell
+        currentPath="/"
+        containerClass="gap-18"
+        mainClass="px-5 pt-32 pb-10"
     >
-    </div>
-    <div
-        class="absolute top-24 inset-x-0 border-b border-border-sidebar pointer-events-none z-50"
-    >
-    </div>
-    <div
-        class="relative flex max-w-7xl mx-auto min-h-dvh gap-18 border-border-sidebar"
-    >
-        <!-- Sidebar — fixed to viewport, full height -->
         <aside
+            slot="sidebar"
             class="hidden lg:flex flex-col lg:w-[29rem] shrink-0 bg-bg-sidebar border-x border-border-sidebar sticky top-0 h-dvh overflow-y-auto scrollbar-hide"
         >
             <div class="flex items-start h-8 px-5 shrink-0 pt-16">
@@ -105,88 +98,79 @@ const jsonLd = {
             </div>
         </aside>
 
-        <!-- Right column: nav + content, with its own borders -->
-        <div
-            class="flex-1 min-w-0 flex flex-col border-x border-border-sidebar pt-16"
-        >
-            <Navbar currentPath="/" />
+        <!-- Mobile-only: photo + hero (visible below lg) -->
+        <div class="lg:hidden flex flex-col gap-6 mb-12">
+            <PhotoFrameWidget
+                src={photoFrame.src}
+                alt={photoFrame.alt}
+                client:visible
+            />
 
-            <main id="main-content" class="flex-1 px-5 pt-32 pb-10">
-                <!-- Mobile-only: photo + hero (visible below lg) -->
-                <div class="lg:hidden flex flex-col gap-6 mb-12">
-                    <PhotoFrameWidget
-                        src={photoFrame.src}
-                        alt={photoFrame.alt}
-                        client:visible
-                    />
+            <HeroSection client:visible />
 
-                    <HeroSection client:visible />
-
-                    <div
-                        class="font-sans font-medium text-xl leading-[1.4] text-text-primary"
-                    >
-                        <p>
-                            I build tools at <a
-                                href="https://wayground.com/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
-                                >Wayground</a
-                            > that stand between teachers and everything else that
-                            isn't teaching.
-                        </p>
-                        <p class="mt-4">
-                            I used to work on conversational intelligence for
-                            sales teams at Clari and built a context-rich SQL
-                            editor at Atlan.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Work -->
-                <section class="flex flex-col gap-6 mb-16">
-                    <h2
-                        class="font-serif font-bold text-2xl leading-tight text-text-primary"
-                    >
-                        Work
-                    </h2>
-                    <div class="flex flex-col gap-6">
-                        {
-                            caseStudies.map((study) => (
-                                <a
-                                    href={`/case-studies/${study.id}`}
-                                    class="group block no-underline"
-                                >
-                                    <img class="" src="/cs-card-1.png" alt="" />
-                                </a>
-                            ))
-                        }
-                    </div>
-                </section>
-
-                <!-- Notes -->
-                <section class="flex flex-col gap-6">
-                    <h2
-                        class="font-serif font-bold text-2xl leading-tight text-text-primary"
-                    >
-                        Notes
-                    </h2>
-                    <div class="flex flex-col gap-4">
-                        {
-                            notes.map((note) => (
-                                <a
-                                    href={`/notes/${note.id}`}
-                                    class="no-underline group"
-                                >
-                                    <h3 class="font-sans font-medium text-lg leading-snug tracking-tight text-text-primary group-hover:text-text-secondary transition-colors">
-                                        {note.data.title}
-                                    </h3>
-                                </a>
-                            ))
-                        }
-                    </div>
-                </section>
-            </main>
+            <div
+                class="font-sans font-medium text-xl leading-[1.4] text-text-primary"
+            >
+                <p>
+                    I build tools at <a
+                        href="https://wayground.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
+                        >Wayground</a
+                    > that stand between teachers and everything else that
+                    isn't teaching.
+                </p>
+                <p class="mt-4">
+                    I used to work on conversational intelligence for
+                    sales teams at Clari and built a context-rich SQL
+                    editor at Atlan.
+                </p>
+            </div>
         </div>
-    </div>
+
+        <!-- Work -->
+        <section class="flex flex-col gap-6 mb-16">
+            <h2
+                class="font-serif font-bold text-2xl leading-tight text-text-primary"
+            >
+                Work
+            </h2>
+            <div class="flex flex-col gap-6">
+                {
+                    caseStudies.map((study) => (
+                        <a
+                            href={`/case-studies/${study.id}`}
+                            class="group block no-underline"
+                        >
+                            <img class="" src="/cs-card-1.png" alt="" />
+                        </a>
+                    ))
+                }
+            </div>
+        </section>
+
+        <!-- Notes -->
+        <section class="flex flex-col gap-6">
+            <h2
+                class="font-serif font-bold text-2xl leading-tight text-text-primary"
+            >
+                Notes
+            </h2>
+            <div class="flex flex-col gap-4">
+                {
+                    notes.map((note) => (
+                        <a
+                            href={`/notes/${note.id}`}
+                            class="no-underline group"
+                        >
+                            <h3 class="font-sans font-medium text-lg leading-snug tracking-tight text-text-primary group-hover:text-text-secondary transition-colors">
+                                {note.data.title}
+                            </h3>
+                        </a>
+                    ))
+                }
+            </div>
+        </section>
+    </SiteShell>
 </Base>
