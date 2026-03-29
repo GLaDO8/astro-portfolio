@@ -14,6 +14,7 @@ import SiteShell from "@/components/SiteShell.astro";
 type SnapItem = {
     src: string;
     date: string;
+    year: number;
     caption: string;
     span: number;
 };
@@ -21,77 +22,77 @@ type SnapItem = {
 const rows: SnapItem[][] = [
     // Row 1: portrait(5) + landscape(7)
     [
-        { src: "/snaps/DSCF0573.webp", date: "FEB 16", caption: "Warm noir from my smoking days", span: 5 },
-        { src: "/snaps/DSCF2854.webp", date: "APR 01", caption: "Bogdanovich glacier in Kazakhstan, the most intense trek of my life.", span: 7 },
+        { src: "/snaps/DSCF0573.webp", date: "JAN 09", year: 2024, caption: "Nod to my nicotine days", span: 5 },
+        { src: "/snaps/DSCF2854.webp", date: "MAR 25", year: 2024, caption: "Bogdanovich glacier in Kazakhstan, the most intense trek of my life", span: 7 },
     ],
     // Row 2: landscape(7) + portrait(5)
     [
-        { src: "/snaps/DSCF2792.webp", date: "MAR 23", caption: "While waiting for a train.", span: 7 },
-        { src: "/snaps/DSCF1555.webp", date: "MAR 23", caption: "Super proud of this snap on the streets of Almaty.", span: 5 },
+        { src: "/snaps/DSCF2792.webp", date: "MAR 24", year: 2024, caption: "Yurts near Shymbulak peak", span: 7 },
+        { src: "/snaps/DSCF1555.webp", date: "MAR 18", year: 2024, caption: "Super proud of this snap on the streets of Almaty", span: 5 },
     ],
     // Row 3: portrait(4) + portrait(4) + portrait(4)
     [
-        { src: "/snaps/DSCF1615.webp", date: "FEB 22", caption: "Morning fog rolling in", span: 4 },
-        { src: "/snaps/DSCF2405.webp", date: "MAR 15", caption: "The long shadow", span: 4 },
-        { src: "/snaps/DSCF3254.webp", date: "APR 10", caption: "Neon and concrete", span: 4 },
+        { src: "/snaps/DSCF1615.webp", date: "MAR 17", year: 2024, caption: "", span: 4 },
+        { src: "/snaps/DSCF2405.webp", date: "MAR 21", year: 2024, caption: "", span: 4 },
+        { src: "/snaps/DSCF3254.webp", date: "AUG 09", year: 2024, caption: "", span: 4 },
     ],
     // Row 5: portrait(5) + landscape(7)
     [
-        { src: "/snaps/DSCF3325.webp", date: "APR 14", caption: "Quiet corner of the old town", span: 5 },
-        { src: "/snaps/DSCF2296.webp", date: "MAR 11", caption: "Wide open nothing", span: 7 },
+        { src: "/snaps/DSCF3325.webp", date: "MAR 18", year: 2025, caption: "", span: 5 },
+        { src: "/snaps/DSCF2296.webp", date: "MAR 21", year: 2024, caption: "", span: 7 },
     ],
     // Row 6: landscape(7) + portrait(5)
     [
-        { src: "/snaps/DSCF3881.webp", date: "MAY 02", caption: "Rust and sky", span: 7 },
-        { src: "/snaps/DSCF3620.webp", date: "APR 28", caption: "Late night walk back", span: 5 },
+        { src: "/snaps/DSCF3881.webp", date: "SEP 02", year: 2024, caption: "", span: 7 },
+        { src: "/snaps/DSCF3620.webp", date: "AUG 11", year: 2024, caption: "", span: 5 },
     ],
     // Row 7: portrait(5) + portrait(7)
     [
-        { src: "/snaps/DSCF3991-2.webp", date: "MAY 09", caption: "Double exposure accident", span: 5 },
-        { src: "/snaps/DSCF4135-Enhanced-NR-2.webp", date: "MAY 18", caption: "Cathedral light", span: 7 },
+        { src: "/snaps/DSCF3991-2.webp", date: "MAR 23", year: 2025, caption: "", span: 5 },
+        { src: "/snaps/DSCF4135-Enhanced-NR-2.webp", date: "MAR 23", year: 2025, caption: "", span: 7 },
     ],
     // Row 8: landscape(7) + portrait(5)
     [
-        { src: "/snaps/DSCF3913.webp", date: "MAY 05", caption: "Somewhere between stations", span: 7 },
-        { src: "/snaps/DSCF4419.webp", date: "JUN 12", caption: "Vertical garden", span: 5 },
+        { src: "/snaps/DSCF3913.webp", date: "SEP 02", year: 2024, caption: "", span: 7 },
+        { src: "/snaps/DSCF4419.webp", date: "MAR 27", year: 2025, caption: "", span: 5 },
     ],
     // Row 9: portrait(5) + landscape(7)
     [
-        { src: "/snaps/DSCF4449.webp", date: "JUN 15", caption: "Through the glass", span: 5 },
-        { src: "/snaps/DSCF4605.webp", date: "JUL 03", caption: "Rooftop sunset sprawl", span: 7 },
+        { src: "/snaps/DSCF4449.webp", date: "MAR 27", year: 2025, caption: "", span: 5 },
+        { src: "/snaps/DSCF4605.webp", date: "MAR 28", year: 2025, caption: "", span: 7 },
     ],
     // Row 10: portrait(3) + portrait(3) + portrait(3) + portrait(3)
     [
-        { src: "/snaps/DSCF4510.webp", date: "JUN 22", caption: "Narrow alley", span: 3 },
-        { src: "/snaps/DSCF4557.webp", date: "JUN 28", caption: "Painted door", span: 3 },
-        { src: "/snaps/DSCF4571-2.webp", date: "JUN 30", caption: "Blue wall series", span: 3 },
-        { src: "/snaps/DSCF4594.webp", date: "JUL 01", caption: "Afternoon shade", span: 3 },
+        { src: "/snaps/DSCF4510.webp", date: "MAR 28", year: 2025, caption: "", span: 3 },
+        { src: "/snaps/DSCF4557.webp", date: "MAR 28", year: 2025, caption: "", span: 3 },
+        { src: "/snaps/DSCF4571-2.webp", date: "MAR 28", year: 2025, caption: "", span: 3 },
+        { src: "/snaps/DSCF4594.webp", date: "MAR 28", year: 2025, caption: "", span: 3 },
     ],
     // Row 11: full-width landscape (very wide aspect ratio)
     [
-        { src: "/snaps/DSCF5194.webp", date: "AUG 14", caption: "The whole valley from up here", span: 12 },
+        { src: "/snaps/DSCF5194.webp", date: "SEP 03", year: 2024, caption: "", span: 12 },
     ],
     // Row 12: portrait(5) + landscape(7)
     [
-        { src: "/snaps/DSCF4599.webp", date: "JUL 01", caption: "Caught mid-stride", span: 5 },
-        { src: "/snaps/DSCF5089.webp", date: "AUG 08", caption: "Low tide reflections", span: 7 },
+        { src: "/snaps/DSCF4599.webp", date: "MAR 28", year: 2025, caption: "", span: 5 },
+        { src: "/snaps/DSCF5089.webp", date: "SEP 03", year: 2024, caption: "", span: 7 },
     ],
     // Row 13: landscape(7) + portrait(5)
     [
-        { src: "/snaps/IMG_0585.webp", date: "NOV 20", caption: "Phone snap that worked out", span: 7 },
-        { src: "/snaps/DSCF6081.webp", date: "SEP 15", caption: "Stairwell geometry", span: 5 },
+        { src: "/snaps/IMG_0585.webp", date: "MAR 26", year: 2025, caption: "", span: 7 },
+        { src: "/snaps/DSCF6081.webp", date: "DEC 30", year: 2024, caption: "", span: 5 },
     ],
     // Row 14: portrait(4) + portrait(4) + portrait(4)
     [
-        { src: "/snaps/DSCF6181.webp", date: "SEP 22", caption: "Temple steps at dusk", span: 4 },
-        { src: "/snaps/DSCF6236.webp", date: "SEP 28", caption: "Old signage", span: 4 },
-        { src: "/snaps/DSCF6871.webp", date: "OCT 18", caption: "Rain on the windshield", span: 4 },
+        { src: "/snaps/DSCF6181.webp", date: "JAN 01", year: 2025, caption: "", span: 4 },
+        { src: "/snaps/DSCF6236.webp", date: "DEC 31", year: 2024, caption: "", span: 4 },
+        { src: "/snaps/DSCF6871.webp", date: "FEB 07", year: 2026, caption: "", span: 4 },
     ],
     // Row 15: portrait(4) + portrait(4) + portrait(4)
     [
-        { src: "/snaps/DSCF6908.webp", date: "OCT 22", caption: "Two strangers, one bench", span: 4 },
-        { src: "/snaps/DSCF7002.webp", date: "NOV 03", caption: "The way down", span: 4 },
-        { src: "/snaps/DSCF7108.webp", date: "NOV 12", caption: "Last frame on the roll", span: 4 },
+        { src: "/snaps/DSCF6908.webp", date: "FEB 07", year: 2026, caption: "", span: 4 },
+        { src: "/snaps/DSCF7002.webp", date: "FEB 08", year: 2026, caption: "", span: 4 },
+        { src: "/snaps/DSCF7108.webp", date: "MAR 06", year: 2026, caption: "", span: 4 },
     ],
 ];
 ---
@@ -123,18 +124,20 @@ const rows: SnapItem[][] = [
                     <div class="grid grid-cols-12 gap-4">
                         {row.map((item) => (
                             <div style={`grid-column: span ${item.span}`}>
-                                <p class="font-sans text-sm font-semibold text-text-secondary mb-2 uppercase">
+                                {/* <p class="font-sans text-sm font-semibold text-text-secondary mb-2 uppercase">
                                     {item.date}
-                                </p>
+                                </p> */}
                                 <img
                                     src={item.src}
                                     alt={item.caption}
                                     class="w-full object-cover"
                                     loading="lazy"
                                 />
-                                <p class="font-sans text-sm text-text-secondary mt-2">
-                                    {item.caption}
-                                </p>
+                                {item.caption && (
+                                    <p class="font-sans text-sm text-text-secondary mt-2">
+                                        {item.caption}
+                                    </p>
+                                )}
                             </div>
                         ))}
                     </div>
