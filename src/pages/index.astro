@@ -1,126 +1,190 @@
 ---
 import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import Navbar from "@/components/Navbar.astro";
 import HeroSection from "@/components/HeroSection";
-import WidgetStrip from "@/components/WidgetStrip";
-import Page from "@/layouts/Page.astro";
-import { getGithubData } from "@/lib/github";
-import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
+import PhotoFrameWidget from "@/components/widgets/PhotoFrameWidget";
+import { getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
-const caseStudies = (await getCollection("caseStudies", ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
+const caseStudies = (
+    await getCollection("caseStudies", ({ data }) => !data.draft)
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-const songData = await getSongData();
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;
-const githubData = await getGithubData();
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [
-		{
-			"@type": "WebSite",
-			"@id": "https://shrey.fyi/#website",
-			url: "https://shrey.fyi",
-			name: "Shreyas Gupta",
-			description:
-				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-			publisher: { "@id": "https://shrey.fyi/#person" },
-		},
-		{
-			"@type": "Person",
-			"@id": "https://shrey.fyi/#person",
-			name: "Shreyas Gupta",
-			url: "https://shrey.fyi",
-			jobTitle: "Designer",
-			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-		},
-	],
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://shrey.fyi/#website",
+            url: "https://shrey.fyi",
+            name: "Shreyas Gupta",
+            description:
+                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+            publisher: { "@id": "https://shrey.fyi/#person" },
+        },
+        {
+            "@type": "Person",
+            "@id": "https://shrey.fyi/#person",
+            name: "Shreyas Gupta",
+            url: "https://shrey.fyi",
+            jobTitle: "Designer",
+            sameAs: [
+                "https://github.com/GLaDO8",
+                "https://x.com/wutamelonshrey",
+            ],
+        },
+    ],
 };
 ---
 
-<Page
-	title="Shreyas Gupta — Designer"
-	description="Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems."
-	bodyClass="bg-bg-home"
-	class="bg-bg-home gap-y-8"
-	seo={{ jsonLd }}
+<Base
+    title="Shreyas Gupta — Designer"
+    description="Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems."
+    bodyClass="bg-bg-home"
+    seo={{ jsonLd }}
 >
-	<!-- Hero -->
-	<div class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4">
-		<HeroSection client:visible />
-	</div>
+    <div class="flex max-w-7xl mx-auto min-h-dvh gap-8">
+        <!-- Sidebar — fixed to viewport, full height -->
+        <aside
+            class="hidden lg:flex flex-col gap-8 lg:w-80 xl:w-[28rem] shrink-0 px-5 py-6 bg-bg-sidebar border-x border-border-sidebar sticky top-0 h-dvh overflow-y-auto scrollbar-hide"
+        >
+            <PhotoFrameWidget
+                src={photoFrame.src}
+                alt={photoFrame.alt}
+                client:visible
+            />
 
-	<!-- Widget Strip (full bleed) -->
-	<section
-		class="col-span-full -mx-4 md:-mx-8 lg:-mx-12 overflow-x-clip overflow-y-visible"
-		style="height: calc(var(--widget-scale) * 18rem); padding: calc(var(--lp-scale))"
-	>
-		<div
-			class="origin-top-left"
-			style="transform: scale(var(--widget-scale)); width: calc(100vw / var(--widget-scale));"
-		>
-			<WidgetStrip
-				songData={songData}
-				photoFrame={photoFrame}
-				githubData={githubData}
-				client:visible
-			/>
-		</div>
-	</section>
+            <HeroSection client:visible />
 
-	<!-- Notes & Work -->
-	<div class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8">
-		<section class="flex flex-col items-start gap-9">
-			<h2
-				class="font-serif font-bold text-3xl leading-[1.2] text-text-primary m-0 text-balance"
-			>
-				Notes
-			</h2>
-			<div class="flex flex-col gap-6">
-				{
-					notes.map((note) => (
-						<a
-							href={`/notes/${note.id}`}
-							class="no-underline"
-						>
-							<article class="flex flex-col gap-3 cursor-pointer">
-								<h3 class="font-serif font-semibold text-lg leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
-									{note.data.title}
-								</h3>
-							</article>
-						</a>
-					))
-				}
-			</div>
-		</section>
+            <div
+                class="font-sans font-medium text-base leading-relaxed text-text-primary"
+            >
+                <p>
+                    I build tools at <a
+                        href="https://wayground.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
+                        >Wayground</a
+                    > that stand between teachers and everything else that isn't teaching.
+                </p>
+                <p class="mt-4">
+                    I used to work on conversational intelligence for sales
+                    teams at Clari and built a context-rich SQL editor at Atlan.
+                </p>
+            </div>
+        </aside>
 
-		<section class="flex flex-col items-start gap-9">
-			<h2
-				class="font-serif font-bold text-3xl leading-[1.2] text-text-primary m-0 text-balance"
-			>
-				Work
-			</h2>
-			<div class="flex flex-col gap-6">
-				{
-					caseStudies.map((study) => (
-						<a
-							href={`/case-studies/${study.id}`}
-							class="no-underline"
-						>
-							<article class="flex flex-col gap-1 cursor-pointer">
-								<h3 class="font-serif font-semibold text-lg leading-[1.2] tracking-[-0.02em] text-text-primary m-0">
-									{study.data.title}
-								</h3>
-							</article>
-						</a>
-					))
-				}
-			</div>
-		</section>
-	</div>
-</Page>
+        <!-- Right column: nav + content, with its own borders -->
+        <div
+            class="flex-1 min-w-0 flex flex-col border-x lg:border-x border-border-sidebar"
+        >
+            <Navbar currentPath="/" />
+
+            <main
+                id="main-content"
+                class="flex-1 px-5 md:px-8 lg:px-10 py-6 lg:py-10"
+            >
+                <!-- Mobile-only: photo + hero (visible below lg) -->
+                <div class="lg:hidden flex flex-col gap-6 mb-12">
+                    <PhotoFrameWidget
+                        src={photoFrame.src}
+                        alt={photoFrame.alt}
+                        client:visible
+                    />
+
+                    <HeroSection client:visible />
+
+                    <div
+                        class="font-sans font-medium text-base leading-relaxed text-text-primary"
+                    >
+                        <p>
+                            I build tools at <a
+                                href="https://wayground.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
+                                >Wayground</a
+                            > that stand between teachers and everything else that
+                            isn't teaching.
+                        </p>
+                        <p class="mt-4">
+                            I used to work on conversational intelligence for
+                            sales teams at Clari and built a context-rich SQL
+                            editor at Atlan.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Work -->
+                <section class="flex flex-col gap-6 mb-16">
+                    <h2
+                        class="font-serif font-bold text-3xl leading-tight text-text-primary"
+                    >
+                        Work
+                    </h2>
+                    <div class="flex flex-col gap-6">
+                        {
+                            caseStudies.map((study) => (
+                                <a
+                                    href={`/case-studies/${study.id}`}
+                                    class="group block no-underline"
+                                >
+                                    <article class="relative overflow-hidden bg-pink-500 p-6 pb-48 md:pb-56">
+                                        <h3 class="font-serif font-semibold text-xl md:text-2xl leading-tight text-white max-w-lg relative z-10">
+                                            {study.data.title}
+                                        </h3>
+                                        {study.data.theme === "hot-text" && (
+                                            <div class="absolute bottom-0 right-0 w-3/4 h-3/4 pointer-events-none">
+                                                <img
+                                                    src="/case-studies/hottext/paper-sheet-01.png"
+                                                    alt=""
+                                                    class="absolute bottom-[-10%] right-[-5%] w-2/3 rotate-6 opacity-90 group-hover:rotate-3 transition-transform duration-300"
+                                                />
+                                                <img
+                                                    src="/case-studies/hottext/paper-sheet-03.png"
+                                                    alt=""
+                                                    class="absolute bottom-[-5%] right-[15%] w-2/3 -rotate-3 opacity-80 group-hover:-rotate-6 transition-transform duration-300"
+                                                />
+                                            </div>
+                                        )}
+                                    </article>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </section>
+
+                <!-- Notes -->
+                <section class="flex flex-col gap-6">
+                    <h2
+                        class="font-serif font-bold text-3xl leading-tight text-text-primary"
+                    >
+                        Notes
+                    </h2>
+                    <div class="flex flex-col gap-4">
+                        {
+                            notes.map((note) => (
+                                <a
+                                    href={`/notes/${note.id}`}
+                                    class="no-underline group"
+                                >
+                                    <h3 class="font-serif font-semibold text-lg leading-snug tracking-tight text-text-primary group-hover:text-text-secondary transition-colors">
+                                        {note.data.title}
+                                    </h3>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+</Base>

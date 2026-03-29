@@ -1,0 +1,39 @@
+---
+interface Props {
+    currentPath?: string;
+}
+
+const { currentPath = "/" } = Astro.props;
+
+const links = [
+    { href: "/", label: "Home" },
+    { href: "/snaps", label: "Snaps" },
+    { href: "/notes", label: "Notes" },
+];
+---
+
+<nav
+    class="flex items-center justify-between px-5 py-4 font-sans text-sm tracking-tight"
+>
+    <span class="text-text-secondary font-medium">v1.2</span>
+    <div class="flex items-center gap-1">
+        {
+            links.map(({ href, label }) => {
+                const isActive = currentPath === href;
+                return (
+                    <a
+                        href={href}
+                        class:list={[
+                            "px-3 py-1 font-semibold transition-colors",
+                            isActive
+                                ? "bg-text-primary text-white"
+                                : "text-text-secondary hover:text-text-primary",
+                        ]}
+                    >
+                        {label}
+                    </a>
+                );
+            })
+        }
+    </div>
+</nav>
