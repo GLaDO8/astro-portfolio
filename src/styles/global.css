@@ -164,6 +164,9 @@
     --text-2xl: clamp(1.728rem, 1.4902rem + 1.0569vw, 2.4414rem);
     --text-3xl: clamp(2.0736rem, 1.7475rem + 1.4491vw, 3.0518rem);
     --text-4xl: clamp(2.4883rem, 2.0462rem + 1.965vw, 3.8147rem);
+    --text-5xl: clamp(2.986rem, 2.3919rem + 2.6406vw, 4.7684rem);
+    --text-6xl: clamp(3.5832rem, 2.7908rem + 3.5219vw, 5.9605rem);
+    --text-7xl: clamp(4.2998rem, 3.2496rem + 4.6678vw, 7.4506rem);
 
     /* Grid */
     --grid-template-columns-16: repeat(16, minmax(0, 1fr));
