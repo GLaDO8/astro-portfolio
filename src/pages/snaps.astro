@@ -1,53 +1,145 @@
 ---
-/// <reference types="node" />
-import { promises as fs } from "node:fs";
-import path from "node:path";
-import Page from "@/layouts/Page.astro";
+import Base from "@/layouts/Base.astro";
+import SiteShell from "@/components/SiteShell.astro";
 
-const snapsDir = path.join(process.cwd(), "public", "snaps");
-let photos: string[] = [];
-try {
-	const files = await fs.readdir(snapsDir);
-	photos = files.filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f)).sort();
-} catch {}
+/**
+ * Each row is an array of snap items. The `span` values in a row should add up to 12.
+ * Supports 2, 3, or 4 items per row — just adjust the spans accordingly.
+ *
+ * span examples:
+ *   2 items: [5, 7], [7, 5], [6, 6]
+ *   3 items: [4, 4, 4], [3, 5, 4]
+ *   4 items: [3, 3, 3, 3]
+ */
+type SnapItem = {
+    src: string;
+    date: string;
+    caption: string;
+    span: number;
+};
+
+const rows: SnapItem[][] = [
+    // Row 1: portrait(5) + landscape(7)
+    [
+        { src: "/snaps/DSCF0573.webp", date: "FEB 16", caption: "Warm noir from my smoking days", span: 5 },
+        { src: "/snaps/DSCF2854.webp", date: "APR 01", caption: "Bogdanovich glacier in Kazakhstan, the most intense trek of my life.", span: 7 },
+    ],
+    // Row 2: landscape(7) + portrait(5)
+    [
+        { src: "/snaps/DSCF2792.webp", date: "MAR 23", caption: "While waiting for a train.", span: 7 },
+        { src: "/snaps/DSCF1555.webp", date: "MAR 23", caption: "Super proud of this snap on the streets of Almaty.", span: 5 },
+    ],
+    // Row 3: portrait(4) + portrait(4) + portrait(4)
+    [
+        { src: "/snaps/DSCF1615.webp", date: "FEB 22", caption: "Morning fog rolling in", span: 4 },
+        { src: "/snaps/DSCF2405.webp", date: "MAR 15", caption: "The long shadow", span: 4 },
+        { src: "/snaps/DSCF3254.webp", date: "APR 10", caption: "Neon and concrete", span: 4 },
+    ],
+    // Row 5: portrait(5) + landscape(7)
+    [
+        { src: "/snaps/DSCF3325.webp", date: "APR 14", caption: "Quiet corner of the old town", span: 5 },
+        { src: "/snaps/DSCF2296.webp", date: "MAR 11", caption: "Wide open nothing", span: 7 },
+    ],
+    // Row 6: landscape(7) + portrait(5)
+    [
+        { src: "/snaps/DSCF3881.webp", date: "MAY 02", caption: "Rust and sky", span: 7 },
+        { src: "/snaps/DSCF3620.webp", date: "APR 28", caption: "Late night walk back", span: 5 },
+    ],
+    // Row 7: portrait(5) + portrait(7)
+    [
+        { src: "/snaps/DSCF3991-2.webp", date: "MAY 09", caption: "Double exposure accident", span: 5 },
+        { src: "/snaps/DSCF4135-Enhanced-NR-2.webp", date: "MAY 18", caption: "Cathedral light", span: 7 },
+    ],
+    // Row 8: landscape(7) + portrait(5)
+    [
+        { src: "/snaps/DSCF3913.webp", date: "MAY 05", caption: "Somewhere between stations", span: 7 },
+        { src: "/snaps/DSCF4419.webp", date: "JUN 12", caption: "Vertical garden", span: 5 },
+    ],
+    // Row 9: portrait(5) + landscape(7)
+    [
+        { src: "/snaps/DSCF4449.webp", date: "JUN 15", caption: "Through the glass", span: 5 },
+        { src: "/snaps/DSCF4605.webp", date: "JUL 03", caption: "Rooftop sunset sprawl", span: 7 },
+    ],
+    // Row 10: portrait(3) + portrait(3) + portrait(3) + portrait(3)
+    [
+        { src: "/snaps/DSCF4510.webp", date: "JUN 22", caption: "Narrow alley", span: 3 },
+        { src: "/snaps/DSCF4557.webp", date: "JUN 28", caption: "Painted door", span: 3 },
+        { src: "/snaps/DSCF4571-2.webp", date: "JUN 30", caption: "Blue wall series", span: 3 },
+        { src: "/snaps/DSCF4594.webp", date: "JUL 01", caption: "Afternoon shade", span: 3 },
+    ],
+    // Row 11: full-width landscape (very wide aspect ratio)
+    [
+        { src: "/snaps/DSCF5194.webp", date: "AUG 14", caption: "The whole valley from up here", span: 12 },
+    ],
+    // Row 12: portrait(5) + landscape(7)
+    [
+        { src: "/snaps/DSCF4599.webp", date: "JUL 01", caption: "Caught mid-stride", span: 5 },
+        { src: "/snaps/DSCF5089.webp", date: "AUG 08", caption: "Low tide reflections", span: 7 },
+    ],
+    // Row 13: landscape(7) + portrait(5)
+    [
+        { src: "/snaps/IMG_0585.webp", date: "NOV 20", caption: "Phone snap that worked out", span: 7 },
+        { src: "/snaps/DSCF6081.webp", date: "SEP 15", caption: "Stairwell geometry", span: 5 },
+    ],
+    // Row 14: portrait(4) + portrait(4) + portrait(4)
+    [
+        { src: "/snaps/DSCF6181.webp", date: "SEP 22", caption: "Temple steps at dusk", span: 4 },
+        { src: "/snaps/DSCF6236.webp", date: "SEP 28", caption: "Old signage", span: 4 },
+        { src: "/snaps/DSCF6871.webp", date: "OCT 18", caption: "Rain on the windshield", span: 4 },
+    ],
+    // Row 15: portrait(4) + portrait(4) + portrait(4)
+    [
+        { src: "/snaps/DSCF6908.webp", date: "OCT 22", caption: "Two strangers, one bench", span: 4 },
+        { src: "/snaps/DSCF7002.webp", date: "NOV 03", caption: "The way down", span: 4 },
+        { src: "/snaps/DSCF7108.webp", date: "NOV 12", caption: "Last frame on the roll", span: 4 },
+    ],
+];
 ---
 
-<Page
-	title="Snaps — Shreyas Gupta"
-	description="A collection of photographs by Shreyas Gupta."
-	bodyClass="bg-bg-home"
-	class="bg-bg-home"
+<Base
+    title="Snaps — Shreyas Gupta"
+    description="A collection of photographs by Shreyas Gupta."
+    bodyClass="bg-bg-home"
 >
-    <div
-        class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 flex flex-col items-start gap-9"
-    >
-        <h1
-            class="font-serif font-bold text-3xl leading-[1.2] text-text-hero m-0 text-balance"
-        >
-            Snaps
-        </h1>
+    <SiteShell currentPath="/snaps" mainClass="px-5 pt-16 pb-20">
+        <!-- Title -->
+        <div class="flex flex-col items-center gap-0 mb-16">
+            <h1
+                class="font-serif font-bold text-7xl leading-none text-text-hero"
+            >
+                Snaps
+            </h1>
+            <p
+                class="font-serif font-medium text-xl leading-tight text-text-secondary"
+            >
+                Stories from my camera
+            </p>
+        </div>
 
-        {
-            photos.length > 0 ? (
-                <div class="w-full columns-2 gap-4 sm:columns-3">
-                    {photos.map((photo) => (
-                        <img
-                            src={`/snaps/${photo}`}
-                            alt={photo.replace(/\.[^.]+$/, "")}
-                            class="w-full mb-4 rounded-lg"
-                            loading="lazy"
-                        />
-                    ))}
-                </div>
-            ) : (
-                <p class="font-sans text-[16px] text-text-secondary">
-                    No snaps yet. Drop photos into{" "}
-                    <code class="bg-black/5 px-1.5 py-0.5 rounded text-[14px]">
-                        public/snaps/
-                    </code>{" "}
-                    to see them here.
-                </p>
-            )
-        }
-    </div>
-</Page>
+        <!-- Photo grid -->
+        <div class="flex flex-col gap-16">
+            {
+                rows.map((row) => (
+                    <div class="grid grid-cols-12 gap-4">
+                        {row.map((item) => (
+                            <div style={`grid-column: span ${item.span}`}>
+                                <p class="font-sans text-sm font-semibold text-text-secondary mb-2 uppercase">
+                                    {item.date}
+                                </p>
+                                <img
+                                    src={item.src}
+                                    alt={item.caption}
+                                    class="w-full object-cover"
+                                    loading="lazy"
+                                />
+                                <p class="font-sans text-sm text-text-secondary mt-2">
+                                    {item.caption}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                ))
+            }
+        </div>
+    </SiteShell>
+</Base>
