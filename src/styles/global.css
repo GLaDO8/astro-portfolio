@@ -138,17 +138,11 @@
 
 @theme {
     /* Colors */
-    --color-bg-home: #f4f5f0;
-    --color-text-hero: #222a37;
-    --color-text-primary: #242a2d;
-    --color-text-secondary: #354b54;
-    --color-green-label: #7f964c;
-    --color-green-dark: #607139;
-    --color-snaps-bg: #bdda7d;
-    --color-halftone-base: #fbfaf5;
-    --color-bg-blog: #e5e8d8;
-    --color-bg-sidebar: #ecede7;
-    --color-border-sidebar: #dbddd3;
+    --color-parchment: #f4f5f0; /* background */
+    --color-charcoal: #242a2d; /* text primary */
+    --color-slate: #354b54; /* text secondary */
+    --color-mist: #ecede7; /* sidebar background */
+    --color-fog: #dbddd3; /* border */
 
     /* Fonts */
     --font-serif: "Zilla Slab", serif;

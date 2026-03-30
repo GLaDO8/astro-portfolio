@@ -47,7 +47,7 @@ const jsonLd = {
 <Base
     title="Shreyas Gupta — Designer"
     description="Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems."
-    bodyClass="bg-bg-home"
+    bodyClass="bg-parchment"
     seo={{ jsonLd }}
 >
     <SiteShell
@@ -57,11 +57,11 @@ const jsonLd = {
     >
         <aside
             slot="sidebar"
-            class="hidden lg:flex flex-col lg:w-[29rem] shrink-0 bg-bg-sidebar border-x border-border-sidebar sticky top-0 h-dvh overflow-y-auto scrollbar-hide"
+            class="hidden lg:flex flex-col lg:w-[29rem] shrink-0 bg-mist border-x border-fog sticky top-0 h-dvh overflow-y-auto scrollbar-hide"
         >
             <div class="flex items-center justify-end h-8 px-5 shrink-0 mt-16">
                 <div
-                    class="font-mono text-xs tracking-tight text-text-secondary font-medium"
+                    class="font-mono text-xs tracking-tight text-slate font-medium"
                 >
                     v1.2
                 </div>
@@ -77,14 +77,14 @@ const jsonLd = {
                 <HeroSection client:visible />
 
                 <div
-                    class="font-sans font-medium text-lg leading-[1.4] text-text-primary"
+                    class="font-sans font-medium text-lg leading-[1.4] text-charcoal"
                 >
                     <p class="text-pretty">
                         I build tools at <a
                             href="https://wayground.com/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:text-text-secondary transition-colors"
+                            class="underline decoration-2 underline-offset-3 hover:text-slate transition-colors"
                             >Wayground</a
                         > that stand between teachers and everything else that isn't
                         teaching.
@@ -95,14 +95,14 @@ const jsonLd = {
                             href="https://www.clari.com/products/copilot/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:text-text-secondary transition-colors"
+                            class="underline decoration-2 underline-offset-3 hover:text-slate transition-colors"
                             >Clari</a
                         > and built a context-rich SQL editor at
                         <a
                             href="https://atlan.com/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:text-text-secondary transition-colors"
+                            class="underline decoration-2 underline-offset-3 hover:text-slate transition-colors"
                             >Atlan</a
                         >.
                     </p>
@@ -121,14 +121,14 @@ const jsonLd = {
             <HeroSection client:visible />
 
             <div
-                class="font-sans font-medium text-xl leading-[1.4] text-text-primary"
+                class="font-sans font-medium text-xl leading-[1.4] text-charcoal"
             >
                 <p>
                     I build tools at <a
                         href="https://wayground.com/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
+                        class="underline decoration-1 underline-offset-2 hover:text-slate transition-colors"
                         >Wayground</a
                     > that stand between teachers and everything else that isn't teaching.
                 </p>
@@ -138,14 +138,14 @@ const jsonLd = {
                         href="https://www.clari.com/products/copilot/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
+                        class="underline decoration-1 underline-offset-2 hover:text-slate transition-colors"
                         >Clari</a
                     > and built a context-rich SQL editor at
                     <a
                         href="https://atlan.com/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="underline decoration-1 underline-offset-2 hover:text-text-secondary transition-colors"
+                        class="underline decoration-1 underline-offset-2 hover:text-slate transition-colors"
                         >Atlan</a
                     >.
                 </p>
@@ -155,7 +155,7 @@ const jsonLd = {
         <!-- Work -->
         <section class="flex flex-col gap-6 mb-16">
             <h2
-                class="font-serif font-bold text-2xl leading-tight text-text-primary"
+                class="font-serif font-bold text-2xl leading-tight text-charcoal"
             >
                 Work
             </h2>
@@ -176,7 +176,7 @@ const jsonLd = {
         <!-- Notes -->
         <section class="flex flex-col gap-6">
             <h2
-                class="font-serif font-bold text-2xl leading-tight text-text-primary"
+                class="font-serif font-bold text-2xl leading-tight text-charcoal"
             >
                 Notes
             </h2>
@@ -187,7 +187,7 @@ const jsonLd = {
                             href={`/notes/${note.id}`}
                             class="no-underline group"
                         >
-                            <h3 class="font-sans font-medium text-lg leading-snug tracking-tight text-text-primary group-hover:text-text-secondary transition-colors">
+                            <h3 class="font-sans font-medium text-lg leading-snug tracking-tight text-charcoal group-hover:text-slate transition-colors">
                                 {note.data.title}
                             </h3>
                         </a>

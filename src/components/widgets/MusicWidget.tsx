@@ -88,7 +88,7 @@ export default function MusicWidget({ songData }: Props) {
 
 			{/* Song info text — flex-pushed to bottom */}
 			<div className="flex flex-col pl-6 pb-6">
-				<span className="font-sans font-bold text-[12px] text-green-label tracking-[-0.3px] uppercase pb-2">
+				<span className="font-sans font-bold text-[12px] text-[#7f964c] tracking-[-0.3px] uppercase pb-2">
 					{songData.label}
 				</span>
 				<span className="font-sans font-bold text-[24px] tracking-[-0.4px] text-black leading-none pb-1">

@@ -38,8 +38,8 @@ const jsonLd = {
 <Page
 	title={`${note.data.title} — Shreyas Gupta`}
 	description={description}
-	bodyClass="bg-bg-home"
-	class="bg-bg-home"
+	bodyClass="bg-parchment"
+	class="bg-parchment"
 	seo={{
 		ogType: "article",
 		article: {
@@ -53,11 +53,11 @@ const jsonLd = {
 		class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-3"
 	>
 		<h1
-			class="font-serif font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-text-primary mt-8 mb-2 text-balance"
+			class="font-serif font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-charcoal mt-8 mb-2 text-balance"
 		>
 			{note.data.title}
 		</h1>
-		<p class="font-sans text-text-secondary mb-12">
+		<p class="font-sans text-slate mb-12">
 			{
 				note.data.date.toLocaleDateString("en-US", {
 					year: "numeric",
@@ -67,7 +67,7 @@ const jsonLd = {
 			}
 		</p>
 		<div
-			class="prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal font-sans text-base leading-relaxed text-text-primary text-pretty overflow-visible"
+			class="prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal font-sans text-base leading-relaxed text-charcoal text-pretty overflow-visible"
 		>
 			<Content />
 		</div>

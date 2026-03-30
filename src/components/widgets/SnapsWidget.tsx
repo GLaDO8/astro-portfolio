@@ -37,7 +37,7 @@ export default function SnapsWidget() {
 
 	return (
 		<div
-			className="w-75 h-50 rounded-2xl shadow-lg shrink-0 relative bg-snaps-bg overflow-visible cursor-pointer"
+			className="w-75 h-50 rounded-2xl shadow-lg shrink-0 relative bg-[#bdda7d] overflow-visible cursor-pointer"
 			onPointerEnter={() => setIsHovered(true)}
 			onPointerLeave={() => setIsHovered(false)}
 			onFocus={() => setIsHovered(true)}
@@ -51,7 +51,7 @@ export default function SnapsWidget() {
 				<div className="font-sans font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
 					Snaps
 				</div>
-				<div className="font-sans font-bold text-[12px] leading-4 tracking-[-0.02em] text-green-dark">
+				<div className="font-sans font-bold text-[12px] leading-4 tracking-[-0.02em] text-[#607139]">
 					Fuji X100V
 					<br />
 					iPhone
