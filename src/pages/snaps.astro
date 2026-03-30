@@ -22,7 +22,7 @@ type SnapItem = {
 const rows: SnapItem[][] = [
     // Row 1: portrait(5) + landscape(7)
     [
-        { src: "/snaps/DSCF0573.webp", date: "JAN 09", year: 2024, caption: "Nod to my nicotine days", span: 5 },
+        { src: "/snaps/DSCF0573.webp", date: "JAN 09", year: 2024, caption: "", span: 5 },
         { src: "/snaps/DSCF2854.webp", date: "MAR 25", year: 2024, caption: "Bogdanovich glacier in Kazakhstan, the most intense trek of my life", span: 7 },
     ],
     // Row 2: landscape(7) + portrait(5)
@@ -111,9 +111,9 @@ const rows: SnapItem[][] = [
                 Snaps
             </h1>
             <p
-                class="font-serif font-medium text-xl leading-tight text-text-secondary"
+                class="font-sans text-xl text-text-secondary"
             >
-                Stories from my camera
+                Poetry written with my cameras.
             </p>
         </div>
 
@@ -134,7 +134,7 @@ const rows: SnapItem[][] = [
                                     loading="lazy"
                                 />
                                 {item.caption && (
-                                    <p class="font-sans text-sm text-text-secondary mt-2">
+                                    <p class="font-sans text-sm font-medium text-text-secondary mt-2">
                                         {item.caption}
                                     </p>
                                 )}
