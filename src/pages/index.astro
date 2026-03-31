@@ -57,17 +57,18 @@ const jsonLd = {
     >
         <aside
             slot="sidebar"
-            class="hidden lg:flex flex-col lg:w-[29rem] shrink-0 bg-mist border-x border-fog sticky top-0 h-dvh overflow-y-auto scrollbar-hide"
+            data-lenis-prevent
+            class="hidden lg:flex flex-col lg:w-[29rem] shrink-0 bg-mist border-x border-fog sticky top-0 h-dvh overflow-y-auto overscroll-y-contain scrollbar-hide"
         >
             <div class="flex items-center justify-end h-8 px-5 shrink-0 mt-16">
                 <div
-                    class="font-mono text-xs tracking-tight text-slate font-medium"
+                    class="font-mono text-xs tracking-tight text-charcoal font-medium"
                 >
-                    v1.2
+                    v2.1
                 </div>
             </div>
 
-            <div class="flex flex-col gap-8 px-5 pt-36 pb-6">
+            <div class="flex flex-col gap-8 px-5 pt-16 pb-6">
                 <PhotoFrameWidget
                     src={photoFrame.src}
                     alt={photoFrame.alt}
@@ -84,7 +85,7 @@ const jsonLd = {
                             href="https://wayground.com/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:text-slate transition-colors"
+                            class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
                             >Wayground</a
                         > that stand between teachers and everything else that isn't
                         teaching.
@@ -95,14 +96,14 @@ const jsonLd = {
                             href="https://www.clari.com/products/copilot/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:text-slate transition-colors"
+                            class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
                             >Clari</a
                         > and built a context-rich SQL editor at
                         <a
                             href="https://atlan.com/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:text-slate transition-colors"
+                            class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
                             >Atlan</a
                         >.
                     </p>
