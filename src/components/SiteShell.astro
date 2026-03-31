@@ -12,11 +12,11 @@ const { currentPath, containerClass, mainClass } = Astro.props;
 
 <!-- Full-width horizontal borders -->
 <div
-    class="absolute top-16 inset-x-0 border-b border-fog pointer-events-none z-50"
+    class="fixed top-16 inset-x-0 border-b border-fog pointer-events-none z-50"
 >
 </div>
 <div
-    class="absolute top-24 inset-x-0 border-b border-fog pointer-events-none z-50"
+    class="fixed top-24 inset-x-0 border-b border-fog pointer-events-none z-50"
 >
 </div>
 
@@ -31,7 +31,9 @@ const { currentPath, containerClass, mainClass } = Astro.props;
     <div
         class="flex-1 min-w-0 flex flex-col border-x border-fog pt-16"
     >
-        <Navbar currentPath={currentPath} />
+        <div class="sticky top-16 z-40 bg-parchment">
+            <Navbar currentPath={currentPath} />
+        </div>
         <main id="main-content" class:list={["flex-1", mainClass]}>
             <slot />
         </main>
