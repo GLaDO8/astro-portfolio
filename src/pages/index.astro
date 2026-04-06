@@ -7,37 +7,40 @@ import Base from "@/layouts/Base.astro";
 import { getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
-const caseStudies = (await getCollection("caseStudies", ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
+const caseStudies = (
+    await getCollection("caseStudies", ({ data }) => !data.draft)
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [
-		{
-			"@type": "WebSite",
-			"@id": "https://shrey.fyi/#website",
-			url: "https://shrey.fyi",
-			name: "Shreyas Gupta",
-			description:
-				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-			publisher: { "@id": "https://shrey.fyi/#person" },
-		},
-		{
-			"@type": "Person",
-			"@id": "https://shrey.fyi/#person",
-			name: "Shreyas Gupta",
-			url: "https://shrey.fyi",
-			jobTitle: "Designer",
-			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-		},
-	],
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://shrey.fyi/#website",
+            url: "https://shrey.fyi",
+            name: "Shreyas Gupta",
+            description:
+                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+            publisher: { "@id": "https://shrey.fyi/#person" },
+        },
+        {
+            "@type": "Person",
+            "@id": "https://shrey.fyi/#person",
+            name: "Shreyas Gupta",
+            url: "https://shrey.fyi",
+            jobTitle: "Designer",
+            sameAs: [
+                "https://github.com/GLaDO8",
+                "https://x.com/wutamelonshrey",
+            ],
+        },
+    ],
 };
 ---
 
@@ -54,10 +57,16 @@ const jsonLd = {
     >
         <aside
             slot="sidebar"
-            data-lenis-prevent
-            class="hidden lg:flex flex-col lg:w-[29rem] shrink-0 bg-mist border-x border-fog sticky top-0 h-dvh overflow-y-auto overscroll-y-contain scrollbar-hide"
+            class="hidden lg:flex flex-col lg:w-[24rem] shrink-0 bg-mist border-x border-fog sticky top-0 h-dvh overflow-hidden"
         >
-            <div class="flex items-center justify-end h-8 px-5 shrink-0 mt-16 sticky top-16 z-10 bg-mist">
+            <div
+                aria-hidden="true"
+                class="h-16 shrink-0 bg-mist"
+            >
+            </div>
+            <div
+                class="flex items-center justify-end h-8 px-5 shrink-0 bg-mist"
+            >
                 <div
                     class="font-mono text-xs tracking-tight text-charcoal font-medium"
                 >
@@ -65,45 +74,50 @@ const jsonLd = {
                 </div>
             </div>
 
-            <div class="flex flex-col gap-8 px-5 pt-16 pb-6">
-                <PhotoFrameWidget
-                    src={photoFrame.src}
-                    alt={photoFrame.alt}
-                    client:visible
-                />
+            <div
+                data-lenis-prevent
+                class="flex-1 overflow-y-auto overscroll-y-contain scrollbar-hide"
+            >
+                <div class="flex flex-col gap-8 px-5 pt-16 pb-6">
+                    <PhotoFrameWidget
+                        src={photoFrame.src}
+                        alt={photoFrame.alt}
+                        client:visible
+                    />
 
-                <HeroSection client:visible />
+                    <HeroSection client:visible />
 
-                <div
-                    class="font-sans font-medium text-lg leading-[1.4] text-charcoal"
-                >
-                    <p class="text-pretty">
-                        I build tools at <a
-                            href="https://wayground.com/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
-                            >Wayground</a
-                        > that stand between teachers and everything else that isn't
-                        teaching.
-                    </p>
-                    <p class="mt-4 text-pretty">
-                        I used to work on conversational intelligence for sales
-                        teams at <a
-                            href="https://www.clari.com/products/copilot/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
-                            >Clari</a
-                        > and built a context-rich SQL editor at
-                        <a
-                            href="https://atlan.com/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
-                            >Atlan</a
-                        >.
-                    </p>
+                    <div
+                        class="font-sans font-medium text-base leading-[1.4] text-charcoal"
+                    >
+                        <p class="text-pretty">
+                            I build tools at <a
+                                href="https://wayground.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
+                                >Wayground</a
+                            > that stand between teachers and everything else that isn't
+                            teaching.
+                        </p>
+                        <p class="mt-4 text-pretty">
+                            I used to work on conversational intelligence for sales
+                            teams at <a
+                                href="https://www.clari.com/products/copilot/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
+                                >Clari</a
+                            > and built a context-rich SQL editor at
+                            <a
+                                href="https://atlan.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
+                                >Atlan</a
+                            >.
+                        </p>
+                    </div>
                 </div>
             </div>
         </aside>

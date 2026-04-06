@@ -31,7 +31,9 @@ const { currentPath, containerClass, mainClass } = Astro.props;
     <div
         class="flex-1 min-w-0 flex flex-col border-x border-fog pt-16"
     >
-        <div class="sticky top-16 z-40 bg-parchment">
+        <div
+            class="sticky top-16 z-40 bg-parchment before:absolute before:-top-16 before:left-0 before:h-16 before:w-full before:bg-parchment before:content-['']"
+        >
             <Navbar currentPath={currentPath} />
         </div>
         <main id="main-content" class:list={["flex-1", mainClass]}>
