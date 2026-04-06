@@ -109,7 +109,8 @@
 
 @utility codeblock-reset {
 	& pre {
-		background-color: transparent;
+		background: transparent !important;
+		background-color: transparent !important;
 		overflow: visible;
 		margin: 0;
 		padding: 0;
