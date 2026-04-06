@@ -22,21 +22,29 @@ function ContributionGrid({ days }: { days: ContributionDay[] }) {
 	for (let col = 0; col < COLS; col++) {
 		for (let row = 0; row < ROWS; row++) {
 			const idx = col * ROWS + row;
-			grid[row].push(days[idx] ?? { count: 0, level: 0, date: "" });
+			grid[row].push(days[idx] ?? { count: 0, level: 0, date: `empty-${row}-${col}` });
 		}
 	}
 
 	return (
 		<div className="flex flex-col gap-[5px]">
-			{grid.map((row, ri) => (
-				<div key={ri} className="flex gap-[6px]">
-					{row.map((day, ci) => (
+			{grid.map((row) => (
+				<div key={row.map((day) => day.date).join("|")} className="flex gap-[6px]">
+					{row.map((day) => (
 						<div
-							key={ci}
+							key={day.date}
 							role="img"
 							className={cn("size-5 shrink-0 rounded-md", LEVEL_COLORS[day.level])}
-							title={day.date ? `${day.date}: ${day.count} contributions` : undefined}
-							aria-label={day.date ? `${day.date}: ${day.count} contributions` : undefined}
+							title={
+								!day.date.startsWith("empty-")
+									? `${day.date}: ${day.count} contributions`
+									: undefined
+							}
+							aria-label={
+								!day.date.startsWith("empty-")
+									? `${day.date}: ${day.count} contributions`
+									: undefined
+							}
 						/>
 					))}
 				</div>

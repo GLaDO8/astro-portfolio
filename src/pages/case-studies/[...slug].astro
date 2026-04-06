@@ -1,25 +1,22 @@
 ---
 import { getCollection, render } from "astro:content";
-import { cn } from "@/lib/cn";
 import Page from "@/layouts/Page.astro";
+import { cn } from "@/lib/cn";
 
 const baseProseClass =
-    "prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal prose-li:marker:text-charcoal prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#b0d8d8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal leading-relaxed text-charcoal text-pretty overflow-visible prose-img:rounded-lg prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl";
+	"prose prose-headings:font-serif prose-headings:font-bold prose-headings:tracking-normal prose-li:marker:text-charcoal prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#b0d8d8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal leading-relaxed text-charcoal text-pretty overflow-visible prose-img:rounded-lg prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl";
 
 const themeStyles: Record<string, string> = {
-    "hot-text":
-        "prose-h2:text-base prose-h2:text-[#DA0288] font-sans text-base font-medium prose-h2:uppercase",
+	"hot-text":
+		"prose-h2:text-base prose-h2:text-[#DA0288] font-sans text-base font-medium prose-h2:uppercase",
 };
 
 export async function getStaticPaths() {
-    const studies = await getCollection(
-        "caseStudies",
-        ({ data }) => !data.draft,
-    );
-    return studies.map((study) => ({
-        params: { slug: study.id },
-        props: { study },
-    }));
+	const studies = await getCollection("caseStudies", ({ data }) => !data.draft);
+	return studies.map((study) => ({
+		params: { slug: study.id },
+		props: { study },
+	}));
 }
 
 const { study } = Astro.props;
@@ -27,21 +24,20 @@ const { Content } = await render(study);
 const theme = study.data.theme;
 const proseClass = cn(baseProseClass, theme && themeStyles[theme]);
 
-const description =
-    study.data.description || study.data.subtitle || study.data.title;
+const description = study.data.description || study.data.subtitle || study.data.title;
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: study.data.title,
-    description,
-    datePublished: study.data.date.toISOString(),
-    author: {
-        "@type": "Person",
-        "@id": "https://shrey.fyi/#person",
-        name: "Shreyas Gupta",
-    },
-    url: `https://shrey.fyi/case-studies/${study.id}`,
+	"@context": "https://schema.org",
+	"@type": "CreativeWork",
+	name: study.data.title,
+	description,
+	datePublished: study.data.date.toISOString(),
+	author: {
+		"@type": "Person",
+		"@id": "https://shrey.fyi/#person",
+		name: "Shreyas Gupta",
+	},
+	url: `https://shrey.fyi/case-studies/${study.id}`,
 };
 ---
 

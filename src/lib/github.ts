@@ -93,7 +93,6 @@ const CONTRIBUTION_LEVELS: Record<string, number> = {
 	FOURTH_QUARTILE: 4,
 };
 
-// biome-ignore lint/style/useConst: reassigned for caching
 let cached: GithubData | null = null;
 
 export async function getGithubData(): Promise<GithubData> {

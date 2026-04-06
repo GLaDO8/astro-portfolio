@@ -1,283 +1,282 @@
 ---
-import Base from "@/layouts/Base.astro";
 import SiteShell from "@/components/SiteShell.astro";
+import Base from "@/layouts/Base.astro";
 
 type SnapItem = {
-    src: string;
-    date: string;
-    year: number;
-    caption: string;
-    span: number;
+	src: string;
+	date: string;
+	year: number;
+	caption: string;
+	span: number;
 };
 
 const rows: SnapItem[][] = [
-    // Row 1: portrait(5) + landscape(7)
-    [
-        {
-            src: "/snaps/DSCF0573.webp",
-            date: "JAN 09",
-            year: 2024,
-            caption: "",
-            span: 5,
-        },
-        {
-            src: "/snaps/DSCF2854.webp",
-            date: "MAR 25",
-            year: 2024,
-            caption:
-                "Bogdanovich glacier in Kazakhstan, the most intense trek of my life",
-            span: 7,
-        },
-    ],
-    // Row 2: landscape(7) + portrait(5)
-    [
-        {
-            src: "/snaps/DSCF2792.webp",
-            date: "MAR 24",
-            year: 2024,
-            caption: "Yurts near Shymbulak peak",
-            span: 7,
-        },
-        {
-            src: "/snaps/DSCF1555.webp",
-            date: "MAR 18",
-            year: 2024,
-            caption: "Super proud of this snap on the streets of Almaty",
-            span: 5,
-        },
-    ],
-    // Row 3: portrait(4) + portrait(4) + portrait(4)
-    [
-        {
-            src: "/snaps/DSCF1615.webp",
-            date: "MAR 17",
-            year: 2024,
-            caption: "",
-            span: 4,
-        },
-        {
-            src: "/snaps/DSCF2405.webp",
-            date: "MAR 21",
-            year: 2024,
-            caption: "",
-            span: 4,
-        },
-        {
-            src: "/snaps/DSCF3254.webp",
-            date: "AUG 09",
-            year: 2024,
-            caption: "",
-            span: 4,
-        },
-    ],
-    // Row 5: portrait(5) + landscape(7)
-    [
-        {
-            src: "/snaps/DSCF3325.webp",
-            date: "MAR 18",
-            year: 2025,
-            caption: "",
-            span: 5,
-        },
-        {
-            src: "/snaps/DSCF2296.webp",
-            date: "MAR 21",
-            year: 2024,
-            caption: "",
-            span: 7,
-        },
-    ],
-    // Row 6: landscape(7) + portrait(5)
-    [
-        {
-            src: "/snaps/DSCF3881.webp",
-            date: "SEP 02",
-            year: 2024,
-            caption: "",
-            span: 7,
-        },
-        {
-            src: "/snaps/DSCF3620.webp",
-            date: "AUG 11",
-            year: 2024,
-            caption: "",
-            span: 5,
-        },
-    ],
-    // Row 7: portrait(5) + portrait(7)
-    [
-        {
-            src: "/snaps/DSCF3991-2.webp",
-            date: "MAR 23",
-            year: 2025,
-            caption: "",
-            span: 5,
-        },
-        {
-            src: "/snaps/DSCF4135-Enhanced-NR-2.webp",
-            date: "MAR 23",
-            year: 2025,
-            caption: "",
-            span: 7,
-        },
-    ],
-    // Row 8: landscape(7) + portrait(5)
-    [
-        {
-            src: "/snaps/DSCF3913.webp",
-            date: "SEP 02",
-            year: 2024,
-            caption: "",
-            span: 7,
-        },
-        {
-            src: "/snaps/DSCF4419.webp",
-            date: "MAR 27",
-            year: 2025,
-            caption: "",
-            span: 5,
-        },
-    ],
-    // Row 9: portrait(5) + landscape(7)
-    [
-        {
-            src: "/snaps/DSCF4449.webp",
-            date: "MAR 27",
-            year: 2025,
-            caption: "",
-            span: 5,
-        },
-        {
-            src: "/snaps/DSCF4605.webp",
-            date: "MAR 28",
-            year: 2025,
-            caption: "",
-            span: 7,
-        },
-    ],
-    // Row 10: portrait(3) + portrait(3) + portrait(3) + portrait(3)
-    [
-        {
-            src: "/snaps/DSCF4510.webp",
-            date: "MAR 28",
-            year: 2025,
-            caption: "",
-            span: 3,
-        },
-        {
-            src: "/snaps/DSCF4557.webp",
-            date: "MAR 28",
-            year: 2025,
-            caption: "",
-            span: 3,
-        },
-        {
-            src: "/snaps/DSCF4571-2.webp",
-            date: "MAR 28",
-            year: 2025,
-            caption: "",
-            span: 3,
-        },
-        {
-            src: "/snaps/DSCF4594.webp",
-            date: "MAR 28",
-            year: 2025,
-            caption: "",
-            span: 3,
-        },
-    ],
-    // Row 11: full-width landscape (very wide aspect ratio)
-    [
-        {
-            src: "/snaps/DSCF5194.webp",
-            date: "SEP 03",
-            year: 2024,
-            caption: "",
-            span: 12,
-        },
-    ],
-    // Row 12: portrait(5) + landscape(7)
-    [
-        {
-            src: "/snaps/DSCF4599.webp",
-            date: "MAR 28",
-            year: 2025,
-            caption: "",
-            span: 5,
-        },
-        {
-            src: "/snaps/DSCF5089.webp",
-            date: "SEP 03",
-            year: 2024,
-            caption: "",
-            span: 7,
-        },
-    ],
-    // Row 13: landscape(7) + portrait(5)
-    [
-        {
-            src: "/snaps/IMG_0585.webp",
-            date: "MAR 26",
-            year: 2025,
-            caption: "",
-            span: 7,
-        },
-        {
-            src: "/snaps/DSCF6081.webp",
-            date: "DEC 30",
-            year: 2024,
-            caption: "",
-            span: 5,
-        },
-    ],
-    // Row 14: portrait(4) + portrait(4) + portrait(4)
-    [
-        {
-            src: "/snaps/DSCF6181.webp",
-            date: "JAN 01",
-            year: 2025,
-            caption: "",
-            span: 4,
-        },
-        {
-            src: "/snaps/DSCF6236.webp",
-            date: "DEC 31",
-            year: 2024,
-            caption: "",
-            span: 4,
-        },
-        {
-            src: "/snaps/DSCF6871.webp",
-            date: "FEB 07",
-            year: 2026,
-            caption: "",
-            span: 4,
-        },
-    ],
-    // Row 15: portrait(4) + portrait(4) + portrait(4)
-    [
-        {
-            src: "/snaps/DSCF6908.webp",
-            date: "FEB 07",
-            year: 2026,
-            caption: "",
-            span: 4,
-        },
-        {
-            src: "/snaps/DSCF7002.webp",
-            date: "FEB 08",
-            year: 2026,
-            caption: "",
-            span: 4,
-        },
-        {
-            src: "/snaps/DSCF7108.webp",
-            date: "MAR 06",
-            year: 2026,
-            caption: "",
-            span: 4,
-        },
-    ],
+	// Row 1: portrait(5) + landscape(7)
+	[
+		{
+			src: "/snaps/DSCF0573.webp",
+			date: "JAN 09",
+			year: 2024,
+			caption: "",
+			span: 5,
+		},
+		{
+			src: "/snaps/DSCF2854.webp",
+			date: "MAR 25",
+			year: 2024,
+			caption: "Bogdanovich glacier in Kazakhstan, the most intense trek of my life",
+			span: 7,
+		},
+	],
+	// Row 2: landscape(7) + portrait(5)
+	[
+		{
+			src: "/snaps/DSCF2792.webp",
+			date: "MAR 24",
+			year: 2024,
+			caption: "Yurts near Shymbulak peak",
+			span: 7,
+		},
+		{
+			src: "/snaps/DSCF1555.webp",
+			date: "MAR 18",
+			year: 2024,
+			caption: "Super proud of this snap on the streets of Almaty",
+			span: 5,
+		},
+	],
+	// Row 3: portrait(4) + portrait(4) + portrait(4)
+	[
+		{
+			src: "/snaps/DSCF1615.webp",
+			date: "MAR 17",
+			year: 2024,
+			caption: "",
+			span: 4,
+		},
+		{
+			src: "/snaps/DSCF2405.webp",
+			date: "MAR 21",
+			year: 2024,
+			caption: "",
+			span: 4,
+		},
+		{
+			src: "/snaps/DSCF3254.webp",
+			date: "AUG 09",
+			year: 2024,
+			caption: "",
+			span: 4,
+		},
+	],
+	// Row 5: portrait(5) + landscape(7)
+	[
+		{
+			src: "/snaps/DSCF3325.webp",
+			date: "MAR 18",
+			year: 2025,
+			caption: "",
+			span: 5,
+		},
+		{
+			src: "/snaps/DSCF2296.webp",
+			date: "MAR 21",
+			year: 2024,
+			caption: "",
+			span: 7,
+		},
+	],
+	// Row 6: landscape(7) + portrait(5)
+	[
+		{
+			src: "/snaps/DSCF3881.webp",
+			date: "SEP 02",
+			year: 2024,
+			caption: "",
+			span: 7,
+		},
+		{
+			src: "/snaps/DSCF3620.webp",
+			date: "AUG 11",
+			year: 2024,
+			caption: "",
+			span: 5,
+		},
+	],
+	// Row 7: portrait(5) + portrait(7)
+	[
+		{
+			src: "/snaps/DSCF3991-2.webp",
+			date: "MAR 23",
+			year: 2025,
+			caption: "",
+			span: 5,
+		},
+		{
+			src: "/snaps/DSCF4135-Enhanced-NR-2.webp",
+			date: "MAR 23",
+			year: 2025,
+			caption: "",
+			span: 7,
+		},
+	],
+	// Row 8: landscape(7) + portrait(5)
+	[
+		{
+			src: "/snaps/DSCF3913.webp",
+			date: "SEP 02",
+			year: 2024,
+			caption: "",
+			span: 7,
+		},
+		{
+			src: "/snaps/DSCF4419.webp",
+			date: "MAR 27",
+			year: 2025,
+			caption: "",
+			span: 5,
+		},
+	],
+	// Row 9: portrait(5) + landscape(7)
+	[
+		{
+			src: "/snaps/DSCF4449.webp",
+			date: "MAR 27",
+			year: 2025,
+			caption: "",
+			span: 5,
+		},
+		{
+			src: "/snaps/DSCF4605.webp",
+			date: "MAR 28",
+			year: 2025,
+			caption: "",
+			span: 7,
+		},
+	],
+	// Row 10: portrait(3) + portrait(3) + portrait(3) + portrait(3)
+	[
+		{
+			src: "/snaps/DSCF4510.webp",
+			date: "MAR 28",
+			year: 2025,
+			caption: "",
+			span: 3,
+		},
+		{
+			src: "/snaps/DSCF4557.webp",
+			date: "MAR 28",
+			year: 2025,
+			caption: "",
+			span: 3,
+		},
+		{
+			src: "/snaps/DSCF4571-2.webp",
+			date: "MAR 28",
+			year: 2025,
+			caption: "",
+			span: 3,
+		},
+		{
+			src: "/snaps/DSCF4594.webp",
+			date: "MAR 28",
+			year: 2025,
+			caption: "",
+			span: 3,
+		},
+	],
+	// Row 11: full-width landscape (very wide aspect ratio)
+	[
+		{
+			src: "/snaps/DSCF5194.webp",
+			date: "SEP 03",
+			year: 2024,
+			caption: "",
+			span: 12,
+		},
+	],
+	// Row 12: portrait(5) + landscape(7)
+	[
+		{
+			src: "/snaps/DSCF4599.webp",
+			date: "MAR 28",
+			year: 2025,
+			caption: "",
+			span: 5,
+		},
+		{
+			src: "/snaps/DSCF5089.webp",
+			date: "SEP 03",
+			year: 2024,
+			caption: "",
+			span: 7,
+		},
+	],
+	// Row 13: landscape(7) + portrait(5)
+	[
+		{
+			src: "/snaps/IMG_0585.webp",
+			date: "MAR 26",
+			year: 2025,
+			caption: "",
+			span: 7,
+		},
+		{
+			src: "/snaps/DSCF6081.webp",
+			date: "DEC 30",
+			year: 2024,
+			caption: "",
+			span: 5,
+		},
+	],
+	// Row 14: portrait(4) + portrait(4) + portrait(4)
+	[
+		{
+			src: "/snaps/DSCF6181.webp",
+			date: "JAN 01",
+			year: 2025,
+			caption: "",
+			span: 4,
+		},
+		{
+			src: "/snaps/DSCF6236.webp",
+			date: "DEC 31",
+			year: 2024,
+			caption: "",
+			span: 4,
+		},
+		{
+			src: "/snaps/DSCF6871.webp",
+			date: "FEB 07",
+			year: 2026,
+			caption: "",
+			span: 4,
+		},
+	],
+	// Row 15: portrait(4) + portrait(4) + portrait(4)
+	[
+		{
+			src: "/snaps/DSCF6908.webp",
+			date: "FEB 07",
+			year: 2026,
+			caption: "",
+			span: 4,
+		},
+		{
+			src: "/snaps/DSCF7002.webp",
+			date: "FEB 08",
+			year: 2026,
+			caption: "",
+			span: 4,
+		},
+		{
+			src: "/snaps/DSCF7108.webp",
+			date: "MAR 06",
+			year: 2026,
+			caption: "",
+			span: 4,
+		},
+	],
 ];
 ---
 

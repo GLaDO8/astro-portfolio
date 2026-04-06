@@ -4,20 +4,20 @@ import "@/styles/global.css";
 import AgentationToolbar from "@/components/AgentationToolbar";
 
 interface Props {
-    title: string;
-    description: string;
-    bodyClass?: string;
-    seo?: {
-        ogType?: "website" | "article";
-        ogImage?: string;
-        ogImageAlt?: string;
-        article?: {
-            publishedTime: string;
-            tags?: string[];
-        };
-        noindex?: boolean;
-        jsonLd?: Record<string, unknown>;
-    };
+	title: string;
+	description: string;
+	bodyClass?: string;
+	seo?: {
+		ogType?: "website" | "article";
+		ogImage?: string;
+		ogImageAlt?: string;
+		article?: {
+			publishedTime: string;
+			tags?: string[];
+		};
+		noindex?: boolean;
+		jsonLd?: Record<string, unknown>;
+	};
 }
 
 const { title, description, bodyClass, seo = {} } = Astro.props;

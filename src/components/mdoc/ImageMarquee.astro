@@ -2,37 +2,37 @@
 import { cn } from "@/lib/cn";
 
 interface Props {
-    images: string; // Delimited string: "src|alt,,src|alt"
-    speed?: "slow" | "default" | "fast";
-    direction?: "left" | "right";
-    gap?: string;
-    height?: "sm" | "md" | "lg" | "xl";
+	images: string; // Delimited string: "src|alt,,src|alt"
+	speed?: "slow" | "default" | "fast";
+	direction?: "left" | "right";
+	gap?: string;
+	height?: "sm" | "md" | "lg" | "xl";
 }
 
 const {
-    images: imagesStr,
-    speed = "default",
-    direction = "left",
-    gap = "1rem",
-    height = "lg",
+	images: imagesStr,
+	speed = "default",
+	direction = "left",
+	gap = "1rem",
+	height = "lg",
 } = Astro.props;
 
 const heights: Record<string, string> = {
-    sm: "h-32 md:h-40 lg:h-48",
-    md: "h-40 md:h-56 lg:h-64",
-    lg: "h-48 md:h-64 lg:h-80",
-    xl: "h-90 md:h-100 lg:h-160",
+	sm: "h-32 md:h-40 lg:h-48",
+	md: "h-40 md:h-56 lg:h-64",
+	lg: "h-48 md:h-64 lg:h-80",
+	xl: "h-90 md:h-100 lg:h-160",
 };
 
 const items = imagesStr.split(",,").map((entry) => {
-    const [src, alt] = entry.split("|");
-    return { src: src.trim(), alt: alt?.trim() || "" };
+	const [src, alt] = entry.split("|");
+	return { src: src.trim(), alt: alt?.trim() || "" };
 });
 
 const durations: Record<string, string> = {
-    slow: "60s",
-    default: "35s",
-    fast: "20s",
+	slow: "60s",
+	default: "35s",
+	fast: "20s",
 };
 const duration = durations[speed];
 const animDirection = direction === "right" ? "reverse" : "normal";

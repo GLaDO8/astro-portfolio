@@ -3,7 +3,6 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import type { GithubData } from "@/lib/github";
 import type { PhotoFrameData, SongData } from "@/lib/widgetConfig";
-import GithubWidget from "./widgets/GithubWidget";
 import MusicWidget from "./widgets/MusicWidget";
 import PhotoFrameWidget from "./widgets/PhotoFrameWidget";
 import SnapsWidget from "./widgets/SnapsWidget";
@@ -15,7 +14,12 @@ interface Props {
 	children?: ReactNode;
 }
 
-export default function WidgetStrip({ songData, photoFrame, githubData, children }: Props) {
+export default function WidgetStrip({
+	songData,
+	photoFrame,
+	githubData: _githubData,
+	children,
+}: Props) {
 	const containerRef = useRef<HTMLElement>(null);
 	const innerRef = useRef<HTMLDivElement>(null);
 	const photoRef = useRef<HTMLAnchorElement>(null);

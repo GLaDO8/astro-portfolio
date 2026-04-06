@@ -57,7 +57,7 @@ async function updateReferences(oldRef, newRef) {
 
 async function optimizeImage(filePath) {
 	const ext = extname(filePath);
-	const webpPath = filePath.slice(0, -ext.length) + ".webp";
+	const webpPath = `${filePath.slice(0, -ext.length)}.webp`;
 	const originalSize = (await stat(filePath)).size;
 
 	await sharp(filePath).webp({ quality: WEBP_QUALITY }).toFile(webpPath);
@@ -66,8 +66,8 @@ async function optimizeImage(filePath) {
 	const savings = ((1 - newSize / originalSize) * 100).toFixed(1);
 	const sizeKB = (newSize / 1024).toFixed(1);
 
-	const oldRef = "/" + relative(PUBLIC_DIR, filePath);
-	const newRef = "/" + relative(PUBLIC_DIR, webpPath);
+	const oldRef = `/${relative(PUBLIC_DIR, filePath)}`;
+	const newRef = `/${relative(PUBLIC_DIR, webpPath)}`;
 	await updateReferences(oldRef, newRef);
 	await unlink(filePath);
 

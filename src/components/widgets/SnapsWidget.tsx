@@ -40,11 +40,6 @@ export default function SnapsWidget() {
 			className="w-75 h-50 rounded-2xl shadow-lg shrink-0 relative bg-[#bdda7d] overflow-visible cursor-pointer"
 			onPointerEnter={() => setIsHovered(true)}
 			onPointerLeave={() => setIsHovered(false)}
-			onFocus={() => setIsHovered(true)}
-			onBlur={() => setIsHovered(false)}
-			tabIndex={0}
-			role="group"
-			aria-label="Photo snaps"
 		>
 			{/* Text content — flexbox column */}
 			<div className="flex flex-col justify-between h-full p-6">

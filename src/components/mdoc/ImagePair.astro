@@ -8,14 +8,7 @@ interface Props {
 	caption2?: string;
 }
 
-const {
-	src1,
-	src2,
-	alt1 = "",
-	alt2 = "",
-	caption1,
-	caption2,
-} = Astro.props;
+const { src1, src2, alt1 = "", alt2 = "", caption1, caption2 } = Astro.props;
 ---
 
 <div class="not-prose grid grid-cols-2 gap-4 my-6">

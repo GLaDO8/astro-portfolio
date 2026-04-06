@@ -1,46 +1,43 @@
 ---
 import { getCollection } from "astro:content";
-import Base from "@/layouts/Base.astro";
-import SiteShell from "@/components/SiteShell.astro";
 import HeroSection from "@/components/HeroSection";
+import SiteShell from "@/components/SiteShell.astro";
 import PhotoFrameWidget from "@/components/widgets/PhotoFrameWidget";
+import Base from "@/layouts/Base.astro";
 import { getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
-const caseStudies = (
-    await getCollection("caseStudies", ({ data }) => !data.draft)
-).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const caseStudies = (await getCollection("caseStudies", ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
 
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-        {
-            "@type": "WebSite",
-            "@id": "https://shrey.fyi/#website",
-            url: "https://shrey.fyi",
-            name: "Shreyas Gupta",
-            description:
-                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-            publisher: { "@id": "https://shrey.fyi/#person" },
-        },
-        {
-            "@type": "Person",
-            "@id": "https://shrey.fyi/#person",
-            name: "Shreyas Gupta",
-            url: "https://shrey.fyi",
-            jobTitle: "Designer",
-            sameAs: [
-                "https://github.com/GLaDO8",
-                "https://x.com/wutamelonshrey",
-            ],
-        },
-    ],
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebSite",
+			"@id": "https://shrey.fyi/#website",
+			url: "https://shrey.fyi",
+			name: "Shreyas Gupta",
+			description:
+				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+			publisher: { "@id": "https://shrey.fyi/#person" },
+		},
+		{
+			"@type": "Person",
+			"@id": "https://shrey.fyi/#person",
+			name: "Shreyas Gupta",
+			url: "https://shrey.fyi",
+			jobTitle: "Designer",
+			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+		},
+	],
 };
 ---
 

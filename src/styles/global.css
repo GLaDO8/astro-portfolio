@@ -2,171 +2,193 @@
 @plugin "@tailwindcss/typography";
 
 @layer base {
-    html {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        overflow-x: clip;
-    }
+	html {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		overflow-x: clip;
+	}
 
-    html.lenis,
-    html.lenis body {
-        height: auto;
-    }
+	html.lenis,
+	html.lenis body {
+		height: auto;
+	}
 
-    .lenis.lenis-stopped {
-        overflow: hidden;
-    }
+	.lenis.lenis-stopped {
+		overflow: hidden;
+	}
 
-    .lenis.lenis-smooth [data-lenis-prevent] {
-        overscroll-behavior: contain;
-    }
+	.lenis.lenis-smooth [data-lenis-prevent] {
+		overscroll-behavior: contain;
+	}
 }
 
 @font-face {
-    font-family: "Zilla Slab";
-    src: url("/fonts/ZillaSlab-Light.woff2") format("woff2");
-    font-weight: 300;
-    font-style: normal;
-    font-display: optional;
+	font-family: "Zilla Slab";
+	src: url("/fonts/ZillaSlab-Light.woff2") format("woff2");
+	font-weight: 300;
+	font-style: normal;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Zilla Slab";
-    src: url("/fonts/ZillaSlab-LightItalic.woff2") format("woff2");
-    font-weight: 300;
-    font-style: italic;
-    font-display: optional;
+	font-family: "Zilla Slab";
+	src: url("/fonts/ZillaSlab-LightItalic.woff2") format("woff2");
+	font-weight: 300;
+	font-style: italic;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Zilla Slab";
-    src: url("/fonts/ZillaSlab-Regular.woff2") format("woff2");
-    font-weight: 400;
-    font-style: normal;
-    font-display: optional;
+	font-family: "Zilla Slab";
+	src: url("/fonts/ZillaSlab-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Zilla Slab";
-    src: url("/fonts/ZillaSlab-MediumItalic.woff2") format("woff2");
-    font-weight: 500;
-    font-style: italic;
-    font-display: optional;
+	font-family: "Zilla Slab";
+	src: url("/fonts/ZillaSlab-MediumItalic.woff2") format("woff2");
+	font-weight: 500;
+	font-style: italic;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Zilla Slab";
-    src: url("/fonts/ZillaSlab-SemiBold.woff2") format("woff2");
-    font-weight: 600;
-    font-style: normal;
-    font-display: optional;
+	font-family: "Zilla Slab";
+	src: url("/fonts/ZillaSlab-SemiBold.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Zilla Slab";
-    src: url("/fonts/ZillaSlab-SemiBoldItalic.woff2") format("woff2");
-    font-weight: 600;
-    font-style: italic;
-    font-display: optional;
+	font-family: "Zilla Slab";
+	src: url("/fonts/ZillaSlab-SemiBoldItalic.woff2") format("woff2");
+	font-weight: 600;
+	font-style: italic;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Zilla Slab";
-    src: url("/fonts/ZillaSlab-Bold.woff2") format("woff2");
-    font-weight: 700;
-    font-style: normal;
-    font-display: optional;
+	font-family: "Zilla Slab";
+	src: url("/fonts/ZillaSlab-Bold.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Zilla Slab";
-    src: url("/fonts/ZillaSlab-BoldItalic.woff2") format("woff2");
-    font-weight: 700;
-    font-style: italic;
-    font-display: optional;
+	font-family: "Zilla Slab";
+	src: url("/fonts/ZillaSlab-BoldItalic.woff2") format("woff2");
+	font-weight: 700;
+	font-style: italic;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Commissioner";
-    src:
-        url("/fonts/Commissioner-Variable.woff2") format("woff2")
-            tech("variations"),
-        url("/fonts/Commissioner-Variable.woff2") format("woff2-variations");
-    font-weight: 100 900;
-    font-stretch: 75% 125%;
-    font-style: normal;
-    font-display: optional;
+	font-family: "Commissioner";
+	src:
+		url("/fonts/Commissioner-Variable.woff2") format("woff2") tech("variations"),
+		url("/fonts/Commissioner-Variable.woff2") format("woff2-variations");
+	font-weight: 100 900;
+	font-stretch: 75% 125%;
+	font-style: normal;
+	font-display: optional;
 }
 
 @font-face {
-    font-family: "Recursive";
-    src:
-        url("/fonts/Recursive-Variable.woff2") format("woff2")
-            tech("variations"),
-        url("/fonts/Recursive-Variable.woff2") format("woff2-variations");
-    font-weight: 300 1000;
-    font-style: oblique 0deg 15deg;
-    font-display: optional;
+	font-family: "Recursive";
+	src:
+		url("/fonts/Recursive-Variable.woff2") format("woff2") tech("variations"),
+		url("/fonts/Recursive-Variable.woff2") format("woff2-variations");
+	font-weight: 300 1000;
+	font-style: oblique 0deg 15deg;
+	font-display: optional;
 }
 
 @utility codeblock-reset {
-    & pre {
-        background-color: transparent !important;
-        overflow: visible !important;
-        margin: 0;
-        padding: 0;
-        font-family: inherit;
-        font-variation-settings: inherit;
-        font-size: inherit;
-        line-height: inherit;
-    }
-    & code {
-        font-family: inherit;
-        font-variation-settings: inherit;
-        font-size: inherit;
-        line-height: inherit;
-    }
+	& pre {
+		background-color: transparent;
+		overflow: visible;
+		margin: 0;
+		padding: 0;
+		font-family: inherit;
+		font-variation-settings: inherit;
+		font-size: inherit;
+		line-height: inherit;
+	}
+	& code {
+		font-family: inherit;
+		font-variation-settings: inherit;
+		font-size: inherit;
+		line-height: inherit;
+	}
 }
 
 @utility scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-        display: none;
-    }
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+/* iOS-style chat bubble tail (bottom-right) */
+@utility chat-bubble-tail {
+	&::before {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		right: -7px;
+		width: 20px;
+		height: 25px;
+		background-color: #0b93f6;
+		border-bottom-left-radius: 16px 14px;
+	}
+	&::after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		right: -26px;
+		width: 26px;
+		height: 25px;
+		background-color: #fff;
+		border-bottom-left-radius: 10px;
+	}
 }
 
 @theme {
-    /* Colors */
-    --color-parchment: #f4f5f0; /* background */
-    --color-charcoal: #242a2d; /* text primary */
-    --color-slate: #868b72; /* text secondary */
-    --color-mist: #ecede7; /* sidebar background */
-    --color-fog: #dbddd3; /* border */
+	/* Colors */
+	--color-parchment: #f4f5f0; /* background */
+	--color-charcoal: #242a2d; /* text primary */
+	--color-slate: #868b72; /* text secondary */
+	--color-mist: #ecede7; /* sidebar background */
+	--color-fog: #dbddd3; /* border */
 
-    /* Fonts */
-    --font-serif: "Zilla Slab", serif;
-    --font-sans: "Commissioner", sans-serif;
-    --font-mono: "Recursive", ui-monospace, monospace;
+	/* Fonts */
+	--font-serif: "Zilla Slab", serif;
+	--font-sans: "Commissioner", sans-serif;
+	--font-mono: "Recursive", ui-monospace, monospace;
 
-    /* Fluid Type Scale — Utopia 360→1440 */
-    --text-xs: clamp(0.6944rem, 0.6593rem + 0.1564vw, 0.8rem);
-    --text-sm: clamp(0.8333rem, 0.7778rem + 0.2469vw, 1rem);
-    --text-base: clamp(1rem, 0.9167rem + 0.3704vw, 1.25rem);
-    --text-lg: clamp(1.2rem, 1.0792rem + 0.537vw, 1.5625rem);
-    --text-xl: clamp(1.44rem, 1.269rem + 0.7602vw, 1.9531rem);
-    --text-2xl: clamp(1.728rem, 1.4902rem + 1.0569vw, 2.4414rem);
-    --text-3xl: clamp(2.0736rem, 1.7475rem + 1.4491vw, 3.0518rem);
-    --text-4xl: clamp(2.4883rem, 2.0462rem + 1.965vw, 3.8147rem);
-    --text-5xl: clamp(2.986rem, 2.3919rem + 2.6406vw, 4.7684rem);
-    --text-6xl: clamp(3.5832rem, 2.7908rem + 3.5219vw, 5.9605rem);
-    --text-7xl: clamp(4.2998rem, 3.2496rem + 4.6678vw, 7.4506rem);
+	/* Fluid Type Scale — Utopia 360→1440 */
+	--text-xs: clamp(0.6944rem, 0.6593rem + 0.1564vw, 0.8rem);
+	--text-sm: clamp(0.8333rem, 0.7778rem + 0.2469vw, 1rem);
+	--text-base: clamp(1rem, 0.9167rem + 0.3704vw, 1.25rem);
+	--text-lg: clamp(1.2rem, 1.0792rem + 0.537vw, 1.5625rem);
+	--text-xl: clamp(1.44rem, 1.269rem + 0.7602vw, 1.9531rem);
+	--text-2xl: clamp(1.728rem, 1.4902rem + 1.0569vw, 2.4414rem);
+	--text-3xl: clamp(2.0736rem, 1.7475rem + 1.4491vw, 3.0518rem);
+	--text-4xl: clamp(2.4883rem, 2.0462rem + 1.965vw, 3.8147rem);
+	--text-5xl: clamp(2.986rem, 2.3919rem + 2.6406vw, 4.7684rem);
+	--text-6xl: clamp(3.5832rem, 2.7908rem + 3.5219vw, 5.9605rem);
+	--text-7xl: clamp(4.2998rem, 3.2496rem + 4.6678vw, 7.4506rem);
 
-    /* Grid */
-    --grid-template-columns-16: repeat(16, minmax(0, 1fr));
+	/* Grid */
+	--grid-template-columns-16: repeat(16, minmax(0, 1fr));
 
-    /* Animations */
-    --animate-vinyl: vinyl-spin 1.8182s linear infinite;
+	/* Animations */
+	--animate-vinyl: vinyl-spin 1.8182s linear infinite;
 }
 
 /* Widget strip fluid scale — 360px → 1024px, non-linear via pow()
@@ -174,110 +196,51 @@
    pow(t, 0.4) = front-loaded curve: grows fast from mobile, plateaus toward desktop
    Adjust exponent: lower = more front-loaded, higher = more back-loaded */
 :root {
-    --widget-t: clamp(0, (100vw - 22.5rem) / (41.5rem), 1);
-    --widget-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1));
-    --lp-scale: calc((0.9 + 0.2 * pow(var(--widget-t), 0.1)) * -4rem);
+	--widget-t: clamp(0, (100vw - 22.5rem) / (41.5rem), 1);
+	--widget-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1));
+	--lp-scale: calc((0.9 + 0.2 * pow(var(--widget-t), 0.1)) * -4rem);
 }
 
 @keyframes vinyl-spin {
-    to {
-        transform: rotate(360deg);
-    }
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-    :root {
-        --animate-vinyl: none;
-    }
+	:root {
+		--animate-vinyl: none;
+	}
 }
 
 /* ── Sidenote Citation Counters ─────────────────── */
 
 .prose {
-    counter-reset: sidenote;
+	counter-reset: sidenote;
 }
 
 .sidenote-ref {
-    counter-increment: sidenote;
+	counter-increment: sidenote;
 
-    &::after {
-        content: counter(sidenote);
-        font-size: 0.75em;
-    }
+	&::after {
+		content: counter(sidenote);
+		font-size: 0.75em;
+	}
 }
 
 .sidenote-citation::before {
-    content: counter(sidenote);
-    font-weight: 600;
-    vertical-align: super;
-    font-size: 0.75em;
-    margin-right: 0.25em;
+	content: counter(sidenote);
+	font-weight: 600;
+	vertical-align: super;
+	font-size: 0.75em;
+	margin-right: 0.25em;
 }
 
 /* ── Font Variation Utilities ──────────────────── */
 
-/* Commissioner axes: FLAR (flare 0–100), VOLM (volume 0–100) */
-
-@utility flare-* {
-    --tw-fvar-flar: *;
-    font-variation-settings:
-        "FLAR" var(--tw-fvar-flar, 0),
-        "VOLM" var(--tw-fvar-volm, 0);
-}
-
-@utility volm-* {
-    --tw-fvar-volm: *;
-    font-variation-settings:
-        "FLAR" var(--tw-fvar-flar, 0),
-        "VOLM" var(--tw-fvar-volm, 0);
-}
-
-/* Recursive axes: MONO (0–1), CASL (casual 0–1), CRSV (cursive 0–1) */
-
-@utility mono-* {
-    --tw-rvar-mono: *;
-    font-variation-settings:
-        "MONO" var(--tw-rvar-mono, 1),
-        "CASL" var(--tw-rvar-casl, 0),
-        "CRSV" var(--tw-rvar-crsv, 0);
-}
-
-@utility casual-* {
-    --tw-rvar-casl: *;
-    font-variation-settings:
-        "MONO" var(--tw-rvar-mono, 1),
-        "CASL" var(--tw-rvar-casl, 0),
-        "CRSV" var(--tw-rvar-crsv, 0);
-}
-
-@utility cursive-* {
-    --tw-rvar-crsv: *;
-    font-variation-settings:
-        "MONO" var(--tw-rvar-mono, 1),
-        "CASL" var(--tw-rvar-casl, 0),
-        "CRSV" var(--tw-rvar-crsv, 0);
-}
-
-/* iOS-style chat bubble tail (bottom-right) */
-@utility chat-bubble-tail {
-    &::before {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        right: -7px;
-        width: 20px;
-        height: 25px;
-        background-color: #0b93f6;
-        border-bottom-left-radius: 16px 14px;
-    }
-    &::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        right: -26px;
-        width: 26px;
-        height: 25px;
-        background-color: #fff;
-        border-bottom-left-radius: 10px;
-    }
+@utility mono-1 {
+	font-variation-settings:
+		"MONO" 1,
+		"CASL" 0,
+		"CRSV" 0;
 }
