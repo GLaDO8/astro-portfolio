@@ -1,4 +1,5 @@
 ---
+import { Font } from "astro:assets";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
 import AgentationToolbar from "@/components/AgentationToolbar";
@@ -31,27 +32,9 @@ const isDev = import.meta.env.DEV;
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
         <SEO title={title} description={description} {...seo} />
-        <link
-            rel="preload"
-            href="/fonts/ZillaSlab-Bold.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin
-        />
-        <link
-            rel="preload"
-            href="/fonts/ZillaSlab-MediumItalic.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin
-        />
-        <link
-            rel="preload"
-            href="/fonts/Commissioner-Variable.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin
-        />
+        <Font cssVariable="--font-zilla-slab" />
+        <Font cssVariable="--font-commissioner" />
+        <Font cssVariable="--font-recursive" />
     </head>
     <body class={bodyClass}>
         <a

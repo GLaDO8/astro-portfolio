@@ -22,91 +22,6 @@
 	}
 }
 
-@font-face {
-	font-family: "Zilla Slab";
-	src: url("/fonts/ZillaSlab-Light.woff2") format("woff2");
-	font-weight: 300;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Zilla Slab";
-	src: url("/fonts/ZillaSlab-LightItalic.woff2") format("woff2");
-	font-weight: 300;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Zilla Slab";
-	src: url("/fonts/ZillaSlab-Regular.woff2") format("woff2");
-	font-weight: 400;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Zilla Slab";
-	src: url("/fonts/ZillaSlab-MediumItalic.woff2") format("woff2");
-	font-weight: 500;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Zilla Slab";
-	src: url("/fonts/ZillaSlab-SemiBold.woff2") format("woff2");
-	font-weight: 600;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Zilla Slab";
-	src: url("/fonts/ZillaSlab-SemiBoldItalic.woff2") format("woff2");
-	font-weight: 600;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Zilla Slab";
-	src: url("/fonts/ZillaSlab-Bold.woff2") format("woff2");
-	font-weight: 700;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Zilla Slab";
-	src: url("/fonts/ZillaSlab-BoldItalic.woff2") format("woff2");
-	font-weight: 700;
-	font-style: italic;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Commissioner";
-	src:
-		url("/fonts/Commissioner-Variable.woff2") format("woff2") tech("variations"),
-		url("/fonts/Commissioner-Variable.woff2") format("woff2-variations");
-	font-weight: 100 900;
-	font-stretch: 75% 125%;
-	font-style: normal;
-	font-display: optional;
-}
-
-@font-face {
-	font-family: "Recursive";
-	src:
-		url("/fonts/Recursive-Variable.woff2") format("woff2") tech("variations"),
-		url("/fonts/Recursive-Variable.woff2") format("woff2-variations");
-	font-weight: 300 1000;
-	font-style: oblique 0deg 15deg;
-	font-display: optional;
-}
-
 @utility codeblock-reset {
 	& pre {
 		background: transparent !important;
@@ -167,11 +82,6 @@
 	--color-mist: #ecede7; /* sidebar background */
 	--color-fog: #dbddd3; /* border */
 
-	/* Fonts */
-	--font-serif: "Zilla Slab", serif;
-	--font-sans: "Commissioner", sans-serif;
-	--font-mono: "Recursive", ui-monospace, monospace;
-
 	/* Fluid Type Scale — Utopia 360→1440 */
 	--text-xs: clamp(0.6944rem, 0.6593rem + 0.1564vw, 0.8rem);
 	--text-sm: clamp(0.8333rem, 0.7778rem + 0.2469vw, 1rem);
@@ -190,6 +100,12 @@
 
 	/* Animations */
 	--animate-vinyl: vinyl-spin 1.8182s linear infinite;
+}
+
+@theme inline {
+	--font-serif: var(--font-zilla-slab);
+	--font-sans: var(--font-commissioner);
+	--font-mono: var(--font-recursive);
 }
 
 /* Widget strip fluid scale — 360px → 1024px, non-linear via pow()
