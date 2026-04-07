@@ -1,0 +1,319 @@
+---
+title: "Hot text: building fun question types for state test prep"
+subtitle: "Bringing State Test Parity to Wayground"
+description: "A design case study on creating engaging hot text question types for Wayground's state test preparation platform."
+date: 2025-06-01
+tags: ["product-design", "edtech"]
+theme: "hot-text"
+draft: true
+---
+
+## What's Wayground?
+
+Wayground is an education platform helping teachers and school admins drive student outcomes with tools to create content like assessments & lessons, track student understanding, content libraries and more.
+
+Wayground's premium plan lets teachers create assessments without any limits, and gives them access to premium question types like Labeling.
+
+## Problem statement
+
+The project began as part of a broader effort to **improve the premium question type experience** across the platform, specifically QT creation experience for teachers and ease-of-use for students, so that teachers built greater trust in premium features over time.
+
+We started with the Labelling QT, which was commonly used by science, biology and social studies teachers to ask questions like "label the parts of a flower" & "Annotate the map with landmarks". It had the highest drop off rates of all premium question types as it was tedious and unintuitive to create.
+
+## How Labelling QT originally worked
+
+In the old experience, teachers created a labeling question inside a WYSIWYG-style editor that mirrored what students would eventually see.
+
+[image or illustration of how the old creation UI looked like, maybe a isometric layout of 3-4 creation UI that show the steps that teachers have to take]
+
+In theory, this seemed logical. In practice, it made creation awkward and confusing. Using a combination of Hotjar recording analysis, calls with teachers and usage metrics, we identified various problems with the old flow.
+
+[bento of problems teachers faced when creating Labelling questions]
+Problems
+1. most labelling questions had a simple question prompt like "label this image" and having that upfront was unnecessary
+2. Image selected was the first thing most teachers did, but the UI didn't mimic the teacher flow and added complexity
+3. Teachers were leaving the platform to search for images in google, when they can search for images on the platform itself. Our UI didn't do a great job in educating that we had platform google image search support. 
+4. Many images that were searched on google images had labels already present on the image. 
+5. It was tedious to create all the labels and position them manually. 
+6. Sometimes the labels covered important segments of the image. 
+7. Teachers wanted to directly manipulate labels on the image, but they couldn't.
+
+## The key insight
+
+The biggest insight was:
+
+> **Teachers don’t start by writing a labeling question. They start by choosing an image.**
+
+That sounds obvious in retrospect, but it changed the entire direction of the project.
+
+Initially, we explored iterations within the existing WYSIWYG structure. But those only reduced local friction. They did not solve the underlying problem, which was that the flow itself started in the wrong place.
+
+Once we aligned the experience with teacher intent, the redesign became much clearer:
+- lead with image selection
+- simplify or defer everything else
+- use AI after image selection, not before
+- keep teachers in control
+
+---
+
+## Our design principles
+
+A few principles guided the redesign:
+
+### 1. Start where teacher intent actually starts
+For labeling, that is the image.
+
+### 2. Reduce blank-page burden
+Once an image is selected, the likely questions and labels are often constrained enough that the system can help meaningfully.
+
+### 3. Don’t force prompting
+In 2024, a lot of AI product thinking was drifting toward “add a prompt box and call it innovation.” We intentionally avoided that.
+
+Prompting was a poor fit here for several reasons:
+- teachers were still relatively new to AI workflows
+- prompting adds cognitive load
+- image generation quality was not reliable enough
+- teachers usually already had or wanted a real diagram/image
+
+Instead of asking teachers to describe what they wanted, we used the image they had already chosen as the source of truth.
+
+### 4. AI should accelerate the workflow, not replace teacher judgment
+Teachers should be able to accept help quickly, but still edit everything:
+- question text
+- labels
+- label placement
+- label orientation
+
+---
+
+## How we approached the redesign
+
+We redesigned the flow to be **image-first**.
+
+Instead of dropping teachers into a full question editor immediately, we centered the workflow around the one action that mattered most: **pick the image first**.
+
+Once a teacher selected an image, the system would:
+1. analyze the image
+2. generate a set of plausible labeling questions
+3. generate corresponding labels
+4. preview those labels on hover
+5. let the teacher choose one and continue editing manually
+
+This made the creation flow feel much closer to how teachers already worked:
+- choose the diagram
+- review likely question directions
+- pick one
+- fine-tune as needed
+
+[**Add a flow diagram here: Old flow vs Image-first flow**]
+
+---
+
+## The final V1 experience
+
+### Step 1: Image selection came first
+We brought image selection to the front of the experience instead of burying it inside a generic editor structure.
+
+We also made it easier for teachers to discover and use in-product Google image search, reducing the need to leave the platform.
+
+### Step 2: We improved image search quality
+Teachers could explicitly search for images **without labels**, which helped reduce bad inputs and saved time filtering through unusable diagrams.
+
+### Step 3: AI understood the chosen image
+After an image was uploaded or selected, we showed a loading shimmer while the system analyzed it.
+
+### Step 4: The system generated possible questions
+Within a few seconds, teachers saw multiple plausible questions they could ask based on that image.
+
+For example, if a teacher uploaded an image of a heart, the system could generate several likely labeling prompts relevant to that diagram.
+
+### Step 5: Hovering on a suggestion previewed the labels
+This was a key interaction. As the teacher hovered over different generated question suggestions, they could see a preview of the labels associated with that suggestion.
+
+This turned the AI output into something teachers could evaluate quickly and visually, instead of reading abstract text and imagining the result.
+
+### Step 6: Teachers could accept, then edit
+Once a teacher selected a suggestion:
+- the question was added
+- the labels were created
+- the teacher could still:
+  - rename labels
+  - delete labels
+  - add new labels manually
+  - reposition them
+  - adjust label orientation (top, bottom, left, right, etc.)
+
+That balance was important. The AI gave teachers a fast starting point, but the final output still remained editable and trustworthy.
+
+[**Add UI sequence here: image selected → shimmer → suggestion list → hover preview → accepted state**]
+
+---
+
+## My contribution
+
+I was the product designer on a small working team of:
+- 1 PM
+- 1 engineer
+- 1 designer (me)
+
+My contribution went beyond screens.
+
+I:
+- identified the **image-first opportunity**
+- helped define how and where **AI should enter the workflow**
+- designed the **hover preview interaction**
+- worked on **prompt design** alongside my PM
+- thought through the **coordinate system and placement logic** for labels
+- designed for different **image aspect ratios and sizes**
+- worked closely with engineering on implementation details
+- later influenced the **V2 auto-placement work** as vision model capabilities improved
+
+This project was one of my earliest examples at Wayground of working not just as a UI designer, but as someone shaping the logic of the system itself: workflow, AI behavior, interaction design, and implementation constraints together.
+
+---
+
+## Hurdles and constraints
+
+This project had real constraints, especially in 2024.
+
+### 1. Vision models were much weaker than they are today
+We could not assume reliable, pixel-perfect image understanding or placement.
+
+### 2. Latency mattered
+Even when the generation itself worked, the experience could feel slow. We had to design the system to feel responsive and understandable while processing happened in the background.
+
+### 3. Accuracy and hallucination risk
+If the system generated wrong labels or implausible questions, teachers would lose trust quickly. We spent a lot of effort on prompt design to improve output quality and reduce hallucinations.
+
+### 4. Label placement was especially hard
+One of the most technically interesting problems was figuring out where labels should go.
+
+We initially experimented with a grid-based approach:
+- divide the image into a grid
+- ask the model to indicate the likely region for each label
+- convert that into coordinates for placement
+
+This was conceptually clever, but in 2024 it was not accurate enough to fully trust.
+
+As a result, the initial launch focused on:
+- generating the question
+- generating the labels
+- previewing them
+- preserving manual control
+
+Later, in 2026, we improved auto-placement as the underlying capabilities got better.
+
+[**Add a visual here explaining the early grid-based placement idea**]
+
+---
+
+## Iterations
+
+We explored several iterations before arriving at the final solution.
+
+Much of the early work focused on improving the existing WYSIWYG editor:
+- reorganizing sections
+- simplifying the layout
+- reducing visible complexity
+- making the label workflow easier to discover
+
+These iterations were useful, but they were ultimately incremental. They reduced friction without fixing the root issue.
+
+The breakthrough came when we stopped trying to optimize the old structure and instead asked a more basic question:
+
+**What is the first thing a teacher is actually trying to do here?**
+
+That question led us to the image-first flow.
+
+This is worth calling out because the final solution did not come from polishing UI surfaces harder. It came from recognizing that the system was anchored around the wrong starting point.
+
+---
+
+## Why this project was unique
+
+What makes this project meaningful to me is not just that it improved a workflow, but **how** it used AI.
+
+In 2024, the most obvious way to make something “AI-powered” was to add a prompt box. We deliberately chose not to do that.
+
+Instead, we built AI into the existing teacher workflow:
+- the teacher picks an image
+- the system understands the image
+- it proposes likely questions and labels
+- the teacher reviews visually
+- the teacher stays in control
+
+That made the AI feel:
+- faster
+- less intimidating
+- more aligned with teacher intent
+- more useful in practice
+
+To me, this was a stronger model of AI product design: **don’t ask users to speak AI’s language when the system can meet them in theirs.**
+
+---
+
+## Impact
+
+The redesign meaningfully improved the creation experience for Labeling.
+
+### Quantitative outcomes
+- **Save rate increased from ~48–52% to ~75%**
+- **Average creation time reduced from ~8 minutes to ~5.5–6 minutes**
+- **AI suggestions were accepted about 1 in 3 times**
+- **Labeling question creation volume increased**, though not dramatically
+
+### Qualitative outcomes
+- the flow became much easier for new users to understand
+- teachers had less manual setup work
+- the question type became a much better demo surface for premium value
+- internally, it helped shift perception of what useful AI in Wayground could look like
+
+This was also one of the first strong examples at Wayground of **AI being deeply integrated into product workflow**, rather than existing as a standalone novelty.
+
+[**Add metric chart + maybe a small quote/callout from internal reception or demo impact**]
+
+---
+
+## What shipped in V1 vs later
+
+### V1 (2024)
+- image-first entry into the workflow
+- improved discovery of in-product image search
+- explicit “no labels” refinement for better image results
+- AI-generated question suggestions based on image understanding
+- hover preview of generated labels
+- editable output after acceptance:
+  - rename
+  - delete
+  - add manually
+  - reposition
+  - change label orientation
+
+### Later improvements (2026)
+- more reliable automatic label placement, enabled by stronger vision capabilities
+
+This split matters because it shows that the workflow redesign itself delivered value even before the underlying placement models became significantly better.
+
+---
+
+## Reflection
+
+This project taught me a few things that still shape how I think about product design:
+
+### 1. Good workflow design often starts by questioning the sequence, not the UI
+We could have kept polishing the old editor for much longer. The real unlock came from rethinking where the flow starts.
+
+### 2. AI works best when it is grounded in existing user intent
+A prompt box would have been the lazier solution. Using the chosen image as the input made the experience both smarter and simpler.
+
+### 3. Automation needs editability
+Trust came not from perfect generation, but from giving teachers a strong starting point while preserving full control.
+
+### 4. Product design sometimes means designing the system, not just the screen
+The work here involved interaction design, prompt design, coordinate logic, implementation realities, latency handling, and aspect-ratio behavior — not just layout decisions.
+
+---
+
+## TL;DR
+
+Labeling was a high-value but frustrating premium question type. By recognizing that teachers start with the image — not the question text — we redesigned the flow around an image-first workflow and used AI to generate relevant questions and labels at the right moment. The result was a faster, simpler creation experience that improved save rate substantially and became an early example of workflow-native AI at Wayground.
