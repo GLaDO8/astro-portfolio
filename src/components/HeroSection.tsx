@@ -42,7 +42,7 @@ export default function HeroSection() {
 
   return (
     <section className="w-full flex flex-col items-start gap-6">
-      <h1 className="m-0 text-pretty font-serif text-3xl leading-[0.98] font-semibold text-charcoal">
+      <h1 className="m-0 text-pretty font-serif text-2xl leading-[0.98] font-semibold text-charcoal">
         <span className="text-charcoal">Shreyas</span>{" "}
         {/* initial={false} skips animation on the first render */}
         <AnimatePresence mode="wait" initial={false}>
