@@ -4,30 +4,30 @@ import { useState } from "react";
 const POLAROIDS = [
   {
     src: "/snaps/DSCF4135-Enhanced-NR-2.webp",
-    rotate: 23.83,
-    tx: 257.6,
-    ty: -34.2,
-    fanRotate: 35,
-    fanTx: 270,
+    rotate: 19,
+    tx: 250,
+    ty: -40,
+    fanRotate: 22,
+    fanTx: 260,
     fanTy: -50,
   },
   {
     src: "/snaps/DSCF4283.webp",
-    rotate: -17.18,
-    tx: 140.7,
-    ty: 12.9,
-    fanRotate: -30,
-    fanTx: 110,
-    fanTy: 5,
+    rotate: -5,
+    tx: 160,
+    ty: 15,
+    fanRotate: -8,
+    fanTx: 155,
+    fanTy: 0,
   },
   {
     src: "/snaps/DSCF4449.webp",
-    rotate: 10.45,
-    tx: 200.9,
-    ty: 45.3,
-    fanRotate: 18,
-    fanTx: 225,
-    fanTy: 60,
+    rotate: 26,
+    tx: 250,
+    ty: 45,
+    fanRotate: 32,
+    fanTx: 270,
+    fanTy: 38,
   },
 ] as const;
 
@@ -37,21 +37,17 @@ export default function SnapsWidget() {
 
   return (
     <div
-      className="w-75 h-50 rounded-2xl shrink-0 relative bg-[#bdda7d] overflow-visible cursor-pointer"
+      className="w-75 h-44 rounded-2xl shrink-0 relative bg-[#bdda7d] overflow-visible cursor-pointer"
       onPointerEnter={() => setIsHovered(true)}
       onPointerLeave={() => setIsHovered(false)}
     >
       {/* Text content — flexbox column */}
-      <div className="flex flex-col justify-between h-full p-6">
-        <div className="font-sans font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
+      <div className="flex flex-col h-full p-6">
+        <div className="font-sans font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)] pb-4">
           Snaps
         </div>
-        <div className="font-sans font-bold text-[12px] leading-4 tracking-[-0.02em] text-[#607139]">
-          Fuji X100V
-          <br />
-          iPhone
-          <br />
-          Kodak Charmera
+        <div className="font-sans font-medium text-md tracking-[-0.02em] text-[#607139]">
+          Poetry from my camera
         </div>
       </div>
       <AnimatePresence initial={false}>
