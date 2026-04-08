@@ -13,21 +13,34 @@ const links = [
 ---
 
 <nav
-    class="flex items-center justify-end h-8 px-5 font-sans text-sm tracking-tight"
+    class="flex items-center justify-end font-sans text-sm tracking-tight"
 >
-    <div class="flex items-center gap-1">
+    <div
+        class="relative flex items-center rounded-full bg-mist/80 p-1 shadow-[0_1px_3px_rgba(36,42,45,0.08),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[2px]"
+        data-navbar-track
+    >
+        <span
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-y-1 left-1 rounded-full bg-parchment shadow-[0_1px_2px_rgba(36,42,45,0.08),0_8px_18px_rgba(36,42,45,0.06)] transition-[transform,width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            data-navbar-indicator
+        ></span>
         {
             links.map(({ href, label }) => {
-                const isActive = currentPath === href;
+                const isActive =
+                    href === "/"
+                        ? currentPath === href
+                        : currentPath === href || currentPath.startsWith(`${href}/`);
                 return (
                     <a
                         href={href}
                         class:list={[
-                            "px-3 py-1 font-semibold transition-colors",
+                            "relative z-10 rounded-full px-4 py-2 font-semibold transition-[color,transform] duration-200",
                             isActive
-                                ? "bg-charcoal text-white"
-                                : "text-charcoal hover:text-charcoal",
+                                ? "text-charcoal"
+                                : "text-slate hover:text-charcoal",
                         ]}
+                        aria-current={isActive ? "page" : undefined}
+                        data-navbar-link
                     >
                         {label}
                     </a>
@@ -36,3 +49,37 @@ const links = [
         }
     </div>
 </nav>
+
+<script>
+    const track = document.querySelector<HTMLElement>("[data-navbar-track]");
+    const indicator = track?.querySelector<HTMLElement>("[data-navbar-indicator]");
+    const links = track
+        ? Array.from(track.querySelectorAll<HTMLElement>("[data-navbar-link]"))
+        : [];
+
+    if (track && indicator && links.length > 0) {
+        const activeLink =
+            links.find((link) => link.getAttribute("aria-current") === "page") ??
+            links[0];
+
+        const moveIndicator = (link: HTMLElement) => {
+            const trackRect = track.getBoundingClientRect();
+            const linkRect = link.getBoundingClientRect();
+            indicator.style.width = `${linkRect.width}px`;
+            indicator.style.transform = `translateX(${linkRect.left - trackRect.left}px)`;
+            indicator.style.opacity = "1";
+        };
+
+        const resetIndicator = () => moveIndicator(activeLink);
+
+        resetIndicator();
+        window.addEventListener("resize", resetIndicator);
+
+        for (const link of links) {
+            link.addEventListener("pointerenter", () => moveIndicator(link));
+            link.addEventListener("focus", () => moveIndicator(link));
+            link.addEventListener("pointerleave", resetIndicator);
+            link.addEventListener("blur", resetIndicator);
+        }
+    }
+</script>

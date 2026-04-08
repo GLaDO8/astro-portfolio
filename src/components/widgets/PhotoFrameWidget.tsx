@@ -10,17 +10,17 @@ export default function PhotoFrameWidget({ src, alt = "Photo" }: Props) {
 
 	return (
 		<motion.div
-			className="w-54 h-50 shrink-0 relative"
+			className="relative h-56 w-60 shrink-0 md:h-64 md:w-64"
 			whileHover={shouldReduceMotion ? undefined : { rotate: -4 }}
 			transition={{ type: "spring", stiffness: 600, damping: 20 }}
 		>
 			<img
 				src={src}
 				alt={alt}
-				className="block w-5/6 h-5/6 -rotate-6 border-5 border-white bg-white object-cover shadow-lg rounded-sm"
+				className="block h-[84%] w-[84%] -rotate-6 rounded-sm bg-white object-cover p-1.5 shadow-[0_12px_30px_rgba(42,35,29,0.14)]"
 			/>
-			<div className="absolute left-28 top-28 -rotate-8">
-				<img src="/postit-me.svg" alt="Post-it note saying Me!" width={80} height={105} />
+			<div className="absolute left-34 top-31 -rotate-8 md:left-36 md:top-34">
+				<img src="/postit-me.svg" alt="Post-it note saying Me!" width={86} height={113} />
 			</div>
 		</motion.div>
 	);

@@ -10,33 +10,18 @@ interface Props {
 const { currentPath, containerClass, mainClass } = Astro.props;
 ---
 
-<!-- Full-width horizontal borders -->
-<div
-    class="fixed top-16 inset-x-0 border-b border-fog pointer-events-none z-50"
->
-</div>
-<div
-    class="fixed top-24 inset-x-0 border-b border-fog pointer-events-none z-50"
->
-</div>
-
 <div
     class:list={[
-        "relative flex max-w-7xl mx-auto min-h-dvh border-fog",
+        "relative mx-auto flex min-h-dvh max-w-7xl flex-col px-5 pb-10 pt-4",
         containerClass,
     ]}
 >
-    <slot name="sidebar" />
+    <Navbar currentPath={currentPath} />
 
-    <div
-        class="flex-1 min-w-0 flex flex-col border-x border-fog pt-16"
-    >
-        <div
-            class="sticky top-16 z-40 bg-parchment before:absolute before:-top-16 before:left-0 before:h-16 before:w-full before:bg-parchment before:content-['']"
-        >
-            <Navbar currentPath={currentPath} />
-        </div>
-        <main id="main-content" class:list={["flex-1", mainClass]}>
+    <div class="mt-6 flex min-w-0 flex-1 gap-18">
+        <slot name="sidebar" />
+
+        <main id="main-content" class:list={["min-w-0 flex-1", mainClass]}>
             <slot />
         </main>
     </div>

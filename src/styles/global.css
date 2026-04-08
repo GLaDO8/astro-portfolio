@@ -76,11 +76,11 @@
 
 @theme {
 	/* Colors */
-	--color-parchment: #f4f5f0; /* background */
-	--color-charcoal: #242a2d; /* text primary */
-	--color-slate: #868b72; /* text secondary */
-	--color-mist: #ecede7; /* sidebar background */
-	--color-fog: #dbddd3; /* border */
+	--color-parchment: #f7f2e8; /* background */
+	--color-charcoal: #2a231d; /* text primary */
+	--color-slate: #7a715f; /* text secondary */
+	--color-mist: #eee5d7; /* soft surface */
+	--color-fog: #ddd2c1; /* subtle divider */
 
 	/* Fluid Type Scale — Utopia 360→1440 */
 	--text-xs: clamp(0.6944rem, 0.6593rem + 0.1564vw, 0.8rem);

@@ -76,10 +76,10 @@ export default function MusicWidget({ songData }: Props) {
 	}, []);
 
 	return (
-		<div className="w-75 h-50 shrink-0 relative bg-white rounded-2xl shadow-lg flex flex-col justify-end">
+		<div className="relative flex h-full min-h-[12.5rem] w-full shrink-0 flex-col justify-end rounded-[1.4rem] bg-[#dfe4cf] shadow-[inset_0_0_0_1px_rgba(122,113,95,0.12),0_12px_28px_rgba(42,35,29,0.08)]">
 			{/* iOS chat bubble — anchored top-left, overflows container */}
 			{songData.message && (
-				<div className="absolute -left-25 -top-5 z-30">
+				<div className="absolute -left-6 top-[-1rem] z-30 md:-left-9">
 					<div className="chat-bubble-tail relative bg-[#0b93f6] text-white font-sans text-[13px] leading-4.5 rounded-2xl px-4 py-2 max-w-50">
 						{songData.message}
 					</div>
@@ -87,20 +87,23 @@ export default function MusicWidget({ songData }: Props) {
 			)}
 
 			{/* Song info text — flex-pushed to bottom */}
-			<div className="flex flex-col pl-6 pb-6">
-				<span className="font-sans font-bold text-[12px] text-[#7f964c] tracking-[-0.3px] uppercase pb-2">
+			<div className="flex flex-col pl-6 pb-5 md:pl-6">
+				<span className="pb-2 font-sans text-[12px] font-bold uppercase tracking-[-0.3px] text-[#7f964c]">
 					{songData.label}
 				</span>
-				<span className="font-sans font-bold text-[24px] tracking-[-0.4px] text-black leading-none pb-1">
+				<span className="pb-1 font-sans text-[24px] leading-none font-bold tracking-[-0.4px] text-charcoal">
 					{songData.artist}
 				</span>
-				<span className="font-sans font-normal text-[20px] tracking-[-0.48px] text-gray-400">
+				<span className="font-sans text-[20px] font-normal tracking-[-0.48px] text-charcoal/78">
 					{songData.title}
 				</span>
 			</div>
 
 			{/* Record player assembly */}
-			<div ref={recordRef} className="absolute left-35 top-[-65px] w-55 h-55">
+			<div
+				ref={recordRef}
+				className="absolute right-[-2.8rem] top-[-0.9rem] h-55 w-55 md:right-[-3.2rem] md:top-[-0.8rem]"
+			>
 				{/* Static shadow — decoupled from animation to avoid per-frame filter recomputation */}
 				<div className="absolute inset-0 flex items-center justify-center pointer-events-none">
 					<div className="w-[158px] h-[158px] rounded-full shadow-[0_8px_12px_rgba(0,0,0,0.35)]" />

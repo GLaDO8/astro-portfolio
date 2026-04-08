@@ -2,14 +2,14 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useRef, useState } from "react";
 
 const descriptions = [
-  "is a designer and grows mushrooms for fun.",
-  "is a scuba diver and collects vinyls.",
-  "loves cumbia music and his aeropress.",
-  "is into 3D printing and photography.",
-  "has two cats and builds mechanical keyboards.",
-  "likes rogue-like video games and has 5 tattoos.",
-  "is a privacy freak and likes self-hosting.",
-  "is a design engineer and a productivity nerd.",
+  "is a designer, amateur mycologist and a cat dad.",
+  "collects records, cameras and odd little hobbies.",
+  "likes building tools that feel playful and useful.",
+  "is into photography, mushrooms and mechanical keyboards.",
+  "cares about thoughtful interfaces and tactile systems.",
+  "spends a lot of time on self-hosting and side quests.",
+  "likes cumbia music, aeropress coffee and rogue-likes.",
+  "is a design engineer with two cats and too many tabs open.",
 ];
 
 // Uses the shuffle bag algorithm by Fisher-Yates. Bag starts empty, adds all descriptions and then pops them till it's empty again.
@@ -42,8 +42,8 @@ export default function HeroSection() {
 
   return (
     <section className="w-full flex flex-col items-start gap-6">
-      <h1 className="font-serif font-semibold text-xl leading-[1.2] m-0 text-pretty">
-        <span className="text-charcoal">Shreyas Gupta</span>{" "}
+      <h1 className="m-0 text-pretty font-serif text-3xl leading-[0.98] font-semibold text-charcoal">
+        <span className="text-charcoal">Shreyas</span>{" "}
         {/* initial={false} skips animation on the first render */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -86,7 +86,7 @@ export default function HeroSection() {
         <button
           type="button"
           onClick={cycle}
-          className="bg-gradient-to-b from-[#faffff] from-[68%] to-[#fcfff1] rounded-full px-5 pb-1.75 pt-1.25 font-sans font-semibold text-base tracking-[-0.02em] text-charcoal shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15),inset_0px_2px_0px_0px_white] cursor-pointer hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25),inset_0px_2px_0px_0px_white] transition-[box-shadow,transform] active:scale-[0.97]"
+          className="cursor-pointer rounded-full bg-gradient-to-b from-[#faffff] from-[68%] to-[#fcfff1] px-5 pb-1.75 pt-1.25 font-sans text-base font-semibold tracking-[-0.02em] text-charcoal shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15),inset_0px_2px_0px_0px_white] transition-[box-shadow,transform] hover:shadow-[0px_0px_12px_0px_rgba(88,104,110,0.25),inset_0px_2px_0px_0px_white] active:scale-[0.97]"
         >
           What else ?
         </button>
@@ -95,7 +95,7 @@ export default function HeroSection() {
           href="https://github.com/GLaDO8"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-charcoal hover:text-slate transition-[color,transform] active:scale-[0.97]"
+          className="text-charcoal transition-[color,transform] hover:text-slate active:scale-[0.97]"
         >
           <svg
             width="24"
@@ -112,7 +112,7 @@ export default function HeroSection() {
           href="https://x.com/wutamelonshrey"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-charcoal hover:text-slate transition-[color,transform] active:scale-[0.97]"
+          className="text-charcoal transition-[color,transform] hover:text-slate active:scale-[0.97]"
         >
           <svg
             width="24"

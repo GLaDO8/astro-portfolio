@@ -1,10 +1,13 @@
 ---
 import { getCollection } from "astro:content";
 import HeroSection from "@/components/HeroSection";
+import PromptCard from "@/components/PromptCard";
 import SiteShell from "@/components/SiteShell.astro";
+import MusicWidget from "@/components/widgets/MusicWidget";
 import PhotoFrameWidget from "@/components/widgets/PhotoFrameWidget";
+import SnapsWidget from "@/components/widgets/SnapsWidget";
 import Base from "@/layouts/Base.astro";
-import { getWidgetConfig } from "@/lib/widgetConfig";
+import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
@@ -16,6 +19,14 @@ const caseStudies = (
 
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;
+const songData = await getSongData();
+
+const featuredStudy = caseStudies[0];
+const heroNotes = notes.slice(0, 5);
+const notesColumns = [
+    heroNotes.slice(0, Math.ceil(heroNotes.length / 2)),
+    heroNotes.slice(Math.ceil(heroNotes.length / 2)),
+];
 
 const jsonLd = {
     "@context": "https://schema.org",
@@ -50,162 +61,139 @@ const jsonLd = {
     bodyClass="bg-parchment"
     seo={{ jsonLd }}
 >
-    <SiteShell
-        currentPath="/"
-        containerClass="gap-18"
-        mainClass="px-5 pt-32 pb-10"
-    >
-        <aside
-            slot="sidebar"
-            class="hidden lg:flex flex-col lg:w-[24rem] shrink-0 bg-mist border-x border-fog sticky top-0 h-dvh overflow-hidden"
+    <SiteShell currentPath="/" mainClass="px-0">
+        <div
+            class="grid gap-14 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] xl:gap-22"
         >
-            <div
-                aria-hidden="true"
-                class="h-16 shrink-0 bg-mist"
-            >
-            </div>
-            <div
-                class="flex items-center justify-end h-8 px-5 shrink-0 bg-mist"
-            >
+            <aside class="flex flex-col gap-8 xl:sticky xl:top-6 xl:self-start">
+                <PhotoFrameWidget
+                    src={photoFrame.src}
+                    alt={photoFrame.alt}
+                    client:visible
+                />
+
+                <HeroSection client:visible />
+
                 <div
-                    class="font-mono text-xs tracking-tight text-charcoal font-medium"
+                    class="max-w-md font-sans text-base leading-[1.42] font-medium tracking-[-0.02em] text-charcoal"
                 >
-                    v2.1
+                    <p class="text-pretty">
+                        I build tools at <a
+                            href="https://wayground.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="underline decoration-1 underline-offset-3 transition-colors hover:text-slate"
+                            >Wayground</a
+                        > that stand between teachers and everything else that isn't
+                        teaching.
+                    </p>
+                    <p class="mt-7 text-pretty">
+                        I used to work on conversational intelligence for sales
+                        teams at <a
+                            href="https://www.clari.com/products/copilot/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="underline decoration-1 underline-offset-3 transition-colors hover:text-slate"
+                            >Clari</a
+                        > and built a context-rich SQL editor at
+                        <a
+                            href="https://atlan.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="underline decoration-1 underline-offset-3 transition-colors hover:text-slate"
+                            >Atlan</a
+                        >.
+                    </p>
                 </div>
-            </div>
 
-            <div
-                data-lenis-prevent
-                class="flex-1 overflow-y-auto overscroll-y-contain scrollbar-hide"
-            >
-                <div class="flex flex-col gap-8 px-5 pt-16 pb-6">
-                    <PhotoFrameWidget
-                        src={photoFrame.src}
-                        alt={photoFrame.alt}
-                        client:visible
-                    />
+                <PromptCard client:load />
+            </aside>
 
-                    <HeroSection client:visible />
-
-                    <div
-                        class="font-sans font-medium text-base leading-[1.4] text-charcoal"
+            <div class="flex min-w-0 flex-col gap-16">
+                <section id="work" class="flex flex-col gap-5">
+                    <p
+                        class="font-sans text-sm font-medium tracking-[-0.02em] text-slate"
                     >
-                        <p class="text-pretty">
-                            I build tools at <a
-                                href="https://wayground.com/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
-                                >Wayground</a
-                            > that stand between teachers and everything else that isn't
-                            teaching.
-                        </p>
-                        <p class="mt-4 text-pretty">
-                            I used to work on conversational intelligence for sales
-                            teams at <a
-                                href="https://www.clari.com/products/copilot/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
-                                >Clari</a
-                            > and built a context-rich SQL editor at
-                            <a
-                                href="https://atlan.com/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="underline decoration-2 underline-offset-3 hover:opacity-80 transition-colors"
-                                >Atlan</a
-                            >.
-                        </p>
+                        Selected Work &amp; Experiments
+                    </p>
+
+                    <div class="grid auto-rows-[12.5rem] gap-5 lg:grid-cols-2">
+                        {
+                            featuredStudy && (
+                                <a
+                                    href={`/case-studies/${featuredStudy.id}`}
+                                    class="group relative row-span-2 min-h-[28rem] overflow-hidden rounded-[1.6rem] bg-[#eb67bb] p-7 no-underline shadow-[inset_0_0_0_1px_rgba(167,53,126,0.08),0_16px_34px_rgba(42,35,29,0.1)]"
+                                >
+                                    <div class="max-w-[13ch]">
+                                        <h2 class="font-serif text-[1.95rem] leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-[2.45rem]">
+                                            {featuredStudy.data.title}
+                                        </h2>
+                                    </div>
+
+                                    <img
+                                        src="/cs-card-1.png"
+                                        alt=""
+                                        class="absolute bottom-0 left-1/2 w-[82%] max-w-none -translate-x-[42%] translate-y-[18%] rotate-[-9deg] transition-transform duration-300 group-hover:translate-y-[14%] group-hover:rotate-[-7deg]"
+                                    />
+                                </a>
+                            )
+                        }
+
+                        <a href="/snaps" class="row-span-1 no-underline">
+                            <SnapsWidget client:visible />
+                        </a>
+
+                        <article
+                            class="group relative row-span-2 overflow-hidden rounded-[1.6rem] bg-[#eb67bb] p-7 shadow-[inset_0_0_0_1px_rgba(167,53,126,0.08),0_14px_30px_rgba(42,35,29,0.08)]"
+                        >
+                            <div class="max-w-[11ch]">
+                                <h2
+                                    class="font-serif text-[2.15rem] leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-[2.75rem]"
+                                >
+                                    Labelling - AI assisted question generation
+                                </h2>
+                            </div>
+
+                            <img
+                                src="/cs-card-1.png"
+                                alt=""
+                                class="absolute bottom-1 right-[-2.5rem] w-[62%] rotate-[-6deg] opacity-90"
+                            />
+                        </article>
+
+                        <div class="row-span-1">
+                            <MusicWidget songData={songData} client:visible />
+                        </div>
                     </div>
-                </div>
-            </div>
-        </aside>
+                </section>
 
-        <!-- Mobile-only: photo + hero (visible below lg) -->
-        <div class="lg:hidden flex flex-col gap-6 mb-12">
-            <PhotoFrameWidget
-                src={photoFrame.src}
-                alt={photoFrame.alt}
-                client:visible
-            />
+                <section id="notes" class="flex flex-col gap-5">
+                    <p
+                        class="font-sans text-sm font-medium tracking-[-0.02em] text-slate"
+                    >
+                        Notes
+                    </p>
 
-            <HeroSection client:visible />
-
-            <div
-                class="font-sans font-medium text-xl leading-[1.4] text-charcoal"
-            >
-                <p>
-                    I build tools at <a
-                        href="https://wayground.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="underline decoration-1 underline-offset-2 hover:text-slate transition-colors"
-                        >Wayground</a
-                    > that stand between teachers and everything else that isn't teaching.
-                </p>
-                <p class="mt-4">
-                    I used to work on conversational intelligence for sales
-                    teams at <a
-                        href="https://www.clari.com/products/copilot/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="underline decoration-1 underline-offset-2 hover:text-slate transition-colors"
-                        >Clari</a
-                    > and built a context-rich SQL editor at
-                    <a
-                        href="https://atlan.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="underline decoration-1 underline-offset-2 hover:text-slate transition-colors"
-                        >Atlan</a
-                    >.
-                </p>
+                    <div class="grid gap-x-16 gap-y-4 md:grid-cols-2">
+                        {
+                            notesColumns.map((column) => (
+                                <div class="flex flex-col gap-4">
+                                    {column.map((note) => (
+                                        <a
+                                            href={`/notes/${note.id}`}
+                                            class="group no-underline"
+                                        >
+                                            <h3 class="font-sans text-lg leading-[1.15] font-medium tracking-[-0.03em] text-charcoal transition-colors group-hover:text-slate">
+                                                {note.data.title}
+                                            </h3>
+                                        </a>
+                                    ))}
+                                </div>
+                            ))
+                        }
+                    </div>
+                </section>
             </div>
         </div>
-
-        <!-- Work -->
-        <section class="flex flex-col gap-6 mb-16">
-            <h2
-                class="font-serif font-bold text-2xl leading-tight text-charcoal"
-            >
-                Work
-            </h2>
-            <div class="flex flex-col gap-6">
-                {
-                    caseStudies.map((study) => (
-                        <a
-                            href={`/case-studies/${study.id}`}
-                            class="group block no-underline"
-                        >
-                            <img class="" src="/cs-card-1.png" alt="" />
-                        </a>
-                    ))
-                }
-            </div>
-        </section>
-
-        <!-- Notes -->
-        <section class="flex flex-col gap-6">
-            <h2
-                class="font-serif font-bold text-2xl leading-tight text-charcoal"
-            >
-                Notes
-            </h2>
-            <div class="flex flex-col gap-4">
-                {
-                    notes.map((note) => (
-                        <a
-                            href={`/notes/${note.id}`}
-                            class="no-underline group"
-                        >
-                            <h3 class="font-sans font-medium text-lg leading-snug tracking-tight text-charcoal group-hover:text-slate transition-colors">
-                                {note.data.title}
-                            </h3>
-                        </a>
-                    ))
-                }
-            </div>
-        </section>
     </SiteShell>
 </Base>
