@@ -42,13 +42,15 @@ export default function HeroSection() {
 
   return (
     <section className="w-full flex flex-col items-start gap-6">
-      <h1 className="m-0 text-pretty font-serif text-2xl leading-[0.98] font-semibold text-charcoal">
-        <span className="text-charcoal">Shreyas</span>{" "}
+      <h1 className="m-0 text-pretty font-serif text-2xl leading-[1.2] font-semibold text-charcoal">
+        <span className="whitespace-nowrap text-charcoal font-bold">
+          Shreyas&nbsp;
+        </span>
         {/* initial={false} skips animation on the first render */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={text}
-            className="inline-block text-charcoal"
+            className="inline text-charcoal"
             initial={
               shouldReduceMotion
                 ? { opacity: 0 }

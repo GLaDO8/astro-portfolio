@@ -5,7 +5,7 @@ const POLAROIDS = [
   {
     src: "/snaps/DSCF4135-Enhanced-NR-2.webp",
     rotate: 19,
-    tx: 250,
+    tx: 300,
     ty: -40,
     fanRotate: 22,
     fanTx: 260,
@@ -14,7 +14,7 @@ const POLAROIDS = [
   {
     src: "/snaps/DSCF4283.webp",
     rotate: -5,
-    tx: 160,
+    tx: 210,
     ty: 15,
     fanRotate: -8,
     fanTx: 155,
@@ -23,7 +23,7 @@ const POLAROIDS = [
   {
     src: "/snaps/DSCF4449.webp",
     rotate: 26,
-    tx: 250,
+    tx: 300,
     ty: 45,
     fanRotate: 32,
     fanTx: 270,
@@ -37,16 +37,16 @@ export default function SnapsWidget() {
 
   return (
     <div
-      className="w-75 h-44 rounded-2xl shrink-0 relative bg-[#bdda7d] overflow-visible cursor-pointer"
+      className="w-90 h-44 rounded-2xl shrink-0 relative bg-[#bdda7d] overflow-visible cursor-pointer"
       onPointerEnter={() => setIsHovered(true)}
       onPointerLeave={() => setIsHovered(false)}
     >
       {/* Text content — flexbox column */}
       <div className="flex flex-col h-full p-6">
-        <div className="font-sans font-bold text-[30px] leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)] pb-4">
+        <div className="font-sans font-bold text-xl leading-9 tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)] pb-4">
           Snaps
         </div>
-        <div className="font-sans font-medium text-md tracking-[-0.02em] text-[#607139]">
+        <div className="font-sans font-medium text-lg leading-tight tracking-[-0.02em] text-[#607139]">
           Poetry from my camera
         </div>
       </div>

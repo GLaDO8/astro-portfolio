@@ -1,43 +1,42 @@
 ---
 interface Props {
-	currentPath?: string;
+    currentPath?: string;
 }
 
 const { currentPath = "/" } = Astro.props;
 
 const links = [
-	{ href: "/", label: "Home" },
-	{ href: "/snaps", label: "Snaps" },
-	{ href: "/notes", label: "Notes" },
+    { href: "/", label: "Home" },
+    { href: "/snaps", label: "Snaps" },
+    { href: "/notes", label: "Notes" },
 ];
+
+const activeLinkClass = "text-charcoal";
+const inactiveLinkClass = "text-slate hover:text-charcoal";
 ---
 
-<nav
-    class="flex items-center justify-end font-sans text-sm tracking-tight"
->
+<nav class="flex items-center justify-end font-sans text-sm tracking-tight">
     <div
-        class="relative flex items-center rounded-full bg-mist/80 p-1 shadow-[0_1px_3px_rgba(36,42,45,0.08),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[2px]"
+        class="relative flex items-center rounded-full bg-mist/80 p-1"
         data-navbar-track
     >
         <span
             aria-hidden="true"
             class="pointer-events-none absolute inset-y-1 left-1 rounded-full bg-parchment shadow-[0_1px_2px_rgba(36,42,45,0.08),0_8px_18px_rgba(36,42,45,0.06)] transition-[transform,width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-            data-navbar-indicator
-        ></span>
+            data-navbar-indicator></span>
         {
             links.map(({ href, label }) => {
                 const isActive =
                     href === "/"
                         ? currentPath === href
-                        : currentPath === href || currentPath.startsWith(`${href}/`);
+                        : currentPath === href ||
+                          currentPath.startsWith(`${href}/`);
                 return (
                     <a
                         href={href}
                         class:list={[
                             "relative z-10 rounded-full px-4 py-2 font-semibold transition-[color,transform] duration-200",
-                            isActive
-                                ? "text-charcoal"
-                                : "text-slate hover:text-charcoal",
+                            isActive ? activeLinkClass : inactiveLinkClass,
                         ]}
                         aria-current={isActive ? "page" : undefined}
                         data-navbar-link
@@ -52,15 +51,22 @@ const links = [
 
 <script>
     const track = document.querySelector<HTMLElement>("[data-navbar-track]");
-    const indicator = track?.querySelector<HTMLElement>("[data-navbar-indicator]");
+    const indicator = track?.querySelector<HTMLElement>(
+        "[data-navbar-indicator]",
+    );
     const links = track
         ? Array.from(track.querySelectorAll<HTMLElement>("[data-navbar-link]"))
         : [];
 
     if (track && indicator && links.length > 0) {
-        const activeLink =
-            links.find((link) => link.getAttribute("aria-current") === "page") ??
-            links[0];
+        let activeLink =
+            links.find(
+                (link) => link.getAttribute("aria-current") === "page",
+            ) ?? links[0];
+
+        const activeClass = "text-charcoal";
+        const inactiveClass = "text-slate";
+        const inactiveHoverClass = "hover:text-charcoal";
 
         const moveIndicator = (link: HTMLElement) => {
             const trackRect = track.getBoundingClientRect();
@@ -70,16 +76,23 @@ const links = [
             indicator.style.opacity = "1";
         };
 
-        const resetIndicator = () => moveIndicator(activeLink);
+        const setActiveLink = (link: HTMLElement) => {
+            activeLink = link;
+            for (const currentLink of links) {
+                const isCurrent = currentLink === link;
+                currentLink.toggleAttribute("aria-current", isCurrent);
+                currentLink.classList.toggle(activeClass, isCurrent);
+                currentLink.classList.toggle(inactiveClass, !isCurrent);
+                currentLink.classList.toggle(inactiveHoverClass, !isCurrent);
+            }
+            moveIndicator(link);
+        };
 
-        resetIndicator();
-        window.addEventListener("resize", resetIndicator);
+        setActiveLink(activeLink);
+        window.addEventListener("resize", () => moveIndicator(activeLink));
 
         for (const link of links) {
-            link.addEventListener("pointerenter", () => moveIndicator(link));
-            link.addEventListener("focus", () => moveIndicator(link));
-            link.addEventListener("pointerleave", resetIndicator);
-            link.addEventListener("blur", resetIndicator);
+            link.addEventListener("click", () => setActiveLink(link));
         }
     }
 </script>
