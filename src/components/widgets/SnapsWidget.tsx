@@ -37,8 +37,8 @@ export default function SnapsWidget() {
         <div className="pb-4 font-sans text-xl leading-9 font-bold tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
           Snaps
         </div>
-        <div className="font-sans text-base leading-tight font-medium tracking-[-0.02em] text-[#607139] max-w-48">
-          Poetry from my camera
+        <div className="font-sans text-base leading-tight font-medium tracking-[-0.02em] text-[#607139] max-w-42">
+          Poetry written with my camera
         </div>
       </div>
 
