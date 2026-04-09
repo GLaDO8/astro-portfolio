@@ -116,6 +116,33 @@
 	--widget-t: clamp(0, (100vw - 22.5rem) / (41.5rem), 1);
 	--widget-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1));
 	--lp-scale: calc((0.9 + 0.2 * pow(var(--widget-t), 0.1)) * -4rem);
+	--shell-page-transition-duration: 260ms;
+	--shell-page-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html[data-shell-transitions="true"] [data-shell-content] {
+	opacity: 0;
+	transform: translateY(1rem);
+	filter: blur(10px);
+	transition:
+		opacity var(--shell-page-transition-duration) var(--shell-page-transition-ease),
+		transform var(--shell-page-transition-duration) var(--shell-page-transition-ease),
+		filter var(--shell-page-transition-duration) var(--shell-page-transition-ease);
+	transition-behavior: allow-discrete;
+	will-change: opacity, transform, filter;
+}
+
+html[data-shell-transitions="true"] [data-shell-content][data-page-state="entered"] {
+	opacity: 1;
+	transform: translateY(0);
+	filter: blur(0);
+}
+
+html[data-shell-transitions="true"] [data-shell-content][data-page-state="leaving"] {
+	opacity: 0;
+	transform: translateY(0.75rem);
+	filter: blur(8px);
+	pointer-events: none;
 }
 
 @keyframes vinyl-spin {
@@ -127,6 +154,12 @@
 @media (prefers-reduced-motion: reduce) {
 	:root {
 		--animate-vinyl: none;
+		--shell-page-transition-duration: 1ms;
+	}
+
+	html[data-shell-transitions="true"] [data-shell-content] {
+		filter: none;
+		transform: none;
 	}
 }
 

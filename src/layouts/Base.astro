@@ -35,6 +35,9 @@ const isDev = import.meta.env.DEV;
         <Font cssVariable="--font-zilla-slab" />
         <Font cssVariable="--font-commissioner" />
         <Font cssVariable="--font-recursive" />
+        <script is:inline>
+            document.documentElement.dataset.shellTransitions = "true";
+        </script>
     </head>
     <body class={bodyClass}>
         <a

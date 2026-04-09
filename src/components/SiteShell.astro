@@ -21,8 +21,73 @@ const { currentPath, containerClass, mainClass } = Astro.props;
     <div class="mt-6 flex min-w-0 flex-1 gap-18">
         <slot name="sidebar" />
 
-        <main id="main-content" class:list={["min-w-0 flex-1", mainClass]}>
+        <main
+            id="main-content"
+            class:list={["min-w-0 flex-1", mainClass]}
+            data-shell-content
+            data-page-state="entering"
+        >
             <slot />
         </main>
     </div>
 </div>
+
+<script>
+    const content = document.querySelector<HTMLElement>("[data-shell-content]");
+
+    if (content) {
+        requestAnimationFrame(() => {
+            content.dataset.pageState = "entered";
+        });
+
+        const prefersReducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const exitDuration = prefersReducedMotion ? 0 : 220;
+
+        for (const link of document.querySelectorAll<HTMLAnchorElement>(
+            "[data-navbar-link]",
+        )) {
+            link.addEventListener("click", (event) => {
+                if (
+                    event.defaultPrevented ||
+                    event.button !== 0 ||
+                    event.metaKey ||
+                    event.ctrlKey ||
+                    event.shiftKey ||
+                    event.altKey
+                ) {
+                    return;
+                }
+
+                const href = link.getAttribute("href");
+
+                if (!href || href.startsWith("#")) {
+                    return;
+                }
+
+                const nextUrl = new URL(href, window.location.href);
+                const isSameDocument =
+                    nextUrl.origin === window.location.origin &&
+                    nextUrl.pathname === window.location.pathname &&
+                    nextUrl.search === window.location.search;
+
+                if (
+                    link.target === "_blank" ||
+                    nextUrl.origin !== window.location.origin ||
+                    isSameDocument ||
+                    content.dataset.pageState === "leaving"
+                ) {
+                    return;
+                }
+
+                event.preventDefault();
+                content.dataset.pageState = "leaving";
+
+                window.setTimeout(() => {
+                    window.location.href = nextUrl.toString();
+                }, exitDuration);
+            });
+        }
+    }
+</script>
