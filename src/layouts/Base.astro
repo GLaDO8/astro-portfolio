@@ -31,8 +31,17 @@ const isDev = import.meta.env.DEV;
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
         <SEO title={title} description={description} {...seo} />
-        <Font cssVariable="--font-zilla-slab" />
-        <Font cssVariable="--font-commissioner" />
+        <Font
+            cssVariable="--font-zilla-slab"
+            preload={[
+                { weight: "600", style: "normal" },
+                { weight: "700", style: "normal" },
+            ]}
+        />
+        <Font
+            cssVariable="--font-commissioner"
+            preload={[{ weight: "400", style: "normal" }]}
+        />
         <Font cssVariable="--font-recursive" />
         <script is:inline>
             document.documentElement.dataset.shellTransitions = "true";
