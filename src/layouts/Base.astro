@@ -1,5 +1,6 @@
 ---
 import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
 import AgentationToolbar from "@/components/AgentationToolbar";
@@ -43,6 +44,7 @@ const isDev = import.meta.env.DEV;
             preload={[{ weight: "400", style: "normal" }]}
         />
         <Font cssVariable="--font-recursive" />
+        <ClientRouter />
         <script is:inline>
             document.documentElement.dataset.shellTransitions = "true";
         </script>

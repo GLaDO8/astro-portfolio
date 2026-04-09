@@ -16,7 +16,9 @@ const { currentPath, containerClass, mainClass } = Astro.props;
         containerClass,
     ]}
 >
-    <Navbar currentPath={currentPath} />
+    <div transition:persist transition:name="site-navbar">
+        <Navbar currentPath={currentPath} />
+    </div>
 
     <div class="mt-6 flex min-w-0 flex-1 gap-18">
         <slot name="sidebar" />
@@ -33,91 +35,33 @@ const { currentPath, containerClass, mainClass } = Astro.props;
 </div>
 
 <script>
-    const content = document.querySelector<HTMLElement>("[data-shell-content]");
+    const getContent = () =>
+        document.querySelector<HTMLElement>("[data-shell-content]");
 
-    if (content) {
+    const enterContent = () => {
+        const content = getContent();
+
+        if (!content) {
+            return;
+        }
+
         requestAnimationFrame(() => {
             content.dataset.pageState = "entered";
         });
+    };
 
-        const parseMaxTransitionDuration = (value: string) =>
-            Math.max(
-                0,
-                ...value.split(",").map((part) => {
-                    const trimmed = part.trim();
-                    const duration = Number.parseFloat(trimmed);
+    const leaveContent = () => {
+        const content = getContent();
 
-                    if (!Number.isFinite(duration)) {
-                        return 0;
-                    }
-
-                    return trimmed.endsWith("ms") ? duration : duration * 1000;
-                }),
-            );
-
-        const prefersReducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)",
-        ).matches;
-        const navbarIndicator = document.querySelector<HTMLElement>(
-            "[data-navbar-indicator]",
-        );
-        const exitDuration = prefersReducedMotion
-            ? 0
-            : Math.max(
-                  parseMaxTransitionDuration(
-                      getComputedStyle(content).transitionDuration,
-                  ),
-                  navbarIndicator
-                      ? parseMaxTransitionDuration(
-                            getComputedStyle(navbarIndicator)
-                                .transitionDuration,
-                        )
-                      : 0,
-              );
-
-        for (const link of document.querySelectorAll<HTMLAnchorElement>(
-            "[data-navbar-link]",
-        )) {
-            link.addEventListener("click", (event) => {
-                if (
-                    event.defaultPrevented ||
-                    event.button !== 0 ||
-                    event.metaKey ||
-                    event.ctrlKey ||
-                    event.shiftKey ||
-                    event.altKey
-                ) {
-                    return;
-                }
-
-                const href = link.getAttribute("href");
-
-                if (!href || href.startsWith("#")) {
-                    return;
-                }
-
-                const nextUrl = new URL(href, window.location.href);
-                const isSameDocument =
-                    nextUrl.origin === window.location.origin &&
-                    nextUrl.pathname === window.location.pathname &&
-                    nextUrl.search === window.location.search;
-
-                if (
-                    link.target === "_blank" ||
-                    nextUrl.origin !== window.location.origin ||
-                    isSameDocument ||
-                    content.dataset.pageState === "leaving"
-                ) {
-                    return;
-                }
-
-                event.preventDefault();
-                content.dataset.pageState = "leaving";
-
-                window.setTimeout(() => {
-                    window.location.href = nextUrl.toString();
-                }, exitDuration);
-            });
+        if (!content || content.dataset.pageState === "leaving") {
+            return;
         }
-    }
+
+        content.dataset.pageState = "leaving";
+    };
+
+    document.addEventListener("astro:before-preparation", leaveContent);
+    document.addEventListener("astro:page-load", enterContent);
+
+    enterContent();
 </script>
