@@ -81,25 +81,31 @@ export default function MusicWidget({ songData }: Props) {
   }, []);
 
   return (
-    <div className="relative flex h-full min-h-[12.5rem] w-full shrink-0 flex-col justify-end rounded-[1.4rem] bg-[#dfe4cf] shadow-[inset_0_0_0_1px_rgba(122,113,95,0.12),0_12px_28px_rgba(42,35,29,0.08)]">
+    <div className="relative flex h-42 w-full shrink-0 flex-col justify-end rounded-[1.4rem] bg-white border-2 border-[#E7E9E1]">
       {/* iOS chat bubble — anchored top-left, overflows container */}
       {songData.message && (
-        <div className="absolute -left-6 top-[-1rem] z-30 md:-left-9">
-          <div className="chat-bubble-tail relative bg-[#0b93f6] text-white font-sans text-xs font-medium leading-4.5 rounded-2xl px-4 py-2 max-w-50">
+        <div className="absolute -left-6 -top-4 z-30 md:-left-12">
+          <div className="relative inline-block max-w-48 rounded-2xl bg-[#1888FE] px-3 pb-2.5 pt-2 align-top font-sans text-xs font-medium leading-4.5 text-balance text-white wrap-break-word">
             {songData.message}
+            <img
+              src="/tail.svg"
+              alt=""
+              className="pointer-events-none absolute -bottom-0.5 right-0"
+              draggable={false}
+            />
           </div>
         </div>
       )}
 
       {/* Song info text — flex-pushed to bottom */}
-      <div className="flex flex-col pl-6 pb-5 md:pl-6">
-        <span className="pb-2 font-sans text-[12px] font-bold uppercase tracking-[-0.3px] text-[#7f964c]">
+      <div className="flex flex-col pl-6 pb-6">
+        <span className="pb-2 font-sans text-xs font-bold uppercase text-[#7f964c]">
           {songData.label}
         </span>
-        <span className="pb-1 font-sans text-[24px] leading-none font-bold tracking-[-0.4px] text-charcoal">
+        <span className="pb-1 font-sans text-base leading-none font-bold tracking-[-0.4px] text-charcoal">
           {songData.artist}
         </span>
-        <span className="font-sans text-[20px] font-normal tracking-[-0.48px] text-charcoal/78">
+        <span className="font-sans text-base font-medium tracking-[-0.48px] text-charcoal">
           {songData.title}
         </span>
       </div>
@@ -107,7 +113,7 @@ export default function MusicWidget({ songData }: Props) {
       {/* Record player assembly */}
       <div
         ref={recordRef}
-        className="absolute right-[-2.8rem] top-[-0.9rem] h-55 w-55 md:right-[-3.2rem] md:top-[-0.8rem]"
+        className="absolute h-55 w-55 -top-14 left-42 z-40 scale-[0.9] origin-center"
       >
         {/* Static shadow — decoupled from animation to avoid per-frame filter recomputation */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
