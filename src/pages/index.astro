@@ -1,21 +1,21 @@
 ---
 import { getCollection } from "astro:content";
 import HeroSection from "@/components/HeroSection";
+import PromptCard from "@/components/PromptCard";
 import SiteShell from "@/components/SiteShell.astro";
 import MusicWidget from "@/components/widgets/MusicWidget";
 import PhotoFrameWidget from "@/components/widgets/PhotoFrameWidget.astro";
-import SnapsWidget from "@/components/widgets/SnapsWidget.astro";
+import SnapsWidget from "@/components/widgets/SnapsWidget";
 import Base from "@/layouts/Base.astro";
-import PromptCard from "@/components/PromptCard";
 import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
-const caseStudies = (
-    await getCollection("caseStudies", ({ data }) => !data.draft)
-).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const caseStudies = (await getCollection("caseStudies", ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
 
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;
@@ -25,29 +25,26 @@ const featuredStudy = caseStudies[0];
 const heroNotes = notes.slice(0, 5);
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-        {
-            "@type": "WebSite",
-            "@id": "https://shrey.fyi/#website",
-            url: "https://shrey.fyi",
-            name: "Shreyas Gupta",
-            description:
-                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-            publisher: { "@id": "https://shrey.fyi/#person" },
-        },
-        {
-            "@type": "Person",
-            "@id": "https://shrey.fyi/#person",
-            name: "Shreyas Gupta",
-            url: "https://shrey.fyi",
-            jobTitle: "Designer",
-            sameAs: [
-                "https://github.com/GLaDO8",
-                "https://x.com/wutamelonshrey",
-            ],
-        },
-    ],
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebSite",
+			"@id": "https://shrey.fyi/#website",
+			url: "https://shrey.fyi",
+			name: "Shreyas Gupta",
+			description:
+				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+			publisher: { "@id": "https://shrey.fyi/#person" },
+		},
+		{
+			"@type": "Person",
+			"@id": "https://shrey.fyi/#person",
+			name: "Shreyas Gupta",
+			url: "https://shrey.fyi",
+			jobTitle: "Designer",
+			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+		},
+	],
 };
 ---
 
@@ -135,7 +132,7 @@ const jsonLd = {
                         }
 
                         <a href="/snaps" class="row-span-1 no-underline">
-                            <SnapsWidget />
+                            <SnapsWidget client:load />
                         </a>
 
                         <article
