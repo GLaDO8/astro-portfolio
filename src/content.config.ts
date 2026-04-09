@@ -6,11 +6,9 @@ const notes = defineCollection({
 	loader: glob({ pattern: "**/*.mdoc", base: "./src/content/notes" }),
 	schema: z.object({
 		title: z.string(),
-		subtitle: z.string(),
-		description: z.string().optional(),
+		description: z.string(),
 		date: z.date(),
 		draft: z.boolean().default(false),
-		tags: z.array(z.string()).default([]),
 	}),
 });
 
@@ -21,11 +19,9 @@ const caseStudies = defineCollection({
 	}),
 	schema: z.object({
 		title: z.string(),
-		subtitle: z.string(),
-		description: z.string().optional(),
+		description: z.string(),
 		date: z.date(),
 		draft: z.boolean().default(false),
-		tags: z.array(z.string()).default([]),
 		theme: z.string().optional(),
 	}),
 });

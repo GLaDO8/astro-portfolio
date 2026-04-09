@@ -7,7 +7,6 @@ interface Props {
 	ogImageAlt?: string;
 	article?: {
 		publishedTime: string;
-		tags?: string[];
 	};
 	noindex?: boolean;
 	jsonLd?: Record<string, unknown>;
@@ -57,9 +56,6 @@ const ogImageURL = new URL(ogImage, Astro.site);
 				content={article.publishedTime}
 			/>
 			<meta property="article:author" content="Shreyas Gupta" />
-			{article.tags?.map((tag) => (
-				<meta property="article:tag" content={tag} />
-			))}
 		</>
 	)
 }

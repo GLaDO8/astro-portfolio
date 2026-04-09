@@ -13,13 +13,11 @@ export async function getStaticPaths() {
 const { note } = Astro.props;
 const { Content } = await render(note);
 
-const description = note.data.description || note.data.subtitle || note.data.title;
-
 const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "Article",
 	headline: note.data.title,
-	description,
+	description: note.data.description,
 	datePublished: note.data.date.toISOString(),
 	author: {
 		"@type": "Person",
@@ -37,14 +35,13 @@ const jsonLd = {
 
 <Page
 	title={`${note.data.title} — Shreyas Gupta`}
-	description={description}
+	description={note.data.description}
 	bodyClass="bg-parchment"
 	class="bg-parchment"
 	seo={{
 		ogType: "article",
 		article: {
 			publishedTime: note.data.date.toISOString(),
-			tags: note.data.tags,
 		},
 		jsonLd,
 	}}
