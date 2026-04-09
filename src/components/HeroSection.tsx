@@ -3,13 +3,12 @@ import { useCallback, useRef, useState } from "react";
 
 const descriptions = [
   "is a designer, amateur mycologist and a cat dad.",
-  "collects records, cameras and odd little hobbies.",
-  "likes building tools that feel playful and useful.",
-  "is into photography, mushrooms and mechanical keyboards.",
-  "cares about thoughtful interfaces and tactile systems.",
-  "spends a lot of time on self-hosting and side quests.",
-  "likes cumbia music, aeropress coffee and rogue-likes.",
-  "is a design engineer with two cats and too many tabs open.",
+  "is a scuba diver and collects vinyls.",
+  "is into 3D printing and photography.",
+  "has two cats and builds mechanical keyboards.",
+  "loves cumbia music and his aeropress.",
+  "is a privacy freak and likes self-hosting.",
+  "likes rogue-like video games and has 5 tattoos.",
 ];
 
 // Uses the shuffle bag algorithm by Fisher-Yates. Bag starts empty, adds all descriptions and then pops them till it's empty again.
