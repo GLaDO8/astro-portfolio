@@ -2,10 +2,8 @@
 
 This personal website will be the home to publish my writings, design case studies, experiments, and other creative work.
 
-Read the `@package.json` file for available npm commands for this project.
-
 ## Tech Stack
-Astro 5 (static) · React 19 · Tailwind v4 (Vite plugin) · Markdoc · Motion · Biome · TypeScript · Lenis (for smooth scrolling)
+Astro 6 (static) · React 19 · Tailwind v4 (Vite plugin) · Markdoc · Motion · Biome · TypeScript · Lenis (for smooth scrolling)
 
 ## On-Demand Docs
 Read the relevant doc BEFORE making changes in that area:
