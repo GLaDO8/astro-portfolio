@@ -40,10 +40,40 @@ const { currentPath, containerClass, mainClass } = Astro.props;
             content.dataset.pageState = "entered";
         });
 
+        const parseMaxTransitionDuration = (value: string) =>
+            Math.max(
+                0,
+                ...value.split(",").map((part) => {
+                    const trimmed = part.trim();
+                    const duration = Number.parseFloat(trimmed);
+
+                    if (!Number.isFinite(duration)) {
+                        return 0;
+                    }
+
+                    return trimmed.endsWith("ms") ? duration : duration * 1000;
+                }),
+            );
+
         const prefersReducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
         ).matches;
-        const exitDuration = prefersReducedMotion ? 0 : 220;
+        const navbarIndicator = document.querySelector<HTMLElement>(
+            "[data-navbar-indicator]",
+        );
+        const exitDuration = prefersReducedMotion
+            ? 0
+            : Math.max(
+                  parseMaxTransitionDuration(
+                      getComputedStyle(content).transitionDuration,
+                  ),
+                  navbarIndicator
+                      ? parseMaxTransitionDuration(
+                            getComputedStyle(navbarIndicator)
+                                .transitionDuration,
+                        )
+                      : 0,
+              );
 
         for (const link of document.querySelectorAll<HTMLAnchorElement>(
             "[data-navbar-link]",

@@ -2,110 +2,110 @@
 @plugin "@tailwindcss/typography";
 
 @layer base {
-	html {
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-		overflow-x: clip;
-	}
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: clip;
+    }
 
-	html.lenis,
-	html.lenis body {
-		height: auto;
-	}
+    html.lenis,
+    html.lenis body {
+        height: auto;
+    }
 
-	.lenis.lenis-stopped {
-		overflow: hidden;
-	}
+    .lenis.lenis-stopped {
+        overflow: hidden;
+    }
 
-	.lenis.lenis-smooth [data-lenis-prevent] {
-		overscroll-behavior: contain;
-	}
+    .lenis.lenis-smooth [data-lenis-prevent] {
+        overscroll-behavior: contain;
+    }
 }
 
 @utility codeblock-reset {
-	& pre {
-		background: transparent !important;
-		background-color: transparent !important;
-		overflow: visible;
-		margin: 0;
-		padding: 0;
-		font-family: inherit;
-		font-variation-settings: inherit;
-		font-size: inherit;
-		line-height: inherit;
-	}
-	& code {
-		font-family: inherit;
-		font-variation-settings: inherit;
-		font-size: inherit;
-		line-height: inherit;
-	}
+    & pre {
+        background: transparent !important;
+        background-color: transparent !important;
+        overflow: visible;
+        margin: 0;
+        padding: 0;
+        font-family: inherit;
+        font-variation-settings: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+    & code {
+        font-family: inherit;
+        font-variation-settings: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
 }
 
 @utility scrollbar-hide {
-	-ms-overflow-style: none;
-	scrollbar-width: none;
-	&::-webkit-scrollbar {
-		display: none;
-	}
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 /* iOS-style chat bubble tail (bottom-right) */
 @utility chat-bubble-tail {
-	&::before {
-		content: "";
-		position: absolute;
-		bottom: 0;
-		right: -7px;
-		width: 20px;
-		height: 25px;
-		background-color: #0b93f6;
-		border-bottom-left-radius: 16px 14px;
-	}
-	&::after {
-		content: "";
-		position: absolute;
-		bottom: 0;
-		right: -26px;
-		width: 26px;
-		height: 25px;
-		background-color: #fff;
-		border-bottom-left-radius: 10px;
-	}
+    &::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: -7px;
+        width: 20px;
+        height: 25px;
+        background-color: #0b93f6;
+        border-bottom-left-radius: 16px 14px;
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: -26px;
+        width: 26px;
+        height: 25px;
+        background-color: #fff;
+        border-bottom-left-radius: 10px;
+    }
 }
 
 @theme {
-	/* Colors */
-	--color-parchment: #f7f2e8; /* background */
-	--color-charcoal: #2a231d; /* text primary */
-	--color-slate: #7a715f; /* text secondary */
-	--color-mist: #eee5d7; /* soft surface */
-	--color-fog: #ddd2c1; /* subtle divider */
+    /* Colors */
+    --color-parchment: #f4f5f0; /* background */
+    --color-charcoal: #2a231d; /* text primary */
+    --color-slate: #7a715f; /* text secondary */
+    --color-mist: #eee5d7; /* soft surface */
+    --color-fog: #ddd2c1; /* subtle divider */
 
-	/* Fluid Type Scale — Utopia 360→1440 */
-	--text-xs: clamp(0.6944rem, 0.6593rem + 0.1564vw, 0.8rem);
-	--text-sm: clamp(0.8333rem, 0.7778rem + 0.2469vw, 1rem);
-	--text-base: clamp(1rem, 0.9167rem + 0.3704vw, 1.25rem);
-	--text-lg: clamp(1.2rem, 1.0792rem + 0.537vw, 1.5625rem);
-	--text-xl: clamp(1.44rem, 1.269rem + 0.7602vw, 1.9531rem);
-	--text-2xl: clamp(1.728rem, 1.4902rem + 1.0569vw, 2.4414rem);
-	--text-3xl: clamp(2.0736rem, 1.7475rem + 1.4491vw, 3.0518rem);
-	--text-4xl: clamp(2.4883rem, 2.0462rem + 1.965vw, 3.8147rem);
-	--text-5xl: clamp(2.986rem, 2.3919rem + 2.6406vw, 4.7684rem);
-	--text-6xl: clamp(3.5832rem, 2.7908rem + 3.5219vw, 5.9605rem);
-	--text-7xl: clamp(4.2998rem, 3.2496rem + 4.6678vw, 7.4506rem);
+    /* Fluid Type Scale — Utopia 360→1440 */
+    --text-xs: clamp(0.6944rem, 0.6593rem + 0.1564vw, 0.8rem);
+    --text-sm: clamp(0.8333rem, 0.7778rem + 0.2469vw, 1rem);
+    --text-base: clamp(1rem, 0.9167rem + 0.3704vw, 1.25rem);
+    --text-lg: clamp(1.2rem, 1.0792rem + 0.537vw, 1.5625rem);
+    --text-xl: clamp(1.44rem, 1.269rem + 0.7602vw, 1.9531rem);
+    --text-2xl: clamp(1.728rem, 1.4902rem + 1.0569vw, 2.4414rem);
+    --text-3xl: clamp(2.0736rem, 1.7475rem + 1.4491vw, 3.0518rem);
+    --text-4xl: clamp(2.4883rem, 2.0462rem + 1.965vw, 3.8147rem);
+    --text-5xl: clamp(2.986rem, 2.3919rem + 2.6406vw, 4.7684rem);
+    --text-6xl: clamp(3.5832rem, 2.7908rem + 3.5219vw, 5.9605rem);
+    --text-7xl: clamp(4.2998rem, 3.2496rem + 4.6678vw, 7.4506rem);
 
-	/* Grid */
-	--grid-template-columns-16: repeat(16, minmax(0, 1fr));
+    /* Grid */
+    --grid-template-columns-16: repeat(16, minmax(0, 1fr));
 
-	/* Animations */
-	--animate-vinyl: vinyl-spin 1.8182s linear infinite;
+    /* Animations */
+    --animate-vinyl: vinyl-spin 1.8182s linear infinite;
 }
 
 @theme inline {
-	--font-serif: var(--font-zilla-slab);
-	--font-sans: var(--font-commissioner);
-	--font-mono: var(--font-recursive);
+    --font-serif: var(--font-zilla-slab);
+    --font-sans: var(--font-commissioner);
+    --font-mono: var(--font-recursive);
 }
 
 /* Widget strip fluid scale — 360px → 1024px, non-linear via pow()
@@ -113,84 +113,89 @@
    pow(t, 0.4) = front-loaded curve: grows fast from mobile, plateaus toward desktop
    Adjust exponent: lower = more front-loaded, higher = more back-loaded */
 :root {
-	--widget-t: clamp(0, (100vw - 22.5rem) / (41.5rem), 1);
-	--widget-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1));
-	--lp-scale: calc((0.9 + 0.2 * pow(var(--widget-t), 0.1)) * -4rem);
-	--shell-page-transition-duration: 260ms;
-	--shell-page-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --widget-t: clamp(0, (100vw - 22.5rem) / (41.5rem), 1);
+    --widget-scale: calc(0.9 + 0.2 * pow(var(--widget-t), 0.1));
+    --lp-scale: calc((0.9 + 0.2 * pow(var(--widget-t), 0.1)) * -4rem);
+    --shell-page-transition-duration: 260ms;
+    --shell-page-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html[data-shell-transitions="true"] [data-shell-content] {
-	opacity: 0;
-	transform: translateY(1rem);
-	filter: blur(10px);
-	transition:
-		opacity var(--shell-page-transition-duration) var(--shell-page-transition-ease),
-		transform var(--shell-page-transition-duration) var(--shell-page-transition-ease),
-		filter var(--shell-page-transition-duration) var(--shell-page-transition-ease);
-	transition-behavior: allow-discrete;
-	will-change: opacity, transform, filter;
+    opacity: 0;
+    transform: translateY(1rem);
+    filter: blur(10px);
+    transition:
+        opacity var(--shell-page-transition-duration)
+            var(--shell-page-transition-ease),
+        transform var(--shell-page-transition-duration)
+            var(--shell-page-transition-ease),
+        filter var(--shell-page-transition-duration)
+            var(--shell-page-transition-ease);
+    transition-behavior: allow-discrete;
+    will-change: opacity, transform, filter;
 }
 
-html[data-shell-transitions="true"] [data-shell-content][data-page-state="entered"] {
-	opacity: 1;
-	transform: translateY(0);
-	filter: blur(0);
+html[data-shell-transitions="true"]
+    [data-shell-content][data-page-state="entered"] {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
 }
 
-html[data-shell-transitions="true"] [data-shell-content][data-page-state="leaving"] {
-	opacity: 0;
-	transform: translateY(0.75rem);
-	filter: blur(8px);
-	pointer-events: none;
+html[data-shell-transitions="true"]
+    [data-shell-content][data-page-state="leaving"] {
+    opacity: 0;
+    transform: translateY(0.75rem);
+    filter: blur(8px);
+    pointer-events: none;
 }
 
 @keyframes vinyl-spin {
-	to {
-		transform: rotate(360deg);
-	}
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-	:root {
-		--animate-vinyl: none;
-		--shell-page-transition-duration: 1ms;
-	}
+    :root {
+        --animate-vinyl: none;
+        --shell-page-transition-duration: 1ms;
+    }
 
-	html[data-shell-transitions="true"] [data-shell-content] {
-		filter: none;
-		transform: none;
-	}
+    html[data-shell-transitions="true"] [data-shell-content] {
+        filter: none;
+        transform: none;
+    }
 }
 
 /* ── Sidenote Citation Counters ─────────────────── */
 
 .prose {
-	counter-reset: sidenote;
+    counter-reset: sidenote;
 }
 
 .sidenote-ref {
-	counter-increment: sidenote;
+    counter-increment: sidenote;
 
-	&::after {
-		content: counter(sidenote);
-		font-size: 0.75em;
-	}
+    &::after {
+        content: counter(sidenote);
+        font-size: 0.75em;
+    }
 }
 
 .sidenote-citation::before {
-	content: counter(sidenote);
-	font-weight: 600;
-	vertical-align: super;
-	font-size: 0.75em;
-	margin-right: 0.25em;
+    content: counter(sidenote);
+    font-weight: 600;
+    vertical-align: super;
+    font-size: 0.75em;
+    margin-right: 0.25em;
 }
 
 /* ── Font Variation Utilities ──────────────────── */
 
 @utility mono-1 {
-	font-variation-settings:
-		"MONO" 1,
-		"CASL" 0,
-		"CRSV" 0;
+    font-variation-settings:
+        "MONO" 1,
+        "CASL" 0,
+        "CRSV" 0;
 }

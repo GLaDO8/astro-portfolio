@@ -9,12 +9,12 @@ import Base from "@/layouts/Base.astro";
 import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
-const caseStudies = (await getCollection("caseStudies", ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
+const caseStudies = (
+    await getCollection("caseStudies", ({ data }) => !data.draft)
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;
@@ -22,32 +22,31 @@ const songData = await getSongData();
 
 const featuredStudy = caseStudies[0];
 const heroNotes = notes.slice(0, 5);
-const notesColumns = [
-	heroNotes.slice(0, Math.ceil(heroNotes.length / 2)),
-	heroNotes.slice(Math.ceil(heroNotes.length / 2)),
-];
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [
-		{
-			"@type": "WebSite",
-			"@id": "https://shrey.fyi/#website",
-			url: "https://shrey.fyi",
-			name: "Shreyas Gupta",
-			description:
-				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-			publisher: { "@id": "https://shrey.fyi/#person" },
-		},
-		{
-			"@type": "Person",
-			"@id": "https://shrey.fyi/#person",
-			name: "Shreyas Gupta",
-			url: "https://shrey.fyi",
-			jobTitle: "Designer",
-			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-		},
-	],
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://shrey.fyi/#website",
+            url: "https://shrey.fyi",
+            name: "Shreyas Gupta",
+            description:
+                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+            publisher: { "@id": "https://shrey.fyi/#person" },
+        },
+        {
+            "@type": "Person",
+            "@id": "https://shrey.fyi/#person",
+            name: "Shreyas Gupta",
+            url: "https://shrey.fyi",
+            jobTitle: "Designer",
+            sameAs: [
+                "https://github.com/GLaDO8",
+                "https://x.com/wutamelonshrey",
+            ],
+        },
+    ],
 };
 ---
 
@@ -64,15 +63,12 @@ const jsonLd = {
             <aside
                 class="flex flex-col gap-8 xl:sticky xl:top-6 xl:self-start pt-8"
             >
-                <PhotoFrameWidget
-                    src={photoFrame.src}
-                    alt={photoFrame.alt}
-                />
+                <PhotoFrameWidget src={photoFrame.src} alt={photoFrame.alt} />
 
                 <HeroSection client:visible />
 
                 <div
-                    class="max-w-md font-sans text-base leading-[1.42] font-medium tracking-[-0.02em] text-charcoal"
+                    class="max-w-120 font-sans text-base leading-[1.42] font-medium tracking-[-0.02em] text-charcoal"
                 >
                     <p class="text-pretty">
                         I build tools at <a
@@ -171,21 +167,17 @@ const jsonLd = {
                         Notes
                     </p>
 
-                    <div class="grid gap-x-16 gap-y-4 md:grid-cols-2">
+                    <div class="flex flex-col gap-4">
                         {
-                            notesColumns.map((column) => (
-                                <div class="flex flex-col gap-4">
-                                    {column.map((note) => (
-                                        <a
-                                            href={`/notes/${note.id}`}
-                                            class="group no-underline"
-                                        >
-                                            <h3 class="font-sans text-lg leading-[1.15] font-medium tracking-[-0.03em] text-charcoal transition-colors group-hover:text-slate">
-                                                {note.data.title}
-                                            </h3>
-                                        </a>
-                                    ))}
-                                </div>
+                            heroNotes.map((note) => (
+                                <a
+                                    href={`/notes/${note.id}`}
+                                    class="group no-underline"
+                                >
+                                    <h3 class="font-sans text-lg leading-[1.15] font-medium tracking-[-0.03em] text-charcoal transition-colors group-hover:text-slate">
+                                        {note.data.title}
+                                    </h3>
+                                </a>
                             ))
                         }
                     </div>
