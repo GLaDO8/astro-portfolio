@@ -1,16 +1,18 @@
 ---
+import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
+
 interface Props {
-    currentPath?: string;
+	currentPath?: string;
 }
 
 const { currentPath = "/" } = Astro.props;
 
 const links = [
-    { href: "/", label: "Home" },
-    { href: "/work", label: "Work" },
-    { href: "/experiments", label: "Experiments" },
-    { href: "/snaps", label: "Snaps" },
-    { href: "/notes", label: "Notes" },
+	{ href: "/", label: "Home" },
+	{ href: "/work", label: "Work" },
+	{ href: "/experiments", label: "Experiments" },
+	{ href: "/snaps", label: "Snaps" },
+	{ href: "/notes", label: "Notes" },
 ];
 
 const activeLinkClass = "text-charcoal font-semibold";
@@ -30,11 +32,7 @@ const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
             data-navbar-indicator></span>
         {
             links.map(({ href, label }) => {
-                const isActive =
-                    href === "/"
-                        ? currentPath === href
-                        : currentPath === href ||
-                          currentPath.startsWith(`${href}/`);
+                const isActive = isNavbarLinkActive(href, currentPath);
                 return (
                     <a
                         href={href}
@@ -54,17 +52,14 @@ const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
 </nav>
 
 <script>
+    import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
+
     const activeClass = "text-charcoal";
     const inactiveClass = "text-slate";
     const inactiveHoverClass = "hover:text-charcoal";
 
     const getTrack = () =>
         document.querySelector<HTMLElement>("[data-navbar-track]");
-
-    const isLinkActive = (href: string, pathname: string) =>
-        href === "/"
-            ? pathname === href
-            : pathname === href || pathname.startsWith(`${href}/`);
 
     const setActiveLink = (
         track: HTMLElement,
@@ -115,7 +110,7 @@ const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
 
         const activeLink =
             links.find((link) =>
-                isLinkActive(link.getAttribute("href") ?? "", pathname),
+                isNavbarLinkActive(link.getAttribute("href") ?? "", pathname),
             ) ?? links[0];
 
         setActiveLink(track, indicator, links, activeLink, {
