@@ -4,6 +4,7 @@ import { ClientRouter } from "astro:transitions";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
 import AgentationToolbar from "@/components/AgentationToolbar";
+import DevMeasurer from "@/components/DevMeasurer";
 
 interface Props {
 	title: string;
@@ -56,6 +57,7 @@ const isDev = import.meta.env.DEV;
             >Skip to content</a
         >
         <slot />
+        {isDev && <DevMeasurer client:only="react" />}
         {isDev && <AgentationToolbar client:only="react" />}
 
         <script>

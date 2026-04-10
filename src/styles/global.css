@@ -52,10 +52,10 @@
 
 @theme {
     /* Colors */
-    --color-parchment: #f4f5f0; /* background */
+    --color-parchment: oklch(98.7% 0.002 197.1); /* background */
     --color-charcoal: #2a231d; /* text primary */
     --color-slate: #7a715f; /* text secondary */
-    --color-mist: #eee5d7; /* soft surface */
+    --color-mist: oklch(92.5% 0.005 214.3); /* soft surface */
     --color-fog: #ddd2c1; /* subtle divider */
 
     /* Fluid Type Scale — Utopia 360→1440 */

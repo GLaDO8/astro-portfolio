@@ -13,15 +13,15 @@ const links = [
     { href: "/notes", label: "Notes" },
 ];
 
-const activeLinkClass = "text-charcoal";
-const inactiveLinkClass = "text-slate hover:text-charcoal";
+const activeLinkClass = "text-charcoal font-semibold";
+const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
 ---
 
 <nav
     class="flex items-center justify-center font-sans text-sm tracking-tight mb-12"
 >
     <div
-        class="relative flex items-center rounded-full bg-[#EAEBE8] p-1"
+        class="relative flex items-center rounded-full bg-mist-100 p-1"
         data-navbar-track
     >
         <span
@@ -39,7 +39,7 @@ const inactiveLinkClass = "text-slate hover:text-charcoal";
                     <a
                         href={href}
                         class:list={[
-                            "relative z-10 rounded-full px-5 pt-1 pb-1.5 font-semibold transition-[color,transform] duration-200",
+                            "relative z-10 rounded-full px-5 pt-1 pb-1.5 transition-[color,transform] duration-200",
                             isActive ? activeLinkClass : inactiveLinkClass,
                         ]}
                         aria-current={isActive ? "page" : undefined}
