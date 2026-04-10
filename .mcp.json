@@ -1,9 +1,9 @@
 {
-	"mcpServers": {
-		"agentation": {
-			"command": "npx",
-			"args": ["agentation-mcp", "server"],
-			"cwd": "/Users/shreyasgupta/local-documents/new-site"
-		}
-	}
+  "mcpServers": {
+    "agentation": {
+      "command": "npx",
+      "args": ["agentation-mcp", "server"],
+      "cwd": "/Users/shreyasgupta/local-documents/site-2.0"
+    }
+  }
 }
