@@ -5,11 +5,6 @@ This personal website will be the home to publish my writings, design case studi
 ## Tech Stack
 Astro 6 (static) · React 19 · Tailwind v4 (Vite plugin) · Markdoc · Motion · Biome · TypeScript · Lenis (for smooth scrolling)
 
-## On-Demand Docs
-Read the relevant doc BEFORE making changes in that area:
-
-`.claude/docs/tailwind.md` — when styling elements using tailwind css
-
 ## Key Files
 - `src/layouts/Base.astro` — document-level layout. Owns SEO, font preloading, global CSS, `ClientRouter`, Lenis bootstrapping, skip link, and dev-only toolbar mounting.
 - `src/components/SiteShell.astro` — in-body site shell. Owns the shared max-width container, navbar placement, main content wrapper, and page enter/leave state used by shell transitions.
