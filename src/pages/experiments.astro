@@ -1,0 +1,31 @@
+---
+import Page from "@/layouts/Page.astro";
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "CollectionPage",
+	name: "Experiments",
+	description: "Experiments by Shreyas Gupta.",
+	url: "https://shrey.fyi/experiments",
+};
+---
+
+<Page
+    title="Experiments — Shreyas Gupta"
+    description="Experiments by Shreyas Gupta."
+    bodyClass="bg-parchment"
+    class="bg-parchment"
+    seo={{ jsonLd }}
+>
+    <section class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5">
+        <h1
+            class="mt-8 font-serif text-4xl leading-[1.1] font-bold tracking-[-0.03em] text-charcoal"
+        >
+            Experiments
+        </h1>
+        <p class="mt-4 max-w-2xl font-sans text-base leading-relaxed text-slate">
+            This page is a temporary stub for side projects, prototypes, and playful
+            builds.
+        </p>
+    </section>
+</Page>

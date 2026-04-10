@@ -1,0 +1,63 @@
+---
+import { getCollection } from "astro:content";
+import Page from "@/layouts/Page.astro";
+
+const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "CollectionPage",
+	name: "Notes",
+	description: "A collection of writing by Shreyas Gupta.",
+	url: "https://shrey.fyi/notes",
+};
+---
+
+<Page
+    title="Notes — Shreyas Gupta"
+    description="Essays, observations, and notes by Shreyas Gupta."
+    bodyClass="bg-parchment"
+    class="bg-parchment"
+    seo={{ jsonLd }}
+>
+    <section class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5">
+        <header class="mt-8 mb-10">
+            <h1
+                class="font-serif font-bold text-4xl leading-[1.1] tracking-[-0.03em] text-charcoal text-balance"
+            >
+                Notes
+            </h1>
+            <p class="mt-3 max-w-2xl font-sans text-base leading-relaxed text-slate">
+                Essays, observations, and half-finished thoughts worth publishing.
+            </p>
+        </header>
+
+        <div class="flex flex-col gap-8">
+            {
+                notes.map((note) => (
+                    <article class="border-b border-black/8 pb-8 last:border-b-0 last:pb-0">
+                        <a href={`/notes/${note.id}`} class="group block no-underline">
+                            <p class="font-sans text-sm text-slate">
+                                {
+                                    note.data.date.toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })
+                                }
+                            </p>
+                            <h2 class="mt-2 font-serif text-2xl leading-tight tracking-[-0.03em] text-charcoal transition-opacity duration-200 group-hover:opacity-75">
+                                {note.data.title}
+                            </h2>
+                            <p class="mt-3 max-w-2xl font-sans text-base leading-relaxed text-slate">
+                                {note.data.description}
+                            </p>
+                        </a>
+                    </article>
+                ))
+            }
+        </div>
+    </section>
+</Page>
