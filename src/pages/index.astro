@@ -13,9 +13,9 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
-const caseStudies = (
-    await getCollection("caseStudies", ({ data }) => !data.draft)
-).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const caseStudies = (await getCollection("caseStudies")).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
 
 const widgetConfig = getWidgetConfig();
 const photoFrame = widgetConfig.photoframe;

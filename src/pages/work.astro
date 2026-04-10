@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Page from "@/layouts/Page.astro";
 
-const studies = (await getCollection("caseStudies", ({ data }) => !data.draft)).sort(
+const studies = (await getCollection("caseStudies")).sort(
 	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 

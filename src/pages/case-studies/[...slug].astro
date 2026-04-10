@@ -12,7 +12,7 @@ const themeStyles: Record<string, string> = {
 };
 
 export async function getStaticPaths() {
-	const studies = await getCollection("caseStudies", ({ data }) => !data.draft);
+	const studies = await getCollection("caseStudies");
 	return studies.map((study) => ({
 		params: { slug: study.id },
 		props: { study },
