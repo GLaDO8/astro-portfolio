@@ -99,8 +99,6 @@ const jsonLd = {
                         >.
                     </p>
                 </div>
-
-                <!-- <PromptCard client:load /> -->
                 <PromptCard client:load />
             </aside>
 
@@ -113,51 +111,42 @@ const jsonLd = {
                     </p>
 
                     <div class="grid gap-6 lg:grid-cols-2">
-                        {
-                            featuredStudy && (
-                                <a
-                                    href={`/case-studies/${featuredStudy.id}`}
-                                    class="group relative row-span-2 min-h-[28rem] overflow-hidden rounded-[1.6rem] bg-[#eb67bb] p-7 no-underline shadow-[inset_0_0_0_1px_rgba(167,53,126,0.08),0_16px_34px_rgba(42,35,29,0.1)]"
-                                >
-                                    <div class="max-w-[13ch]">
-                                        <h2 class="font-serif text-[1.95rem] leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-[2.45rem]">
-                                            {featuredStudy.data.title}
-                                        </h2>
-                                    </div>
+                        <div class="flex min-w-0 flex-col gap-6">
+                            {
+                                featuredStudy && (
+                                    <a
+                                        href={`/case-studies/${featuredStudy.id}`}
+                                        class="group relative min-h-[28rem] overflow-hidden rounded-[1.6rem] bg-[#eb67bb] p-7 no-underline shadow-[inset_0_0_0_1px_rgba(167,53,126,0.08),0_16px_34px_rgba(42,35,29,0.1)]"
+                                    >
+                                        <div class="max-w-[13ch]">
+                                            <h2 class="font-serif text-[1.95rem] leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-[2.45rem]">
+                                                {featuredStudy.data.title}
+                                            </h2>
+                                        </div>
+                                    </a>
+                                )
+                            }
 
-                                    <img
-                                        src="/cs-card-1.png"
-                                        alt=""
-                                        class="absolute bottom-0 left-1/2 w-[82%] max-w-none -translate-x-[42%] translate-y-[18%] rotate-[-9deg] transition-transform duration-300 group-hover:translate-y-[14%] group-hover:rotate-[-7deg]"
-                                    />
-                                </a>
-                            )
-                        }
-
-                        <a href="/snaps" class="row-span-1 no-underline">
-                            <SnapsWidget client:load />
-                        </a>
-
-                        <article
-                            class="group relative row-span-2 overflow-hidden rounded-[1.6rem] bg-[#eb67bb] p-7 shadow-[inset_0_0_0_1px_rgba(167,53,126,0.08),0_14px_30px_rgba(42,35,29,0.08)]"
-                        >
-                            <div class="max-w-[11ch]">
-                                <h2
-                                    class="font-serif text-[2.15rem] leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-[2.75rem]"
-                                >
-                                    Labelling - AI assisted question generation
-                                </h2>
-                            </div>
-
-                            <img
-                                src="/cs-card-1.png"
-                                alt=""
-                                class="absolute bottom-1 right-[-2.5rem] w-[62%] -rotate-6 opacity-90"
-                            />
-                        </article>
-
-                        <div class="row-span-1">
                             <MusicWidget songData={songData} client:visible />
+                        </div>
+
+                        <div class="flex min-w-0 flex-col gap-6">
+                            <a href="/snaps" class="block no-underline">
+                                <SnapsWidget client:load />
+                            </a>
+
+                            <article
+                                class="group relative overflow-hidden rounded-[1.6rem] bg-[#eb67bb] p-7 shadow-[inset_0_0_0_1px_rgba(167,53,126,0.08),0_14px_30px_rgba(42,35,29,0.08)]"
+                            >
+                                <div class="max-w-[11ch]">
+                                    <h2
+                                        class="font-serif text-[2.15rem] leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-[2.75rem]"
+                                    >
+                                        Labelling - AI assisted question
+                                        generation
+                                    </h2>
+                                </div>
+                            </article>
                         </div>
                     </div>
                 </section>
