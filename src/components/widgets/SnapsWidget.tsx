@@ -28,7 +28,7 @@ export default function SnapsWidget() {
 
   return (
     <motion.div
-      className="relative flex h-40 shrink-0 overflow-visible rounded-2xl bg-[#bdda7d] cursor-pointer"
+      className="relative flex h-40 shrink-0 overflow-visible bg-[#bdda7d] cursor-pointer"
       initial="rest"
       animate="rest"
       whileHover={shouldReduceMotion ? undefined : "hover"}
@@ -45,7 +45,7 @@ export default function SnapsWidget() {
       {polaroids.map((polaroid, index) => (
         <motion.div
           key={polaroid.src}
-          className="absolute right-0 top-0 h-30 w-24 origin-top-right overflow-hidden bg-white shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)] rounded-xs"
+          className="absolute right-0 top-0 h-30 w-24 origin-top-right overflow-hidden bg-white shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
           variants={{
             rest: {
               x: polaroid.rest.x,

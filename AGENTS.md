@@ -1,5 +1,4 @@
 # Shreyas's Personal Website
-
 This personal website will be the home to publish my writings, design case studies, experiments, and other creative work.
 
 ## Tech Stack
@@ -26,9 +25,15 @@ Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Moti
 - If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
 - Arbitrary colors (`bg-[#hex]`) are OK temporarily; promote to `@theme` token if reused.
 
-## CSS & Layout Bug Protocol
-When debugging CSS/layout issues, **never edit styles based on source code alone**. The rendered DOM is the source of truth — source files pass through build transforms that may inject, scope, or override styles in ways not visible in source.
+## Understand the DOM
+For structural styling, complex DOM changes, or CSS/layout debugging, inspect the rendered DOM first. The rendered DOM is the source of truth. Do not infer selector paths from Astro/React source alone when the change depends on parent/child relationships in the final DOM.
 
+This includes:
+- parent-driven styling like `*:` selectors, arbitrary selector variants, descendant/child combinators, and group/peer patterns
+- Astro wrapper behavior such as `astro-island`, slots, scoped styles, and generated markup
+- React/Astro component boundaries where the source tree may not match the final DOM tree
+
+Use the following workflow:
 - **Inspect before editing** — Use `agent-browser eval` to run `getComputedStyle()` on the target element and its parent chain for relevant properties. Dump `outerHTML` to see the actual rendered markup and any injected inline styles or wrapper elements.
 - **Identify the winning rule** — Before writing overrides, determine what's currently winning the cascade (inline styles, scoped selectors, utility classes, browser defaults). Know the specificity you're fighting.
-- **Verify after each change** — Re-run `getComputedStyle` to confirm the target property actually changed. Screenshots show *what's wrong*, computed styles show *why*.
+- **Verify after each change** — Re-run `getComputedStyle()` to confirm the target property changed on the actual visible element, not just a wrapper. Screenshots show *what's wrong*; computed styles show *why*.

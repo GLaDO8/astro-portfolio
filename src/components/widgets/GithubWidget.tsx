@@ -34,7 +34,7 @@ function ContributionGrid({ days }: { days: ContributionDay[] }) {
 						<div
 							key={day.date}
 							role="img"
-							className={cn("size-5 shrink-0 rounded-md", LEVEL_COLORS[day.level])}
+							className={cn("size-5 shrink-0 rounded-[0.375rem]", LEVEL_COLORS[day.level])}
 							title={
 								!day.date.startsWith("empty-")
 									? `${day.date}: ${day.count} contributions`

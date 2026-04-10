@@ -74,6 +74,9 @@
     /* Grid */
     --grid-template-columns-16: repeat(16, minmax(0, 1fr));
 
+    /* Radius */
+    --radius-md: 1.5rem;
+
     /* Animations */
     --animate-vinyl: vinyl-spin 1.8182s linear infinite;
 }

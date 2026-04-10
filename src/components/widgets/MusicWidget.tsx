@@ -81,7 +81,7 @@ export default function MusicWidget({ songData }: Props) {
   }, []);
 
   return (
-    <div className="relative flex h-42 w-full shrink-0 flex-col justify-end rounded-[1.4rem] bg-white border-2 border-[#E7E9E1]">
+    <div className="relative flex h-42 w-full shrink-0 flex-col justify-end bg-white border-2 border-[#E7E9E1]">
       {/* iOS chat bubble — anchored top-left, overflows container */}
       {songData.message && (
         <div className="absolute -left-6 -top-4 z-30 md:-left-12">
