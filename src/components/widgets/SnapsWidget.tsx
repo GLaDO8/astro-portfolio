@@ -45,7 +45,7 @@ export default function SnapsWidget() {
       {polaroids.map((polaroid, index) => (
         <motion.div
           key={polaroid.src}
-          className="absolute right-0 top-0 h-30 w-24 origin-top-right overflow-hidden bg-white shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
+          className="absolute right-0 top-0 h-30 w-24 origin-top-right overflow-hidden bg-white shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)] rounded-xs"
           variants={{
             rest: {
               x: polaroid.rest.x,
@@ -67,7 +67,7 @@ export default function SnapsWidget() {
             <img
               src={polaroid.src}
               alt={`Snap ${index + 1}`}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover rounded-[1px]"
               loading="lazy"
             />
           </div>
