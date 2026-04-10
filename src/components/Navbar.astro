@@ -1,28 +1,32 @@
 ---
 interface Props {
-	currentPath?: string;
+    currentPath?: string;
 }
 
 const { currentPath = "/" } = Astro.props;
 
 const links = [
-	{ href: "/", label: "Home" },
-	{ href: "/snaps", label: "Snaps" },
-	{ href: "/notes", label: "Notes" },
+    { href: "/", label: "Home" },
+    { href: "/work", label: "Work" },
+    { href: "/experiments", label: "Experiments" },
+    { href: "/snaps", label: "Snaps" },
+    { href: "/notes", label: "Notes" },
 ];
 
 const activeLinkClass = "text-charcoal";
 const inactiveLinkClass = "text-slate hover:text-charcoal";
 ---
 
-<nav class="flex items-center justify-end font-sans text-sm tracking-tight">
+<nav
+    class="flex items-center justify-center font-sans text-sm tracking-tight mb-12"
+>
     <div
         class="relative flex items-center rounded-full bg-[#EAEBE8] p-1"
         data-navbar-track
     >
         <span
             aria-hidden="true"
-            class="pointer-events-none absolute inset-y-1 left-0 rounded-full bg-parchment shadow-[0_1px_2px_rgba(36,42,45,0.08),0_8px_18px_rgba(36,42,45,0.06)] transition-[transform,width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            class="pointer-events-none absolute inset-y-1 left-0 rounded-full bg-white shadow-[0_1px_2px_rgba(36,42,45,0.08),0_8px_18px_rgba(36,42,45,0.06)] transition-[transform,width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
             data-navbar-indicator></span>
         {
             links.map(({ href, label }) => {
@@ -58,7 +62,9 @@ const inactiveLinkClass = "text-slate hover:text-charcoal";
         document.querySelector<HTMLElement>("[data-navbar-track]");
 
     const isLinkActive = (href: string, pathname: string) =>
-        href === "/" ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
+        href === "/"
+            ? pathname === href
+            : pathname === href || pathname.startsWith(`${href}/`);
 
     const setActiveLink = (
         track: HTMLElement,
@@ -98,7 +104,9 @@ const inactiveLinkClass = "text-slate hover:text-charcoal";
             "[data-navbar-indicator]",
         );
         const links = track
-            ? Array.from(track.querySelectorAll<HTMLElement>("[data-navbar-link]"))
+            ? Array.from(
+                  track.querySelectorAll<HTMLElement>("[data-navbar-link]"),
+              )
             : [];
 
         if (!track || !indicator || links.length === 0) {
@@ -123,7 +131,9 @@ const inactiveLinkClass = "text-slate hover:text-charcoal";
             return;
         }
 
-        const indicator = track.querySelector<HTMLElement>("[data-navbar-indicator]");
+        const indicator = track.querySelector<HTMLElement>(
+            "[data-navbar-indicator]",
+        );
         const links = Array.from(
             track.querySelectorAll<HTMLElement>("[data-navbar-link]"),
         );
