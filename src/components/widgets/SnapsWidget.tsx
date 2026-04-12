@@ -28,7 +28,7 @@ export default function SnapsWidget() {
 
   return (
     <motion.div
-      className="relative flex h-40 shrink-0 overflow-visible bg-[#bdda7d] cursor-pointer"
+      className="relative flex h-40 shrink-0 overflow-visible bg-white border-2 border-[#E7E9E1] cursor-pointer"
       initial="rest"
       animate="rest"
       whileHover={shouldReduceMotion ? undefined : "hover"}
@@ -37,7 +37,7 @@ export default function SnapsWidget() {
         <div className="pb-4 font-sans text-xl leading-9 font-bold tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)]">
           Snaps
         </div>
-        <div className="font-sans text-base leading-tight font-medium tracking-[-0.02em] text-[#607139] max-w-42">
+        <div className="font-sans text-base leading-tight font-medium tracking-[-0.02em] text-[color(display-p3_0.121_0.153_0.016)] max-w-42">
           Poetry written with my camera
         </div>
       </div>
@@ -45,7 +45,7 @@ export default function SnapsWidget() {
       {polaroids.map((polaroid, index) => (
         <motion.div
           key={polaroid.src}
-          className="absolute right-0 top-0 h-30 w-24 origin-top-right overflow-hidden bg-white shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
+          className="absolute right-0 top-0 h-30 w-24 origin-top-right overflow-hidden rounded-xs bg-white shadow-[0px_4px_18px_2px_rgba(93,93,93,0.25),0px_0px_4px_rgba(0,0,0,0.18)]"
           variants={{
             rest: {
               x: polaroid.rest.x,
