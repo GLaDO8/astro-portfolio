@@ -1,5 +1,7 @@
 ---
+import { Image } from "astro:assets";
 import { cn } from "@/lib/cn";
+import { getImageAsset } from "@/lib/imageAssets";
 
 interface Props {
 	images: string; // Delimited string: "src|alt,,src|alt"
@@ -26,7 +28,8 @@ const heights: Record<string, string> = {
 
 const items = imagesStr.split(",,").map((entry) => {
 	const [src, alt] = entry.split("|");
-	return { src: src.trim(), alt: alt?.trim() || "" };
+	const path = src.trim();
+	return { src: path, alt: alt?.trim() || "", image: getImageAsset(path) };
 });
 
 const durations: Record<string, string> = {
@@ -50,33 +53,60 @@ const animDirection = direction === "right" ? "reverse" : "normal";
     >
         {
             items.map((img) => (
-                <img
-                    src={img.src}
-                    alt={img.alt}
-                    loading="lazy"
-                    decoding="async"
-                    class={cn(
-                        heights[height],
-                        "w-auto rounded-lg object-cover select-none pointer-events-none",
-                    )}
-                    draggable="false"
-                />
+                img.image ? (
+                    <Image
+                        src={img.image}
+                        alt={img.alt}
+                        loading="lazy"
+                        class={cn(
+                            heights[height],
+                            "w-auto rounded-lg object-cover select-none pointer-events-none",
+                        )}
+                        draggable="false"
+                    />
+                ) : (
+                    <img
+                        src={img.src}
+                        alt={img.alt}
+                        loading="lazy"
+                        decoding="async"
+                        class={cn(
+                            heights[height],
+                            "w-auto rounded-lg object-cover select-none pointer-events-none",
+                        )}
+                        draggable="false"
+                    />
+                )
             ))
         }
         {
             items.map((img) => (
-                <img
-                    src={img.src}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    decoding="async"
-                    class={cn(
-                        heights[height],
-                        "w-auto rounded-lg object-cover select-none pointer-events-none",
-                    )}
-                    draggable="false"
-                />
+                img.image ? (
+                    <Image
+                        src={img.image}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        class={cn(
+                            heights[height],
+                            "w-auto rounded-lg object-cover select-none pointer-events-none",
+                        )}
+                        draggable="false"
+                    />
+                ) : (
+                    <img
+                        src={img.src}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
+                        class={cn(
+                            heights[height],
+                            "w-auto rounded-lg object-cover select-none pointer-events-none",
+                        )}
+                        draggable="false"
+                    />
+                )
             ))
         }
     </div>

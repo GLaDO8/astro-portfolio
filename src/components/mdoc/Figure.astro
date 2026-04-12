@@ -1,5 +1,7 @@
 ---
+import { Image } from "astro:assets";
 import { cn } from "@/lib/cn";
+import { getImageAsset } from "@/lib/imageAssets";
 
 interface Props {
 	src: string;
@@ -11,6 +13,7 @@ interface Props {
 }
 
 const { src, alt = "", caption, width = "default", align = "center", maxWidth } = Astro.props;
+const image = getImageAsset(src);
 
 const isBreakout = width === "wide" || width === "full";
 
@@ -27,13 +30,19 @@ const wrapperClass = cn(
     {...isBreakout ? { "data-figure-breakout": width } : {}}
     {...maxWidth ? { "data-figure-max-width": maxWidth } : {}}
 >
-    <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
-        class="w-full rounded-lg"
-    />
+    {
+        image ? (
+            <Image src={image} alt={alt} loading="lazy" class="w-full rounded-lg" />
+        ) : (
+            <img
+                src={src}
+                alt={alt}
+                loading="lazy"
+                decoding="async"
+                class="w-full rounded-lg"
+            />
+        )
+    }
     {
         caption && (
             <figcaption class="font-sans text-sm text-slate mt-2">

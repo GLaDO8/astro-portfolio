@@ -1,25 +1,36 @@
 ---
+import { Image } from "astro:assets";
+import postItMe from "@/assets/widgets/postit-me.svg";
+import { getImageAsset } from "@/lib/imageAssets";
+
 interface Props {
 	src: string;
 	alt?: string;
 }
 
 const { src, alt = "Photo" } = Astro.props;
+const photo = getImageAsset(src);
 ---
 
 <div class="photo-frame-widget relative h-56 w-60 shrink-0 md:h-64 md:w-64">
-	<img
-		src={src}
-		alt={alt}
-		class="block h-[84%] w-[84%] -rotate-6 rounded-sm bg-white object-cover p-1.5 shadow-[0_12px_30px_rgba(42,35,29,0.14)]"
-	/>
+	{
+		photo ? (
+			<Image
+				src={photo}
+				alt={alt}
+				loading="eager"
+				class="block h-[84%] w-[84%] -rotate-6 rounded-sm bg-white object-cover p-1.5 shadow-[0_12px_30px_rgba(42,35,29,0.14)]"
+			/>
+		) : (
+			<img
+				src={src}
+				alt={alt}
+				class="block h-[84%] w-[84%] -rotate-6 rounded-sm bg-white object-cover p-1.5 shadow-[0_12px_30px_rgba(42,35,29,0.14)]"
+			/>
+		)
+	}
 	<div class="absolute left-34 top-31 -rotate-8 md:left-36 md:top-34">
-		<img
-			src="/postit-me.svg"
-			alt="Post-it note saying Me!"
-			width={86}
-			height={113}
-		/>
+		<Image src={postItMe} alt="Post-it note saying Me!" width={86} height={113} />
 	</div>
 </div>
 

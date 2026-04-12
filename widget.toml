@@ -6,5 +6,5 @@ message = "Found on a YouTube video of a baboon chilling in water."
 label = "WEEKLY OBSESSIONS"
 
 [photoframe]
-src = "/halftone-photo.webp"
+src = "/widgets/halftone-photo.webp"
 alt = "Halftone portrait of Shreyas"

@@ -1,4 +1,7 @@
 ---
+import { Image } from "astro:assets";
+import { getImageAsset } from "@/lib/imageAssets";
+
 interface Props {
 	src1: string;
 	src2: string;
@@ -9,17 +12,25 @@ interface Props {
 }
 
 const { src1, src2, alt1 = "", alt2 = "", caption1, caption2 } = Astro.props;
+const image1 = getImageAsset(src1);
+const image2 = getImageAsset(src2);
 ---
 
 <div class="not-prose grid grid-cols-2 gap-4 my-6">
 	<figure class="m-0">
-		<img
-			src={src1}
-			alt={alt1}
-			loading="lazy"
-			decoding="async"
-			class="w-full rounded-lg"
-		/>
+		{
+			image1 ? (
+				<Image src={image1} alt={alt1} loading="lazy" class="w-full rounded-lg" />
+			) : (
+				<img
+					src={src1}
+					alt={alt1}
+					loading="lazy"
+					decoding="async"
+					class="w-full rounded-lg"
+				/>
+			)
+		}
 		{caption1 && (
 			<figcaption class="font-sans text-sm text-slate mt-2">
 				{caption1}
@@ -27,13 +38,19 @@ const { src1, src2, alt1 = "", alt2 = "", caption1, caption2 } = Astro.props;
 		)}
 	</figure>
 	<figure class="m-0">
-		<img
-			src={src2}
-			alt={alt2}
-			loading="lazy"
-			decoding="async"
-			class="w-full rounded-lg"
-		/>
+		{
+			image2 ? (
+				<Image src={image2} alt={alt2} loading="lazy" class="w-full rounded-lg" />
+			) : (
+				<img
+					src={src2}
+					alt={alt2}
+					loading="lazy"
+					decoding="async"
+					class="w-full rounded-lg"
+				/>
+			)
+		}
 		{caption2 && (
 			<figcaption class="font-sans text-sm text-slate mt-2">
 				{caption2}

@@ -1,4 +1,7 @@
 ---
+import { Image } from "astro:assets";
+import { getImageAsset } from "@/lib/imageAssets";
+
 interface Props {
 	caption?: boolean;
 	image?: string;
@@ -8,6 +11,7 @@ interface Props {
 
 const { caption = false, image, imageAlt = "", citation = false } = Astro.props;
 const hasBox = caption || !!image;
+const localImage = getImageAsset(image);
 ---
 
 <aside
@@ -27,13 +31,17 @@ const hasBox = caption || !!image;
 >
     {
         image && (
-            <img
-                src={image}
-                alt={imageAlt}
-                loading="lazy"
-                decoding="async"
-                class="w-full mt-0 mb-0"
-            />
+            localImage ? (
+                <Image src={localImage} alt={imageAlt} loading="lazy" class="w-full mt-0 mb-0" />
+            ) : (
+                <img
+                    src={image}
+                    alt={imageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full mt-0 mb-0"
+                />
+            )
         )
     }
     <div class:list={[image ? "px-4 py-3" : ""]}>
