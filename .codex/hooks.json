@@ -1,0 +1,16 @@
+{
+	"hooks": {
+		"Stop": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/design-token-stop.mjs\"",
+						"timeout": 30,
+						"statusMessage": "Checking design tokens in changed files"
+					}
+				]
+			}
+		]
+	}
+}

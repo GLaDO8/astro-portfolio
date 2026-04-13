@@ -1,5 +1,7 @@
 ---
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
+import heroImageHotText from "@/assets/hero-image-hot-text.png";
 import HeroSection from "@/components/HeroSection";
 import PromptCard from "@/components/PromptCard";
 import SiteShell from "@/components/SiteShell.astro";
@@ -14,7 +16,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
 );
 
 const caseStudies = (await getCollection("caseStudies")).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
 const widgetConfig = getWidgetConfig();
@@ -112,19 +114,23 @@ const jsonLd = {
 
                     <div class="grid gap-6 lg:grid-cols-2">
                         <div
-                            class="flex min-w-0 flex-col gap-6 [&>a]:rounded-xl [&>astro-island>div]:rounded-xl"
+                            class="flex min-w-0 flex-col gap-6 [&>a]:rounded-lg [&>astro-island>div]:rounded-lg"
                         >
                             {
                                 featuredStudy && (
                                     <a
                                         href={`/case-studies/${featuredStudy.id}`}
-                                        class="group relative min-h-[28rem] overflow-hidden bg-pink-400 p-7 no-underline shadow-[inset_0_0_0_1px_oklch(59.1%_0.293_322.896_/_0.08),0_16px_34px_oklch(26.8%_0.007_34.298_/_0.1)]"
+                                        class="group relative min-h-[28rem] bg-linear-to-b from-[#FF86C7] to-[#ED449E] no-underline shadow-[inset_-2px_-2px_rgba(0,0,0,0.1),inset_2px_2px_rgba(255,255,255,0.3)] overflow-clip"
                                     >
-                                        <div class="max-w-[13ch]">
-                                            <h2 class="font-serif text-[1.95rem] leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-[2.45rem]">
-                                                {featuredStudy.data.title}
-                                            </h2>
-                                        </div>
+                                        <h2 class="font-sans text-lg font-semibold tracking-[-0.04em] text-[#550034] lg:text-xl px-7 py-5 leading-tight">
+                                            {featuredStudy.data.title}
+                                        </h2>
+
+                                        <Image
+                                            src={heroImageHotText}
+                                            alt={featuredStudy.data.title}
+                                            class="bottom-0 right-0 origin-bottom-right absolute scale-[0.9]"
+                                        />
                                     </a>
                                 )
                             }
@@ -144,7 +150,7 @@ const jsonLd = {
                             >
                                 <div class="max-w-[11ch]">
                                     <h2
-                                        class="font-serif text-[2.15rem] leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-[2.75rem]"
+                                        class="font-serif text-2xl leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-3xl"
                                     >
                                         Labelling - AI assisted question
                                         generation
