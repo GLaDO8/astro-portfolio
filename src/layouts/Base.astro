@@ -3,8 +3,7 @@ import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
-import AgentationToolbar from "@/components/AgentationToolbar";
-import DevMeasurer from "@/components/DevMeasurer";
+import DevToolbars from "@/components/DevToolbars";
 
 interface Props {
 	title: string;
@@ -57,8 +56,7 @@ const isDev = import.meta.env.DEV;
             >Skip to content</a
         >
         <slot />
-        {isDev && <DevMeasurer client:only="react" />}
-        {isDev && <AgentationToolbar client:only="react" />}
+        {isDev && <DevToolbars client:only="react" />}
 
         <script>
             import Lenis from "lenis";
