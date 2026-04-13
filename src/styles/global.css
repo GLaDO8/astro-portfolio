@@ -58,18 +58,18 @@
     --color-mist: oklch(92.5% 0.005 214.3); /* soft surface */
     --color-fog: #ddd2c1; /* subtle divider */
 
-    /* Fluid Type Scale — Utopia 360→1440 */
-    --text-xs: clamp(0.6944rem, 0.6593rem + 0.1564vw, 0.8rem);
-    --text-sm: clamp(0.8333rem, 0.7778rem + 0.2469vw, 1rem);
-    --text-base: clamp(1rem, 0.9167rem + 0.3704vw, 1.25rem);
-    --text-lg: clamp(1.2rem, 1.0792rem + 0.537vw, 1.5625rem);
-    --text-xl: clamp(1.44rem, 1.269rem + 0.7602vw, 1.9531rem);
-    --text-2xl: clamp(1.728rem, 1.4902rem + 1.0569vw, 2.4414rem);
-    --text-3xl: clamp(2.0736rem, 1.7475rem + 1.4491vw, 3.0518rem);
-    --text-4xl: clamp(2.4883rem, 2.0462rem + 1.965vw, 3.8147rem);
-    --text-5xl: clamp(2.986rem, 2.3919rem + 2.6406vw, 4.7684rem);
-    --text-6xl: clamp(3.5832rem, 2.7908rem + 3.5219vw, 5.9605rem);
-    --text-7xl: clamp(4.2998rem, 3.2496rem + 4.6678vw, 7.4506rem);
+    /* Fluid Type Scale — Utopia 360→1440, tightened one step */
+    --text-xs: clamp(0.6944rem, 0.6859rem + 0.0379vw, 0.72rem);
+    --text-sm: clamp(0.8333rem, 0.8111rem + 0.0988vw, 0.9rem);
+    --text-base: clamp(1rem, 0.9583rem + 0.1852vw, 1.125rem);
+    --text-lg: clamp(1.2rem, 1.1313rem + 0.3056vw, 1.4063rem);
+    --text-xl: clamp(1.44rem, 1.3341rem + 0.4708vw, 1.7578rem);
+    --text-2xl: clamp(1.728rem, 1.5715rem + 0.6954vw, 2.1973rem);
+    --text-3xl: clamp(2.0736rem, 1.8493rem + 0.9969vw, 2.7466rem);
+    --text-4xl: clamp(2.4883rem, 2.1733rem + 1.3998vw, 3.4332rem);
+    --text-5xl: clamp(2.986rem, 2.5509rem + 1.934vw, 4.2915rem);
+    --text-6xl: clamp(3.5832rem, 2.9895rem + 2.6386vw, 5.3643rem);
+    --text-7xl: clamp(4.2998rem, 3.4984rem + 3.5616vw, 6.7039rem);
 
     /* Grid */
     --grid-template-columns-16: repeat(16, minmax(0, 1fr));
