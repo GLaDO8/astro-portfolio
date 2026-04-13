@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import heroImageHotText from "@/assets/hero-image-hot-text.png";
+import heroImageHotText from "@/assets/hero-image-1.png";
 import HeroSection from "@/components/HeroSection";
 import PromptCard from "@/components/PromptCard";
 import SiteShell from "@/components/SiteShell.astro";
@@ -129,7 +129,7 @@ const jsonLd = {
                                         <Image
                                             src={heroImageHotText}
                                             alt={featuredStudy.data.title}
-                                            class="bottom-0 right-0 origin-bottom-right absolute scale-[0.9]"
+                                            class="-bottom-12 -right-6.5 origin-bottom-right absolute transition-all scale-[0.85] shadow-2xl -rotate-2 group-hover:-rotate-4"
                                         />
                                     </a>
                                 )

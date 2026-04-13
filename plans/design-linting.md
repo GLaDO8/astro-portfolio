@@ -1,0 +1,5 @@
+the `/Users/shreyasgupta/local-documents/site-2.0/src/styles/global.css` file has a custom type scale defined for tailwind. It also has a bunch of custom colors defined, both inside the @theme attribute. I wanted to understand if I can create a linting system of sorts to make sure codex adheres to these type and color tokens. We can either create a biome plugin/extension that works alongside the lint-check hook inside codex, or we can create another hook just for this. We need to ensure that the linter enforces usage of type scale, but for colors, it should be shared to codex as a warning when it deviates, because there will be instances where it will deviate.
+
+The idea came from this link -> https://zeroheight.com/blog/how-to-introduce-linting-for-design-system-hygiene/ and something atlassian design system already does -> https://atlassian.design/components/eslint-plugin-design-system/usage
+
+How should we go about building something like this?
