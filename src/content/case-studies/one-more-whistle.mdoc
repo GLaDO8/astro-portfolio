@@ -5,23 +5,25 @@ date: 2025-06-01
 theme: "hot-text"
 ---
 
-I’ve been getting more involved in kitchen activities lately with the COVID-19 pandemic urging many to get their hands dirty. Being at home for so long brought trivial details and activities around the house under the spotlight. One of these trivial details was the **pressure cooker whistles** which can be heard in every Indian neighbourhood.
+It's COVID and I'm in the kitchen more often these days like everyone else, and being home for so long got me itching at minor inconveniences, cooker whistles are one of em.
 
 ## Problem in hand
 
-The traditional pressure cooker has a [whistle](https://www.hawkinscookers.com/WebPCMain.aspx?cat=HCL) which indicates whether peak pressure has reached and families **count the number of whistles** to know if the food is cooked. But even after all these years listening to cooker whistles at home, it still feels annoying when mom asks me to keep a lookout for the cooker whistles, and it has become more apparent during the lockdown. I constantly found myself running around the house asking people if they heard any whistles, even burning the rice couple of times. I knew I can’t be the only one facing these issues, so I set out on a journey to solve the infamous whistle conundrum.
+The traditional pressure cookers has a [whistle](https://www.hawkinscookers.com/WebPCMain.aspx?cat=HCL) which indicates whether peak pressure has reached and families **count the number of whistles** to know if the food is cooked. But even after all these years listening to cooker whistles at home, it still feels annoying when mom asks me to keep a lookout for the whistles, especially with the lockdown. Plus I'm forgetful, even burnt rice a couple of times. I can't be the only one with these issues.
+
+Let's hack.
 
 ## A few interviews later…
 
-A quick **survey** shows that the majority of Indian households still use traditional whistle cookers and that most of them had complaints. 
+A quick **survey** shows that most Indian households still use traditional whistle cookers and quite a few of them were also annoyed.
 
 ![bar plot of rice and pulses cooking methods](https://imgix.cosmicjs.com/711dbef0-4ea4-11eb-95ad-ff9bb4c24645-bar-viz3x.png)
-
+{% sidenote %}
+Note - The survey was filled by **young adults between 20-27 years old,** meaning most of them were students and don’t regularly get involved in kitchen activities, which explains why most respondents found it problematic because one would assume that years of cooking rice in pressure cookers would’ve tempered the learning for most house cooks.
+{% /sidenote %}
 ![Sankey plot of cooking practices](https://imgix.cosmicjs.com/c31ac780-4ea3-11eb-95ad-ff9bb4c24645-sankey-viz3x.png)
 
-Note - The survey was filled by **young adults between 20-27 years old,** meaning most of them were students and don’t regularly get involved in kitchen activities, which explains why most respondents found it problematic because one would assume that years of cooking rice in pressure cookers would’ve tempered the learning for most house cooks.
-
-I talked to some of the participants and their parents and learnt some interesting stuff.
+Talking to the participants' parents revealed interesting stuff.
 
 - **The duration of the whistle is important.** There are times when the whistle comes for a jiffy, but this is something which is not counted towards the tally.
 - The responsibility of looking after the pressure cooker is usually given to someone when the cook has some other work. For example, if mom has to get ready for work or a zoom meeting, she will ask her daughter to keep a look out for the cooker whistles, who reluctantly agrees, but **forgets**.
@@ -36,7 +38,10 @@ Turns out the "[supposedly correct](https://www.hawkinscookers.com/Cookbooks/Ven
 
 Other [discussions](https://www.facebook.com/groups/RecipesForLockdowns/permalink/4603552646337000/) suggested that many people preferred counting whistles simply because it has become a habit through generations and it's a lot more convenient. In a world that gets busier by the day, our kitchens get messy and complex. Family members have to keep up with their morning schedule, their kid's lunch for school and getting ready for work. In a world like this, the cooker whistle quickly becomes a vital affordance for indicating that the food is cooked. It is still problematic for some, especially the younger generations, and they are the people I am designing for.
 
-But before I jumped into solution making, I wanted to check if the energy wastage was significant enough. I did some experiments and compared the energy consumption for both methods using an induction cooktop to measure the energy used. 
+But is the energy wastage significant enough?
+
+
+Not really. I did some experiments and compared the energy consumption for both methods using an induction cooktop to measure the energy used. 
 
 ![Plot of experiment results](https://imgix.cosmicjs.com/dc717170-4ea3-11eb-95ad-ff9bb4c24645-visualisation3x.png)
 
@@ -86,10 +91,4 @@ In my first prototype testing, I got the following feedback from users.
 
 Phone calls and alarms are naturally something we prefer as they are relatively more intrusive and better at grabbing people's attention. So I added an option where the user can notify someone through an automated phone call, which is simpler to use and implement, 
 
-I am currently testing the iOS app and fixing a few bugs before launch. As the Indian smartphone market is heavily dominated by Android users, I have planned on rewriting the app in **Flutter,** a cross-platform development framework, to reach a wider market and have a bigger impact.
-
-## Final thoughts
-
-It might seem like this study might have been an overkill for the problem in hand, but through this laborious process, I was able to uncover various kitchen practices in India, debunk myths about how pressure cookers should be used and create a robust and accurate app for helping people. 
-
-We have problems everywhere, it's just a matter of noticing them and solving them.
+Never got around to releasing this app, maybe some day.
