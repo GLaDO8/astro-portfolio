@@ -120,8 +120,13 @@ const jsonLd = {
                                 featuredStudy && (
                                     <a
                                         href={`/case-studies/${featuredStudy.id}`}
-                                        class="group relative min-h-[28rem] bg-linear-to-b from-[#FF86C7] to-[#ED449E] no-underline border-2 border-[#FFFFFF]/60 overflow-clip"
+                                        class="group relative min-h-[28rem] overflow-hidden rounded-lg bg-linear-to-b from-[#FF86C7] to-[#ED449E] no-underline"
                                     >
+                                        <div
+                                            aria-hidden="true"
+                                            class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] shadow-[inset_0_0_0_2px_rgb(255_255_255_/_0.3)]"
+                                        />
+
                                         <h2 class="font-sans text-lg font-semibold tracking-[-0.04em] text-[#550034] lg:text-xl px-7 py-5 leading-tight">
                                             {featuredStudy.data.title}
                                         </h2>
