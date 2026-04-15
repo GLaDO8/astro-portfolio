@@ -15,15 +15,17 @@ Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Moti
 ## Code style and conventions
 - Simplicity first. Start with the simplest implementation then layer in complexity as needed.
 - Paper & Figma MCP if provided, is your source of truth, liberally use it to check for visual parity.
+- When using Paper MCP for recreation or parity work, read the repo-local skill at `.codex/skills/paper-parity/SKILL.md` first.
 - Create semantic tokens from `@theme` in @src/styles/global.css only when the style is reusable across multiple components.
 - Prefer using motion package for animations over complex custom CSS animations.
-
-### Using Tailwind CSS for styling
 - Use `cn()` for conditional class composition and concatenation.
 - Promote reusable values to `@theme` in `src/styles/global.css`
 - Avoid arbitrary one-off spacing/sizing values like `pt-[23px]`.
 - If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
 - Arbitrary colors (`bg-[#hex]`) are OK temporarily; promote to `@theme` token if reused.
+
+## Hard rules
+- Changes which aren't minor need to be verified by inspecting the DOM, see instructions below.
 
 ## Understand the DOM
 For structural styling, complex DOM changes, or CSS/layout debugging, inspect the rendered DOM first. The rendered DOM is the source of truth. Do not infer selector paths from Astro/React source alone when the change depends on parent/child relationships in the final DOM.

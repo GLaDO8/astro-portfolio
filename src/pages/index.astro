@@ -12,11 +12,11 @@ import Base from "@/layouts/Base.astro";
 import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
 const caseStudies = (await getCollection("caseStudies")).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
 const widgetConfig = getWidgetConfig();
@@ -27,29 +27,26 @@ const featuredStudy = caseStudies[0];
 const heroNotes = notes.slice(0, 5);
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-        {
-            "@type": "WebSite",
-            "@id": "https://shrey.fyi/#website",
-            url: "https://shrey.fyi",
-            name: "Shreyas Gupta",
-            description:
-                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-            publisher: { "@id": "https://shrey.fyi/#person" },
-        },
-        {
-            "@type": "Person",
-            "@id": "https://shrey.fyi/#person",
-            name: "Shreyas Gupta",
-            url: "https://shrey.fyi",
-            jobTitle: "Designer",
-            sameAs: [
-                "https://github.com/GLaDO8",
-                "https://x.com/wutamelonshrey",
-            ],
-        },
-    ],
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebSite",
+			"@id": "https://shrey.fyi/#website",
+			url: "https://shrey.fyi",
+			name: "Shreyas Gupta",
+			description:
+				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+			publisher: { "@id": "https://shrey.fyi/#person" },
+		},
+		{
+			"@type": "Person",
+			"@id": "https://shrey.fyi/#person",
+			name: "Shreyas Gupta",
+			url: "https://shrey.fyi",
+			jobTitle: "Designer",
+			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+		},
+	],
 };
 ---
 
@@ -101,7 +98,6 @@ const jsonLd = {
                         >.
                     </p>
                 </div>
-                <PromptCard client:load />
             </aside>
 
             <div class="flex min-w-0 flex-col gap-16">
@@ -114,7 +110,7 @@ const jsonLd = {
 
                     <div class="grid gap-6 lg:grid-cols-2">
                         <div
-                            class="flex min-w-0 flex-col gap-6 [&>a]:rounded-lg [&>astro-island>div]:rounded-lg"
+                            class="flex min-w-0 flex-col gap-6 [&>a]:rounded-lg"
                         >
                             {
                                 featuredStudy && (
@@ -144,7 +140,7 @@ const jsonLd = {
                         </div>
 
                         <div
-                            class="flex min-w-0 flex-col gap-6 [&>article]:rounded-xl [&>a>astro-island>div]:rounded-xl"
+                            class="flex min-w-0 flex-col gap-6 [&>article]:rounded-xl"
                         >
                             <a href="/snaps" class="block no-underline">
                                 <SnapsWidget client:load />

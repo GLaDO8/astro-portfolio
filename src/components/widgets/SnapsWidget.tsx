@@ -31,7 +31,7 @@ export default function SnapsWidget() {
 
 	return (
 		<motion.div
-			className="relative flex h-40 shrink-0 overflow-visible bg-white border-2 border-[#E7E9E1] cursor-pointer"
+			className="relative flex h-40 shrink-0 overflow-visible rounded-xl bg-white border-2 border-[#E7E9E1] cursor-pointer"
 			initial="rest"
 			animate="rest"
 			whileHover={shouldReduceMotion ? undefined : "hover"}
