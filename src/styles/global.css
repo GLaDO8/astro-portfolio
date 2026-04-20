@@ -90,6 +90,63 @@
 :root {
     --shell-page-transition-duration: 260ms;
     --shell-page-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --navbar-frost-height: 7.5rem;
+}
+
+[data-navbar-shell] {
+    isolation: isolate;
+}
+
+.navbar-frost {
+    position: fixed;
+    inset: 0 0 auto;
+    height: var(--navbar-frost-height);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.navbar-frost__plate,
+.navbar-frost__band {
+    position: absolute;
+    inset-inline: 0;
+    background: color-mix(in oklab, var(--color-parchment) var(--frost-alpha), transparent);
+    backdrop-filter: blur(var(--frost-blur)) saturate(1.08);
+    -webkit-backdrop-filter: blur(var(--frost-blur)) saturate(1.08);
+}
+
+.navbar-frost__plate {
+    --frost-alpha: 76%;
+    --frost-blur: 8px;
+    top: 0;
+    height: 3.75rem;
+}
+
+.navbar-frost__band--1 {
+    --frost-alpha: 10%;
+    --frost-blur: 3px;
+    top: 3.75rem;
+    height: 0.625rem;
+}
+
+.navbar-frost__band--2 {
+    --frost-alpha: 14%;
+    --frost-blur: 6px;
+    top: 4.375rem;
+    height: 0.75rem;
+}
+
+.navbar-frost__band--3 {
+    --frost-alpha: 18%;
+    --frost-blur: 10px;
+    top: 5.125rem;
+    height: 0.875rem;
+}
+
+.navbar-frost__band--4 {
+    --frost-alpha: 24%;
+    --frost-blur: 14px;
+    top: 6rem;
+    height: 1.5rem;
 }
 
 html[data-shell-transitions="true"] [data-shell-content] {
