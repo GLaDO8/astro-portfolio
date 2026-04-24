@@ -24,6 +24,7 @@ export default defineMarkdocConfig({
 			attributes: {
 				caption: { type: Boolean, default: false },
 				image: { type: String },
+				imageAlt: { type: String },
 				citation: { type: Boolean, default: false },
 			},
 		},

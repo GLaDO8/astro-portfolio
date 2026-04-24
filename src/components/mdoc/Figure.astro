@@ -14,11 +14,11 @@ interface Props {
 
 const { src, alt = "", caption, width = "default", align = "center", maxWidth } = Astro.props;
 const image = getImageAsset(src);
-
-const isBreakout = width === "wide" || width === "full";
+const style = maxWidth ? `max-width: ${maxWidth}` : undefined;
 
 const wrapperClass = cn(
-	"not-prose my-24",
+	"not-prose my-24 w-full",
+	width !== "default" && `figure-${width}`,
 	align === "center" && "flex flex-col items-center",
 	align === "left" && "flex flex-col items-start",
 	align === "right" && "flex flex-col items-end",
@@ -27,8 +27,7 @@ const wrapperClass = cn(
 
 <figure
     class={wrapperClass}
-    {...isBreakout ? { "data-figure-breakout": width } : {}}
-    {...maxWidth ? { "data-figure-max-width": maxWidth } : {}}
+    style={style}
 >
     {
         image ? (
@@ -51,48 +50,3 @@ const wrapperClass = cn(
         )
     }
 </figure>
-
-<script>
-    function positionBreakoutFigures() {
-        const main = document.querySelector("main");
-        if (!main) return;
-        const vw = document.documentElement.clientWidth;
-
-        document
-            .querySelectorAll<HTMLElement>("[data-figure-breakout]")
-            .forEach((el) => {
-                const variant = el.dataset.figureBreakout;
-
-                // Reset to measure true position
-                el.style.marginLeft = "0";
-                el.style.width = "";
-
-                const elLeft = el.getBoundingClientRect().left;
-
-                const maxW = el.dataset.figureMaxWidth
-                    ? parseFloat(el.dataset.figureMaxWidth)
-                    : null;
-
-                if (variant === "full") {
-                    const w = maxW ? Math.min(vw, maxW) : vw;
-                    el.style.width = `${w}px`;
-                    el.style.marginLeft = `${-elLeft + (vw - w) / 2}px`;
-                } else {
-                    // "wide": span the main grid content area (padding to padding)
-                    const mainRect = main.getBoundingClientRect();
-                    const mainStyle = getComputedStyle(main);
-                    const padL = parseFloat(mainStyle.paddingLeft);
-                    const padR = parseFloat(mainStyle.paddingRight);
-                    const targetWidth = mainRect.width - padL - padR;
-                    const targetLeft = mainRect.left + padL;
-
-                    const w = maxW ? Math.min(targetWidth, maxW) : targetWidth;
-                    const offset = (targetWidth - w) / 2;
-                    el.style.width = `${w}px`;
-                    el.style.marginLeft = `${targetLeft - elLeft + offset}px`;
-                }
-            });
-    }
-    positionBreakoutFigures();
-    window.addEventListener("resize", positionBreakoutFigures);
-</script>

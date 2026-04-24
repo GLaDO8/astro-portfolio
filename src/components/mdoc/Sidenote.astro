@@ -11,6 +11,7 @@ interface Props {
 
 const { caption = false, image, imageAlt = "", citation = false } = Astro.props;
 const hasBox = caption || !!image;
+const hasContent = Astro.slots.has("default");
 const localImage = getImageAsset(image);
 ---
 
@@ -44,7 +45,11 @@ const localImage = getImageAsset(image);
             )
         )
     }
-    <div class:list={[image ? "px-4 py-3" : ""]}>
-        <slot />
-    </div>
+    {
+        hasContent && (
+            <div class:list={[image ? "px-4 py-3" : ""]}>
+                <slot />
+            </div>
+        )
+    }
 </aside>

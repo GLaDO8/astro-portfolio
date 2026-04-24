@@ -4,7 +4,7 @@ import Page from "@/layouts/Page.astro";
 import { cn } from "@/lib/cn";
 
 const baseProseClass =
-	"prose prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-normal prose-li:marker:text-charcoal prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#b0d8d8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal leading-relaxed text-charcoal text-pretty overflow-visible prose-img:rounded-lg prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl";
+	"prose content-grid prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-normal prose-li:marker:text-charcoal prose-code:before:content-none prose-code:after:content-none prose-code:bg-[#b0d8d8] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-normal leading-relaxed text-charcoal text-pretty overflow-visible prose-img:rounded-lg prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl";
 
 const themeStyles: Record<string, string> = {
 	"hot-text":
@@ -23,13 +23,21 @@ const { study } = Astro.props;
 const { Content } = await render(study);
 const theme = study.data.theme;
 const proseClass = cn(baseProseClass, theme && themeStyles[theme]);
+const publishedDate = study.data.date.toISOString();
+const publishedDay = publishedDate.slice(0, 10);
+const readableDate = study.data.date.toLocaleDateString("en-US", {
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+	timeZone: "UTC",
+});
 
 const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "CreativeWork",
 	name: study.data.title,
 	description: study.data.description,
-	datePublished: study.data.date.toISOString(),
+	datePublished: publishedDate,
 	author: {
 		"@type": "Person",
 		"@id": "https://shrey.fyi/#person",
@@ -47,16 +55,23 @@ const jsonLd = {
     seo={{
         ogType: "article",
         article: {
-            publishedTime: study.data.date.toISOString(),
+            publishedTime: publishedDate,
         },
         jsonLd,
     }}
 >
+    <time
+        datetime={publishedDay}
+        class="font-sans col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 text-center text-slate"
+    >
+        {readableDate}
+    </time>
     <h1
-        class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-charcoal my-16 text-center text-balance"
+        class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-charcoal mb-16 text-center text-balance"
     >
         {study.data.title}
     </h1>
+
     <article
         class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
     >

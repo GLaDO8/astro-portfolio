@@ -145,6 +145,40 @@ html[data-shell-transitions="true"]
     counter-reset: sidenote;
 }
 
+.content-grid {
+    max-width: none;
+    --content-grid-gap: 1rem;
+}
+
+.content-grid > article > :is(figure, .codeblock-reset),
+.content-grid > article > p:has(> img) {
+    width: 100%;
+    max-width: none;
+}
+
+@media (min-width: 48rem) {
+    .content-grid {
+        --content-grid-gap: 1.25rem;
+    }
+
+    .content-grid > article > :is(.figure-wide, .codeblock-reset),
+    .content-grid > article > p:has(> img) {
+        width: calc(125% + var(--content-grid-gap) / 4);
+        margin-left: calc((-100% - var(--content-grid-gap)) / 8);
+    }
+
+    .content-grid > article > .figure-full {
+        width: 100vw;
+        margin-left: calc((100% - 100vw) / 2);
+    }
+}
+
+@media (min-width: 64rem) {
+    .content-grid {
+        --content-grid-gap: 1.5rem;
+    }
+}
+
 .sidenote-ref {
     counter-increment: sidenote;
 
