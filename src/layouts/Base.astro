@@ -33,13 +33,6 @@ const isDev = import.meta.env.DEV;
         <title>{title}</title>
         <SEO title={title} description={description} {...seo} />
         <Font
-            cssVariable="--font-zilla-slab"
-            preload={[
-                { weight: "600", style: "normal" },
-                { weight: "700", style: "normal" },
-            ]}
-        />
-        <Font
             cssVariable="--font-commissioner"
             preload={[{ weight: "400", style: "normal" }]}
         />

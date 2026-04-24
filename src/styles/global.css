@@ -82,7 +82,6 @@
 }
 
 @theme inline {
-    --font-serif: var(--font-zilla-slab);
     --font-sans: var(--font-commissioner);
     --font-mono: var(--font-recursive);
 }

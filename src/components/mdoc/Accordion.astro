@@ -10,7 +10,7 @@ const { title, subtitle = "Click to read more about this" } = Astro.props;
 <details class="group not-prose border border-charcoal/10 rounded-lg bg-white overflow-hidden my-8">
 	<summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
 		<div class="flex flex-col gap-2.5">
-			<p class="font-serif font-bold text-base text-[#da0288]">{title}</p>
+			<p class="font-sans font-bold text-base text-[#da0288]">{title}</p>
 			<p class="font-sans text-sm text-[#70787e]">
 				<span class="group-open:hidden">{subtitle}</span>
 				<span class="hidden group-open:inline">Click again to collapse this section</span>

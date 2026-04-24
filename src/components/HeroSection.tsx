@@ -41,7 +41,7 @@ export default function HeroSection() {
 
   return (
     <section className="w-full flex flex-col items-start gap-6">
-      <h1 className="m-0 text-pretty font-serif text-2xl leading-[1.2] font-semibold text-charcoal">
+      <h1 className="m-0 text-pretty font-sans text-2xl leading-[1.2] font-semibold text-charcoal">
         <span className="whitespace-nowrap text-charcoal font-bold">
           Shreyas&nbsp;
         </span>
