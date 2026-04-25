@@ -108,7 +108,7 @@ export default function MusicWidget({ songData }: Props) {
 			{/* Record player assembly */}
 			<div
 				ref={recordRef}
-				className="absolute h-55 w-55 -top-16 left-43 z-40 scale-[0.9] origin-center"
+				className="absolute h-55 w-55 -top-16 left-36 z-40 scale-[0.9] origin-center sm:left-43"
 			>
 				{/* Static shadow — decoupled from animation to avoid per-frame filter recomputation */}
 				<div className="absolute inset-0 flex items-center justify-center pointer-events-none">

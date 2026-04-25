@@ -3,12 +3,10 @@ import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import heroImageHotText from "@/assets/hero-image-1.png";
 import HeroSection from "@/components/HeroSection";
-import PromptCard from "@/components/PromptCard";
-import SiteShell from "@/components/SiteShell.astro";
 import MusicWidget from "@/components/widgets/MusicWidget";
 import PhotoFrameWidget from "@/components/widgets/PhotoFrameWidget.astro";
 import SnapsWidget from "@/components/widgets/SnapsWidget";
-import Base from "@/layouts/Base.astro";
+import Page from "@/layouts/Page.astro";
 import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
@@ -50,141 +48,120 @@ const jsonLd = {
 };
 ---
 
-<Base
+<Page
     title="Shreyas Gupta — Designer"
     description="Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems."
     bodyClass="bg-parchment"
+    class="bg-parchment"
     seo={{ jsonLd }}
 >
-    <SiteShell currentPath="/" mainClass="px-0">
-        <div
-            class="grid gap-14 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] xl:gap-22"
-        >
-            <aside
-                class="flex flex-col gap-8 xl:sticky xl:top-6 xl:self-start pt-8"
+    <div
+        class="col-span-full flex min-w-0 flex-col gap-16 md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
+    >
+        <div class="flex flex-col items-start gap-8">
+            <PhotoFrameWidget src={photoFrame.src} alt={photoFrame.alt} />
+
+            <HeroSection client:visible />
+
+            <div
+                class="font-sans text-base leading-[1.42] font-medium tracking-[-0.02em] text-charcoal text-pretty"
             >
-                <PhotoFrameWidget src={photoFrame.src} alt={photoFrame.alt} />
-
-                <HeroSection client:visible />
-
-                <div
-                    class="font-sans text-base leading-[1.42] font-medium tracking-[-0.02em] text-charcoal text-pretty"
-                >
-                    <p class="text-pretty">
-                        I build tools at <a
-                            href="https://wayground.com/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-2 transition-colors hover:opacity-85"
-                            >Wayground</a
-                        > that stand between teachers and everything else that isn't
-                        teaching.
-                    </p>
-                    <p class="mt-7 text-pretty">
-                        I used to work on conversational intelligence for sales
-                        teams at <a
-                            href="https://www.clari.com/products/copilot/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-2 transition-colors hover:opacity-85"
-                            >Clari</a
-                        > and built a context-rich SQL editor at
-                        <a
-                            href="https://atlan.com/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="underline decoration-2 underline-offset-2 transition-colors hover:opacity-85"
-                            >Atlan</a
-                        >.
-                    </p>
-                </div>
-            </aside>
-
-            <div class="flex min-w-0 flex-col gap-16">
-                <section id="work" class="flex flex-col gap-5">
-                    <p
-                        class="font-sans text-sm font-medium tracking-[-0.02em] text-slate"
-                    >
-                        Selected Work &amp; Experiments
-                    </p>
-
-                    <div class="grid gap-6 lg:grid-cols-2">
-                        <div
-                            class="flex min-w-0 flex-col gap-6 [&>a]:rounded-lg"
-                        >
-                            {
-                                featuredStudy && (
-                                    <a
-                                        href={`/case-studies/${featuredStudy.id}`}
-                                        class="group relative min-h-[28rem] overflow-hidden rounded-lg bg-linear-to-b from-[#FF86C7] to-[#ED449E] no-underline"
-                                    >
-                                        <div
-                                            aria-hidden="true"
-                                            class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] shadow-[inset_0_0_0_2px_rgb(255_255_255_/_0.3)]"
-                                        />
-
-                                        <h2 class="font-sans text-lg font-semibold tracking-[-0.04em] text-[#550034] lg:text-xl px-7 py-5 leading-tight">
-                                            {featuredStudy.data.title}
-                                        </h2>
-
-                                        <Image
-                                            src={heroImageHotText}
-                                            alt={featuredStudy.data.title}
-                                            class="-bottom-12 -right-6.5 origin-bottom-right absolute transition-all scale-[0.85] shadow-2xl -rotate-2 group-hover:-rotate-4"
-                                        />
-                                    </a>
-                                )
-                            }
-
-                            <MusicWidget songData={songData} client:visible />
-                        </div>
-
-                        <div
-                            class="flex min-w-0 flex-col gap-6 [&>article]:rounded-xl"
-                        >
-                            <a href="/snaps" class="block no-underline">
-                                <SnapsWidget client:load />
-                            </a>
-
-                            <article
-                                class="group relative overflow-hidden bg-pink-400 p-7 shadow-[inset_0_0_0_1px_oklch(59.1%_0.293_322.896_/_0.08),0_14px_30px_oklch(26.8%_0.007_34.298_/_0.08)]"
-                            >
-                                <div class="max-w-[11ch]">
-                                    <h2
-                                        class="font-sans text-2xl leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-3xl"
-                                    >
-                                        Labelling - AI assisted question
-                                        generation
-                                    </h2>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="notes" class="flex flex-col gap-5">
-                    <p
-                        class="font-sans text-sm font-medium tracking-[-0.02em] text-slate"
-                    >
-                        Notes
-                    </p>
-
-                    <div class="flex flex-col gap-5">
-                        {
-                            heroNotes.map((note) => (
-                                <a
-                                    href={`/notes/${note.id}`}
-                                    class="group no-underline"
-                                >
-                                    <h3 class="font-sans text-lg leading-[1.15] font-medium tracking-[-0.03em] text-charcoal hover:opacity-80">
-                                        {note.data.title}
-                                    </h3>
-                                </a>
-                            ))
-                        }
-                    </div>
-                </section>
+                <p class="text-pretty">
+                    I build tools at <a
+                        href="https://wayground.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline decoration-2 underline-offset-2 transition-colors hover:opacity-85"
+                        >Wayground</a
+                    > that stand between teachers and everything else that isn't
+                    teaching.
+                </p>
+                <p class="mt-7 text-pretty">
+                    I used to work on conversational intelligence for sales teams
+                    at <a
+                        href="https://www.clari.com/products/copilot/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline decoration-2 underline-offset-2 transition-colors hover:opacity-85"
+                        >Clari</a
+                    > and built a context-rich SQL editor at
+                    <a
+                        href="https://atlan.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline decoration-2 underline-offset-2 transition-colors hover:opacity-85"
+                        >Atlan</a
+                    >.
+                </p>
             </div>
         </div>
-    </SiteShell>
-</Base>
+
+        <section id="work" class="flex flex-col gap-5">
+            <p class="font-sans text-sm font-medium tracking-[-0.02em] text-slate">
+                Selected Work &amp; Experiments
+            </p>
+
+            <div class="flex flex-col gap-6">
+                {
+                    featuredStudy && (
+                        <a
+                            href={`/case-studies/${featuredStudy.id}`}
+                            class="group relative min-h-[28rem] overflow-hidden rounded-lg bg-linear-to-b from-[#FF86C7] to-[#ED449E] no-underline"
+                        >
+                            <div
+                                aria-hidden="true"
+                                class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] shadow-[inset_0_0_0_2px_rgb(255_255_255_/_0.3)]"
+                            />
+
+                            <h2 class="font-sans text-lg font-semibold tracking-[-0.04em] text-[#550034] lg:text-xl px-7 py-5 leading-tight">
+                                {featuredStudy.data.title}
+                            </h2>
+
+                            <Image
+                                src={heroImageHotText}
+                                alt={featuredStudy.data.title}
+                                class="-bottom-12 -right-6.5 origin-bottom-right absolute transition-all scale-[0.85] shadow-2xl -rotate-2 group-hover:-rotate-4"
+                            />
+                        </a>
+                    )
+                }
+
+                <MusicWidget songData={songData} client:visible />
+
+                <a href="/snaps" class="block no-underline">
+                    <SnapsWidget client:load />
+                </a>
+
+                <article
+                    class="group relative overflow-hidden rounded-xl bg-pink-400 p-7 shadow-[inset_0_0_0_1px_oklch(59.1%_0.293_322.896_/_0.08),0_14px_30px_oklch(26.8%_0.007_34.298_/_0.08)]"
+                >
+                    <div class="max-w-[11ch]">
+                        <h2
+                            class="font-sans text-2xl leading-[0.98] font-semibold tracking-[-0.04em] text-charcoal lg:text-3xl"
+                        >
+                            Labelling - AI assisted question generation
+                        </h2>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="notes" class="flex flex-col gap-5">
+            <p class="font-sans text-sm font-medium tracking-[-0.02em] text-slate">
+                Notes
+            </p>
+
+            <div class="flex flex-col gap-5">
+                {
+                    heroNotes.map((note) => (
+                        <a href={`/notes/${note.id}`} class="group no-underline">
+                            <h3 class="font-sans text-lg leading-[1.15] font-medium tracking-[-0.03em] text-charcoal hover:opacity-80">
+                                {note.data.title}
+                            </h3>
+                        </a>
+                    ))
+                }
+            </div>
+        </section>
+    </div>
+</Page>

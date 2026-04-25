@@ -3,15 +3,15 @@ import { getCollection } from "astro:content";
 import Page from "@/layouts/Page.astro";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "Notes",
-    description: "A collection of writing by Shreyas Gupta.",
-    url: "https://shrey.fyi/notes",
+	"@context": "https://schema.org",
+	"@type": "CollectionPage",
+	name: "Notes",
+	description: "A collection of writing by Shreyas Gupta.",
+	url: "https://shrey.fyi/notes",
 };
 ---
 
