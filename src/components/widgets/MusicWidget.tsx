@@ -16,6 +16,11 @@ const SLEEVE_MASK_STYLE = {
   WebkitMaskSize: "100% 100%",
   maskSize: "100% 100%",
 };
+const SLEEVE_ALBUM_ART_STYLE = {
+  width: "96%",
+  height: "96%",
+  rotate: "0deg",
+};
 
 interface Props {
   songData: SongData;
@@ -109,14 +114,6 @@ export default function MusicWidget({ songData }: Props) {
               result="shadow"
             />
 
-            <feDropShadow
-              dx="0"
-              dy="0"
-              stdDeviation="4"
-              flood-color="rgba(0,0,0,0.10)"
-              result="shadow"
-            />
-
             <feMerge>
               <feMergeNode in="shadow" />
               <feMergeNode in="outline" />
@@ -132,7 +129,7 @@ export default function MusicWidget({ songData }: Props) {
         style={{ filter: `url(#${stickerFilterId})` }}
       >
         <motion.div
-          className="absolute left-8 -top-1 group-hover:left-12 size-28 cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none z-10 transition-[left] duration-200"
+          className="absolute left-9 -top-1 group-hover:left-12 size-30 cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none z-10 transition-[left] duration-200"
           style={{ rotate: rotation }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -171,38 +168,46 @@ export default function MusicWidget({ songData }: Props) {
         />
 
         <div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] rotate-[-3deg] [isolation:isolate] drop-shadow-[0_10px_18px_rgba(42,35,29,0.18)] z-30">
+          <div className="absolute inset-0 z-0" style={SLEEVE_MASK_STYLE}>
+            <img
+              src={albumArt}
+              alt=""
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover"
+              style={SLEEVE_ALBUM_ART_STYLE}
+              draggable={false}
+            />
+          </div>
           <img
-            src={albumArt}
+            src={SLEEVE_TEXTURE}
             alt=""
-            className="absolute top-1/2 left-1/2 z-0 h-[95%] w-[95%] -translate-x-1/2 -translate-y-1/2 object-cover"
-            style={SLEEVE_MASK_STYLE}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover mix-blend-lighten opacity-80"
             draggable={false}
           />
           <img
             src={SLEEVE_TEXTURE}
             alt=""
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover mix-blend-lighten"
-            draggable={false}
-          />
-          <img
-            src={SLEEVE_TEXTURE}
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-20 h-full w-full object-cover mix-blend-exclusion"
+            className="pointer-events-none absolute inset-0 z-20 h-full w-full object-cover mix-blend-exclusion opacity-20"
             draggable={false}
           />
         </div>
       </div>
 
       {artistName ? (
-        <div className="absolute top-40 left-4 w-36 rotate-[-9deg]">
+        <div className="absolute top-42 left-1 w-36 rotate-[-2deg]">
           <p
             className="truncate py-0.5 text-center font-sans text-sm leading-tight font-semibold text-charcoal"
             title={artistName}
           >
             {artistName}
           </p>
+          {/*<p
+            className="truncate py-0.5 text-center font-sans text-sm leading-tight font-semibold text-slate"
+            title={artistName}
+          >
+            {songData.title}
+          </p>*/}
         </div>
       ) : null}
     </div>
