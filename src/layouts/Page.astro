@@ -1,4 +1,5 @@
 ---
+import Navbar from "@/components/Navbar.astro";
 import SiteShell from "@/components/SiteShell.astro";
 import Base from "./Base.astro";
 
@@ -21,6 +22,8 @@ interface Props {
 
 const { title, description, bodyClass, class: className, seo } = Astro.props;
 const currentPath = Astro.url.pathname;
+const contentColumnClass =
+	"col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5";
 
 const mainClass = [
 	"grid grid-cols-4 md:grid-cols-12 lg:grid-cols-16 gap-x-4 md:gap-x-5 lg:gap-x-6 px-4 md:px-8 lg:px-12 pt-18 pb-20 content-start",
@@ -31,7 +34,16 @@ const mainClass = [
 ---
 
 <Base title={title} description={description} bodyClass={bodyClass} seo={seo}>
-	<SiteShell currentPath={currentPath} mainClass={mainClass}>
+	<SiteShell mainClass={mainClass}>
+		<div
+			class:list={[contentColumnClass, "sticky top-4 z-40 mb-12"]}
+			data-navbar-shell
+		>
+			<div transition:persist transition:name="site-navbar">
+				<Navbar currentPath={currentPath} />
+			</div>
+		</div>
+
 		<slot />
 	</SiteShell>
 </Base>

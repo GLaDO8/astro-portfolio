@@ -52,7 +52,7 @@
 
 @theme {
     /* Colors */
-    --color-parchment: oklch(98.7% 0.002 197.1); /* background */
+    --color-parchment: #F4F5F0; /* background */
     --color-charcoal: #2a231d; /* text primary */
     --color-slate: #7a715f; /* text secondary */
     --color-mist: oklch(92.5% 0.005 214.3); /* soft surface */

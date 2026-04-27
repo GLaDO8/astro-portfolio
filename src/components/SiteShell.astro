@@ -1,42 +1,20 @@
 ---
-import Navbar from "./Navbar.astro";
-
 interface Props {
-	currentPath: string;
-	containerClass?: string;
 	mainClass?: string;
 }
 
-const { currentPath, containerClass, mainClass } = Astro.props;
+const { mainClass } = Astro.props;
 ---
 
-<div
-    class:list={[
-        "relative mx-auto flex min-h-dvh max-w-7xl flex-col pb-10 pt-4",
-        containerClass,
-    ]}
->
-    <div
-        class="sticky top-0 z-40 -mx-5 px-5 pt-4 pb-12"
-        data-navbar-shell
+<div class="relative mx-auto flex min-h-dvh max-w-7xl flex-col pb-10 pt-4">
+    <main
+        id="main-content"
+        class:list={["min-w-0 flex-1", mainClass]}
+        data-shell-content
+        data-page-state="entering"
     >
-        <div class="relative z-10" transition:persist transition:name="site-navbar">
-            <Navbar currentPath={currentPath} />
-        </div>
-    </div>
-
-    <div class="flex min-w-0 flex-1 gap-18">
-        <slot name="sidebar" />
-
-        <main
-            id="main-content"
-            class:list={["min-w-0 flex-1", mainClass]}
-            data-shell-content
-            data-page-state="entering"
-        >
-            <slot />
-        </main>
-    </div>
+        <slot />
+    </main>
 </div>
 
 <script>
