@@ -1,1 +1,1 @@
-plans/astro-image-migration.md
+plans/homepage-figma-revamp.md

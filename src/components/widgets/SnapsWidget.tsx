@@ -26,8 +26,92 @@ const transition = {
 	ease: [0.22, 1, 0.36, 1] as const,
 };
 
-export default function SnapsWidget() {
+interface Props {
+	variant?: "card" | "compact";
+}
+
+const compactPolaroids = [
+	{
+		image: snapOne,
+		className: "left-[4.4rem] top-0 rotate-[-3deg]",
+		hover: { x: 5, y: -8, rotate: 1 },
+	},
+	{
+		image: snapTwo,
+		className: "left-0 top-[3.2rem] rotate-[-24deg]",
+		hover: { x: -8, y: -6, rotate: -30 },
+	},
+	{
+		image: snapThree,
+		className: "left-[5.2rem] top-[4.4rem] rotate-[5deg]",
+		hover: { x: 8, y: -4, rotate: 10 },
+	},
+] as const;
+
+export default function SnapsWidget({ variant = "card" }: Props) {
 	const shouldReduceMotion = useReducedMotion();
+
+	if (variant === "compact") {
+		return (
+			<motion.div
+				className="relative h-[11.75rem] w-[9.5rem] shrink-0 cursor-pointer"
+				initial="rest"
+				animate="rest"
+				whileHover={shouldReduceMotion ? undefined : "hover"}
+				aria-label="Photo Roll"
+			>
+				{compactPolaroids.map((polaroid, index) => (
+					<motion.div
+						key={polaroid.image.src}
+						className={`absolute h-[6rem] w-[4.95rem] rounded-[2px] bg-white p-1 shadow-[0_4px_12px_rgba(0,0,0,0.1),0_0_4px_rgba(122,122,122,0.2)] ${polaroid.className}`}
+						variants={{
+							rest: { x: 0, y: 0 },
+							hover: polaroid.hover,
+						}}
+						transition={shouldReduceMotion ? { duration: 0 } : transition}
+						aria-hidden={index > 0 ? "true" : undefined}
+					>
+						<div className="h-[4.35rem] w-full overflow-hidden rounded-[1px] bg-mist">
+							<img
+								src={polaroid.image.src}
+								alt=""
+								width={polaroid.image.width}
+								height={polaroid.image.height}
+								className="h-full w-full rounded-[1px] object-cover"
+								loading="lazy"
+								decoding="async"
+								draggable={false}
+							/>
+						</div>
+					</motion.div>
+				))}
+
+				<div className="absolute left-[4.7rem] top-[7.8rem] rotate-[-10deg] bg-[#f5e95c] px-2 py-0.5 font-sans text-xs font-medium tracking-[-0.02em] text-charcoal shadow-[0_1px_2px_rgba(42,35,29,0.14)]">
+					Stockholm
+				</div>
+
+				<div className="absolute bottom-0 left-[3.6rem] flex rotate-[6deg] items-center gap-1.5">
+					<span className="font-sans text-sm font-semibold tracking-[-0.02em] text-charcoal">
+						Photo Roll
+					</span>
+					<span
+						aria-hidden="true"
+						className="flex size-4 items-center justify-center rounded-full bg-mist text-charcoal/55"
+					>
+						<svg aria-hidden="true" className="size-2.5 -rotate-90" viewBox="0 0 16 16" fill="none">
+							<path
+								d="M4 6.25L8 10.25L12 6.25"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							/>
+						</svg>
+					</span>
+				</div>
+			</motion.div>
+		);
+	}
 
 	return (
 		<motion.div

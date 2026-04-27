@@ -1,0 +1,42 @@
+---
+import type { PhotoFrameData, SongData } from "@/lib/widgetConfig";
+import MusicWidget from "./MusicWidget";
+import PhotoFrameWidget from "./PhotoFrameWidget.astro";
+import SnapsWidget from "./SnapsWidget";
+
+interface Props {
+	photoFrame: PhotoFrameData;
+	songData: SongData;
+}
+
+const { photoFrame, songData } = Astro.props;
+---
+
+<section
+    class="relative h-[9.75rem] w-full overflow-visible sm:h-[11rem] md:h-[12.25rem]"
+    aria-label="Personal widgets"
+>
+    <div
+        class="absolute top-0 left-1/2 h-[12.25rem] w-[36rem] origin-top -translate-x-1/2 scale-[0.6] sm:scale-[0.78] md:scale-100"
+    >
+        <div class="absolute top-5 left-0 rotate-[9deg]">
+            <PhotoFrameWidget
+                src={photoFrame.src}
+                alt={photoFrame.alt}
+                variant="compact"
+            />
+        </div>
+
+        <div class="absolute top-5 left-[12.8rem] rotate-[-7deg]">
+            <MusicWidget songData={songData} variant="compact" client:visible />
+        </div>
+
+        <a
+            href="/snaps"
+            class="absolute -top-2 left-[25.1rem] block rotate-[10deg] no-underline"
+            aria-label="Open photo roll"
+        >
+            <SnapsWidget variant="compact" client:visible />
+        </a>
+    </div>
+</section>

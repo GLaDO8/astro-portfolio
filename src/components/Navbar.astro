@@ -8,28 +8,48 @@ interface Props {
 const { currentPath = "/" } = Astro.props;
 
 const links = [
-	{ href: "/", label: "Home" },
-	{ href: "/work", label: "Work" },
-	{ href: "/experiments", label: "Experiments" },
-	{ href: "/snaps", label: "Snaps" },
-	{ href: "/notes", label: "Notes" },
+	{ href: "/work", label: "work" },
+	{ href: "/sidequests", label: "sidequests" },
+	{ href: "/notes", label: "notes" },
 ];
 
-const activeLinkClass = "text-charcoal font-semibold";
-const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
+const activeLinkClass = "text-charcoal";
+const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 ---
 
 <nav
-    class="flex items-center justify-center font-sans text-sm tracking-tight"
+    class="mx-auto flex w-full max-w-[39.25rem] items-center justify-between px-4 font-sans text-sm tracking-[-0.01em] md:px-0 md:text-base"
+    aria-label="Primary navigation"
+    data-navbar
 >
-    <div
-        class="relative flex items-center rounded-full bg-mist-100 p-1"
-        data-navbar-track
+    <a
+        href="/"
+        class="group flex items-center gap-1.5 font-semibold text-charcoal no-underline transition-colors hover:text-charcoal/80"
+        aria-label="shrey.fyi home"
     >
+        <span>shrey.fyi</span>
         <span
             aria-hidden="true"
-            class="pointer-events-none absolute inset-y-1 left-0 rounded-full bg-white shadow-[0_1px_2px_rgba(36,42,45,0.08),0_8px_18px_rgba(36,42,45,0.06)] transition-[transform,width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-            data-navbar-indicator></span>
+            class="flex size-4 items-center justify-center rounded-full bg-mist text-charcoal/55 transition-colors group-hover:text-charcoal"
+        >
+            <svg
+                aria-hidden="true"
+                class="size-2.5"
+                viewBox="0 0 16 16"
+                fill="none"
+                focusable="false"
+            >
+                <path
+                    d="M4 6.25L8 10.25L12 6.25"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+            </svg>
+        </span>
+    </a>
+
+    <div class="flex items-center gap-4 font-medium md:gap-6">
         {
             links.map(({ href, label }) => {
                 const isActive = isNavbarLinkActive(href, currentPath);
@@ -37,7 +57,7 @@ const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
                     <a
                         href={href}
                         class:list={[
-                            "relative z-10 rounded-full px-5 pt-1 pb-1.5 transition-[color,transform] duration-200",
+                            "rounded-full py-1 transition-colors duration-200",
                             isActive ? activeLinkClass : inactiveLinkClass,
                         ]}
                         aria-current={isActive ? "page" : undefined}
@@ -55,18 +75,15 @@ const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
     import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
     const activeClass = "text-charcoal";
-    const inactiveClass = "text-slate";
+    const inactiveClass = "text-charcoal/70";
     const inactiveHoverClass = "hover:text-charcoal";
 
-    const getTrack = () =>
-        document.querySelector<HTMLElement>("[data-navbar-track]");
+    const getNavbar = () =>
+        document.querySelector<HTMLElement>("[data-navbar]");
 
     const setActiveLink = (
-        track: HTMLElement,
-        indicator: HTMLElement,
         links: HTMLElement[],
         link: HTMLElement,
-        options?: { immediate?: boolean },
     ) => {
         for (const currentLink of links) {
             const isCurrent = currentLink === link;
@@ -75,71 +92,49 @@ const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
             currentLink.classList.toggle(inactiveClass, !isCurrent);
             currentLink.classList.toggle(inactiveHoverClass, !isCurrent);
         }
-
-        if (options?.immediate) {
-            indicator.style.transition = "none";
-        }
-
-        const trackRect = track.getBoundingClientRect();
-        const linkRect = link.getBoundingClientRect();
-        indicator.style.width = `${linkRect.width}px`;
-        indicator.style.transform = `translateX(${linkRect.left - trackRect.left}px)`;
-        indicator.style.opacity = "1";
-
-        if (options?.immediate) {
-            requestAnimationFrame(() => {
-                indicator.style.removeProperty("transition");
-            });
-        }
     };
 
     const syncNavbar = (pathname = window.location.pathname) => {
-        const track = getTrack();
-        const indicator = track?.querySelector<HTMLElement>(
-            "[data-navbar-indicator]",
-        );
-        const links = track
+        const navbar = getNavbar();
+        const links = navbar
             ? Array.from(
-                  track.querySelectorAll<HTMLElement>("[data-navbar-link]"),
+                  navbar.querySelectorAll<HTMLElement>("[data-navbar-link]"),
               )
             : [];
 
-        if (!track || !indicator || links.length === 0) {
+        if (!navbar || links.length === 0) {
             return;
         }
 
-        const activeLink =
-            links.find((link) =>
-                isNavbarLinkActive(link.getAttribute("href") ?? "", pathname),
-            ) ?? links[0];
+        const activeLink = links.find((link) =>
+            isNavbarLinkActive(link.getAttribute("href") ?? "", pathname),
+        );
 
-        setActiveLink(track, indicator, links, activeLink, {
-            immediate: !track.dataset.navbarReady,
-        });
-        track.dataset.navbarReady = "true";
+        for (const link of links) {
+            const isCurrent = link === activeLink;
+            link.toggleAttribute("aria-current", isCurrent);
+            link.classList.toggle(activeClass, isCurrent);
+            link.classList.toggle(inactiveClass, !isCurrent);
+            link.classList.toggle(inactiveHoverClass, !isCurrent);
+        }
     };
 
     const bindNavbar = () => {
-        const track = getTrack();
+        const navbar = getNavbar();
 
-        if (!track || track.dataset.navbarBound === "true") {
+        if (!navbar || navbar.dataset.navbarBound === "true") {
             return;
         }
 
-        const indicator = track.querySelector<HTMLElement>(
-            "[data-navbar-indicator]",
-        );
         const links = Array.from(
-            track.querySelectorAll<HTMLElement>("[data-navbar-link]"),
+            navbar.querySelectorAll<HTMLElement>("[data-navbar-link]"),
         );
 
-        if (!indicator || links.length === 0) {
+        if (links.length === 0) {
             return;
         }
 
-        track.dataset.navbarBound = "true";
-
-        window.addEventListener("resize", () => syncNavbar());
+        navbar.dataset.navbarBound = "true";
 
         for (const link of links) {
             link.addEventListener("click", (event) => {
@@ -166,7 +161,7 @@ const inactiveLinkClass = "text-slate hover:text-charcoal font-medium";
                     return;
                 }
 
-                setActiveLink(track, indicator, links, link);
+                setActiveLink(links, link);
             });
         }
     };

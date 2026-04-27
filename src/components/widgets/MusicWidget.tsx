@@ -9,9 +9,10 @@ const VINYL_LABEL_PATH =
 
 interface Props {
 	songData: SongData;
+	variant?: "card" | "compact";
 }
 
-export default function MusicWidget({ songData }: Props) {
+export default function MusicWidget({ songData, variant = "card" }: Props) {
 	const rotation = useMotionValue(0);
 	const isScratching = useRef(false);
 	const isVisible = useRef(true);
@@ -20,6 +21,7 @@ export default function MusicWidget({ songData }: Props) {
 	const recordRef = useRef<HTMLDivElement>(null);
 	const clipId = useId();
 	const shouldReduceMotion = useReducedMotion();
+	const albumArt = songData.albumArt || "/vinyl-album-art.svg";
 
 	useEffect(() => {
 		if (!recordRef.current) return;
@@ -74,6 +76,51 @@ export default function MusicWidget({ songData }: Props) {
 	const handlePointerUp = useCallback(() => {
 		isScratching.current = false;
 	}, []);
+
+	if (variant === "compact") {
+		return (
+			<div className="relative h-[9.5rem] w-[10.5rem] shrink-0">
+				<div
+					aria-hidden="true"
+					className="absolute left-[4.2rem] top-0 flex h-4 items-center gap-0.5 rounded-full bg-mist px-2 text-charcoal/50"
+				>
+					<span className="h-2 w-0.5 rounded-full bg-current" />
+					<span className="h-2.5 w-0.5 rounded-full bg-current" />
+					<span className="h-1.5 w-0.5 rounded-full bg-current" />
+					<span className="h-3 w-0.5 rounded-full bg-current" />
+					<span className="h-2 w-0.5 rounded-full bg-current" />
+				</div>
+
+				<div ref={recordRef} className="absolute left-3 top-4 h-[7rem] w-[8.8rem]">
+					<div className="absolute left-12 top-3 size-[5.7rem] rounded-full bg-neutral-950 shadow-[0_4px_16px_rgba(0,0,0,0.24)]" />
+					<motion.div
+						className="absolute left-[3.2rem] top-2 size-[6rem] cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none"
+						style={{ rotate: rotation }}
+						onPointerDown={handlePointerDown}
+						onPointerMove={handlePointerMove}
+						onPointerUp={handlePointerUp}
+					>
+						<img src="/record content.png" alt="" className="h-full w-full" draggable={false} />
+					</motion.div>
+					<div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] rotate-[-3deg] overflow-hidden rounded-sm bg-white p-1 shadow-[0_10px_22px_rgba(42,35,29,0.16),1px_0_3px_rgba(0,0,0,0.22)]">
+						<img
+							src={albumArt}
+							alt=""
+							className="h-full w-full rounded-[2px] object-cover"
+							draggable={false}
+						/>
+					</div>
+				</div>
+
+				<div className="absolute bottom-0 left-5 flex rotate-[-4deg] items-baseline gap-1 font-sans">
+					<span className="text-sm font-semibold tracking-[-0.02em] text-charcoal">
+						{songData.artist || "Now playing"}
+					</span>
+					<span className="text-sm font-medium tracking-[-0.02em] text-charcoal/70">#3</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="relative mt-2 flex h-42 w-full shrink-0 flex-col justify-end rounded-lg border-2 border-[#E7E9E1] bg-white">
@@ -137,7 +184,7 @@ export default function MusicWidget({ songData }: Props) {
 							</clipPath>
 						</defs>
 						<image
-							href={songData.albumArt}
+							href={albumArt}
 							x="0"
 							y="0"
 							width="59"
