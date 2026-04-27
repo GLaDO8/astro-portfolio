@@ -41,7 +41,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
         </a>
         <button
             type="button"
-            class="group flex size-4 items-center justify-center rounded-full bg-fog/45 text-charcoal/55 transition-colors hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-charcoal/45"
+            class="group flex size-5 items-center justify-center rounded-full bg-fog/45 text-charcoal/55 transition-all hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-charcoal/45 hover:scale-120"
             aria-label="Open subdomain menu"
             aria-controls="subdomain-menu"
             aria-expanded="false"
@@ -49,7 +49,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
         >
             <svg
                 aria-hidden="true"
-                class="size-3 transition-transform duration-200"
+                class="size-4 transition-transform duration-200"
                 viewBox="0 0 16 16"
                 fill="none"
                 focusable="false"
@@ -134,9 +134,8 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 <script>
     import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
-    const activeClass = "text-charcoal";
-    const inactiveClass = "text-charcoal/70";
-    const inactiveHoverClass = "hover:text-charcoal";
+    const activeClasses = ["text-charcoal"];
+    const inactiveClasses = ["text-charcoal/70", "hover:text-charcoal"];
 
     const getNavbar = () =>
         document.querySelector<HTMLElement>("[data-navbar]");
@@ -164,16 +163,25 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
         icon?.classList.toggle("rotate-180", isOpen);
     };
 
-    const setActiveLink = (
-        links: HTMLElement[],
-        link: HTMLElement,
-    ) => {
+    const setLinkActiveState = (link: HTMLElement, isCurrent: boolean) => {
+        if (isCurrent) {
+            link.setAttribute("aria-current", "page");
+        } else {
+            link.removeAttribute("aria-current");
+        }
+
+        for (const className of activeClasses) {
+            link.classList.toggle(className, isCurrent);
+        }
+
+        for (const className of inactiveClasses) {
+            link.classList.toggle(className, !isCurrent);
+        }
+    };
+
+    const setActiveLink = (links: HTMLElement[], activeLink?: HTMLElement) => {
         for (const currentLink of links) {
-            const isCurrent = currentLink === link;
-            currentLink.toggleAttribute("aria-current", isCurrent);
-            currentLink.classList.toggle(activeClass, isCurrent);
-            currentLink.classList.toggle(inactiveClass, !isCurrent);
-            currentLink.classList.toggle(inactiveHoverClass, !isCurrent);
+            setLinkActiveState(currentLink, currentLink === activeLink);
         }
     };
 
@@ -234,13 +242,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
             isNavbarLinkActive(link.getAttribute("href") ?? "", pathname),
         );
 
-        for (const link of links) {
-            const isCurrent = link === activeLink;
-            link.toggleAttribute("aria-current", isCurrent);
-            link.classList.toggle(activeClass, isCurrent);
-            link.classList.toggle(inactiveClass, !isCurrent);
-            link.classList.toggle(inactiveHoverClass, !isCurrent);
-        }
+        setActiveLink(links, activeLink);
     };
 
     const bindNavbar = () => {
