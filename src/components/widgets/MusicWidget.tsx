@@ -30,6 +30,7 @@ export default function MusicWidget({ songData }: Props) {
   const recordRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const albumArt = songData.albumArt || "/vinyl-album-art.svg";
+  const artistName = songData.artist.trim();
   const idBase = useId().replace(/:/g, "");
   const clipId = `${idBase}-vinyl-label`;
   const stickerFilterId = `${idBase}-sticker-outline`;
@@ -105,6 +106,14 @@ export default function MusicWidget({ songData }: Props) {
               dy="0"
               stdDeviation="2"
               flood-color="rgba(0,0,0,0.25)"
+              result="shadow"
+            />
+
+            <feDropShadow
+              dx="0"
+              dy="0"
+              stdDeviation="4"
+              flood-color="rgba(0,0,0,0.10)"
               result="shadow"
             />
 
@@ -185,6 +194,17 @@ export default function MusicWidget({ songData }: Props) {
           />
         </div>
       </div>
+
+      {artistName ? (
+        <div className="absolute top-40 left-4 w-36 rotate-[-9deg]">
+          <p
+            className="truncate py-0.5 text-center font-sans text-sm leading-tight font-semibold text-charcoal"
+            title={artistName}
+          >
+            {artistName}
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }
