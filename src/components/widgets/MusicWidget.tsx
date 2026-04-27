@@ -194,6 +194,13 @@ export default function MusicWidget({ songData }: Props) {
         </div>
       </div>
 
+      <div className="absolute -top-6 right-4 rotate-12 scale-115">
+        <img
+          src="/music-string.svg"
+          alt=""
+        />
+      </div>
+
       {artistName ? (
         <div className="absolute top-42 left-1 w-36 rotate-[-2deg]">
           <p
