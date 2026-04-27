@@ -94,14 +94,17 @@ export default function MusicWidget({ songData }: Props) {
       <svg aria-hidden="true" className="pointer-events-none absolute h-0 w-0" focusable="false">
         <defs>
           <filter id={stickerFilterId} x="0" y="0" width="100%" height="100%">
-            <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="expanded" />
+            <feComponentTransfer in="SourceAlpha" result="hardAlpha">
+              <feFuncA type="linear" slope="4" intercept="-1.5" />
+            </feComponentTransfer>
+            <feMorphology in="hardAlpha" operator="dilate" radius="3" result="expanded" />
             <feFlood flood-color="white" result="white" />
             <feComposite in="white" in2="expanded" operator="in" result="outline" />
             <feDropShadow
               dx="0"
               dy="0"
               stdDeviation="2"
-              flood-color="rgba(0,0,0,0.35)"
+              flood-color="rgba(0,0,0,0.25)"
               result="shadow"
             />
 
@@ -120,7 +123,7 @@ export default function MusicWidget({ songData }: Props) {
         style={{ filter: `url(#${stickerFilterId})` }}
       >
         <motion.div
-          className="absolute left-10 -top-1 group-hover:left-12 size-28 cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none z-10 transition-[left] duration-150"
+          className="absolute left-8 -top-1 group-hover:left-12 size-28 cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none z-10 transition-[left] duration-200"
           style={{ rotate: rotation }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
