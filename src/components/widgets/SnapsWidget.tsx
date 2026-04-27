@@ -71,6 +71,10 @@ export default function SnapsWidget() {
           </div>
         </motion.div>
       ))}
+      <div className="absolute -bottom-2 right-6 rotate-4">
+        <p className="font-semibold text-sm font-sans">Photo roll</p>
+
+      </div>
     </motion.div>
   );
 }

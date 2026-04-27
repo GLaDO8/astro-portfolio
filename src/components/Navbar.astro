@@ -13,6 +13,15 @@ const links = [
 	{ href: "/notes", label: "notes" },
 ];
 
+const subdomainLinks = [
+	{
+		href: "https://co2.shrey.fyi",
+		label: "co2.shrey.fyi",
+		description: "A visual reference for carbon dioxide and climate.",
+		iconHref: "https://co2.shrey.fyi/favicon.ico",
+	},
+];
+
 const activeLinkClass = "text-charcoal";
 const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 ---
@@ -22,22 +31,29 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
     aria-label="Primary navigation"
     data-navbar
 >
-    <a
-        href="/"
-        class="group flex items-center gap-2 font-semibold text-charcoal no-underline"
-        aria-label="shrey.fyi home"
-    >
-        <span class="pb-0.5">shrey.fyi</span>
-        <span
-            aria-hidden="true"
-            class="flex size-4 items-center justify-center rounded-full bg-[#E7E9DD] text-charcoal/55 transition-colors group-hover:text-charcoal"
+    <div class="relative flex items-center gap-2" data-navbar-menu-root>
+        <a
+            href="/"
+            class="font-semibold text-charcoal no-underline"
+            aria-label="shrey.fyi home"
+        >
+            <span class="pb-0.5">shrey.fyi</span>
+        </a>
+        <button
+            type="button"
+            class="group flex size-4 items-center justify-center rounded-full bg-fog/45 text-charcoal/55 transition-colors hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-charcoal/45"
+            aria-label="Open subdomain menu"
+            aria-controls="subdomain-menu"
+            aria-expanded="false"
+            data-navbar-menu-button
         >
             <svg
                 aria-hidden="true"
-                class="size-3"
+                class="size-3 transition-transform duration-200"
                 viewBox="0 0 16 16"
                 fill="none"
                 focusable="false"
+                data-navbar-menu-icon
             >
                 <path
                     d="M4 6.25L8 10.25L12 6.25"
@@ -46,8 +62,52 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
                     stroke-linecap="round"
                     stroke-linejoin="round"></path>
             </svg>
-        </span>
-    </a>
+        </button>
+
+        <div
+            id="subdomain-menu"
+            class="absolute top-full left-0 z-50 mt-3 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-fog/80 bg-parchment/95 p-1.5 shadow-[0_18px_50px_rgba(42,35,29,0.14)] backdrop-blur-md"
+            hidden
+            data-navbar-menu
+        >
+            <ul class="grid gap-1" role="list">
+                {
+                    subdomainLinks.map(
+                        ({ href, label, description, iconHref }) => (
+                            <li>
+                                <a
+                                    href={href}
+                                    class="flex items-start gap-3 rounded-md px-2.5 py-2 text-charcoal no-underline transition-colors duration-200 hover:bg-fog/35 focus-visible:bg-fog/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal/35"
+                                    data-navbar-menu-item
+                                >
+                                    <span
+                                        class="flex size-8 shrink-0 items-center justify-center rounded-md bg-white/70"
+                                        aria-hidden="true"
+                                    >
+                                        <img
+                                            src={iconHref}
+                                            alt=""
+                                            class="size-5 rounded-sm"
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                    </span>
+                                    <span class="min-w-0 pt-0.5">
+                                        <span class="block text-sm leading-tight font-semibold">
+                                            {label}
+                                        </span>
+                                        <span class="mt-1 block text-xs leading-snug text-slate">
+                                            {description}
+                                        </span>
+                                    </span>
+                                </a>
+                            </li>
+                        ),
+                    )
+                }
+            </ul>
+        </div>
+    </div>
 
     <div class="flex items-center gap-4 font-medium md:gap-6">
         {
@@ -81,6 +141,29 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
     const getNavbar = () =>
         document.querySelector<HTMLElement>("[data-navbar]");
 
+    const getNavbarMenuElements = (navbar: HTMLElement) => ({
+        button: navbar.querySelector<HTMLButtonElement>(
+            "[data-navbar-menu-button]",
+        ),
+        menu: navbar.querySelector<HTMLElement>("[data-navbar-menu]"),
+        icon: navbar.querySelector<HTMLElement>("[data-navbar-menu-icon]"),
+    });
+
+    const setSubdomainMenuOpen = (
+        navbar: HTMLElement,
+        isOpen: boolean,
+    ) => {
+        const { button, menu, icon } = getNavbarMenuElements(navbar);
+
+        if (!button || !menu) {
+            return;
+        }
+
+        button.setAttribute("aria-expanded", String(isOpen));
+        menu.hidden = !isOpen;
+        icon?.classList.toggle("rotate-180", isOpen);
+    };
+
     const setActiveLink = (
         links: HTMLElement[],
         link: HTMLElement,
@@ -92,6 +175,47 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
             currentLink.classList.toggle(inactiveClass, !isCurrent);
             currentLink.classList.toggle(inactiveHoverClass, !isCurrent);
         }
+    };
+
+    const bindNavbarDocumentListeners = () => {
+        const root = document.documentElement;
+
+        if (root.dataset.navbarDocumentBound === "true") {
+            return;
+        }
+
+        root.dataset.navbarDocumentBound = "true";
+
+        document.addEventListener("click", (event) => {
+            const navbar = getNavbar();
+
+            if (!navbar || navbar.contains(event.target as Node)) {
+                return;
+            }
+
+            setSubdomainMenuOpen(navbar, false);
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key !== "Escape") {
+                return;
+            }
+
+            const navbar = getNavbar();
+
+            if (!navbar) {
+                return;
+            }
+
+            const { button } = getNavbarMenuElements(navbar);
+
+            if (button?.getAttribute("aria-expanded") !== "true") {
+                return;
+            }
+
+            setSubdomainMenuOpen(navbar, false);
+            button.focus();
+        });
     };
 
     const syncNavbar = (pathname = window.location.pathname) => {
@@ -136,6 +260,23 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 
         navbar.dataset.navbarBound = "true";
 
+        bindNavbarDocumentListeners();
+
+        const { button, menu } = getNavbarMenuElements(navbar);
+
+        button?.addEventListener("click", (event) => {
+            event.stopPropagation();
+
+            const isOpen = button.getAttribute("aria-expanded") === "true";
+            setSubdomainMenuOpen(navbar, !isOpen);
+        });
+
+        menu?.addEventListener("click", (event) => {
+            if ((event.target as Element).closest("a")) {
+                setSubdomainMenuOpen(navbar, false);
+            }
+        });
+
         for (const link of links) {
             link.addEventListener("click", (event) => {
                 if (
@@ -162,6 +303,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
                 }
 
                 setActiveLink(links, link);
+                setSubdomainMenuOpen(navbar, false);
             });
         }
     };

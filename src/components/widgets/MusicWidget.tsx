@@ -181,14 +181,14 @@ export default function MusicWidget({ songData }: Props) {
             src={SLEEVE_TEXTURE}
             alt=""
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover mix-blend-lighten opacity-80"
+            className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover mix-blend-lighten opacity-90"
             draggable={false}
           />
           <img
             src={SLEEVE_TEXTURE}
             alt=""
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-20 h-full w-full object-cover mix-blend-exclusion opacity-20"
+            className="pointer-events-none absolute inset-0 z-20 h-full w-full object-cover mix-blend-exclusion opacity-30"
             draggable={false}
           />
         </div>
