@@ -89,22 +89,19 @@ export default function MusicWidget({ songData }: Props) {
   }, []);
 
   return (
-    <div>
+    <div className="relative h-48 w-56 shrink-0">
       {/*SVG filter for applying sticker-like white outline*/}
       <svg aria-hidden="true" className="pointer-events-none absolute h-0 w-0" focusable="false">
         <defs>
           <filter id={stickerFilterId} x="0" y="0" width="100%" height="100%">
             <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="expanded" />
-
             <feFlood flood-color="white" result="white" />
-
             <feComposite in="white" in2="expanded" operator="in" result="outline" />
-
             <feDropShadow
               dx="0"
               dy="0"
               stdDeviation="2"
-              flood-color="rgba(0,0,0,0.25)"
+              flood-color="rgba(0,0,0,0.35)"
               result="shadow"
             />
 
@@ -119,7 +116,7 @@ export default function MusicWidget({ songData }: Props) {
 
       <div
         ref={recordRef}
-        className="scale-130 group"
+        className="absolute top-2 left-0 h-36 w-44 origin-top-left scale-135 group"
         style={{ filter: `url(#${stickerFilterId})` }}
       >
         <motion.div
