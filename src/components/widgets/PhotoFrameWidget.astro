@@ -6,22 +6,15 @@ import { getImageAsset } from "@/lib/imageAssets";
 interface Props {
 	src: string;
 	alt?: string;
-	variant?: "default" | "compact";
 	label?: string;
 }
 
-const { src, alt = "Photo", variant = "default", label = "Click pls" } = Astro.props;
+const { src, alt = "Photo", label = "Click pls" } = Astro.props;
 const photo = getImageAsset(src);
-const isCompact = variant === "compact";
-const frameClass = isCompact
-	? "photo-frame-widget relative h-[10.25rem] w-[10.25rem] shrink-0"
-	: "photo-frame-widget relative h-38 w-38 shrink-0 md:h-48 md:w-48";
-const imageClass = isCompact
-	? "block h-[8.15rem] w-[9.9rem] -rotate-3 rounded-sm bg-white object-cover p-1.25 shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]"
-	: "block h-[84%] w-[84%] -rotate-6 rounded-sm bg-white object-cover p-1.25 shadow-[0_12px_30px_rgba(42,35,29,0.14)]";
-const postItClass = isCompact
-	? "absolute -right-4 -bottom-4 -rotate-8 scale-[0.7]"
-	: "absolute right-0 -bottom-2 -rotate-8 scale-[0.6] md:scale-[0.8]";
+const frameClass = "photo-frame-widget relative h-[10.25rem] w-[10.25rem] shrink-0";
+const imageClass =
+	"block h-[8.15rem] w-[9.9rem] -rotate-3 rounded-sm bg-white object-cover p-1.25 shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]";
+const postItClass = "absolute -right-4 -bottom-4 -rotate-8 scale-[0.7]";
 ---
 
 <div class={frameClass}>
@@ -44,34 +37,6 @@ const postItClass = isCompact
     <div class={postItClass}>
         <Image src={postItMe} alt="Post-it note saying Me!" />
     </div>
-
-    {
-        isCompact && (
-            <div class="absolute bottom-0 left-1 flex -rotate-2 items-center gap-1.5">
-                <span class="font-sans text-sm font-semibold tracking-[-0.02em] text-charcoal">
-                    {label}
-                </span>
-                <span
-                    aria-hidden="true"
-                    class="flex size-4 items-center justify-center rounded-full bg-mist text-charcoal/55"
-                >
-                    <svg
-                        aria-hidden="true"
-                        class="size-2.5 -rotate-90"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                    >
-                        <path
-                            d="M4 6.25L8 10.25L12 6.25"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                    </svg>
-                </span>
-            </div>
-        )
-    }
 </div>
 
 <style>

@@ -23,7 +23,6 @@ const { photoFrame, songData } = Astro.props;
             <PhotoFrameWidget
                 src={photoFrame.src}
                 alt={photoFrame.alt}
-                variant="compact"
             />
         </div>
 
@@ -36,7 +35,7 @@ const { photoFrame, songData } = Astro.props;
             class="absolute -top-2 left-[25.1rem] block rotate-[10deg] no-underline"
             aria-label="Open photo roll"
         >
-            <SnapsWidget variant="compact" client:visible />
+            <SnapsWidget client:visible />
         </a>
     </div>
 </section>
