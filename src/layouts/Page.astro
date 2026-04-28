@@ -35,6 +35,12 @@ const mainClass = [
 
 <Base title={title} description={description} bodyClass={bodyClass} seo={seo}>
 	<SiteShell mainClass={mainClass}>
+	<div slot="top-progressive-blur" class="navbar-blur" aria-hidden="true">
+    	<div class="blur-filter"></div>
+    	<div class="blur-filter"></div>
+    	<div class="blur-filter"></div>
+    	<div class="blur-filter"></div>
+	</div>
 		<div
 			class:list={[contentColumnClass, "sticky top-4 z-40 mb-12"]}
 			data-navbar-shell

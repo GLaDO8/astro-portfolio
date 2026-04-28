@@ -118,6 +118,45 @@ html[data-shell-transitions="true"] [data-shell-content][data-page-state="leavin
 	pointer-events: none;
 }
 
+.navbar-blur {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right:0;
+	width: 100%;
+	height: 96px;
+	pointer-events: none;
+	z-index: 10;
+}
+
+.navbar-blur > .blur-filter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+.navbar-blur > .blur-filter:nth-child(1) {
+  backdrop-filter: blur(1px);
+  mask: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 40%);
+}
+
+.navbar-blur > .blur-filter:nth-child(2) {
+    backdrop-filter: blur(4px);
+      mask: linear-gradient(rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 60%);
+}
+
+.navbar-blur > .blur-filter:nth-child(3) {
+  backdrop-filter: blur(1px);
+  mask: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 40%);
+}
+
+.navbar-blur > .blur-filter:nth-child(4) {
+  backdrop-filter: blur(1px);
+  mask: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 40%);
+}
+
+
 @keyframes vinyl-spin {
 	from {
 		transform: rotate(var(--record-spin-offset, 0deg));
