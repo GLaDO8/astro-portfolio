@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import type { SongData } from "@/lib/widgetConfig";
@@ -372,13 +372,20 @@ export default function MusicWidget({ songData }: Props) {
             aria-pressed={canPlayPreview ? isPlayingPreview : undefined}
             title={previewControlLabel}
           >
-            <img
-              src={isPlayingPreview ? PAUSE_ICON_SRC : PLAY_ICON_SRC}
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none size-3"
-              draggable={false}
-            />
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={isPlayingPreview ? "pause" : "play"}
+                src={isPlayingPreview ? PAUSE_ICON_SRC : PLAY_ICON_SRC}
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none size-3"
+                draggable={false}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                transition={{ duration: 0.15, ease: "easeInOut" }}
+              />
+            </AnimatePresence>
           </button>
         </div>
       </div>
