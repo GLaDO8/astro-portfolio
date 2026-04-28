@@ -2,11 +2,9 @@
 import HeroSection from "@/components/HeroSection";
 import HomeWidgetStrip from "@/components/widgets/HomeWidgetStrip.astro";
 import Page from "@/layouts/Page.astro";
-import { getSongData, getWidgetConfig } from "@/lib/widgetConfig";
+import { getSongData } from "@/lib/widgetConfig";
 
 const homeGridColumn = "col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5";
-const widgetConfig = getWidgetConfig();
-const photoFrame = widgetConfig.photoframe;
 const songData = await getSongData();
 
 const jsonLd = {
@@ -43,7 +41,7 @@ const jsonLd = {
     <div
         class:list={[homeGridColumn, "flex min-w-0 flex-col gap-12"]}
     >
-        <HomeWidgetStrip photoFrame={photoFrame} songData={songData} />
+        <HomeWidgetStrip songData={songData} />
 
         <div class="flex flex-col items-start gap-9">
             <HeroSection client:visible />

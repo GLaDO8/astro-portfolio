@@ -1,15 +1,14 @@
 ---
-import type { PhotoFrameData, SongData } from "@/lib/widgetConfig";
+import type { SongData } from "@/lib/widgetConfig";
 import MusicWidget from "./MusicWidget";
 import PhotoFrameWidget from "./PhotoFrameWidget.astro";
 import SnapsWidget from "./SnapsWidget";
 
 interface Props {
-	photoFrame: PhotoFrameData;
 	songData: SongData;
 }
 
-const { photoFrame, songData } = Astro.props;
+const { songData } = Astro.props;
 ---
 
 <section
