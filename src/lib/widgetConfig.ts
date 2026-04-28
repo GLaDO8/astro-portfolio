@@ -7,6 +7,8 @@ export interface SongData {
 	title: string;
 	album: string;
 	albumArt: string;
+	previewUrl: string;
+	trackUrl: string;
 	message: string;
 	label: string;
 }
@@ -56,6 +58,9 @@ interface iTunesResult {
 	trackName?: string;
 	collectionName: string;
 	artworkUrl100: string;
+	previewUrl?: string;
+	trackViewUrl?: string;
+	collectionViewUrl?: string;
 }
 
 async function fetchFromiTunes(config: WidgetToml["song"]): Promise<iTunesResult> {
@@ -103,6 +108,8 @@ export async function getSongData(): Promise<SongData> {
 			title: result.trackName ?? result.collectionName,
 			album: result.collectionName,
 			albumArt: result.artworkUrl100.replace("100x100bb", "600x600bb"),
+			previewUrl: result.previewUrl ?? "",
+			trackUrl: result.trackViewUrl ?? result.collectionViewUrl ?? config.song.url ?? "",
 			message,
 			label,
 		};
@@ -114,6 +121,8 @@ export async function getSongData(): Promise<SongData> {
 			title: "",
 			album: "",
 			albumArt: "",
+			previewUrl: "",
+			trackUrl: config.song.url ?? "",
 			message,
 			label,
 		};
