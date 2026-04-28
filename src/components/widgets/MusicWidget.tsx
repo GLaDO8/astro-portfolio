@@ -62,7 +62,7 @@ function ArtistNameStrip({ artistName, shouldReduceMotion }: ArtistNameStripProp
         className={cn(
           "overflow-hidden py-0.5 font-sans text-sm leading-tight font-semibold text-charcoal",
           shouldAnimate &&
-            "[mask-image:linear-gradient(to_right,transparent,black_14px,black_calc(100%-14px),transparent)]",
+          "[mask-image:linear-gradient(to_right,transparent,black_14px,black_calc(100%-14px),transparent)]",
         )}
         title={artistName}
       >
@@ -76,17 +76,14 @@ function ArtistNameStrip({ artistName, shouldReduceMotion }: ArtistNameStripProp
           transition={
             shouldAnimate
               ? {
-                  duration: Math.max(7, stripDistance / 22),
-                  ease: "linear",
-                  repeat: Infinity,
-                }
+                duration: Math.max(7, stripDistance / 22),
+                ease: "linear",
+                repeat: Infinity,
+              }
               : undefined
           }
         >
-          <span
-            ref={textRef}
-            className={shouldAnimate ? "shrink-0" : "block truncate text-center"}
-          >
+          <span ref={textRef} className={shouldAnimate ? "shrink-0" : "block truncate text-center"}>
             {artistName}
           </span>
           {shouldAnimate ? (
@@ -263,46 +260,48 @@ export default function MusicWidget({ songData }: Props) {
         ref={recordRef}
         className="group absolute top-2 left-0 h-36 w-44 origin-top-left scale-125 filter-[url(#music-widget-sticker-outline)]"
       >
-        <motion.div
-          className="absolute left-9 -top-1 group-hover:left-12 size-30 cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none z-10 transition-[left] duration-200"
-          style={{ rotate: rotation }}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={stopScratching}
-          onPointerCancel={stopScratching}
-          onLostPointerCapture={stopScratching}
-        >
-          <img src="/record content.png" alt="" className="h-full w-full" draggable={false} />
-          <svg
-            viewBox="0 0 59 59"
-            className="absolute top-1/2 left-1/2 size-9 -translate-x-1/2 -translate-y-1/2"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label="Album art"
+        <div className="absolute -top-1 left-9 z-10 size-30 transition-[left] duration-200 group-hover:left-12">
+          <motion.div
+            className="absolute inset-0 cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none"
+            style={{ rotate: rotation }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={stopScratching}
+            onPointerCancel={stopScratching}
+            onLostPointerCapture={stopScratching}
           >
-            <defs>
-              <clipPath id={VINYL_LABEL_CLIP_ID}>
-                <path d={VINYL_LABEL_PATH} />
-              </clipPath>
-            </defs>
-            <image
-              href={albumArt}
-              x="0"
-              y="0"
-              width="59"
-              height="59"
-              preserveAspectRatio="xMidYMid slice"
-              clipPath={`url(#${VINYL_LABEL_CLIP_ID})`}
-            />
-          </svg>
-        </motion.div>
+            <img src="/record content.png" alt="" className="h-full w-full" draggable={false} />
+            <svg
+              viewBox="0 0 59 59"
+              className="absolute top-1/2 left-1/2 size-9 -translate-x-1/2 -translate-y-1/2"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-label="Album art"
+            >
+              <defs>
+                <clipPath id={VINYL_LABEL_CLIP_ID}>
+                  <path d={VINYL_LABEL_PATH} />
+                </clipPath>
+              </defs>
+              <image
+                href={albumArt}
+                x="0"
+                y="0"
+                width="59"
+                height="59"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath={`url(#${VINYL_LABEL_CLIP_ID})`}
+              />
+            </svg>
+          </motion.div>
 
-        <img
-          src="/specular highlight.svg"
-          alt=""
-          className="pointer-events-none absolute top-[11.5px] right-[34px] z-20 w-10 mix-blend-color-dodge"
-          draggable={false}
-        />
+          <img
+            src="/specular highlight.svg"
+            alt=""
+            className="pointer-events-none absolute top-[17px] right-5 z-20 w-10 mix-blend-color-dodge"
+            draggable={false}
+          />
+        </div>
 
         <div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] rotate-[-3deg] isolate drop-shadow-[0_10px_18px_rgba(42,35,29,0.18)] z-30">
           <div className="absolute inset-0 z-0 mask-[url(/sleeve.png)] mask-center mask-no-repeat mask-size-[100%_100%]">
