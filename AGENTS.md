@@ -7,23 +7,17 @@ Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Moti
 ## Key Files
 - `src/layouts/Document.astro` — document and app-shell layout. Owns SEO, font preloading, global CSS, `ClientRouter`, Lenis bootstrapping, skip link, dev-only toolbar mounting, shared max-width shell, optional navbar, main content wrapper, and page enter/leave state used by shell transitions.
 - `src/layouts/Page.astro` — standard interior page layout. Composes `Document` and applies the default content grid for non-home pages.
-- `src/layouts/SnapsLayout.astro` — snaps-specific page structure. Composes `Document` with the photo-grid page spacing.
 - `src/components/Navbar.astro` — segmented top navigation. Owns progressive navbar blur, sticky placement, persisted transition wrapper, active-link detection, subdomain menu behavior, and client-side re-sync after Astro route transitions.
-- `src/components/HeroSection.tsx` — animated homepage intro. Cycles description lines with Motion while respecting reduced-motion preferences.
-- `src/components/SEO.astro` — shared meta tags, canonical URL generation, Open Graph/Twitter tags, favicons, and optional JSON-LD output.
 
 ## Code style and conventions
-- Simplicity first. Start with the simplest implementation then layer in complexity as needed.
-- Paper & Figma MCP if provided, is your source of truth, liberally use it to check for visual parity.
+- Simplicity first, this is a personal website not enterprise software. Start with the simplest implementation then layer in complexity as needed.
 - When using Paper MCP for recreation or parity work, read the repo-local skill at `.codex/skills/paper-parity/SKILL.md` first.
 - Create semantic tokens from `@theme` in @src/styles/global.css only when the style is reusable across multiple components.
-- Prefer using motion package for animations over complex custom CSS animations.
+- Prefer using Motion library APIs for animations over complex custom CSS animations.
 - Use `cn()` for conditional class composition and concatenation.
 - Promote reusable values to `@theme` in `src/styles/global.css`
-- Avoid arbitrary one-off spacing/sizing values like `pt-[23px]`.
-- If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
+- Avoid arbitrary one-off spacing/sizing values like `pt-[23px]`. If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
 - Arbitrary colors (`bg-[#hex]`) are OK temporarily; promote to `@theme` token if reused.
-- Use `pnpm` for package scripts and installs. Biome is pinned in `package.json`; run `pnpm exec biome format --write <files>` for formatter-only cleanup, `pnpm exec biome lint --write <files>` for lint fixes, and `pnpm exec biome check <files>` for verification.
 
 ## Understand the DOM
 For structural styling, complex DOM changes, or CSS/layout debugging, inspect the rendered DOM first. The rendered DOM is the source of truth. Do not infer selector paths from Astro/React source alone when the change depends on parent/child relationships in the final DOM.
