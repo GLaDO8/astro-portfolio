@@ -5,10 +5,10 @@ This personal website will be the home to publish my writings, design case studi
 Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Motion · Biome · TypeScript · Lenis (for smooth scrolling)
 
 ## Key Files
-- `src/layouts/Base.astro` — document-level layout. Owns SEO, font preloading, global CSS, `ClientRouter`, Lenis bootstrapping, skip link, and dev-only toolbar mounting.
-- `src/components/SiteShell.astro` — in-body site shell. Owns the shared max-width container, navbar placement, main content wrapper, and page enter/leave state used by shell transitions.
-- `src/layouts/Page.astro` — standard interior page layout. Composes `Base` + `SiteShell` and applies the default content grid for non-home pages.
-- `src/components/Navbar.astro` — segmented top navigation. Owns active-link detection, sliding indicator positioning, and client-side re-sync after Astro route transitions.
+- `src/layouts/Document.astro` — document and app-shell layout. Owns SEO, font preloading, global CSS, `ClientRouter`, Lenis bootstrapping, skip link, dev-only toolbar mounting, shared max-width shell, optional navbar, main content wrapper, and page enter/leave state used by shell transitions.
+- `src/layouts/Page.astro` — standard interior page layout. Composes `Document` and applies the default content grid for non-home pages.
+- `src/layouts/SnapsLayout.astro` — snaps-specific page structure. Composes `Document` with the photo-grid page spacing.
+- `src/components/Navbar.astro` — segmented top navigation. Owns progressive navbar blur, sticky placement, persisted transition wrapper, active-link detection, subdomain menu behavior, and client-side re-sync after Astro route transitions.
 - `src/components/HeroSection.tsx` — animated homepage intro. Cycles description lines with Motion while respecting reduced-motion preferences.
 - `src/components/SEO.astro` — shared meta tags, canonical URL generation, Open Graph/Twitter tags, favicons, and optional JSON-LD output.
 

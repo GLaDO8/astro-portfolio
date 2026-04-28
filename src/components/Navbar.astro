@@ -3,9 +3,13 @@ import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
 interface Props {
 	currentPath?: string;
+	class?: string;
 }
 
-const { currentPath = "/" } = Astro.props;
+const { currentPath = Astro.url.pathname, class: className } = Astro.props;
+const shellClass = ["sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className]
+	.filter(Boolean)
+	.join(" ");
 
 const links = [
 	{ href: "/work", label: "work" },
@@ -26,110 +30,126 @@ const activeLinkClass = "text-charcoal";
 const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 ---
 
-<nav
-    class="mx-auto flex w-full max-w-[39.25rem] items-center justify-between px-4 font-sans text-sm tracking-[-0.01em] md:px-0 md:text-base"
-    aria-label="Primary navigation"
-    data-navbar
->
-    <div class="relative flex items-center gap-2" data-navbar-menu-root>
-        <a
-            href="/"
-            class="font-semibold text-charcoal no-underline"
-            aria-label="shrey.fyi home"
-        >
-            <span class="pb-0.5 text-base">shrey.fyi</span>
-        </a>
-        <button
-            type="button"
-            class="group flex size-5 items-center justify-center rounded-full bg-fog/45 text-charcoal/55 transition-all hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-charcoal/45 hover:scale-120"
-            aria-label="Open subdomain menu"
-            aria-controls="subdomain-menu"
-            aria-expanded="false"
-            data-navbar-menu-button
-        >
-            <svg
-                aria-hidden="true"
-                class="size-4 transition-transform duration-200"
-                viewBox="0 0 16 16"
-                fill="none"
-                focusable="false"
-                data-navbar-menu-icon
-            >
-                <path
-                    d="M4 6.25L8 10.25L12 6.25"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"></path>
-            </svg>
-        </button>
+<div class="navbar-blur" aria-hidden="true">
+	<div class="fade-filter"></div>
+	<div class="blur-filter"></div>
+	<div class="blur-filter"></div>
+	<div class="blur-filter"></div>
+	<div class="blur-filter"></div>
+	<div class="blur-filter"></div>
+	<div class="blur-filter"></div>
+	<div class="blur-filter"></div>
+	<div class="fade-filter"></div>
+</div>
 
-        <div
-            id="subdomain-menu"
-            class="absolute top-full left-0 z-50 mt-3 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-fog/40 bg-white p-1.5 shadow-[0_18px_50px_rgba(42,35,29,0.14)] backdrop-blur-md"
-            hidden
-            data-navbar-menu
-        >
-            <ul class="grid gap-1" role="list">
-                {
-                    subdomainLinks.map(
-                        ({ href, label, description, iconHref }) => (
-                            <li>
-                                <a
-                                    href={href}
-                                    class="flex items-start gap-3 rounded-md px-2.5 py-2 text-charcoal no-underline transition-colors duration-200 hover:bg-fog/35 focus-visible:bg-fog/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal/35"
-                                    data-navbar-menu-item
-                                >
-                                    <span
-                                        class="flex size-8 shrink-0 items-center justify-center rounded-md bg-white/70"
-                                        aria-hidden="true"
-                                    >
-                                        <img
-                                            src={iconHref}
-                                            alt=""
-                                            class="size-5 rounded-sm"
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                    </span>
-                                    <span class="min-w-0 pt-0.5">
-                                        <span class="block text-sm leading-tight font-semibold">
-                                            {label}
-                                        </span>
-                                        <span class="mt-1 block text-xs leading-snug text-slate">
-                                            {description}
-                                        </span>
-                                    </span>
-                                </a>
-                            </li>
-                        ),
-                    )
-                }
-            </ul>
-        </div>
-    </div>
+<div class={shellClass} data-navbar-shell>
+	<div transition:persist transition:name="site-navbar">
+		<nav
+			class="mx-auto flex w-full max-w-[39.25rem] items-center justify-between px-4 font-sans text-sm tracking-[-0.01em] md:px-0 md:text-base"
+			aria-label="Primary navigation"
+			data-navbar
+		>
+			<div class="relative flex items-center gap-2" data-navbar-menu-root>
+				<a
+					href="/"
+					class="font-semibold text-charcoal no-underline"
+					aria-label="shrey.fyi home"
+				>
+					<span class="pb-0.5 text-base">shrey.fyi</span>
+				</a>
+				<button
+					type="button"
+					class="group flex size-5 items-center justify-center rounded-full bg-fog/45 text-charcoal/55 transition-all hover:scale-120 hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-charcoal/45"
+					aria-label="Open subdomain menu"
+					aria-controls="subdomain-menu"
+					aria-expanded="false"
+					data-navbar-menu-button
+				>
+					<svg
+						aria-hidden="true"
+						class="size-4 transition-transform duration-200"
+						viewBox="0 0 16 16"
+						fill="none"
+						focusable="false"
+						data-navbar-menu-icon
+					>
+						<path
+							d="M4 6.25L8 10.25L12 6.25"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"></path>
+					</svg>
+				</button>
 
-    <div class="flex items-center gap-4 font-medium md:gap-6">
-        {
-            links.map(({ href, label }) => {
-                const isActive = isNavbarLinkActive(href, currentPath);
-                return (
-                    <a
-                        href={href}
-                        class:list={[
-                            "rounded-full py-1 transition-colors duration-200",
-                            isActive ? activeLinkClass : inactiveLinkClass,
-                        ]}
-                        aria-current={isActive ? "page" : undefined}
-                        data-navbar-link
-                    >
-                        {label}
-                    </a>
-                );
-            })
-        }
-    </div>
-</nav>
+				<div
+					id="subdomain-menu"
+					class="absolute top-full left-0 z-50 mt-3 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-fog/40 bg-white p-1.5 shadow-[0_18px_50px_rgba(42,35,29,0.14)] backdrop-blur-md"
+					hidden
+					data-navbar-menu
+				>
+					<ul class="grid gap-1" role="list">
+						{
+							subdomainLinks.map(
+								({ href, label, description, iconHref }) => (
+									<li>
+										<a
+											href={href}
+											class="flex items-start gap-3 rounded-md px-2.5 py-2 text-charcoal no-underline transition-colors duration-200 hover:bg-fog/35 focus-visible:bg-fog/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal/35"
+											data-navbar-menu-item
+										>
+											<span
+												class="flex size-8 shrink-0 items-center justify-center rounded-md bg-white/70"
+												aria-hidden="true"
+											>
+												<img
+													src={iconHref}
+													alt=""
+													class="size-5 rounded-sm"
+													loading="lazy"
+													decoding="async"
+												/>
+											</span>
+											<span class="min-w-0 pt-0.5">
+												<span class="block text-sm leading-tight font-semibold">
+													{label}
+												</span>
+												<span class="mt-1 block text-xs leading-snug text-slate">
+													{description}
+												</span>
+											</span>
+										</a>
+									</li>
+								),
+							)
+						}
+					</ul>
+				</div>
+			</div>
+
+			<div class="flex items-center gap-4 font-medium md:gap-6">
+				{
+					links.map(({ href, label }) => {
+						const isActive = isNavbarLinkActive(href, currentPath);
+						return (
+							<a
+								href={href}
+								class:list={[
+									"rounded-full py-1 transition-colors duration-200",
+									isActive ? activeLinkClass : inactiveLinkClass,
+								]}
+								aria-current={isActive ? "page" : undefined}
+								data-navbar-link
+							>
+								{label}
+							</a>
+						);
+					})
+				}
+			</div>
+		</nav>
+	</div>
+</div>
 
 <script>
     import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
