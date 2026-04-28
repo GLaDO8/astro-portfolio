@@ -5,15 +5,15 @@ import { Image } from "astro:assets";
 ---
 
 <div
-    class="relative h-[10.25rem] w-[10.25rem] shrink-0 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-rotate-4"
+    class="relative shrink-0 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-rotate-4 pt-2"
 >
     <Image
         src={halftone}
         alt="Photo of Shreyas in Scuba dive suit, smiling"
         loading="eager"
-        class="block h-36 -rotate-3 rounded-sm bg-white object-cover p-1.25 shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]"
+        class="-rotate-3 h-32 w-36 rounded-sm bg-white object-cover p-1.25 shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]"
     />
-    <div class="absolute -right-4 -bottom-4 -rotate-8 scale-[0.7]">
+    <div class="absolute -right-6 -bottom-12 -rotate-8 scale-[0.7]">
         <Image src={postItMe} alt="Post-it note saying Me!" />
     </div>
 </div>
