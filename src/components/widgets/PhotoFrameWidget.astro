@@ -1,21 +1,14 @@
 ---
 import { Image } from "astro:assets";
 import postItMe from "@/assets/widgets/postit-me.svg";
-
-interface Props {
-	src: string;
-	alt?: string;
-}
-
-const { src, alt = "Photo" } = Astro.props;
 ---
 
 <div
     class="relative h-[10.25rem] w-[10.25rem] shrink-0 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-rotate-4"
 >
     <img
-        src={src}
-        alt={alt}
+        src="/halftone-photo.webp"
+        alt="Photo of Shreyas in Scuba dive suit, smiling"
         loading="eager"
         class="block h-36 -rotate-3 rounded-sm bg-white object-cover p-1.25 shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]"
     />

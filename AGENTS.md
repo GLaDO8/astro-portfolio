@@ -24,9 +24,6 @@ Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Moti
 - If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
 - Arbitrary colors (`bg-[#hex]`) are OK temporarily; promote to `@theme` token if reused.
 
-## Hard rules
-- Changes which aren't minor need to be verified by inspecting the DOM, see instructions below.
-
 ## Understand the DOM
 For structural styling, complex DOM changes, or CSS/layout debugging, inspect the rendered DOM first. The rendered DOM is the source of truth. Do not infer selector paths from Astro/React source alone when the change depends on parent/child relationships in the final DOM.
 
@@ -39,3 +36,4 @@ Use the following workflow:
 - **Inspect before editing** — Use `agent-browser eval` to run `getComputedStyle()` on the target element and its parent chain for relevant properties. Dump `outerHTML` to see the actual rendered markup and any injected inline styles or wrapper elements.
 - **Identify the winning rule** — Before writing overrides, determine what's currently winning the cascade (inline styles, scoped selectors, utility classes, browser defaults). Know the specificity you're fighting.
 - **Verify after each change** — Re-run `getComputedStyle()` to confirm the target property changed on the actual visible element, not just a wrapper. Screenshots show *what's wrong*; computed styles show *why*.
+- Changes which aren't minor need to be verified by inspecting the DOM, see instructions below.
