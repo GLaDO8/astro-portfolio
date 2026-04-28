@@ -1,3 +1,4 @@
+import type { ImageMetadata } from "astro";
 import { motion, useReducedMotion } from "motion/react";
 import snapOne from "@/assets/snaps/DSCF4135-Enhanced-NR-2.webp";
 import snapTwo from "@/assets/snaps/DSCF4283.webp";
@@ -9,7 +10,18 @@ const polaroidTransition = {
 	ease: [0.22, 1, 0.36, 1] as const,
 };
 
-const polaroids = [
+type Polaroid = {
+	readonly image: ImageMetadata;
+	readonly positionClass: string;
+	readonly hover: {
+		readonly x: number;
+		readonly y: number;
+		readonly rotate: number;
+	};
+	readonly hasTape?: boolean;
+};
+
+const polaroids: readonly Polaroid[] = [
 	{
 		image: snapOne,
 		positionClass: "left-12 top-0 rotate-[-3deg]",
@@ -26,7 +38,7 @@ const polaroids = [
 		hover: { x: 8, y: -4, rotate: 10 },
 		hasTape: true,
 	},
-] as const;
+];
 
 export default function SnapsWidget() {
 	const shouldReduceMotion = useReducedMotion();
