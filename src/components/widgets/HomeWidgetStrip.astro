@@ -5,32 +5,58 @@ import PhotoFrameWidget from "./PhotoFrameWidget.astro";
 import SnapsWidget from "./SnapsWidget";
 
 interface Props {
-	songData: SongData;
+    songData: SongData;
 }
 
 const { songData } = Astro.props;
 ---
 
 <section
-    class="h-[9.75rem] w-full overflow-visible sm:h-[11rem] md:h-64 pt-8" aria-label="Personal widgets"
+    data-home-widget-strip
+    class="h-[9.75rem] w-full overflow-visible sm:h-[11rem] md:h-64 pt-8"
+    aria-label="Personal widgets"
 >
     <div
         class="relative left-1/2 flex w-max origin-top -translate-x-1/2 scale-[0.6] items-start justify-center gap-3 sm:scale-[0.78] sm:gap-4 md:scale-100 md:gap-20"
     >
-        <div class="mt-5 shrink-0 rotate-[9deg]">
-            <PhotoFrameWidget/>
+        <div class="rotate-[9deg]">
+            <div data-home-widget class="mt-5 shrink-0">
+                <PhotoFrameWidget />
+            </div>
         </div>
 
         <div class="shrink-0 rotate-[-7deg]">
-            <MusicWidget songData={songData} client:visible />
+            <div data-home-widget>
+                <MusicWidget songData={songData} client:visible />
+            </div>
         </div>
-
         <a
             href="/snaps"
             class="-mt-2 -ml-12 block shrink-0 no-underline"
             aria-label="Open photo roll"
         >
-            <SnapsWidget client:visible />
+            <div data-home-widget>
+                <SnapsWidget client:visible />
+            </div>
         </a>
     </div>
 </section>
+
+<script>
+    import { animate } from "motion/mini";
+    import { spring, stagger } from "motion";
+
+    const strip = document.querySelector("[data-home-widget-strip]");
+    const widgets = strip?.querySelectorAll("[data-home-widget]") ?? [];
+
+    animate(
+        widgets,
+        { opacity: [0, 1], transform: ["scale(0.001)", "scale(1)"] },
+        {
+            delay: stagger(0.09),
+            type: spring,
+            visualDuration: 0.3,
+            bounce: 0.5,
+        },
+    );
+</script>
