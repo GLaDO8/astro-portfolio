@@ -68,8 +68,8 @@ test("runDesignTokenCheck fails on typography drift and warns on color drift", a
 			const output = formatReport(report);
 			assert.match(output, /ERROR .*text-\[14px\]/);
 			assert.match(output, /ERROR .*font-size: 18px/);
-			assert.match(output, /WARN  .*#ffeedd/);
-			assert.match(output, /WARN  .*#333f46/);
+			assert.match(output, /WARN {2}.*#ffeedd/);
+			assert.match(output, /WARN {2}.*#333f46/);
 		},
 	);
 });

@@ -24,7 +24,9 @@
 
 @utility codeblock-reset {
 	& pre {
+		/* biome-ignore lint/complexity/noImportantStyles: Override generated code block backgrounds. */
 		background: transparent !important;
+		/* biome-ignore lint/complexity/noImportantStyles: Override generated code block backgrounds. */
 		background-color: transparent !important;
 		overflow: visible;
 		margin: 0;

@@ -57,14 +57,14 @@ function RepoEntry({ repo }: { repo: PrivateRepo }) {
 	return (
 		<div className="flex flex-col gap-0.5">
 			<div className="flex gap-2 items-center">
-				<span className="font-sans font-medium text-[14px] tracking-[-0.28px] text-[#28363c]">
+				<span className="font-sans font-medium text-sm tracking-[-0.28px] text-[#28363c]">
 					{repo.name}
 				</span>
-				<span className="bg-[#e7efef] rounded-2xl px-2 pt-px pb-0.5 font-sans font-medium text-[12px] tracking-[-0.24px] text-[#465c66]">
+				<span className="bg-[#e7efef] rounded-2xl px-2 pt-px pb-0.5 font-sans font-medium text-xs tracking-[-0.24px] text-[#465c66]">
 					Private
 				</span>
 			</div>
-			<span className="font-sans text-[12px] tracking-[-0.24px] text-[#465358]">
+			<span className="font-sans text-xs tracking-[-0.24px] text-[#465358]">
 				{repo.totalCommits} commits, {relativeTime(repo.pushedAt)}
 			</span>
 		</div>
@@ -80,7 +80,7 @@ export default function GithubWidget({ data }: { data: GithubData }) {
 				{/* Left: heading + grid */}
 				<div className="flex flex-col justify-between shrink-0 w-[202px] pt-3 pb-4">
 					<div className="flex items-center gap-2.5">
-						<span className="flex-1 font-sans font-bold text-[30px] tracking-[-0.6px] text-[#28363c]">
+						<span className="flex-1 font-sans font-bold text-2xl tracking-[-0.6px] text-[#28363c]">
 							Sneak peek
 						</span>
 						<a

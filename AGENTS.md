@@ -23,6 +23,7 @@ Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Moti
 - Avoid arbitrary one-off spacing/sizing values like `pt-[23px]`.
 - If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
 - Arbitrary colors (`bg-[#hex]`) are OK temporarily; promote to `@theme` token if reused.
+- Use `pnpm` for package scripts and installs. Biome is pinned in `package.json`; run `pnpm exec biome format --write <files>` for formatter-only cleanup, `pnpm exec biome lint --write <files>` for lint fixes, and `pnpm exec biome check <files>` for verification.
 
 ## Understand the DOM
 For structural styling, complex DOM changes, or CSS/layout debugging, inspect the rendered DOM first. The rendered DOM is the source of truth. Do not infer selector paths from Astro/React source alone when the change depends on parent/child relationships in the final DOM.

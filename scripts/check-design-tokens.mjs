@@ -7,15 +7,7 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..");
 const DEFAULT_THEME_PATH = path.join(REPO_ROOT, "src/styles/global.css");
 const DEFAULT_SCAN_ROOT = path.join(REPO_ROOT, "src");
-const SCANNABLE_EXTENSIONS = new Set([
-	".astro",
-	".css",
-	".js",
-	".jsx",
-	".mdoc",
-	".ts",
-	".tsx",
-]);
+const SCANNABLE_EXTENSIONS = new Set([".astro", ".css", ".js", ".jsx", ".mdoc", ".ts", ".tsx"]);
 
 const TYPOGRAPHY_CLASS_RE = /\b(?:[\w-]+:)*text-\[([^\]]+)\]/g;
 const COLOR_CLASS_RE =
@@ -26,10 +18,8 @@ const CSS_COLOR_PROP_RE =
 	/\b(?:color|background(?:-color)?|border(?:-color)?|outline-color|text-decoration-color|fill|stroke)\s*:\s*([^;}\n]+)/g;
 const JS_COLOR_PROP_RE =
 	/[,{]\s*(?:color|backgroundColor|borderColor|outlineColor|textDecorationColor|fill|stroke)\s*:\s*([^,}\n]+)/g;
-const RAW_COLOR_RE =
-	/(#[0-9a-fA-F]{3,8}\b|(?:oklch|oklab|rgb|rgba|hsl|hsla|color)\([^)\n]+\))/;
-const TYPOGRAPHY_VALUE_RE =
-	/^-?(?:\d+|\d*\.\d+)(?:px|rem|em|%|vh|vw|ch|ex|lh|rlh)$/;
+const RAW_COLOR_RE = /(#[0-9a-fA-F]{3,8}\b|(?:oklch|oklab|rgb|rgba|hsl|hsla|color)\([^)\n]+\))/;
+const TYPOGRAPHY_VALUE_RE = /^-?(?:\d+|\d*\.\d+)(?:px|rem|em|%|vh|vw|ch|ex|lh|rlh)$/;
 
 const TYPOGRAPHY_EXEMPT_PATTERNS = [/^var\(/, /^calc\(/];
 const COLOR_LITERAL_ALLOWLIST = new Set([
@@ -42,11 +32,11 @@ const COLOR_LITERAL_ALLOWLIST = new Set([
 ]);
 
 function normalizeLiteral(value) {
-	return value.trim().replace(/^["'`]/, "").replace(/["'`]$/, "").trim();
-}
-
-function escapeRegExp(value) {
-	return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	return value
+		.trim()
+		.replace(/^["'`]/, "")
+		.replace(/["'`]$/, "")
+		.trim();
 }
 
 export function extractThemeTokens(cssText) {
@@ -138,7 +128,8 @@ export function inspectFileContent(filePath, content, themeTokens) {
 		content,
 		TYPOGRAPHY_CLASS_RE,
 		"tailwind-class",
-		(value) => `Avoid arbitrary typography token \`text-[${value}]\`. Use the Tailwind type scale from global theme tokens.`,
+		(value) =>
+			`Avoid arbitrary typography token \`text-[${value}]\`. Use the Tailwind type scale from global theme tokens.`,
 		(value) =>
 			isTypographyLikeValue(value) &&
 			!isColorLikeValue(value) &&
@@ -150,7 +141,8 @@ export function inspectFileContent(filePath, content, themeTokens) {
 		content,
 		CSS_FONT_SIZE_RE,
 		"css-font-size",
-		(value) => `Avoid raw \`font-size: ${value}\`. Use the theme type scale or Tailwind text tokens.`,
+		(value) =>
+			`Avoid raw \`font-size: ${value}\`. Use the theme type scale or Tailwind text tokens.`,
 		(value) => !isTypographyLiteralAllowed(value),
 	);
 
@@ -159,7 +151,8 @@ export function inspectFileContent(filePath, content, themeTokens) {
 		content,
 		JS_FONT_SIZE_RE,
 		"js-font-size",
-		(value) => `Avoid raw \`fontSize: ${value}\`. Use the theme type scale or Tailwind text tokens.`,
+		(value) =>
+			`Avoid raw \`fontSize: ${value}\`. Use the theme type scale or Tailwind text tokens.`,
 		(value) => !isTypographyLiteralAllowed(value),
 	);
 
@@ -169,7 +162,9 @@ export function inspectFileContent(filePath, content, themeTokens) {
 		COLOR_CLASS_RE,
 		"tailwind-color",
 		(value) =>
-			`Arbitrary color \`${value}\` bypasses theme color tokens (${Array.from(themeTokens.colorTokens)
+			`Arbitrary color \`${value}\` bypasses theme color tokens (${Array.from(
+				themeTokens.colorTokens,
+			)
 				.map((token) => `text-${token}/bg-${token}`)
 				.slice(0, 4)
 				.join(", ")}...).`,
@@ -254,10 +249,7 @@ export async function runDesignTokenCheck({
 			(total, result) => total + result.typographyIssues.length,
 			0,
 		),
-		colorWarningCount: results.reduce(
-			(total, result) => total + result.colorWarnings.length,
-			0,
-		),
+		colorWarningCount: results.reduce((total, result) => total + result.colorWarnings.length, 0),
 	};
 }
 
@@ -270,14 +262,10 @@ export function formatReport(report) {
 
 	for (const result of report.results) {
 		for (const issue of result.typographyIssues) {
-			lines.push(
-				`ERROR ${formatLocation(result.filePath, issue.line)} ${issue.message}`,
-			);
+			lines.push(`ERROR ${formatLocation(result.filePath, issue.line)} ${issue.message}`);
 		}
 		for (const warning of result.colorWarnings) {
-			lines.push(
-				`WARN  ${formatLocation(result.filePath, warning.line)} ${warning.message}`,
-			);
+			lines.push(`WARN  ${formatLocation(result.filePath, warning.line)} ${warning.message}`);
 		}
 	}
 
