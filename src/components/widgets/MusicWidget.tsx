@@ -10,11 +10,94 @@ const PAUSE_ICON_SRC = `data:image/svg+xml,${encodeURIComponent(pauseIconSvg)}`;
 const DEG_PER_MS = (33 * 360) / 60000; // 33 RPM in degrees/ms
 const VINYL_LABEL_CLIP_ID = "music-widget-vinyl-label";
 const STICKER_FILTER_ID = "music-widget-sticker-outline";
+const ARTIST_STRIP_GAP_PX = 24;
 const VINYL_LABEL_PATH =
   "M27.7924 0.0401388C43.9614 -0.801682 57.7516 11.6235 58.5934 27.7926C59.4353 43.9616 47.0101 57.7518 30.841 58.5936C14.6719 59.4355 0.881799 47.0103 0.0399393 30.8412C-0.801915 14.6721 11.6233 0.881993 27.7924 0.0401388ZM29.0468 24.1325C26.1835 24.2816 23.9832 26.7235 24.1323 29.5868C24.2814 32.4501 26.7233 34.6504 29.5866 34.5013C32.4499 34.3522 34.6501 31.9102 34.5011 29.047C34.352 26.1837 31.91 23.9835 29.0468 24.1325Z";
 
 interface Props {
   songData: SongData;
+}
+
+interface ArtistNameStripProps {
+  artistName: string;
+  shouldReduceMotion: boolean | null;
+}
+
+function ArtistNameStrip({ artistName, shouldReduceMotion }: ArtistNameStripProps) {
+  const viewportRef = useRef<HTMLParagraphElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+  const [stripDistance, setStripDistance] = useState(0);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    const text = textRef.current;
+    if (!viewport || !text) return;
+
+    const measureOverflow = () => {
+      const textWidth = text.scrollWidth;
+      const nextStripDistance =
+        textWidth - viewport.clientWidth > 1 ? textWidth + ARTIST_STRIP_GAP_PX : 0;
+      setStripDistance(nextStripDistance);
+    };
+
+    measureOverflow();
+
+    const resizeObserver = new ResizeObserver(measureOverflow);
+    resizeObserver.observe(viewport);
+    resizeObserver.observe(text);
+    window.addEventListener("load", measureOverflow);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("load", measureOverflow);
+    };
+  }, []);
+
+  const shouldAnimate = stripDistance > 0 && !shouldReduceMotion;
+
+  return (
+    <div className="absolute bottom-3 left-1 w-36 rotate-[-2deg]">
+      <p
+        ref={viewportRef}
+        className={cn(
+          "overflow-hidden py-0.5 font-sans text-sm leading-tight font-semibold text-charcoal",
+          shouldAnimate &&
+            "[mask-image:linear-gradient(to_right,transparent,black_14px,black_calc(100%-14px),transparent)]",
+        )}
+        title={artistName}
+      >
+        <motion.span
+          className={cn(
+            "whitespace-nowrap",
+            shouldAnimate ? "inline-flex w-max text-left" : "block w-full",
+          )}
+          style={shouldAnimate ? { gap: ARTIST_STRIP_GAP_PX } : undefined}
+          animate={shouldAnimate ? { x: [0, -stripDistance] } : { x: 0 }}
+          transition={
+            shouldAnimate
+              ? {
+                  duration: Math.max(7, stripDistance / 22),
+                  ease: "linear",
+                  repeat: Infinity,
+                }
+              : undefined
+          }
+        >
+          <span
+            ref={textRef}
+            className={shouldAnimate ? "shrink-0" : "block truncate text-center"}
+          >
+            {artistName}
+          </span>
+          {shouldAnimate ? (
+            <span aria-hidden="true" className="shrink-0">
+              {artistName}
+            </span>
+          ) : null}
+        </motion.span>
+      </p>
+    </div>
+  );
 }
 
 export default function MusicWidget({ songData }: Props) {
@@ -272,14 +355,11 @@ export default function MusicWidget({ songData }: Props) {
       </div>
 
       {artistName ? (
-        <div className="absolute bottom-3 left-1 w-36 rotate-[-2deg]">
-          <p
-            className="truncate py-0.5 text-center font-sans text-sm leading-tight font-semibold text-charcoal"
-            title={artistName}
-          >
-            {artistName}
-          </p>
-        </div>
+        <ArtistNameStrip
+          key={artistName}
+          artistName={artistName}
+          shouldReduceMotion={shouldReduceMotion}
+        />
       ) : null}
     </div>
   );
