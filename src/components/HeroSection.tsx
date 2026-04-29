@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useCallback, useRef, useState } from "react";
+import { Fragment, useCallback, useRef, useState } from "react";
 
 const descriptions = [
 	"is a software designer with way too many side quests.",
@@ -12,6 +12,14 @@ const descriptions = [
 	"loves monospace fonts but you won't find any here.",
 ];
 
+const STREAM_LETTER_DELAY = 0.007;
+const STREAM_LETTER_DURATION = 0.1;
+
+type StreamingTextProps = {
+	text: string;
+	shouldReduceMotion: boolean;
+};
+
 // Uses the shuffle bag algorithm by Fisher-Yates. Bag starts empty, adds all descriptions and then pops them till it's empty again.
 function shuffled(arr: string[]) {
 	const a = [...arr];
@@ -20,6 +28,74 @@ function shuffled(arr: string[]) {
 		[a[i], a[j]] = [a[j], a[i]];
 	}
 	return a;
+}
+
+function getStreamingWords(text: string) {
+	let letterIndex = 0;
+	const words = text.split(" ");
+
+	return words.map((word, wordIndex) => ({
+		word,
+		key: `${word}-${letterIndex}`,
+		hasTrailingSpace: wordIndex < words.length - 1,
+		letters: Array.from(word).map((letter) => ({
+			letter,
+			key: `${letter}-${letterIndex}`,
+			delay: letterIndex++ * STREAM_LETTER_DELAY,
+		})),
+	}));
+}
+
+function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
+	if (shouldReduceMotion) {
+		return (
+			<motion.span
+				key={text}
+				className="inline text-charcoal"
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				exit={{ opacity: 0 }}
+				transition={{ duration: 0.16 }}
+			>
+				{text}
+			</motion.span>
+		);
+	}
+
+	const words = getStreamingWords(text);
+
+	return (
+		<motion.span
+			key={text}
+			className="inline text-charcoal"
+			aria-label={text}
+			exit={{ opacity: 0, y: -4 }}
+			transition={{ duration: 0.08, ease: "easeOut" }}
+		>
+			{words.map(({ key, hasTrailingSpace, letters }) => (
+				<Fragment key={key}>
+					<span aria-hidden="true" className="inline-block whitespace-nowrap">
+						{letters.map(({ key: letterKey, letter, delay }) => (
+							<motion.span
+								key={letterKey}
+								className="inline-block"
+								initial={{ opacity: 0, y: "0.35em", filter: "blur(8px)" }}
+								animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+								transition={{
+									duration: STREAM_LETTER_DURATION,
+									delay,
+									ease: "easeOut",
+								}}
+							>
+								{letter}
+							</motion.span>
+						))}
+					</span>
+					{hasTrailingSpace ? " " : null}
+				</Fragment>
+			))}
+		</motion.span>
+	);
 }
 
 export default function HeroSection() {
@@ -44,31 +120,7 @@ export default function HeroSection() {
 				<span className="whitespace-nowrap text-charcoal font-semibold">Shreyas&nbsp;</span>
 				{/* initial={false} skips animation on the first render */}
 				<AnimatePresence mode="wait" initial={false}>
-					<motion.span
-						key={text}
-						className="inline text-charcoal"
-						initial={
-							shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, filter: "blur(8px)" }
-						}
-						animate={
-							shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }
-						}
-						exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -12, filter: "blur(8px)" }}
-						transition={
-							shouldReduceMotion
-								? { duration: 0.2 }
-								: {
-										type: "spring",
-										stiffness: 300,
-										damping: 18,
-										mass: 1,
-										opacity: { duration: 0.2 },
-										filter: { duration: 0.2 },
-									}
-						}
-					>
-						{text}
-					</motion.span>
+					<StreamingText key={text} text={text} shouldReduceMotion={Boolean(shouldReduceMotion)} />
 				</AnimatePresence>
 			</h1>
 
