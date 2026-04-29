@@ -14,7 +14,7 @@ Status: draft
   - `src/components/widgets/PhotoFrameWidget.astro`
   - `src/components/widgets/MusicWidget.tsx`
   - `src/components/widgets/SnapsWidget.tsx`
-  - `src/pages/case-studies/[...slug].astro`
+  - `src/pages/work/[...slug].astro`
   - `src/layouts/Page.astro`
   - `src/components/SiteShell.astro`
 
@@ -42,7 +42,7 @@ The homepage should become a focused landing page instead of a mixed feed of wor
 ## Requirements Trace
 
 - Navbar has exactly three nav links: `work`, `sidequests`, `notes`.
-- `work` maps to `src/pages/work.astro` via `/work`.
+- `work` maps to `src/pages/work/index.astro` via `/work`.
 - `notes` maps to `src/pages/notes/index.astro` via `/notes`.
 - `sidequests` maps to a new `src/pages/sidequests.astro` route.
 - `shrey.fyi` links to `/` and renders a down-caret icon next to it.
@@ -66,11 +66,11 @@ Plan:
 - Use brand link on the left and nav links on the right.
 - Render the caret as an inline icon or lucide-style chevron if an icon dependency already exists. Do not add a dependency just for this.
 - Keep `transition:persist` ownership in `src/components/SiteShell.astro`; the navbar should still survive Astro route transitions.
-- Update active-state logic for lowercase nav labels. `work` should still stay active for `/case-studies/*`.
+- Update active-state logic for lowercase nav labels. `work` should stay active for `/work/*`.
 - Add `/sidequests` active-path coverage.
 
 Tests:
-- Extend `tests/navbar-active-path.test.mjs` for `/notes`, `/notes/[slug]`, `/sidequests`, and `/case-studies/[slug]`.
+- Extend `tests/navbar-active-path.test.mjs` for `/notes`, `/notes/[slug]`, `/sidequests`, and `/work/[slug]`.
 
 ### 2. Sidequests Route
 

@@ -43,40 +43,40 @@ const jsonLd = {
 		"@id": "https://shrey.fyi/#person",
 		name: "Shreyas Gupta",
 	},
-	url: `https://shrey.fyi/case-studies/${study.id}`,
+	url: `https://shrey.fyi/work/${study.id}`,
 };
 ---
 
 <Page
-    title={`${study.data.title} — Shreyas Gupta`}
-    description={study.data.description}
-    bodyClass="bg-white"
-    class="bg-white"
-    seo={{
-        ogType: "article",
-        article: {
-            publishedTime: publishedDate,
-        },
-        jsonLd,
-    }}
+	title={`${study.data.title} — Shreyas Gupta`}
+	description={study.data.description}
+	bodyClass="bg-white"
+	class="bg-white"
+	seo={{
+		ogType: "article",
+		article: {
+			publishedTime: publishedDate,
+		},
+		jsonLd,
+	}}
 >
-    <time
-        datetime={publishedDay}
-        class="font-sans col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 text-center text-slate pt-12"
-    >
-        {readableDate}
-    </time>
-    <h1
-        class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-charcoal mb-16 text-center text-balance"
-    >
-        {study.data.title}
-    </h1>
+	<time
+		datetime={publishedDay}
+		class="font-sans col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 text-center text-slate pt-12"
+	>
+		{readableDate}
+	</time>
+	<h1
+		class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-charcoal mb-16 text-center text-balance"
+	>
+		{study.data.title}
+	</h1>
 
-    <article
-        class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
-    >
-        <div class={proseClass}>
-            <Content />
-        </div>
-    </article>
+	<article
+		class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
+	>
+		<div class={proseClass}>
+			<Content />
+		</div>
+	</article>
 </Page>
