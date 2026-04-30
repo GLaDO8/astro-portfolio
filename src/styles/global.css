@@ -118,6 +118,7 @@ html[data-shell-transitions="true"] [data-shell-content][data-page-state="leavin
 	pointer-events: none;
 }
 
+/*Navbar progressive blur*/
 .navbar-blur {
 	position: fixed;
 	top: 0;

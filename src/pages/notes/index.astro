@@ -3,15 +3,15 @@ import { getCollection } from "astro:content";
 import Page from "@/layouts/Page.astro";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "CollectionPage",
-	name: "Notes",
-	description: "A collection of writing by Shreyas Gupta.",
-	url: "https://shrey.fyi/notes",
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Notes",
+    description: "A collection of writing by Shreyas Gupta.",
+    url: "https://shrey.fyi/notes",
 };
 ---
 
@@ -27,29 +27,29 @@ const jsonLd = {
     >
         <header class="mb-10">
             <h1
-                class="font-sans font-bold text-4xl leading-[1.1] tracking-[-0.03em] text-charcoal text-balance"
+                class="text-center font-sans font-semibold text-3xl leading-[1.1] tracking-[-0.03em] text-charcoal text-balance"
             >
                 Notes
             </h1>
-            <p
-                class="mt-3 max-w-2xl font-sans text-base leading-relaxed text-slate"
-            >
-                Essays, observations, and half-finished thoughts.
-            </p>
         </header>
 
         <div class="flex flex-col gap-5">
             {
                 notes.map((note) => (
-                    <article class="last:pb-0">
-                        <a
-                            href={`/notes/${note.id}`}
-                            class="group block no-underline"
-                        >
+                    <article class="last:pb-0 space-between flex justify-between">
+                        <a href={`/notes/${note.id}`} class="group block no-underline">
                             <h3 class="font-sans text-lg leading-[1.15] font-medium tracking-[-0.03em] text-charcoal hover:opacity-80">
                                 {note.data.title}
                             </h3>
                         </a>
+                        <p class="font-sans text-sm leading-relaxed text-slate">
+                            {note.data.date.toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                timeZone: "UTC",
+                            })}
+                        </p>
                     </article>
                 ))
             }

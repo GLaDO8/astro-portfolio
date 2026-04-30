@@ -263,12 +263,12 @@ export default function MusicWidget({ songData }: Props) {
 			>
 				{/*fake rectangle shadow*/}
 				<div className="pointer-events-none absolute left-0 top-1 z-0 h-[6.8rem] w-[6.8rem] rotate-[-3deg]">
-					<div className="absolute inset-[2.5%] rounded-[1px] shadow-[0_10px_18px_rgba(42,35,29,0.18)]" />
+					<div className="absolute inset-[2.5%] rounded-[1px] shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]" />
 				</div>
 
 				{/*fake circle shadow*/}
 				<div className="pointer-events-none absolute -top-1 left-9 z-0 size-30 transition-[left] duration-150 group-hover:left-12">
-					<div className="absolute inset-[13%] rounded-full shadow-[0_8px_18px_rgba(42,35,29,0.2)]" />
+					<div className="absolute inset-[13%] rounded-full shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]" />
 				</div>
 
 				{/*fake rectangle border*/}

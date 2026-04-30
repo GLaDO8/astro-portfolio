@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Fragment, useCallback, useRef, useState } from "react";
+import { type FocusEvent, Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 const descriptions = [
 	"is a software designer with way too many side quests.",
@@ -14,6 +14,7 @@ const descriptions = [
 
 const STREAM_LETTER_DELAY = 0.007;
 const STREAM_LETTER_DURATION = 0.1;
+const EMAIL_ADDRESS = "gshreyas@icloud.com";
 
 type StreamingTextProps = {
 	text: string;
@@ -44,6 +45,29 @@ function getStreamingWords(text: string) {
 			delay: letterIndex++ * STREAM_LETTER_DELAY,
 		})),
 	}));
+}
+
+function copyTextWithSelection(text: string) {
+	const activeElement =
+		document.activeElement instanceof HTMLElement ? document.activeElement : null;
+	const textarea = document.createElement("textarea");
+	textarea.value = text;
+	textarea.setAttribute("readonly", "");
+	textarea.style.position = "fixed";
+	textarea.style.top = "0";
+	textarea.style.left = "0";
+	textarea.style.opacity = "0";
+
+	document.body.append(textarea);
+	textarea.focus();
+	textarea.select();
+	textarea.setSelectionRange(0, text.length);
+
+	const didCopy = document.execCommand("copy");
+	textarea.remove();
+	activeElement?.focus({ preventScroll: true });
+
+	return didCopy;
 }
 
 function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
@@ -101,7 +125,11 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 export default function HeroSection() {
 	const shouldReduceMotion = useReducedMotion();
 	const bagRef = useRef<string[]>([]);
+	const closeTooltipTimeoutRef = useRef<number | null>(null);
+	const copyFeedbackTimeoutRef = useRef<number | null>(null);
 	const [text, setText] = useState(descriptions[0]);
+	const [isEmailTooltipOpen, setIsEmailTooltipOpen] = useState(false);
+	const [hasCopiedEmail, setHasCopiedEmail] = useState(false);
 
 	const cycle = useCallback(() => {
 		if (bagRef.current.length === 0) {
@@ -113,6 +141,83 @@ export default function HeroSection() {
 			setText(nextText);
 		}
 	}, [text]);
+
+	useEffect(() => {
+		return () => {
+			if (closeTooltipTimeoutRef.current) {
+				window.clearTimeout(closeTooltipTimeoutRef.current);
+			}
+
+			if (copyFeedbackTimeoutRef.current) {
+				window.clearTimeout(copyFeedbackTimeoutRef.current);
+			}
+		};
+	}, []);
+
+	const openEmailTooltip = useCallback(() => {
+		if (closeTooltipTimeoutRef.current) {
+			window.clearTimeout(closeTooltipTimeoutRef.current);
+			closeTooltipTimeoutRef.current = null;
+		}
+
+		setIsEmailTooltipOpen(true);
+	}, []);
+
+	const closeEmailTooltip = useCallback(() => {
+		if (closeTooltipTimeoutRef.current) {
+			window.clearTimeout(closeTooltipTimeoutRef.current);
+		}
+
+		closeTooltipTimeoutRef.current = window.setTimeout(() => {
+			setIsEmailTooltipOpen(false);
+			setHasCopiedEmail(false);
+		}, 500);
+	}, []);
+
+	const handleEmailTooltipBlur = useCallback(
+		(event: FocusEvent<HTMLDivElement>) => {
+			const nextTarget = event.relatedTarget;
+
+			if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) {
+				return;
+			}
+
+			closeEmailTooltip();
+		},
+		[closeEmailTooltip],
+	);
+
+	const copyEmail = useCallback(async () => {
+		openEmailTooltip();
+
+		let didCopy = copyTextWithSelection(EMAIL_ADDRESS);
+
+		if (!didCopy) {
+			if (navigator.clipboard) {
+				try {
+					await navigator.clipboard.writeText(EMAIL_ADDRESS);
+					didCopy = true;
+				} catch {
+					didCopy = false;
+				}
+			}
+		}
+
+		if (!didCopy) {
+			setHasCopiedEmail(false);
+			return;
+		}
+
+		setHasCopiedEmail(true);
+
+		if (copyFeedbackTimeoutRef.current) {
+			window.clearTimeout(copyFeedbackTimeoutRef.current);
+		}
+
+		copyFeedbackTimeoutRef.current = window.setTimeout(() => {
+			setHasCopiedEmail(false);
+		}, 1600);
+	}, [openEmailTooltip]);
 
 	return (
 		<section className="w-full flex flex-col items-start gap-6">

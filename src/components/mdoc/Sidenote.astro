@@ -3,10 +3,10 @@ import { Image } from "astro:assets";
 import { getImageAsset } from "@/lib/imageAssets";
 
 interface Props {
-	caption?: boolean;
-	image?: string;
-	imageAlt?: string;
-	citation?: boolean;
+    caption?: boolean;
+    image?: string;
+    imageAlt?: string;
+    citation?: boolean;
 }
 
 const { caption = false, image, imageAlt = "", citation = false } = Astro.props;
@@ -18,7 +18,7 @@ const localImage = getImageAsset(image);
 <aside
     class:list={[
         "sidenote",
-        "font-sans font-medium text-sm leading-normal text-[#333f46]",
+        "font-sans font-base text-sm leading-normal text-charcoal",
         "lg:float-right lg:clear-right lg:w-70 lg:ml-10 lg:mb-4 lg:-mr-82",
         "rounded-lg my-4 bg-[#c0e0e0]",
         image
@@ -31,9 +31,14 @@ const localImage = getImageAsset(image);
     ]}
 >
     {
-        image && (
-            localImage ? (
-                <Image src={localImage} alt={imageAlt} loading="lazy" class="w-full mt-0 mb-0" />
+        image &&
+            (localImage ? (
+                <Image
+                    src={localImage}
+                    alt={imageAlt}
+                    loading="lazy"
+                    class="w-full mt-0 mb-0"
+                />
             ) : (
                 <img
                     src={image}
@@ -42,8 +47,7 @@ const localImage = getImageAsset(image);
                     decoding="async"
                     class="w-full mt-0 mb-0"
                 />
-            )
-        )
+            ))
     }
     {
         hasContent && (
