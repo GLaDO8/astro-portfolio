@@ -2,44 +2,45 @@
 import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
 interface Props {
-    currentPath?: string;
-    class?: string;
+	currentPath?: string;
+	class?: string;
+	blurBackground?: string;
 }
 
-const { currentPath = Astro.url.pathname, class: className } = Astro.props;
+const {
+	currentPath = Astro.url.pathname,
+	class: className,
+	blurBackground = "var(--color-parchment)",
+} = Astro.props;
 const shellClass = ["sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className]
-    .filter(Boolean)
-    .join(" ");
+	.filter(Boolean)
+	.join(" ");
+const blurStyle = `--navbar-blur-background: ${blurBackground};`;
 
 const links = [
-    { href: "/work", label: "work" },
-    { href: "/sidequests", label: "side quests" },
-    { href: "/notes", label: "notes" },
+	{ href: "/work", label: "work" },
+	{ href: "/sidequests", label: "side quests" },
+	{ href: "/notes", label: "notes" },
 ];
 
 const subdomainLinks = [
-    {
-        href: "https://co2.shrey.fyi",
-        label: "co2.shrey.fyi",
-        description: "A visual reference for carbon dioxide and climate.",
-        iconHref: "https://co2.shrey.fyi/favicon.ico",
-    },
+	{
+		href: "https://co2.shrey.fyi",
+		label: "co2.shrey.fyi",
+		description: "A visual reference for carbon dioxide and climate.",
+		iconHref: "https://co2.shrey.fyi/favicon.ico",
+	},
 ];
 
 const activeLinkClass = "text-charcoal font-semibold";
 const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 ---
 
-<div class="navbar-blur" aria-hidden="true">
-    <div class="fade-filter"></div>
-    <div class="blur-filter"></div>
-    <div class="blur-filter"></div>
-    <div class="blur-filter"></div>
-    <div class="blur-filter"></div>
-    <div class="blur-filter"></div>
-    <div class="blur-filter"></div>
-    <div class="blur-filter"></div>
-    <div class="fade-filter"></div>
+<div class="navbar-blur" style={blurStyle} aria-hidden="true">
+    <div class="navbar-blur__background"></div>
+    <div class="navbar-blur__filter navbar-blur__filter--soft"></div>
+    <div class="navbar-blur__filter navbar-blur__filter--medium"></div>
+    <div class="navbar-blur__filter navbar-blur__filter--strong"></div>
 </div>
 
 <div class={shellClass} data-navbar-shell>

@@ -6,6 +6,7 @@ interface Props {
 	description: string;
 	bodyClass?: string;
 	class?: string;
+	navBlurBackground?: string;
 	seo?: {
 		ogType?: "website" | "article";
 		ogImage?: string;
@@ -18,7 +19,7 @@ interface Props {
 	};
 }
 
-const { title, description, bodyClass, class: className, seo } = Astro.props;
+const { title, description, bodyClass, class: className, navBlurBackground, seo } = Astro.props;
 const mainClass = ["px-5 pb-20", className].filter(Boolean).join(" ");
 ---
 
@@ -27,6 +28,7 @@ const mainClass = ["px-5 pb-20", className].filter(Boolean).join(" ");
 	description={description}
 	bodyClass={bodyClass}
 	mainClass={mainClass}
+	navBlurBackground={navBlurBackground}
 	seo={seo}
 >
 	<slot />
