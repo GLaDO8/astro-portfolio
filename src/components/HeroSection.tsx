@@ -79,7 +79,7 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 							<motion.span
 								key={letterKey}
 								className="inline-block"
-								initial={{ opacity: 0, y: "0.35em", filter: "blur(8px)" }}
+								initial={{ opacity: 0, y: "0.35em", filter: "blur(12px)" }}
 								animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
 								transition={{
 									duration: STREAM_LETTER_DURATION,

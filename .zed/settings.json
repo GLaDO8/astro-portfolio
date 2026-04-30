@@ -1,0 +1,9 @@
+{
+	"languages": {
+		"JavaScript": { "language_servers": ["!eslint", "..."] },
+		"JSX": { "language_servers": ["!eslint", "..."] },
+		"TypeScript": { "language_servers": ["!eslint", "..."] },
+		"TSX": { "language_servers": ["!eslint", "..."] },
+		"Astro": { "language_servers": ["!eslint", "..."] }
+	}
+}

@@ -11,6 +11,7 @@ Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Moti
 
 ## Code style and conventions
 - Simplicity first, this is a personal website not enterprise software. Start with the simplest implementation then layer in complexity as needed.
+- Keep every planning artifact inside `plans/`. Use `plans/plan.md` as the active plan/index when a generic plan pointer is needed; do not create, symlink, or leave `./plan.md` in the project root. If a tool generates a root `plan.md`, move it into `plans/` before continuing. This repo-local rule overrides the general planning-doc instruction to symlink an active plan at `./plan.md`.
 - When using Paper MCP for recreation or parity work, read the repo-local skill at `.codex/skills/paper-parity/SKILL.md` first.
 - Create semantic tokens from `@theme` in @src/styles/global.css only when the style is reusable across multiple components.
 - Prefer using Motion library APIs for animations over complex custom CSS animations.

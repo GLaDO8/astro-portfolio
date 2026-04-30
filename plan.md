@@ -1,1 +1,0 @@
-plans/homepage-figma-revamp.md
