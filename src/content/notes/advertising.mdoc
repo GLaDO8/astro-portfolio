@@ -1,7 +1,7 @@
 ---
 title: "Advertising in an attention deficit economy"
-description: "Full breakdown of my Raspberry Pi 5 home server setup — hardware, software, and self-hosting stack."
-date: 2026-02-15
+description: "Does humour and absurdity have any effect on advertorial persuasion?"
+date: 2021-02-21
 ---
 
 Four days ago, I came across an ad on Twitter, which left me ajar. [Please](https://www.youtube.com/watch?v=28raec1mgqA) do watch it before reading further. The ad starts with a young boy coming home from school in a lowly state, and asks his mom if he's adopted, questions her about the four "glasses" embedded in his back. The mom starts crying and reveals that she is a "RC Cola" bottle, and starts pouring herself into the glasses. The ad ends with the entire family drinking cola from glasses.
@@ -10,7 +10,13 @@ The ad is bizarrely funny and blows out every expectation you might have of what
 
 I'm sure many of us have seen those "top 10 most funny commercials" compilations on Youtube or have been forwarded funny commercials on WhatsApp, well at least my dad gets them. I bet if you try recollecting a darn good ad, chances are they were funny (remember the ["Melody itni chocolatey kyun hoti hai"](https://www.youtube.com/watch?v=BKse4N_-ZuU) and ["Five Star's Ramesh Suresh"](https://www.youtube.com/watch?v=EAdwC9kjDnw) ads?) In retrospect, funny and viral ads have become the industry norm, something I've been observing a lot lately. Sure, RC Cola got sold out due to gen-Zs flooding to buy the cola, but are funny ads effective in general? Putting it more academically, *"Does humour and absurdity have any effect on advertorial persuasion?"*
 
-Human attention has become an increasingly scarce resource in the digital world. Herbert Simon correctly pointed out that designers of information systems wrongly identified the problem as information scarcity and built systems that provided a lot more information to the user. But what we needed was clear information with unimportant and irrelevant information filtered out. In attention economics, we treat the consumer's attention as a scarce commodity. This notion is deeply rooted in the **AISDALSLove model**[^1], or the more commonly known but old **AIDA model** which is frequently referenced by marketers, where it lies at the bottom-most pivotal point. It describes the behavioral steps a consumer takes before making a purchase as,
+## Attention is the scarce resource
+
+Human attention has become an increasingly scarce resource in the digital world. Herbert Simon correctly pointed out that designers of information systems wrongly identified the problem as information scarcity and built systems that provided a lot more information to the user. But what we needed was clear information with unimportant and irrelevant information filtered out. In attention economics, we treat the consumer's attention as a scarce commodity. This notion is deeply rooted in the **AISDALSLove model**{% ref /%}, or the more commonly known but old **AIDA model** which is frequently referenced by marketers, where it lies at the bottom-most pivotal point. It describes the behavioral steps a consumer takes before making a purchase as,
+
+{% sidenote citation=true %}
+Wijaya, B. (2015). The Development of Hierarchy of Effects Model in Advertising. International Research Journal of Business Studies, 5(1). doi:[http://dx.doi.org/10.21632/irjbs.5.1.98](http://dx.doi.org/10.21632/irjbs.5.1.98)
+{% /sidenote %}
 
 1. **Attention** - Grabbing a person's attention to make them aware about the brand or product
 2. **Interest** - Develop an interest in the product
@@ -21,13 +27,27 @@ Human attention has become an increasingly scarce resource in the digital world.
 7. **Share** - The consumer shares their experience and feelings with others, either in person or on the web
 8. **Love/Hate** - this is the final stage of the purchase experience, which is the long term feelings the user has developed about the product or brand, which tell whether the user will make future purchases or entice/discourage others.
 
+## When ads started getting weird
+
 The pre-digital age was a revolutionary and transformative era for advertising, as viewers of the highly acclaimed show **Mad Men** would say. Soon boutique agencies turned into mega corps just before the dot-com bubble. But times were changing. Things were so competitive with the ever-expanding market that advertisers started looking towards oddly humorous ads to grab user attention, like having [sock hand puppets](https://www.youtube.com/watch?v=zhnEjxsjjuA) and [firing gerbils from a cannon](https://www.youtube.com/watch?v=hm9ECZtv2ps).
 
 A decade later, things have gotten even out of hand. Ad agencies have huge dumps of data about users and the cost of marketing per view has gone down, but the sheer number of channels and competition has [increased](https://www.nytimes.com/2019/10/28/business/media/advertising-industry-research.html) overall marketing costs. If the internet means content and ads being readily available to the users, it also means that they are a single click/scroll away from being dismissed/ignored. In such conditions, the very first step of the AISDALSLove model becomes crucial, followed by the state of desire, which is directly responsible for sales conversions. These factors have pushed marketers to leverage oddity and humor to grab user's attention.
 
-There are several theories on the effectiveness of humor in translating the user's attention into an action. There is nearly a century's worth of literature to be delved into to understand how humor works in advertising. Luckily, meta-analysis conducted by Martin Eisend and Nathan Walter et al, neatly summarise it[^2][^3].
+## How humor changes persuasion
 
-Several cognitive, affective, and affective-cognitive theories try to explain how humor in advertising. On the **Cognition side**, one explanation says that humor in ads can **distract** consumers from creating counter-arguments, which consumers try to make when **attacked** or **persuaded**, which is the opposite of what we try to achieve through the **inoculation theory**. The reduced counter argumentation increases Aad (attitude towards ad) and Abr (attitude towards brand). Another interpretation of the distraction effect is the thought that humor distracts the consumer from generating cognitive responses about the brand, towards generating cognitive responses regarding the humorous message. Marketers refer to this as the vampire effect[^4], and [this](https://usabilla.com/blog/the-vampire-effect-sucking-attention-away-from-content/) blog post by Usabilla portrays how strong these effects can be.
+There are several theories on the effectiveness of humor in translating the user's attention into an action. There is nearly a century's worth of literature to be delved into to understand how humor works in advertising. Luckily, meta-analysis conducted by Martin Eisend and Nathan Walter et al, neatly summarise it{% ref /%}.
+
+{% sidenote citation=true %}
+Martin Eisend (2011). How humor in advertising works: A meta-analytic test of alternative models. , 22(2), 115–132.doi:10.1007/s11002-010-9116-z
+
+Nathan Walter, Michael J Cody, Larry Zhiming Xu, Sheila T Murphy, A Priest, a Rabbi, and a Minister Walk into a Bar: A Meta-Analysis of Humor Effects on Persuasion, Human Communication Research, Volume 44, Issue 4, October 2018, Pages 343–373, [https://doi.org/10.1093/hcr/hqy005](https://doi.org/10.1093/hcr/hqy005)
+{% /sidenote %}
+
+Several cognitive, affective, and affective-cognitive theories try to explain how humor in advertising. On the **Cognition side**, one explanation says that humor in ads can **distract** consumers from creating counter-arguments, which consumers try to make when **attacked** or **persuaded**, which is the opposite of what we try to achieve through the **inoculation theory**. The reduced counter argumentation increases Aad (attitude towards ad) and Abr (attitude towards brand). Another interpretation of the distraction effect is the thought that humor distracts the consumer from generating cognitive responses about the brand, towards generating cognitive responses regarding the humorous message. Marketers refer to this as the vampire effect{% ref /%}, and [this](https://usabilla.com/blog/the-vampire-effect-sucking-attention-away-from-content/) blog post by Usabilla portrays how strong these effects can be.
+
+{% sidenote citation=true %}
+Evans, R. B. (1988). Production and creativity in advertising. London: Pitman
+{% /sidenote %}
 
 The **Affective model** suggests that humor in ads evokes an immediate generic affective response, like happiness, pleasure etc, and then an **affect transfer** occurs, which carries the affective response from the humor in the ad to the ad and brand itself. Affective reactions can be positive or negative, both of which have an impact on Aad and Abr. Finally, the **Integrative Affective-Cognitive model** says that Affective responses can affect deeper cognitive responses like thoughts, perceptions, and decisions.
 
@@ -37,16 +57,12 @@ The meta-analysis conducted by Eisend on data from marketing, consumer research,
 2. Negative ad-related cognitions get reduced through humor in ads, which merely act as an attention-grabbing feature and reduce the fluency/capacity to process negative thoughts (reduced counter-arguments).
 3. The vampire effect is due to positive affective reactions, which makes further information seeking easier to be accessed via the humorous elements (the **Search** element in the AISDALSLove model) rather than the brand-related elements, reducing brand-related cognitions.
 
-Looking back at the RC Cola ad, we should have seen a decreased retention of brand-related knowledge in viewers, bringing in a relatively small increase in revenue. But this wasn't the case as we looked at the numbers earlier. Gigil knew that they need the bizarre comical element for attention-grabbing and increased positive affective reaction, but somehow compensate for the reduction in brand-related condition (because of the vampire effect), by increasing brand-related arguments. This was done by adding the infamous **slow-motion pouring of cola into a glass filled with ice** and emphasizing the RC Cola banner Image[^5](https://onlinelibrary.wiley.com/doi/abs/10.1002/(SICI)1520-6793(199901)16:1%3C69::AID-MAR5%3E3.0.CO;2-9). Years of experience in the industry has only strengthened their understanding of the models stated above, even if they haven't studied them formally.
+## Why the RC Cola ad worked
+
+Looking back at the RC Cola ad, we should have seen a decreased retention of brand-related knowledge in viewers, bringing in a relatively small increase in revenue. But this wasn't the case as we looked at the numbers earlier. Gigil knew that they need the bizarre comical element for attention-grabbing and increased positive affective reaction, but somehow compensate for the reduction in brand-related condition (because of the vampire effect), by increasing brand-related arguments. This was done by adding the infamous **slow-motion pouring of cola into a glass filled with ice** and emphasizing the RC Cola banner Image{% ref /%}. Years of experience in the industry has only strengthened their understanding of the models stated above, even if they haven't studied them formally.
+
+{% sidenote citation=true %}
+Cline, T.W. and Kellaris, J.J. (1999), The joint impact of humor and argument strength in a print advertising context: A case for weaker arguments. Psychology & Marketing, 16: 69- 86. [https://doi.org/10.1002/(SICI)1520-6793(199901)16:1](https://doi.org/10.1002/(SICI)1520-6793(199901)16:1)<69::AID-MAR5>[3.0.CO](http://3.0.co/);2-9
+{% /sidenote %}
 
 > This article was my paper submission for "The Web and The Mind" graduate course at IIIT Bangalore.
-
-[^1]: Wijaya, B. (2015). The Development of Hierarchy of Effects Model in Advertising. International Research Journal of Business Studies, 5(1). doi:[http://dx.doi.org/10.21632/irjbs.5.1.98](http://dx.doi.org/10.21632/irjbs.5.1.98)
-
-[^2]: Martin Eisend (2011). How humor in advertising works: A meta-analytic test of alternative models. , 22(2), 115–132.doi:10.1007/s11002-010-9116-z
-
-[^3]: Nathan Walter, Michael J Cody, Larry Zhiming Xu, Sheila T Murphy, A Priest, a Rabbi, and a Minister Walk into a Bar: A Meta-Analysis of Humor Effects on Persuasion, Human Communication Research, Volume 44, Issue 4, October 2018, Pages 343–373, [https://doi.org/10.1093/hcr/hqy005](https://doi.org/10.1093/hcr/hqy005)
-
-[^4]: Evans, R. B. (1988). Production and creativity in advertising. London: Pitman
-
-[^5]: Cline, T.W. and Kellaris, J.J. (1999), The joint impact of humor and argument strength in a print advertising context: A case for weaker arguments. Psychology & Marketing, 16: 69- 86. [https://doi.org/10.1002/(SICI)1520-6793(199901)16:1](https://doi.org/10.1002/(SICI)1520-6793(199901)16:1)<69::AID-MAR5>[3.0.CO](http://3.0.co/);2-9
