@@ -1,4 +1,4 @@
-import { motion, useReducedMotion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import type { SongData } from "@/lib/widgetConfig";
@@ -8,7 +8,6 @@ import playIconSvg from "../../assets/widgets/play.svg?raw";
 const PLAY_ICON_SRC = `data:image/svg+xml,${encodeURIComponent(playIconSvg)}`;
 const PAUSE_ICON_SRC = `data:image/svg+xml,${encodeURIComponent(pauseIconSvg)}`;
 const VINYL_LABEL_CLIP_ID = "music-widget-vinyl-label";
-const STICKER_FILTER_ID = "music-widget-sticker-outline";
 const ARTIST_STRIP_GAP_PX = 24;
 const VINYL_LABEL_PATH =
 	"M27.7924 0.0401388C43.9614 -0.801682 57.7516 11.6235 58.5934 27.7926C59.4353 43.9616 47.0101 57.7518 30.841 58.5936C14.6719 59.4355 0.881799 47.0103 0.0399393 30.8412C-0.801915 14.6721 11.6233 0.881993 27.7924 0.0401388ZM29.0468 24.1325C26.1835 24.2816 23.9832 26.7235 24.1323 29.5868C24.2814 32.4501 26.7233 34.6504 29.5866 34.5013C32.4499 34.3522 34.6501 31.9102 34.5011 29.047C34.352 26.1837 31.91 23.9835 29.0468 24.1325Z";
@@ -63,7 +62,7 @@ function ArtistNameStrip({ artistName, shouldReduceMotion }: ArtistNameStripProp
 	const shouldAnimate = stripDistance > 0 && !shouldReduceMotion;
 
 	return (
-		<div className="absolute bottom-3 left-1 w-36 rotate-[-2deg]">
+		<div className="absolute bottom-3 left-1 z-40 w-36 rotate-[-2deg]">
 			<p
 				ref={viewportRef}
 				className={cn(
@@ -258,37 +257,28 @@ export default function MusicWidget({ songData }: Props) {
 				</audio>
 			) : null}
 
-			<svg aria-hidden="true" className="pointer-events-none absolute h-0 w-0" focusable="false">
-				<defs>
-					<filter id={STICKER_FILTER_ID} x="0" y="0" width="100%" height="100%">
-						<feComponentTransfer in="SourceAlpha" result="hardAlpha">
-							<feFuncA type="linear" slope="4" intercept="-1.5" />
-						</feComponentTransfer>
-						<feMorphology in="hardAlpha" operator="dilate" radius="3" result="expanded" />
-						<feFlood floodColor="white" result="white" />
-						<feComposite in="white" in2="expanded" operator="in" result="outline" />
-						<feDropShadow
-							dx="0"
-							dy="0"
-							stdDeviation="2"
-							floodColor="rgba(0,0,0,0.25)"
-							result="shadow"
-						/>
-
-						<feMerge>
-							<feMergeNode in="shadow" />
-							<feMergeNode in="outline" />
-							<feMergeNode in="SourceGraphic" />
-						</feMerge>
-					</filter>
-				</defs>
-			</svg>
-
 			<div
 				ref={recordRef}
-				className="group absolute top-2 left-0 h-36 w-44 origin-top-left scale-125 filter-[url(#music-widget-sticker-outline)]"
+				className="group absolute top-2 left-0 h-36 w-44 origin-top-left scale-125 "
 			>
-				<div className="absolute -top-1 left-9 z-10 size-30 transition-[left] duration-150 group-hover:left-12">
+				{/*fake rectangle shadow*/}
+				<div className="pointer-events-none absolute left-0 top-1 z-0 h-[6.8rem] w-[6.8rem] rotate-[-3deg]">
+					<div className="absolute inset-[2.5%] rounded-[1px] shadow-[0_10px_18px_rgba(42,35,29,0.18)]" />
+				</div>
+
+				{/*fake circle shadow*/}
+				<div className="pointer-events-none absolute -top-1 left-9 z-0 size-30 transition-[left] duration-150 group-hover:left-12">
+					<div className="absolute inset-[13%] rounded-full shadow-[0_8px_18px_rgba(42,35,29,0.2)]" />
+				</div>
+
+				{/*fake rectangle border*/}
+				<div className="pointer-events-none absolute left-0 top-1 z-10 h-[6.8rem] w-[6.8rem] rotate-[-3deg]">
+					<div className="absolute inset-[2.5%] rounded-[1px] bg-white shadow-[0_0_0_4px_white]" />
+				</div>
+
+				<div className="absolute -top-1 left-9 z-20 size-30 transition-[left] duration-150 group-hover:left-12">
+					{/*fake circle border*/}
+					<div className="pointer-events-none absolute inset-[13%] rounded-full bg-white shadow-[0_0_0_4px_white]" />
 					<div
 						ref={recordSurfaceRef}
 						className={cn(
@@ -336,8 +326,7 @@ export default function MusicWidget({ songData }: Props) {
 						draggable={false}
 					/>
 				</div>
-
-				<div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] rotate-[-3deg] isolate drop-shadow-[0_10px_18px_rgba(42,35,29,0.18)] z-30">
+				<div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] rotate-[-3deg] isolate z-30">
 					<div className="absolute inset-0 z-0 mask-[url(/sleeve.webp)] mask-center mask-no-repeat mask-size-[100%_100%]">
 						<img
 							src={albumArt}
@@ -372,22 +361,25 @@ export default function MusicWidget({ songData }: Props) {
 						aria-pressed={canPlayPreview ? isPlayingPreview : undefined}
 						title={previewControlLabel}
 					>
-						<AnimatePresence mode="wait" initial={false}>
-							<motion.img
-								key={isPlayingPreview ? "pause" : "play"}
-								src={isPlayingPreview ? PAUSE_ICON_SRC : PLAY_ICON_SRC}
-								alt=""
-								aria-hidden="true"
-								className="pointer-events-none size-3"
-								draggable={false}
-								initial={{ scale: 0 }}
-								animate={{ scale: 1 }}
-								exit={{ scale: 0 }}
-								transition={{
-									scale: { type: "spring", visualDuration: 0.1, bounce: 0.4 },
-								}}
-							/>
-						</AnimatePresence>
+						{/*add a span block with absolute positioning for both icons, so that they can exist on top of each other while animating*/}
+						<span className="relative block size-3">
+							<AnimatePresence initial={false}>
+								<motion.img
+									key={isPlayingPreview ? "pause" : "play"}
+									src={isPlayingPreview ? PAUSE_ICON_SRC : PLAY_ICON_SRC}
+									alt=""
+									aria-hidden="true"
+									className="pointer-events-none size-3 absolute inset-0"
+									draggable={false}
+									initial={{ scale: 0 }}
+									animate={{ scale: 1 }}
+									exit={{ scale: 0 }}
+									transition={{
+										scale: { type: "spring", visualDuration: 0.25, bounce: 0.4 },
+									}}
+								/>
+							</AnimatePresence>
+						</span>
 					</button>
 				</div>
 			</div>

@@ -4,30 +4,31 @@ import HomeWidgetStrip from "@/components/widgets/HomeWidgetStrip.astro";
 import Page from "@/layouts/Page.astro";
 import { getSongData } from "@/lib/widgetConfig";
 
-const homeGridColumn = "col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5";
+const homeGridColumn =
+    "col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5";
 const songData = await getSongData();
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [
-		{
-			"@type": "WebSite",
-			"@id": "https://shrey.fyi/#website",
-			url: "https://shrey.fyi",
-			name: "Shreyas Gupta",
-			description:
-				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-			publisher: { "@id": "https://shrey.fyi/#person" },
-		},
-		{
-			"@type": "Person",
-			"@id": "https://shrey.fyi/#person",
-			name: "Shreyas Gupta",
-			url: "https://shrey.fyi",
-			jobTitle: "Designer",
-			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-		},
-	],
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://shrey.fyi/#website",
+            url: "https://shrey.fyi",
+            name: "Shreyas Gupta",
+            description:
+                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+            publisher: { "@id": "https://shrey.fyi/#person" },
+        },
+        {
+            "@type": "Person",
+            "@id": "https://shrey.fyi/#person",
+            name: "Shreyas Gupta",
+            url: "https://shrey.fyi",
+            jobTitle: "Designer",
+            sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+        },
+    ],
 };
 ---
 
@@ -38,27 +39,25 @@ const jsonLd = {
     class="bg-parchment"
     seo={{ jsonLd }}
 >
-    <div
-        class:list={[homeGridColumn, "flex min-w-0 flex-col gap-12"]}
-    >
+    <div class:list={[homeGridColumn, "flex min-w-0 flex-col gap-12"]}>
         <HomeWidgetStrip songData={songData} />
 
         <div class="flex flex-col items-start gap-9">
             <HeroSection client:visible />
 
             <div
-                class="font-sans text-lg leading-[1.8] font-medium tracking-[-0.02em] text-charcoal text-pretty"
+                class="font-sans text-lg leading-[1.8] font-medium tracking-[-0.02em] text-[#3D3E39] text-pretty"
             >
                 <p class="text-pretty">
+                    
                     I build tools at <a
                         href="https://wayground.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="underline decoration-2 underline-offset-2 transition-colors hover:opacity-85"
                         >Wayground</a
-                    > that stand between teachers and everything else that isn't
-                    teaching. I used to work on conversational intelligence for sales teams
-                    at <a
+                    > that stand between teachers and everything else that isn't teaching. I
+                    used to work on conversational intelligence for sales teams at <a
                         href="https://www.clari.com/products/copilot/"
                         target="_blank"
                         rel="noopener noreferrer"
