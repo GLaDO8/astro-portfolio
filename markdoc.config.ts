@@ -2,6 +2,16 @@ import { component, defineMarkdocConfig } from "@astrojs/markdoc/config";
 
 export default defineMarkdocConfig({
 	nodes: {
+		link: {
+			render: "a",
+			children: ["strong", "em", "s", "code", "text", "tag"],
+			attributes: {
+				href: { type: String, required: true },
+				title: { type: String },
+				target: { type: String, default: "_blank" },
+				rel: { type: String, default: "noopener noreferrer" },
+			},
+		},
 		fence: {
 			render: component("./src/components/mdoc/CodeBlock.astro"),
 			attributes: {

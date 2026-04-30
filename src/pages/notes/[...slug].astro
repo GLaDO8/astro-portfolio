@@ -12,13 +12,21 @@ export async function getStaticPaths() {
 
 const { note } = Astro.props;
 const { Content } = await render(note);
+const publishedDate = note.data.date.toISOString();
+const publishedDay = publishedDate.slice(0, 10);
+const readableDate = note.data.date.toLocaleDateString("en-US", {
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+	timeZone: "UTC",
+});
 
 const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "Article",
 	headline: note.data.title,
 	description: note.data.description,
-	datePublished: note.data.date.toISOString(),
+	datePublished: publishedDate,
 	author: {
 		"@type": "Person",
 		"@id": "https://shrey.fyi/#person",
@@ -41,28 +49,26 @@ const jsonLd = {
 	seo={{
 		ogType: "article",
 		article: {
-			publishedTime: note.data.date.toISOString(),
+			publishedTime: publishedDate,
 		},
 		jsonLd,
 	}}
 >
+	<time
+		datetime={publishedDay}
+		class="font-sans col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 text-center text-slate pt-12"
+	>
+		{readableDate}
+	</time>
+	<h1
+		class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-charcoal mb-16 text-center text-balance"
+	>
+		{note.data.title}
+	</h1>
+
 	<article
 		class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
 	>
-		<h1
-			class="font-sans font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-charcoal mt-8 mb-2 text-balance"
-		>
-			{note.data.title}
-		</h1>
-		<p class="font-sans text-slate mb-12">
-			{
-				note.data.date.toLocaleDateString("en-US", {
-					year: "numeric",
-					month: "long",
-					day: "numeric",
-				})
-			}
-		</p>
 		<div
 			class="prose content-grid prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-normal font-sans text-base leading-relaxed text-charcoal text-pretty overflow-visible"
 		>
