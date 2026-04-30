@@ -14,7 +14,12 @@ const notes = defineCollection({
 
 const caseStudies = defineCollection({
 	loader: glob({
-		pattern: ["hot-text.mdoc", "labelling.mdoc", "one-more-whistle.mdoc"],
+		pattern: [
+			"hot-text.mdoc",
+			"labelling.mdoc",
+			"one-more-whistle.mdoc",
+			"wayground-creation.mdoc",
+		],
 		base: "./src/content/case-studies",
 	}),
 	schema: z.object({

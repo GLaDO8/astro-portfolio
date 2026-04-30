@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { cn } from "@/lib/cn";
 import { getImageAsset } from "@/lib/imageAssets";
+import { getImageEdgeTone } from "@/lib/imageEdgeTone";
 
 interface Props {
 	src: string;
@@ -15,6 +16,11 @@ interface Props {
 const { src, alt = "", caption, width = "default", align = "center", maxWidth } = Astro.props;
 const image = getImageAsset(src);
 const style = maxWidth ? `max-width: ${maxWidth}` : undefined;
+const imageEdgeTone = image ? await getImageEdgeTone(src) : undefined;
+const imageEdgeShadowClass =
+	imageEdgeTone === "dark"
+		? "after:shadow-[inset_0_0_0_1.5px_rgb(255_255_255_/_0.08)]"
+		: "after:shadow-[inset_0_0_0_1.5px_rgb(0_0_0_/_0.05)]";
 
 const wrapperClass = cn(
 	"not-prose my-24 w-full",
@@ -25,13 +31,17 @@ const wrapperClass = cn(
 );
 ---
 
-<figure
-    class={wrapperClass}
-    style={style}
->
+<figure class={wrapperClass} style={style}>
     {
         image ? (
-            <Image src={image} alt={alt} loading="lazy" class="w-full rounded-lg" />
+            <span
+                class={cn(
+                    "relative block overflow-hidden rounded-xl after:pointer-events-none after:absolute after:inset-0 after:rounded-xl",
+                    imageEdgeShadowClass,
+                )}
+            >
+                <Image src={image} alt={alt} loading="lazy" class="w-full rounded-xl" />
+            </span>
         ) : (
             <img
                 src={src}
@@ -44,9 +54,7 @@ const wrapperClass = cn(
     }
     {
         caption && (
-            <figcaption class="font-sans text-sm text-slate mt-2">
-                {caption}
-            </figcaption>
+            <figcaption class="font-sans text-sm text-slate mt-2">{caption}</figcaption>
         )
     }
 </figure>

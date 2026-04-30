@@ -1,10 +1,11 @@
 ---
-title: "Rethinking creation: simplifying how teachers build resources on Wayground"
+title: "Rethinking how teachers build resources on Wayground"
 description: "A design case study on simplifying the AI-assisted content creation experience for teachers on Wayground, improving publish rates from 68% to ~78%."
 date: 2025-10-01
+theme: "hot-text"
 ---
 
-{% sidenote %}Wayground is an edtech platform that helps teachers and admins get better student outcomes. It gives teachers tools to teach, practice, review, and prep students for state tests — all wrapped in a game-like experience.{% /sidenote %}
+## What's Wayground?
 
 Wayground largely runs on a creator-driven content model, although we are trying to slowly diversify. Roughly 20% of Teachers are creators who create resources that are added to the public library by default. Rest of our teacher userbase mostly consumes content from our public library. This case study is about making that creation experience significantly better.
 
@@ -16,7 +17,7 @@ Wayground largely runs on a creator-driven content model, although we are trying
 
 [add flow chart diagram of decisions teachers have to make to create a resource - annotate the pain points in the diagram itself, show that each decision point asks teachers to translate their intent into wayground's internal taxonomy]
 
-% sidenote %}We found this through drop-off analysis: resources entering the extract flow that were better suited for generation, and vice versa. Mismatched resources had significantly lower publish rates.{% /sidenote %}
+{% sidenote %}We found this through drop-off analysis: resources entering the extract flow that were better suited for generation, and vice versa. Mismatched resources had significantly lower publish rates.{% /sidenote %}
 
 The root cause was that "extract" and "generate" were *our* categories, not theirs. They reflected the underlying LLM pipeline — different API calls for structured extraction versus open-ended generation. We had surfaced an engineering distinction as a user-facing decision.
 
@@ -28,7 +29,7 @@ A parallel problem: new teachers had no mental model for Wayground's resource ty
 
 ## Why this mattered
 
-{% sidenote %}BYOC = Bring Your Own Content — teachers uploading their own documents, worksheets, or links to create Wayground resources. BYOC is especially valuable when Wayground's supply library is weak for a topic and the teacher needs something very specific.{% /sidenote %}
+{% sidenote %}BYOC (bring your own content) is especially valuable when Wayground's supply library is weak for a topic and the teacher needs something very specific.{% /sidenote %}
 An L0 analysis revealed a direct relationship between publish rates and platform health:
 
 - A **10pp increase in publish rate** → +0.2 games per monthly active AI teacher → **13.6% relative increase in games hosted** → **1.7% increase in games per MAT** (our north star, sitting at ~4 games/MAT).
@@ -59,6 +60,8 @@ No LLM output is perfect. There's always a last 10–20% that needs human refine
 ## Solution
 
 ### Phase 1: The document classifier
+
+{% figure src="/case-studies/create-flow/image 13.webp" alt="image-1" width="wide"  /%}
 
 Rather than forcing teachers to choose between extract and generate, we built a document classifier that sat between the teacher's upload and the backend pipelines. The classifier categorized uploaded documents into predefined categories — vocabulary lists, worksheets, raw content passages, and others — then automatically routed to the correct backend pipeline (extract or generate), each with their own specialized prompts, vision/OCR mechanisms, and evals.
 

@@ -294,7 +294,7 @@ export default function MusicWidget({ songData }: Props) {
 						onPointerCancel={stopScratching}
 						onLostPointerCapture={stopScratching}
 					>
-						<img src="/record content.png" alt="" className="h-full w-full" draggable={false} />
+						<img src="/record content.webp" alt="" className="h-full w-full" draggable={false} />
 						<svg
 							viewBox="0 0 59 59"
 							className="absolute top-1/2 left-1/2 size-9 -translate-x-1/2 -translate-y-1/2"

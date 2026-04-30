@@ -17,7 +17,7 @@ State test parity also matters because it sits at the intersection of what distr
 Hot Text is simple - students select specific words, phrases, or sentences from a provided text to answer a question. It's basically prettier MCQs. This is how it works in all the 4 major state test software providers.
 [image: side-by-side comparison — word-level options (what we built) vs. sentence-level options in paragraphs (what state tests actually use)]
 
-{% sidenote image="/case-studies/hottext/draganddrop.png" caption=true %} Drag and Drop Question type requires students to drag and drop their answers into blanks in a piece of text.{% /sidenote %}
+{% sidenote image="/case-studies/hottext/draganddrop.webp" caption=true %} Drag and Drop Question type requires students to drag and drop their answers into blanks in a piece of text.{% /sidenote %}
 Early idea was to reuse the Drag and Drop QT as it had most of the building blocks, but using this scaffolding to support sentence-level options seemed difficult. 
 [image of early prototype of hot text with dnd components]
 
@@ -45,7 +45,7 @@ The problem: applying a border to a `<span>` that wraps across multiple lines pr
 After digging around, I prototyped a solution using `getBoundingClientRect()` function to dynamically generate SVG bounding boxes around each option. 
 
 {% sidenote %}`getBoundingClientRect()` gives you the size and coordinates of any DOM rectangle. Codepen link to prototype [here](https://codepen.io/XshreyasguptaX/pen/pvyZyyy). {% /sidenote %}
-![iteration 2](/case-studies/hottext/codepen.png)
+![iteration 2](/case-studies/hottext/codepen.webp)
 
 Works but the SVG needed to be redrawn if viewport size changes (expensive repaints, performance issues), and the existing student gameplay architecture made it difficult to inject client-side SVG into the rendering pipeline. Dead end.
 
@@ -55,25 +55,25 @@ With the SVG approach off the table, I went through a rapid iteration cycle to f
 
 #### Background color on spans with adjusted margins 
 Reduced gaps between highlighted lines by matching margin to line-height, making multi-line options feel more cohesive. Functional, but still not fun.
-![iteration 3](/case-studies/hottext/iteration-3.png)
+![iteration 3](/case-studies/hottext/iteration-3.webp)
 
 #### Paper sheet metaphor
 What if the text rendered as a sheet of paper? This gave the question type a physical, tactile quality.
-![iteration 4](/case-studies/hottext/iteration-4.png)
+![iteration 4](/case-studies/hottext/iteration-4.webp)
 
 #### Highlighter effect on paper
 Building on the paper metaphor: what if options looked like a teacher had highlighted key sentences or options with a marker? I mocked SVG-based organic highlights. Looks very cute but difficult to make them work at scale for varying text lengths.
-![iteration 5](/case-studies/hottext/iteration-5.png)
+![iteration 5](/case-studies/hottext/iteration-5.webp)
 
 #### Back to background color option
 Returning to simpler background-color options surfaced a different issue: in many Hot Text questions, the *entire paragraph is options* with no non-option text between them. Adjacent options with the same background color blended together, making it impossible to tell where one ended and another began.
 
-![iteration 6](/case-studies/hottext/iteration-6.png)
+![iteration 6](/case-studies/hottext/iteration-6.webp)
 
 #### Option demarcation strategies!
 Tried few more variations to make the options work better. 
 
-{% carousel images="/case-studies/hottext/iteration-margin.png|Added margin gap at span boundaries but options still felt hard to scan.,,/case-studies/hottext/iteration-margin2.png|Thick strokes on start and end of span with margin but still feels insufficient.,,/case-studies/hottext/iteration-margin3.png|Numbered badges so you can scan and count options, knowing where each starts.,,/case-studies/hottext/iteration-margin4.png|What if each option gets a distinct color? I initially resisted this because it risked implying that color means something." /%}
+{% carousel images="/case-studies/hottext/iteration-margin.webp|Added margin gap at span boundaries but options still felt hard to scan.,,/case-studies/hottext/iteration-margin2.webp|Thick strokes on start and end of span with margin but still feels insufficient.,,/case-studies/hottext/iteration-margin3.webp|Numbered badges so you can scan and count options, knowing where each starts.,,/case-studies/hottext/iteration-margin4.webp|What if each option gets a distinct color? I initially resisted this because it risked implying that color means something." /%}
 
 ## Final approach
 

@@ -1,10 +1,20 @@
 #!/usr/bin/env node
 import { watch } from "node:fs";
-import { readdir, readFile, stat, unlink, writeFile } from "node:fs/promises";
-import { basename, extname, join, relative } from "node:path";
+import { readdir, readFile, rename, stat, unlink, writeFile } from "node:fs/promises";
+import { basename, dirname, extname, isAbsolute, join, relative, sep } from "node:path";
 import sharp from "sharp";
 
-const PUBLIC_DIR = "public";
+const IMAGE_ROOTS = [
+	{
+		dir: "public",
+		refBase: "",
+	},
+	{
+		dir: "src/assets",
+		refBase: "",
+		aliasBase: "@/assets",
+	},
+];
 const SEARCH_DIRS = ["src"];
 const SEARCH_ROOT_FILES = ["widget.toml"];
 const IMAGE_EXTS = new Set([".png", ".jpg", ".jpeg"]);
@@ -14,7 +24,14 @@ const WEBP_QUALITY = 95;
 const EXCLUDE = ["favicon", "apple-touch-icon", "web-app-manifest"];
 
 async function* walk(dir) {
-	const entries = await readdir(dir, { withFileTypes: true });
+	let entries;
+	try {
+		entries = await readdir(dir, { withFileTypes: true });
+	} catch (error) {
+		if (error?.code === "ENOENT") return;
+		throw error;
+	}
+
 	for (const entry of entries) {
 		const path = join(dir, entry.name);
 		if (entry.isDirectory()) yield* walk(path);
@@ -27,7 +44,56 @@ function shouldProcess(filePath) {
 	return IMAGE_EXTS.has(extname(name)) && !EXCLUDE.some((pattern) => name.includes(pattern));
 }
 
-async function updateReferences(oldRef, newRef) {
+function toPosixPath(path) {
+	return path.split(sep).join("/");
+}
+
+function isInsideDir(dir, filePath) {
+	const pathFromDir = relative(dir, filePath);
+
+	return pathFromDir && !pathFromDir.startsWith("..") && !isAbsolute(pathFromDir);
+}
+
+function getImageRoot(filePath) {
+	return IMAGE_ROOTS.find(({ dir }) => isInsideDir(dir, filePath));
+}
+
+function getRelativeSourceRef(fromFile, targetFile) {
+	let ref = toPosixPath(relative(dirname(fromFile), targetFile));
+
+	if (!ref.startsWith(".")) {
+		ref = `./${ref}`;
+	}
+
+	return ref;
+}
+
+function getReferencePairs(file, oldPath, newPath, imageRoot) {
+	const oldRootRef = `/${toPosixPath(join(imageRoot.refBase, relative(imageRoot.dir, oldPath)))}`;
+	const newRootRef = `/${toPosixPath(join(imageRoot.refBase, relative(imageRoot.dir, newPath)))}`;
+	const pairs = [[oldRootRef, newRootRef]];
+
+	if (imageRoot.aliasBase) {
+		const oldAliasRef = `${imageRoot.aliasBase}/${toPosixPath(relative(imageRoot.dir, oldPath))}`;
+		const newAliasRef = `${imageRoot.aliasBase}/${toPosixPath(relative(imageRoot.dir, newPath))}`;
+		pairs.push([oldAliasRef, newAliasRef]);
+	}
+
+	pairs.push([getRelativeSourceRef(file, oldPath), getRelativeSourceRef(file, newPath)]);
+
+	return pairs;
+}
+
+async function getFileSize(filePath) {
+	try {
+		return (await stat(filePath)).size;
+	} catch (error) {
+		if (error?.code === "ENOENT") return undefined;
+		throw error;
+	}
+}
+
+async function updateReferences(oldPath, newPath, imageRoot) {
 	const files = [];
 
 	for (const dir of SEARCH_DIRS) {
@@ -48,61 +114,98 @@ async function updateReferences(oldRef, newRef) {
 
 	for (const file of files) {
 		const content = await readFile(file, "utf-8");
-		if (content.includes(oldRef)) {
-			await writeFile(file, content.replaceAll(oldRef, newRef));
+		let updatedContent = content;
+
+		for (const [oldRef, newRef] of getReferencePairs(file, oldPath, newPath, imageRoot)) {
+			updatedContent = updatedContent.replaceAll(oldRef, newRef);
+		}
+
+		if (updatedContent !== content) {
+			await writeFile(file, updatedContent);
 			console.log(`  ↳ updated ${relative(".", file)}`);
 		}
 	}
 }
 
 async function optimizeImage(filePath) {
+	const imageRoot = getImageRoot(filePath);
+
+	if (!imageRoot) {
+		throw new Error(`No image root configured for ${filePath}`);
+	}
+
 	const ext = extname(filePath);
 	const webpPath = `${filePath.slice(0, -ext.length)}.webp`;
 	const originalSize = (await stat(filePath)).size;
+	const tempWebpPath = `${webpPath}.${process.pid}.tmp`;
 
-	await sharp(filePath).webp({ quality: WEBP_QUALITY }).toFile(webpPath);
+	await sharp(filePath).webp({ quality: WEBP_QUALITY }).toFile(tempWebpPath);
 
-	const newSize = (await stat(webpPath)).size;
+	const generatedSize = (await stat(tempWebpPath)).size;
+	const existingWebpSize = await getFileSize(webpPath);
+	const shouldReuseExistingWebp =
+		existingWebpSize !== undefined && existingWebpSize <= generatedSize;
+	const newSize = shouldReuseExistingWebp ? existingWebpSize : generatedSize;
+
+	if (newSize >= originalSize) {
+		await unlink(tempWebpPath);
+		const sizeKB = (originalSize / 1024).toFixed(1);
+		const webpSizeKB = (newSize / 1024).toFixed(1);
+		console.log(`↷ skipped ${relative(".", filePath)}  original ${sizeKB}KB, webp ${webpSizeKB}KB`);
+		return false;
+	}
+
+	if (shouldReuseExistingWebp) {
+		await unlink(tempWebpPath);
+	} else {
+		await rename(tempWebpPath, webpPath);
+	}
+
 	const savings = ((1 - newSize / originalSize) * 100).toFixed(1);
 	const sizeKB = (newSize / 1024).toFixed(1);
 
-	const oldRef = `/${relative(PUBLIC_DIR, filePath)}`;
-	const newRef = `/${relative(PUBLIC_DIR, webpPath)}`;
-	await updateReferences(oldRef, newRef);
+	await updateReferences(filePath, webpPath, imageRoot);
 	await unlink(filePath);
 
 	console.log(`✓ ${relative(".", filePath)} → .webp  ${sizeKB}KB  (${savings}% smaller)`);
+	return true;
 }
 
 async function processAll() {
 	let count = 0;
-	for await (const filePath of walk(PUBLIC_DIR)) {
-		if (shouldProcess(filePath)) {
-			await optimizeImage(filePath);
-			count++;
+
+	for (const { dir } of IMAGE_ROOTS) {
+		for await (const filePath of walk(dir)) {
+			if (shouldProcess(filePath)) {
+				const optimized = await optimizeImage(filePath);
+				if (optimized) count++;
+			}
 		}
 	}
-	if (count === 0) console.log("No unoptimized images found.");
+
+	if (count === 0) console.log("No images optimized.");
 	else console.log(`\nOptimized ${count} image${count > 1 ? "s" : ""}.`);
 }
 
 function startWatch() {
-	console.log(`Watching ${PUBLIC_DIR}/ for new images...\n`);
+	console.log(`Watching ${IMAGE_ROOTS.map(({ dir }) => `${dir}/`).join(", ")} for new images...\n`);
 	const ac = new AbortController();
 
-	watch(PUBLIC_DIR, { recursive: true, signal: ac.signal }, async (_event, filename) => {
-		if (!filename) return;
-		const filePath = join(PUBLIC_DIR, filename);
-		try {
-			await stat(filePath);
-		} catch {
-			return; // file was deleted
-		}
-		if (shouldProcess(filePath)) {
-			// Small delay to let file writes finish
-			setTimeout(() => optimizeImage(filePath).catch(console.error), 200);
-		}
-	});
+	for (const { dir } of IMAGE_ROOTS) {
+		watch(dir, { recursive: true, signal: ac.signal }, async (_event, filename) => {
+			if (!filename) return;
+			const filePath = join(dir, filename);
+			try {
+				await stat(filePath);
+			} catch {
+				return; // file was deleted
+			}
+			if (shouldProcess(filePath)) {
+				// Small delay to let file writes finish
+				setTimeout(() => optimizeImage(filePath).catch(console.error), 200);
+			}
+		});
+	}
 
 	process.on("SIGINT", () => {
 		ac.abort();
