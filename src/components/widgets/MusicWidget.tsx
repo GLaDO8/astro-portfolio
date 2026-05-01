@@ -452,6 +452,16 @@ export default function MusicWidget({ songData }: Props) {
 			: `Play ${previewTitle} preview`;
 	const shouldSpinRecord = shouldReduceMotion !== true && isRecordVisible && !isScratchingRecord;
 
+	const vinylVariantParent = {
+		rest: {},
+		hover: {},
+	};
+
+	const vinylVariantChild = {
+		rest: { left: 36 },
+		hover: { left: 56 },
+	};
+
 	return (
 		<div className="relative h-48 w-48 shrink-0">
 			{canPlayPreview ? (
@@ -484,18 +494,16 @@ export default function MusicWidget({ songData }: Props) {
 			`}</style>
 
 			<div className="scale-110">
-				<div
+				<motion.div
+					initial="rest"
+					whileHover="hover"
+					variants={vinylVariantParent}
 					ref={recordRef}
 					className="group absolute top-2 left-0 h-36 w-44 origin-top-left scale-125 "
 				>
 					{/*fake rectangle shadow*/}
 					<div className="pointer-events-none absolute left-0 top-1 z-0 h-[6.8rem] w-[6.8rem] rotate-[-3deg]">
-						<div className="absolute inset-[2.5%] rounded-[1px] shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]" />
-					</div>
-
-					{/*fake circle shadow*/}
-					<div className="pointer-events-none absolute -top-1 left-9 z-0 size-30 transition-[left] duration-150 group-hover:left-12">
-						<div className="absolute inset-[13%] rounded-full shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]" />
+						<div className="absolute inset-[2.5%] rounded-[1px] shadow-[0_12px_30px_3px_rgba(42,35,29,0.14),0_0_4px_3px_rgba(122,122,122,0.18)]" />
 					</div>
 
 					{/*fake rectangle border*/}
@@ -503,7 +511,21 @@ export default function MusicWidget({ songData }: Props) {
 						<div className="absolute inset-[2.5%] rounded-[1px] bg-white shadow-[0_0_0_4px_white]" />
 					</div>
 
-					<div className="absolute -top-1 left-9 z-20 size-30 transition-[left] duration-150 group-hover:left-12">
+					{/*fake circle shadow*/}
+					<motion.div
+						variants={vinylVariantChild}
+						transition={{ type: "spring", visualDuration: 0.25, bounce: 0.5 }}
+						className="pointer-events-none absolute -top-1 left-9 z-0 size-30"
+					>
+						<div className="absolute inset-[13%] rounded-full shadow-[0_12px_30px_3px_rgba(42,35,29,0.14),0_0_4px_3px_rgba(122,122,122,0.18)]" />
+					</motion.div>
+
+					{/*vinyl composite*/}
+					<motion.div
+						variants={vinylVariantChild}
+						transition={{ type: "spring", visualDuration: 0.25, bounce: 0.5 }}
+						className="absolute -top-1 left-9 z-20 size-30"
+					>
 						{/*fake circle border*/}
 						<div className="pointer-events-none absolute inset-[13%] rounded-full bg-white shadow-[0_0_0_4px_white]" />
 						<div
@@ -552,7 +574,8 @@ export default function MusicWidget({ songData }: Props) {
 							className="pointer-events-none absolute top-[17px] right-5 z-20 w-10 mix-blend-color-dodge"
 							draggable={false}
 						/>
-					</div>
+					</motion.div>
+
 					<div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] rotate-[-3deg] isolate z-30">
 						<div className="absolute inset-0 z-0 mask-[url(/sleeve.webp)] mask-center mask-no-repeat mask-size-[100%_100%]">
 							<img
@@ -612,7 +635,7 @@ export default function MusicWidget({ songData }: Props) {
 							</button>
 						) : null}
 					</div>
-				</div>
+				</motion.div>
 
 				<div className="absolute -top-6 right-4 rotate-12 scale-115">
 					<img src="/music-string.svg" alt="" />

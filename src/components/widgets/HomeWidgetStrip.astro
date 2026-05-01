@@ -1,11 +1,11 @@
 ---
 import type { SongData } from "@/lib/widgetConfig";
 import MusicWidget from "./MusicWidget";
-import PhotoFrameWidget from "./PhotoFrameWidget.astro";
+import PhotoFrameWidget from "./PhotoFrameWidget";
 import SnapsWidget from "./SnapsWidget";
 
 interface Props {
-    songData: SongData;
+	songData: SongData;
 }
 
 const { songData } = Astro.props;
@@ -21,7 +21,7 @@ const { songData } = Astro.props;
     >
         <div class="rotate-[9deg]">
             <div data-home-widget class="mt-5 shrink-0">
-                <PhotoFrameWidget />
+                <PhotoFrameWidget client:visible />
             </div>
         </div>
 

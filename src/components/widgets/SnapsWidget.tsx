@@ -41,12 +41,12 @@ const polaroids: readonly Polaroid[] = [
 	{
 		image: snapOne,
 		rest: { x: 10, y: 35, rotate: 19 },
-		hover: { x: 20, y: 20, rotate: 25 },
+		hover: { x: 30, y: 0, rotate: 25 },
 	},
 	{
 		image: snapTwo,
 		rest: { x: -60, y: 45, rotate: -5 },
-		hover: { x: -70, y: 20, rotate: -11 },
+		hover: { x: -70, y: 10, rotate: -11 },
 		tape: {
 			src: "/tape-2.svg",
 			className: secondPolaroidTapeClassName,
@@ -55,7 +55,7 @@ const polaroids: readonly Polaroid[] = [
 	{
 		image: snapThree,
 		rest: { x: 10, y: 110, rotate: 26 },
-		hover: { x: 20, y: 90, rotate: 32 },
+		hover: { x: 30, y: 80, rotate: 32 },
 		tape: {
 			src: "/tape.svg",
 			className: thirdPolaroidTapeClassName,
@@ -81,9 +81,11 @@ export default function SnapsWidget() {
 					className="absolute top-0 right-0 h-[6rem] w-[4.95rem] origin-top-right rounded-[2px] bg-white p-1 shadow-[0_4px_12px_rgba(0,0,0,0.1),0_0_4px_rgba(122,122,122,0.2)] scale-110"
 					variants={{
 						rest: { ...polaroid.rest, scale: 0.9 },
-						hover: { ...polaroid.hover, scale: 0.9 },
+						hover: { ...polaroid.hover, scale: 1 },
 					}}
-					transition={shouldReduceMotion ? { duration: 0 } : polaroidTransition}
+					transition={
+						shouldReduceMotion ? { duration: 0 } : { type: "spring", duration: 0.3, bounce: 0.3 }
+					}
 					aria-hidden={index === 0 ? undefined : true}
 				>
 					{polaroid.tape ? (
