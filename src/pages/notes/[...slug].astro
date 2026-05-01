@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import Page from "@/layouts/Page.astro";
+import { articleProseClass } from "@/lib/articleProse";
 
 export async function getStaticPaths() {
 	const notes = await getCollection("notes", ({ data }) => !data.draft);
@@ -61,7 +62,7 @@ const jsonLd = {
 		{readableDate}
 	</time>
 	<h1
-		class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.2] tracking-[-0.02em] text-charcoal mb-16 text-center text-balance"
+		class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.15] tracking-[-0.02em] text-charcoal mb-16 text-center text-balance md:text-5xl md:leading-[1.1] lg:text-6xl"
 	>
 		{note.data.title}
 	</h1>
@@ -69,9 +70,7 @@ const jsonLd = {
 	<article
 		class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
 	>
-		<div
-			class="prose content-grid prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-normal font-sans text-base leading-relaxed text-charcoal text-pretty overflow-visible"
-		>
+		<div class={articleProseClass}>
 			<Content />
 		</div>
 	</article>

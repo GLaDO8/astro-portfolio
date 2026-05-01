@@ -44,7 +44,9 @@ export function extractThemeTokens(cssText) {
 	const colorTokens = [];
 
 	for (const match of cssText.matchAll(/--text-([a-z0-9-]+)\s*:/g)) {
-		textTokens.push(`text-${match[1]}`);
+		if (!match[1].includes("--")) {
+			textTokens.push(`text-${match[1]}`);
+		}
 	}
 
 	for (const match of cssText.matchAll(/--color-([a-z0-9-]+)\s*:/g)) {

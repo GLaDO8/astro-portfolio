@@ -15,9 +15,12 @@ const THEME_CSS = `
 	--color-parchment: oklch(98.7% 0.002 197.1);
 	--color-charcoal: #2a231d;
 	--color-slate: #7a715f;
-	--text-sm: clamp(0.8333rem, 0.8111rem + 0.0988vw, 0.9rem);
-	--text-base: clamp(1rem, 0.9583rem + 0.1852vw, 1.125rem);
-	--text-xl: clamp(1.44rem, 1.3341rem + 0.4708vw, 1.7578rem);
+	--text-sm: 0.875rem;
+	--text-sm--line-height: calc(1.25 / 0.875);
+	--text-base: 1rem;
+	--text-base--line-height: calc(1.5 / 1);
+	--text-xl: 1.25rem;
+	--text-xl--line-height: calc(1.75 / 1.25);
 }
 `;
 

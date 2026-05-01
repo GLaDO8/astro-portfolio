@@ -130,7 +130,7 @@ export default function HeroSection() {
 
 	return (
 		<section className="flex w-full flex-col items-center gap-6 text-center">
-			<h1 className="m-0 text-pretty text-center font-sans text-2xl leading-[1.4] font-semibold tracking-[-0.01em] text-charcoal">
+			<h1 className="m-0 text-pretty text-center font-sans text-2xl leading-[1.35] font-semibold tracking-[-0.01em] text-charcoal md:text-3xl md:leading-[1.25] lg:text-4xl">
 				{/* initial={false} skips animation on the first render */}
 				<AnimatePresence mode="wait" initial={false}>
 					<StreamingText key={text} text={text} shouldReduceMotion={Boolean(shouldReduceMotion)} />
@@ -144,7 +144,7 @@ export default function HeroSection() {
 					whileTap={{ scale: 1.05 }}
 					type="button"
 					onClick={cycle}
-					className="cursor-pointer rounded-full bg-gradient-to-b from-[#faffff] from-[68%] to-[#fcfff1] px-5 pb-1.75 pt-1.25 font-sans text-base font-semibold tracking-[-0.02em] text-charcoal shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15),inset_0px_2px_0px_0px_white]"
+					className="cursor-pointer rounded-full bg-gradient-to-b from-[#faffff] from-[68%] to-[#fcfff1] px-5 pb-1.75 pt-1.25 font-sans text-base font-semibold tracking-[-0.02em] text-charcoal shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15),inset_0px_2px_0px_0px_white] md:text-lg"
 				>
 					What else ?
 				</motion.button>
