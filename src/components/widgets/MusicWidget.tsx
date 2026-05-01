@@ -461,6 +461,28 @@ export default function MusicWidget({ songData }: Props) {
 				</audio>
 			) : null}
 
+			<style>{`
+				@keyframes music-widget-vinyl-spin {
+					from {
+						transform: rotate(var(--record-spin-offset, 0deg));
+					}
+
+					to {
+						transform: rotate(calc(var(--record-spin-offset, 0deg) + 360deg));
+					}
+				}
+
+				.music-widget-vinyl-spin {
+					animation: music-widget-vinyl-spin 1.8182s linear infinite;
+				}
+
+				@media (prefers-reduced-motion: reduce) {
+					.music-widget-vinyl-spin {
+						animation: none;
+					}
+				}
+			`}</style>
+
 			<div className="scale-110">
 				<div
 					ref={recordRef}
@@ -488,7 +510,7 @@ export default function MusicWidget({ songData }: Props) {
 							ref={recordSurfaceRef}
 							className={cn(
 								"absolute inset-0 cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none",
-								shouldSpinRecord && "animate-vinyl",
+								shouldSpinRecord && "music-widget-vinyl-spin",
 							)}
 							style={
 								{ "--record-spin-offset": `${scratchRotation.current}deg` } as React.CSSProperties

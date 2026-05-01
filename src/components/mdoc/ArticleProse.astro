@@ -1,0 +1,50 @@
+---
+import { articleProseClass } from "@/lib/articleProse";
+import { cn } from "@/lib/cn";
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={cn(articleProseClass, className)} data-article-prose>
+    <slot />
+</div>
+
+<style is:global>
+    [data-article-prose] {
+        max-width: none;
+        --article-prose-grid-gap: 1rem;
+    }
+
+    [data-article-prose] > article > :is(figure, .codeblock),
+    [data-article-prose] > article > p:has(> img) {
+        width: 100%;
+        max-width: none;
+    }
+
+    @media (min-width: 48rem) {
+        [data-article-prose] {
+            --article-prose-grid-gap: 1.25rem;
+        }
+
+        [data-article-prose] > article > :is(.figure-wide, .codeblock),
+        [data-article-prose] > article > p:has(> img) {
+            width: calc(125% + var(--article-prose-grid-gap) / 4);
+            margin-left: calc((-100% - var(--article-prose-grid-gap)) / 8);
+        }
+
+        [data-article-prose] > article > .figure-full {
+            width: 100vw;
+            margin-left: calc((100% - 100vw) / 2);
+        }
+    }
+
+    @media (min-width: 64rem) {
+        [data-article-prose] {
+            --article-prose-grid-gap: 1.5rem;
+        }
+    }
+</style>

@@ -3,10 +3,10 @@ import { Image } from "astro:assets";
 import { getImageAsset } from "@/lib/imageAssets";
 
 interface Props {
-    caption?: boolean;
-    image?: string;
-    imageAlt?: string;
-    citation?: boolean;
+	caption?: boolean;
+	image?: string;
+	imageAlt?: string;
+	citation?: boolean;
 }
 
 const { caption = false, image, imageAlt = "", citation = false } = Astro.props;
@@ -20,15 +20,16 @@ const localImage = getImageAsset(image);
         "sidenote",
         "font-sans font-base text-sm leading-normal text-charcoal",
         "lg:float-right lg:clear-right lg:w-70 lg:ml-10 lg:mb-4 lg:-mr-82",
-        "rounded-lg my-4 bg-[#c0e0e0]",
-        image
-            ? "p-0 overflow-hidden lg:bg-[#c0e0e0] lg:p-0 lg:rounded-lg"
-            : hasBox
-              ? "p-4 lg:bg-[#c0e0e0] lg:p-4 lg:rounded-lg"
-              : "p-4 lg:bg-transparent lg:p-0 lg:rounded-none",
-        "lg:my-0",
-        citation && "sidenote-citation",
-    ]}
+		"rounded-lg my-4 bg-[#c0e0e0]",
+		image
+			? "p-0 overflow-hidden lg:bg-[#c0e0e0] lg:p-0 lg:rounded-lg"
+			: hasBox
+				? "p-4 lg:bg-[#c0e0e0] lg:p-4 lg:rounded-lg"
+				: "p-4 lg:bg-transparent lg:p-0 lg:rounded-none",
+		"lg:my-0",
+		citation &&
+			"sidenote-citation before:mr-1 before:align-super before:font-semibold before:text-xs before:content-[counter(sidenote)]",
+	]}
 >
     {
         image &&
@@ -55,5 +56,5 @@ const localImage = getImageAsset(image);
                 <slot />
             </div>
         )
-    }
+	}
 </aside>

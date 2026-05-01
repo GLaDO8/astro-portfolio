@@ -2,34 +2,34 @@
 import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
 interface Props {
-    currentPath?: string;
-    class?: string;
-    blurBackground?: string;
+	currentPath?: string;
+	class?: string;
+	blurBackground?: string;
 }
 
 const {
-    currentPath = Astro.url.pathname,
-    class: className,
-    blurBackground = "var(--color-parchment)",
+	currentPath = Astro.url.pathname,
+	class: className,
+	blurBackground = "var(--color-parchment)",
 } = Astro.props;
 const shellClass = ["sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className]
-    .filter(Boolean)
-    .join(" ");
+	.filter(Boolean)
+	.join(" ");
 const blurStyle = `--navbar-blur-background: ${blurBackground};`;
 
 const links = [
-    { href: "/work", label: "work" },
-    { href: "/sidequests", label: "side quests" },
-    { href: "/notes", label: "notes" },
+	{ href: "/work", label: "work" },
+	{ href: "/sidequests", label: "side quests" },
+	{ href: "/notes", label: "notes" },
 ];
 
 const subdomainLinks = [
-    {
-        href: "https://co2.shrey.fyi",
-        label: "co2.shrey.fyi",
-        description: "A visual reference for carbon dioxide and climate.",
-        iconHref: "https://co2.shrey.fyi/favicon.ico",
-    },
+	{
+		href: "https://co2.shrey.fyi",
+		label: "co2.shrey.fyi",
+		description: "A visual reference for carbon dioxide and climate.",
+		iconHref: "https://co2.shrey.fyi/favicon.ico",
+	},
 ];
 
 const activeLinkClass = "text-charcoal font-semibold";
@@ -332,3 +332,51 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
     document.addEventListener("astro:page-load", initNavbar);
     initNavbar();
 </script>
+
+<style>
+    .navbar-blur {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 108px;
+        pointer-events: none;
+        z-index: 30;
+        --navbar-blur-background: var(--color-parchment);
+    }
+
+    .navbar-blur__background,
+    .navbar-blur__filter {
+        position: absolute;
+        inset: 0;
+    }
+
+    .navbar-blur__background {
+        background: var(--navbar-blur-background);
+        opacity: 0.85;
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 75%);
+        mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 75%);
+    }
+
+    .navbar-blur__filter--soft {
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+        mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+    }
+
+    .navbar-blur__filter--medium {
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 80%);
+        mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 80%);
+    }
+
+    .navbar-blur__filter--strong {
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 55%);
+        mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 55%);
+    }
+</style>

@@ -12,9 +12,39 @@ const trimmed = content.replace(/\n$/, "");
 ---
 
 <div
-    class="codeblock-reset not-prose bg-[#fffcfe] border border-[#fbe5f3] rounded-lg px-4 py-6 overflow-auto font-mono mono-1 text-sm leading-relaxed font-medium"
+    class="codeblock not-prose bg-[#fffcfe] border border-[#fbe5f3] rounded-lg px-4 py-6 overflow-auto font-mono text-sm leading-relaxed font-medium"
     style={maxHeight ? `max-height: ${maxHeight}` : undefined}
     data-lenis-prevent={maxHeight ? "" : undefined}
 >
     <Code code={trimmed} lang={language || "text"} theme="github-light" />
 </div>
+
+<style>
+    .codeblock {
+        font-variation-settings:
+            "MONO" 1,
+            "CASL" 0,
+            "CRSV" 0;
+    }
+
+    .codeblock :global(pre) {
+        /* biome-ignore lint/complexity/noImportantStyles: Override generated code block backgrounds. */
+        background: transparent !important;
+        /* biome-ignore lint/complexity/noImportantStyles: Override generated code block backgrounds. */
+        background-color: transparent !important;
+        overflow: visible;
+        margin: 0;
+        padding: 0;
+        font-family: inherit;
+        font-variation-settings: inherit;
+        font-size: var(--text-sm);
+        line-height: inherit;
+    }
+
+    .codeblock :global(code) {
+        font-family: inherit;
+        font-variation-settings: inherit;
+        font-size: var(--text-sm);
+        line-height: inherit;
+    }
+</style>
