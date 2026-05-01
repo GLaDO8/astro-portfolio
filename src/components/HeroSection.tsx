@@ -2,19 +2,18 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 const descriptions = [
-	"is a software designer with way too many side quests.",
-	"is a professional kitty psspss-er with a 3D printer.",
-	"writes poetry with his Fujifilm and has five tattoos.",
-	"collects vinyls and spends too much on mechanical keyboards.",
-	"keeps a tiny home server and shares rent with two cats.",
-	"likes calling himself an audiophile but uses Airpods.",
-	"doesn't like drinking but steals coasters from bars.",
-	"loves monospace fonts but you won't find any here.",
+	"Shreyas is a software designer with way too many side quests.",
+	"Shreyas is a professional kitty psspss-er with a 3D printer.",
+	"Shreyas writes poetry with his Fujifilm and has five tattoos.",
+	"Shreyas collects vinyls and spends too much on mechanical keyboards.",
+	"Shreyas keeps a tiny home server and shares rent with two cats.",
+	"Shreyas likes calling himself an audiophile but uses Airpods.",
+	"Shreyas doesn't like drinking but steals coasters from bars.",
+	"Shreyas loves monospace fonts but you won't find any here.",
 ];
 
 const STREAM_LETTER_DELAY = 0.007;
 const STREAM_LETTER_DURATION = 0.1;
-const EMAIL_ADDRESS = "gshreyas@icloud.com";
 
 type StreamingTextProps = {
 	text: string;
@@ -130,16 +129,15 @@ export default function HeroSection() {
 	}, []);
 
 	return (
-		<section className="w-full flex flex-col items-start gap-6">
-			<h1 className="m-0 text-pretty font-sans text-2xl leading-[1.4] font-semibold tracking-[-0.01em] text-charcoal">
-				<span className="whitespace-nowrap text-charcoal font-semibold">Shreyas&nbsp;</span>
+		<section className="flex w-full flex-col items-center gap-6 text-center">
+			<h1 className="m-0 text-pretty text-center font-sans text-2xl leading-[1.4] font-semibold tracking-[-0.01em] text-charcoal">
 				{/* initial={false} skips animation on the first render */}
 				<AnimatePresence mode="wait" initial={false}>
 					<StreamingText key={text} text={text} shouldReduceMotion={Boolean(shouldReduceMotion)} />
 				</AnimatePresence>
 			</h1>
 
-			<div className="flex gap-6 items-center">
+			<div className="flex flex-wrap items-center justify-center gap-6">
 				<motion.button
 					transition={{ type: "spring", visualDuration: 0.2, bounce: 0.5 }}
 					whileHover={{ scale: 1.1, rotate: -1.5 }}
