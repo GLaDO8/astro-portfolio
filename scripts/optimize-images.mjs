@@ -2,9 +2,10 @@
 import { watch } from "node:fs";
 import { readdir, readFile, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { basename, dirname, extname, isAbsolute, join, relative, sep } from "node:path";
+import { pathToFileURL } from "node:url";
 import sharp from "sharp";
 
-const IMAGE_ROOTS = [
+export const IMAGE_ROOTS = [
 	{
 		dir: "public",
 		refBase: "",
@@ -15,8 +16,8 @@ const IMAGE_ROOTS = [
 		aliasBase: "@/assets",
 	},
 ];
-const SEARCH_DIRS = ["src"];
-const SEARCH_ROOT_FILES = ["widget.toml"];
+export const SEARCH_DIRS = ["src"];
+export const SEARCH_ROOT_FILES = ["widget.toml"];
 const IMAGE_EXTS = new Set([".png", ".jpg", ".jpeg"]);
 const WEBP_QUALITY = 95;
 
@@ -39,7 +40,7 @@ async function* walk(dir) {
 	}
 }
 
-function shouldProcess(filePath) {
+export function shouldProcess(filePath) {
 	const name = basename(filePath).toLowerCase();
 	return IMAGE_EXTS.has(extname(name)) && !EXCLUDE.some((pattern) => name.includes(pattern));
 }
@@ -54,7 +55,7 @@ function isInsideDir(dir, filePath) {
 	return pathFromDir && !pathFromDir.startsWith("..") && !isAbsolute(pathFromDir);
 }
 
-function getImageRoot(filePath) {
+export function getImageRoot(filePath) {
 	return IMAGE_ROOTS.find(({ dir }) => isInsideDir(dir, filePath));
 }
 
@@ -68,7 +69,7 @@ function getRelativeSourceRef(fromFile, targetFile) {
 	return ref;
 }
 
-function getReferencePairs(file, oldPath, newPath, imageRoot) {
+export function getReferencePairs(file, oldPath, newPath, imageRoot) {
 	const oldRootRef = `/${toPosixPath(join(imageRoot.refBase, relative(imageRoot.dir, oldPath)))}`;
 	const newRootRef = `/${toPosixPath(join(imageRoot.refBase, relative(imageRoot.dir, newPath)))}`;
 	const pairs = [[oldRootRef, newRootRef]];
@@ -93,7 +94,7 @@ async function getFileSize(filePath) {
 	}
 }
 
-async function updateReferences(oldPath, newPath, imageRoot) {
+export async function updateReferences(oldPath, newPath, imageRoot) {
 	const files = [];
 
 	for (const dir of SEARCH_DIRS) {
@@ -127,7 +128,7 @@ async function updateReferences(oldPath, newPath, imageRoot) {
 	}
 }
 
-async function optimizeImage(filePath) {
+export async function optimizeImage(filePath) {
 	const imageRoot = getImageRoot(filePath);
 
 	if (!imageRoot) {
@@ -171,7 +172,7 @@ async function optimizeImage(filePath) {
 	return true;
 }
 
-async function processAll() {
+export async function processAll() {
 	let count = 0;
 
 	for (const { dir } of IMAGE_ROOTS) {
@@ -187,7 +188,7 @@ async function processAll() {
 	else console.log(`\nOptimized ${count} image${count > 1 ? "s" : ""}.`);
 }
 
-function startWatch() {
+export function startWatch() {
 	console.log(`Watching ${IMAGE_ROOTS.map(({ dir }) => `${dir}/`).join(", ")} for new images...\n`);
 	const ac = new AbortController();
 
@@ -213,10 +214,16 @@ function startWatch() {
 	});
 }
 
-const isWatch = process.argv.includes("--watch");
+function isMainModule() {
+	return Boolean(process.argv[1]) && import.meta.url === pathToFileURL(process.argv[1]).href;
+}
 
-await processAll();
+if (isMainModule()) {
+	const isWatch = process.argv.includes("--watch");
 
-if (isWatch) {
-	startWatch();
+	await processAll();
+
+	if (isWatch) {
+		startWatch();
+	}
 }

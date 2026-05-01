@@ -1,27 +1,29 @@
 ---
-title: "One more whistle"
+title: "Are we using pressure cookers right?"
 description: "A design case study on creating engaging hot text question types for Wayground's state test preparation platform."
 date: 2020-11-06
 theme: "hot-text"
 ---
 
-It's COVID and I'm in the kitchen more often these days like everyone else, and being home for so long got me itching at minor inconveniences, cooker whistles are one of em.
+It's COVID and I'm in the kitchen more often like everyone else. Being home for so long got me itching at minor inconveniences like rice cooker whistles, why do I need to count them?
 
 ## Problem in hand
 
-The traditional pressure cookers has a [whistle](https://www.hawkinscookers.com/WebPCMain.aspx?cat=HCL) which indicates whether peak pressure has reached and families **count the number of whistles** to know if the food is cooked. But even after all these years listening to cooker whistles at home, it still feels annoying when mom asks me to keep a lookout for the whistles, especially with the lockdown. Plus I'm forgetful, even burnt rice a couple of times. I can't be the only one with these issues.
+Traditional pressure cookers have a [whistle](https://www.hawkinscookers.com/WebPCMain.aspx?cat=HCL) that screams when peak pressure has reached. Most count the number of whistles to know if the food is cooked (Rice is 3-4 whistles, pulses sit between 2 to 3) 
 
-Let's hack.
+Even after all these years, cooker whistles are annoying, especially when mom asks me to keep a lookout and turn off the gas stove when the count has reached. As a forgetful guy I've burnt rice a couple of times. 
 
-## A few interviews later…
+I can't be the only one with these issue.
 
-A quick **survey** shows that most Indian households still use traditional whistle cookers and quite a few of them were also annoyed.
+## I am not the only one
 
-![bar plot of rice and pulses cooking methods](https://imgix.cosmicjs.com/711dbef0-4ea4-11eb-95ad-ff9bb4c24645-bar-viz3x.png)
+I put out a google form and talked to a few folks, and surely I was right - most Indian households still use traditional pressure cookers and many were annoyed like me.
+
+![bar plot of rice and pulses cooking methods](/case-studies/one-more-whistle/cooking-methods-bar.webp)
 {% sidenote %}
 Note - The survey was filled by **young adults between 20-27 years old,** meaning most of them were students and don’t regularly get involved in kitchen activities, which explains why most respondents found it problematic because one would assume that years of cooking rice in pressure cookers would’ve tempered the learning for most house cooks.
 {% /sidenote %}
-![Sankey plot of cooking practices](https://imgix.cosmicjs.com/c31ac780-4ea3-11eb-95ad-ff9bb4c24645-sankey-viz3x.png)
+![Sankey plot of cooking practices](/case-studies/one-more-whistle/cooking-practices-sankey.png)
 
 Talking to the participants' parents revealed interesting stuff.
 
@@ -43,7 +45,7 @@ But is the energy wastage significant enough?
 
 Not really. I did some experiments and compared the energy consumption for both methods using an induction cooktop to measure the energy used. 
 
-![Plot of experiment results](https://imgix.cosmicjs.com/dc717170-4ea3-11eb-95ad-ff9bb4c24645-visualisation3x.png)
+![Plot of experiment results](/case-studies/one-more-whistle/experiment-results.webp)
 
 The plot shows that the energy consumption is almost the same for both the methods, which means you don't save much energy by doing it the **right** way. This only tells us that forcing people to change their **mental models** about using pressure cookers isn't wise, and the right path to solving this is to design a solution which will help the younger generation Indians count the cooker whistles easily.
 
@@ -70,7 +72,7 @@ For the second part, I brainstormed all possible scenarios where the app will be
 
 In all these cases, the person who is notified has to simply switch off the cooker, eliminating the need of relocating to somewhere near the kitchen and disrupting their work. 
 
-![branding assets for Whistl App](https://imgix.cosmicjs.com/c314fb20-4ea3-11eb-95ad-ff9bb4c24645-vectorBranding.png)
+![branding assets for Whistl App](/case-studies/one-more-whistle/whistl-branding.png)
 
 Given the **utilitarian purpose** of the app, I made the information flow very conversational, making it easy for users to jump right in and use the app. Some key factors which drove the design process,
 
@@ -80,9 +82,9 @@ Given the **utilitarian purpose** of the app, I made the information flow very c
 
 The notification methods are present on the home page itself, and lets users set preferences. The whistle detection screen has a real-time view microphone output view which shows whether the model detected a whistle, and also provides a timeline of whistle detections. The timeline is helpful to get a temporal estimate of when was the last whistle detected. The app also lets you customise the number of whistles you want to count, on the fly. This is helpful in case you change your mind or feel the food should cook for longer. 
 
-![Home Screen and Main App Screen](https://imgix.cosmicjs.com/d04217c0-4e98-11eb-95ad-ff9bb4c24645-Screen-demo3x.png)
+![Home Screen and Main App Screen](/case-studies/one-more-whistle/whistl-main-screens.png)
 
-![Notification preference popups on the homescreen](https://imgix.cosmicjs.com/d0786a00-4e98-11eb-95ad-ff9bb4c24645-Screen-demo-23x.png)
+![Notification preference popups on the homescreen](/case-studies/one-more-whistle/whistl-notification-popups.png)
 
 In my first prototype testing, I got the following feedback from users. 
 

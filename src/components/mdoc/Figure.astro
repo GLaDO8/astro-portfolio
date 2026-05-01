@@ -18,9 +18,7 @@ const image = getImageAsset(src);
 const style = maxWidth ? `max-width: ${maxWidth}` : undefined;
 const imageEdgeTone = image ? await getImageEdgeTone(src) : undefined;
 const imageEdgeShadowClass =
-	imageEdgeTone === "dark"
-		? "after:shadow-[inset_0_0_0_1.5px_rgb(255_255_255_/_0.08)]"
-		: "after:shadow-[inset_0_0_0_1.5px_rgb(0_0_0_/_0.05)]";
+	imageEdgeTone === "dark" ? "figure-media-edge-dark" : "figure-media-edge-light";
 
 const wrapperClass = cn(
 	"not-prose my-24 w-full",
@@ -36,7 +34,7 @@ const wrapperClass = cn(
         image ? (
             <span
                 class={cn(
-                    "relative block overflow-hidden rounded-xl after:pointer-events-none after:absolute after:inset-0 after:rounded-xl",
+                    "figure-media",
                     imageEdgeShadowClass,
                 )}
             >
@@ -58,3 +56,25 @@ const wrapperClass = cn(
         )
     }
 </figure>
+
+<style>
+    .figure-media {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        border-radius: var(--radius-xl);
+    }
+
+    .figure-media::after {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        content: "";
+        box-shadow: inset 0 0 0 1.5px rgb(0 0 0 / 0.05);
+    }
+
+    .figure-media-edge-dark::after {
+        box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.08);
+    }
+</style>

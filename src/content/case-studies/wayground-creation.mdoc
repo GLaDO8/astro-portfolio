@@ -1,5 +1,5 @@
 ---
-title: "Rethinking how teachers create resources on Wayground"
+title: "Rethinking How Teachers Create AI-Generated Resources on Wayground"
 description: "A design case study on simplifying the AI-assisted content creation experience for teachers on Wayground, improving publish rates from 68% to ~78%."
 date: 2025-10-01
 theme: "hot-text"
@@ -44,15 +44,19 @@ A parallel problem: new teachers had no mental model for Wayground's resource ty
 
 ## Creation control framework
 
-AI generation pipelines should 
+**[image: diagram of the three-layer framework — system prompt, teacher preferences, editor]**
+
+AI generation pipelines should do blayh blaub blah
+
+let's focus on the system prompt + platform intelligence layer, and the problems we wanted to solve with this. 
 
 
+## the smartness problem
+1. new users don't have a mental model on what resource types on wayground mean
+2. teachers don't understand the difference between extract, generate etc. 
 
-## Why this mattered
 
-
-
-## Design principles
+<!--## Design principles
 
 Before solutioning, I established a framework for how to think about AI-assisted creation. The core idea: segment everything that's in the teacher's head and handle each layer in the right place.
 
@@ -66,15 +70,15 @@ Difficulty level, number of questions, subject, grade — these are personal to 
 
 ### 3. Last-mile gaps → The editor
 
-No LLM output is perfect. There's always a last 10–20% that needs human refinement — a question worded awkwardly, a wrong distractor, a misaligned standard. Rather than trying to make generation flawless, we should make the editor fast enough that teachers can close those gaps in seconds and hit publish.
+No LLM output is perfect. There's always a last 10–20% that needs human refinement — a question worded awkwardly, a wrong distractor, a misaligned standard. Rather than trying to make generation flawless, we should make the editor fast enough that teachers can close those gaps in seconds and hit publish.-->
 
-**[image: diagram of the three-layer framework — system prompt, teacher preferences, editor]**
+
 
 ## Solution
 
 ### Phase 1: The document classifier
 
-{% figure src="/case-studies/create-flow/image 13.webp" alt="image-1" width="wide"  /%}
+![image-1](/case-studies/create-flow/image 13.webp)
 
 Rather than forcing teachers to choose between extract and generate, we built a document classifier that sat between the teacher's upload and the backend pipelines. The classifier categorized uploaded documents into predefined categories — vocabulary lists, worksheets, raw content passages, and others — then automatically routed to the correct backend pipeline (extract or generate), each with their own specialized prompts, vision/OCR mechanisms, and evals.
 

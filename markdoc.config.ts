@@ -1,7 +1,51 @@
-import { component, defineMarkdocConfig } from "@astrojs/markdoc/config";
+import { component, defineMarkdocConfig, Markdoc, nodes } from "@astrojs/markdoc/config";
+import type { Config, Node } from "@markdoc/markdoc";
+
+const figureComponent = component("./src/components/mdoc/Figure.astro");
+
+function getStandaloneImageNode(node: Node) {
+	const [inlineNode] = node.children;
+
+	if (node.children.length !== 1 || inlineNode?.type !== "inline") {
+		return undefined;
+	}
+
+	const [imageNode] = inlineNode.children;
+
+	if (inlineNode.children.length !== 1 || imageNode?.type !== "image") {
+		return undefined;
+	}
+
+	return imageNode;
+}
+
+function renderParagraph(node: Node, config: Config) {
+	const imageNode = getStandaloneImageNode(node);
+
+	if (imageNode) {
+		const { src, alt, title } = imageNode.transformAttributes(config);
+		const render = config.nodes?.paragraph?.render;
+
+		return new Markdoc.Tag(render as unknown as string, {
+			src,
+			alt,
+			caption: title,
+			width: "wide",
+		});
+	}
+
+	return new Markdoc.Tag("p", node.transformAttributes(config), node.transformChildren(config));
+}
 
 export default defineMarkdocConfig({
 	nodes: {
+		paragraph: {
+			...nodes.paragraph,
+			// Astro swaps component configs for real components only from schema render targets.
+			// Regular paragraphs still render as <p> in renderParagraph.
+			render: figureComponent,
+			transform: renderParagraph,
+		},
 		link: {
 			render: "a",
 			children: ["strong", "em", "s", "code", "text", "tag"],
@@ -79,7 +123,7 @@ export default defineMarkdocConfig({
 			},
 		},
 		figure: {
-			render: component("./src/components/mdoc/Figure.astro"),
+			render: figureComponent,
 			selfClosing: true,
 			attributes: {
 				src: { type: String, required: true },

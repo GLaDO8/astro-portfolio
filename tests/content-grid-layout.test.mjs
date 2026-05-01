@@ -17,8 +17,9 @@ test("article prose preserves floated sidenotes", () => {
 test("article prose expands only top-level media and code blocks", () => {
 	assert.match(
 		articleProseComponent,
-		/\[data-article-prose\]\s*>\s*article\s*>\s*:is\(\.figure-wide,\s*\.codeblock\),\s*\[data-article-prose\]\s*>\s*article\s*>\s*p:has\(>\s*img\)/,
+		/\[data-article-prose\]\s*>\s*article\s*>\s*:is\(\.figure-wide,\s*\.codeblock\)/,
 	);
+	assert.doesNotMatch(articleProseComponent, /p:has\(>\s*img\)/);
 });
 
 test("sidenote image alt text is part of the Markdoc contract", () => {
