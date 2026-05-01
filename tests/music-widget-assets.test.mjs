@@ -46,3 +46,50 @@ test("MusicWidget SSR emits browser-loadable preview icon URLs", async () => {
 	assert.match(html, /aria-label="Play Track preview"/);
 	assert.doesNotMatch(html, /src="file:\/\//);
 });
+
+test("MusicWidget omits the preview control when no preview is available", async () => {
+	const server = await createServer({
+		appType: "custom",
+		logLevel: "silent",
+		root,
+		server: {
+			middlewareMode: true,
+		},
+		resolve: {
+			alias: {
+				"@": resolve(root, "src"),
+			},
+		},
+	});
+	after(() => server.close());
+
+	const { default: MusicWidget, getPreviewDisabledReason } = await server.ssrLoadModule(
+		"/src/components/widgets/MusicWidget.tsx",
+	);
+
+	const html = renderToStaticMarkup(
+		React.createElement(MusicWidget, {
+			songData: {
+				artist: "Artist",
+				title: "Track",
+				album: "Album",
+				albumArt: "/album.jpg",
+				previewUrl: "",
+				trackUrl: "/track",
+				message: "",
+				label: "",
+			},
+		}),
+	);
+
+	assert.equal(
+		getPreviewDisabledReason({ canPlayPreview: false, hasPlaybackError: false }),
+		"missing-preview-url",
+	);
+	assert.equal(
+		getPreviewDisabledReason({ canPlayPreview: true, hasPlaybackError: true }),
+		"playback-error",
+	);
+	assert.doesNotMatch(html, /<button/);
+	assert.doesNotMatch(html, /aria-label="Preview unavailable for Track"/);
+});

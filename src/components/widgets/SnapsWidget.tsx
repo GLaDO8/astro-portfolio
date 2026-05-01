@@ -78,7 +78,7 @@ export default function SnapsWidget() {
 			{polaroids.map((polaroid, index) => (
 				<motion.div
 					key={polaroid.image.src}
-					className="absolute top-0 right-0 h-[6rem] w-[4.95rem] origin-top-right rounded-[2px] bg-white p-1 shadow-[0_4px_12px_rgba(0,0,0,0.1),0_0_4px_rgba(122,122,122,0.2)]"
+					className="absolute top-0 right-0 h-[6rem] w-[4.95rem] origin-top-right rounded-[2px] bg-white p-1 shadow-[0_4px_12px_rgba(0,0,0,0.1),0_0_4px_rgba(122,122,122,0.2)] scale-110"
 					variants={{
 						rest: { ...polaroid.rest, scale: 0.9 },
 						hover: { ...polaroid.hover, scale: 0.9 },
@@ -109,7 +109,7 @@ export default function SnapsWidget() {
 					</div>
 				</motion.div>
 			))}
-			<div className="absolute -bottom-3 right-9 rotate-24">
+			<div className="absolute -bottom-7 right-11 rotate-26">
 				<p className="font-semibold text-sm font-sans">Photo roll</p>
 			</div>
 		</motion.div>

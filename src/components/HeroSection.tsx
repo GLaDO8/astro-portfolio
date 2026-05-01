@@ -130,7 +130,7 @@ export default function HeroSection() {
 
 	return (
 		<section className="flex w-full flex-col items-center gap-6 text-center">
-			<h1 className="m-0 text-pretty text-center font-sans text-2xl leading-[1.35] font-semibold tracking-[-0.01em] text-charcoal md:text-3xl md:leading-[1.25] lg:text-4xl">
+			<h1 className="m-0 text-pretty text-center font-sans text-3xl leading-[1.35] font-semibold tracking-[-0.01em] text-charcoal md:text-5xl md:leading-[1.25] lg:text-5xl">
 				{/* initial={false} skips animation on the first render */}
 				<AnimatePresence mode="wait" initial={false}>
 					<StreamingText key={text} text={text} shouldReduceMotion={Boolean(shouldReduceMotion)} />
