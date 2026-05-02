@@ -35,7 +35,7 @@ export default defineConfig({
 					{
 						src: ["./src/assets/fonts/Recursive-Variable.woff2"],
 						weight: "300 1000",
-						style: "oblique",
+						style: "normal",
 						display: "optional",
 					},
 				],
