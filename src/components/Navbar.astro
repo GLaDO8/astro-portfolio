@@ -2,34 +2,34 @@
 import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
 interface Props {
-	currentPath?: string;
-	class?: string;
-	blurBackground?: string;
+    currentPath?: string;
+    class?: string;
+    blurBackground?: string;
 }
 
 const {
-	currentPath = Astro.url.pathname,
-	class: className,
-	blurBackground = "var(--color-parchment)",
+    currentPath = Astro.url.pathname,
+    class: className,
+    blurBackground = "var(--color-parchment)",
 } = Astro.props;
 const shellClass = ["sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className]
-	.filter(Boolean)
-	.join(" ");
+    .filter(Boolean)
+    .join(" ");
 const blurStyle = `--navbar-blur-background: ${blurBackground};`;
 
 const links = [
-	{ href: "/work", label: "work" },
-	{ href: "/sidequests", label: "side quests" },
-	{ href: "/notes", label: "notes" },
+    { href: "/work", label: "work" },
+    { href: "/sidequests", label: "side quests" },
+    { href: "/notes", label: "notes" },
 ];
 
 const subdomainLinks = [
-	{
-		href: "https://co2.shrey.fyi",
-		label: "co2.shrey.fyi",
-		description: "A visual reference for carbon dioxide and climate.",
-		iconHref: "https://co2.shrey.fyi/favicon.ico",
-	},
+    {
+        href: "https://co2.shrey.fyi",
+        label: "co2.shrey.fyi",
+        description: "A visual reference for carbon dioxide and climate.",
+        iconHref: "https://co2.shrey.fyi/favicon.ico",
+    },
 ];
 
 const activeLinkClass = "text-charcoal font-semibold";
@@ -47,7 +47,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 <div class={shellClass} data-navbar-shell>
     <div transition:persist transition:name="site-navbar">
         <nav
-            class="mx-auto flex w-full max-w-[39.25rem] items-center justify-between px-4 font-sans text-sm tracking-[-0.01em] md:px-0 md:text-lg"
+            class="mx-auto flex w-full max-w-[39.25rem] items-center justify-between px-4 font-sans text-sm tracking-[-0.01em] md:px-0 md:text-lg pt-4"
             aria-label="Primary navigation"
             data-navbar
         >
@@ -355,28 +355,48 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
     .navbar-blur__background {
         background: var(--navbar-blur-background);
         opacity: 0.85;
-        -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 75%);
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            black 0%,
+            black 45%,
+            transparent 75%
+        );
         mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 75%);
     }
 
     .navbar-blur__filter--soft {
         -webkit-backdrop-filter: blur(2px);
         backdrop-filter: blur(2px);
-        -webkit-mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            black 0%,
+            black 70%,
+            transparent 100%
+        );
         mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
     }
 
     .navbar-blur__filter--medium {
         -webkit-backdrop-filter: blur(6px);
         backdrop-filter: blur(6px);
-        -webkit-mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 80%);
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            black 0%,
+            black 45%,
+            transparent 80%
+        );
         mask-image: linear-gradient(to bottom, black 0%, black 45%, transparent 80%);
     }
 
     .navbar-blur__filter--strong {
         -webkit-backdrop-filter: blur(12px);
         backdrop-filter: blur(12px);
-        -webkit-mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 55%);
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            black 0%,
+            black 25%,
+            transparent 55%
+        );
         mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 55%);
     }
 </style>

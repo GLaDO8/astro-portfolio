@@ -5,7 +5,7 @@ import PhotoFrameWidget from "./PhotoFrameWidget";
 import SnapsWidget from "./SnapsWidget";
 
 interface Props {
-	songData: SongData;
+    songData: SongData;
 }
 
 const { songData } = Astro.props;
@@ -13,11 +13,11 @@ const { songData } = Astro.props;
 
 <section
     data-home-widget-strip
-    class="h-44 w-full overflow-visible pt-8 sm:h-52 md:h-72"
+    class="h-44 w-full overflow-visible pt-8 sm:h-52 md:h-78 md:mt-12"
     aria-label="Personal widgets"
 >
     <div
-        class="relative left-1/2 flex w-max origin-top -translate-x-1/2 scale-[0.66] items-start justify-center gap-12 sm:scale-[0.82] sm:gap-5 md:scale-[1.05] md:gap-24 lg:scale-[1.12] lg:gap-28"
+        class="relative left-1/2 flex w-max origin-top -translate-x-1/2 scale-[0.66] items-start sm:justify-between md:justify-center gap-12 sm:scale-[0.82] md:scale-[1.05] md:gap-24 lg:scale-[1.12] lg:gap-28"
     >
         <div class="rotate-[9deg]">
             <div data-home-widget class="mt-5 shrink-0">

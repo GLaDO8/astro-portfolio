@@ -78,13 +78,13 @@ export default function SnapsWidget() {
 			{polaroids.map((polaroid, index) => (
 				<motion.div
 					key={polaroid.image.src}
-					className="absolute top-0 right-0 h-[6rem] w-[4.95rem] origin-top-right rounded-[2px] bg-white p-1 shadow-[0_4px_12px_rgba(0,0,0,0.1),0_0_4px_rgba(122,122,122,0.2)] scale-110"
+					className="absolute top-0 right-0 h-[6rem] w-[4.95rem] origin-top-right rounded-[2px] bg-white p-1 shadow-[0_4px_12px_rgba(0,0,0,0.2),0_0_4px_rgba(122,122,122,0.2)] scale-110"
 					variants={{
 						rest: { ...polaroid.rest, scale: 0.9 },
 						hover: { ...polaroid.hover, scale: 1 },
 					}}
 					transition={
-						shouldReduceMotion ? { duration: 0 } : { type: "spring", duration: 0.3, bounce: 0.3 }
+						shouldReduceMotion ? { duration: 0 } : { type: "spring", duration: 0.3, bounce: 0.35 }
 					}
 					aria-hidden={index === 0 ? undefined : true}
 				>

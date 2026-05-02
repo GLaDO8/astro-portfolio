@@ -7,3 +7,4 @@
 - `data-*` are plain HTML markers for adding semantic metadata to HTML elements that needn't be unique like id and needn't pollute class space.
 - the content in frontmatter of Astro is executed at buildtime or on server if SSR, it is not shipped to the client.
 - Border box means border lies outside the div, to have something inside, you need to use inset box shadow
+- browser's default flex behaviour is flex: 0 1 auto;

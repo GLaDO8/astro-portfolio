@@ -2,18 +2,21 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 const descriptions = [
-	"Shreyas is a software designer with way too many side quests.",
+	"Shreyas is a design engineer and a serial hobbyist.",
 	"Shreyas is a professional kitty psspss-er with a 3D printer.",
 	"Shreyas writes poetry with his Fujifilm and has five tattoos.",
-	"Shreyas collects vinyls and spends too much on mechanical keyboards.",
+	"Shreyas collects vinyls & builds mechanical keyboards.",
 	"Shreyas keeps a tiny home server and shares rent with two cats.",
-	"Shreyas likes calling himself an audiophile but uses Airpods.",
+	"Shreyas calls himself an audiophile but uses Airpods.",
 	"Shreyas doesn't like drinking but steals coasters from bars.",
 	"Shreyas loves monospace fonts but you won't find any here.",
 ];
 
 const STREAM_LETTER_DELAY = 0.007;
 const STREAM_LETTER_DURATION = 0.1;
+const TIGHT_KERNING_PAIRS: Record<string, string> = {
+	ya: "-0.08em",
+};
 
 type StreamingTextProps = {
 	text: string;
@@ -38,11 +41,16 @@ function getStreamingWords(text: string) {
 		word,
 		key: `${word}-${letterIndex}`,
 		hasTrailingSpace: wordIndex < words.length - 1,
-		letters: Array.from(word).map((letter) => ({
-			letter,
-			key: `${letter}-${letterIndex}`,
-			delay: letterIndex++ * STREAM_LETTER_DELAY,
-		})),
+		letters: Array.from(word).map((letter, index, letters) => {
+			const pair = `${letters[index - 1] ?? ""}${letter}`.toLowerCase();
+
+			return {
+				letter,
+				key: `${letter}-${letterIndex}`,
+				delay: letterIndex++ * STREAM_LETTER_DELAY,
+				marginLeft: TIGHT_KERNING_PAIRS[pair],
+			};
+		}),
 	}));
 }
 
@@ -75,10 +83,11 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 			{words.map(({ key, hasTrailingSpace, letters }) => (
 				<Fragment key={key}>
 					<span aria-hidden="true" className="inline-block whitespace-nowrap">
-						{letters.map(({ key: letterKey, letter, delay }) => (
+						{letters.map(({ key: letterKey, letter, delay, marginLeft }) => (
 							<motion.span
 								key={letterKey}
 								className="inline-block"
+								style={marginLeft ? { marginLeft } : undefined}
 								initial={{ opacity: 0, y: "0.35em", filter: "blur(8px)" }}
 								animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
 								transition={{
@@ -130,7 +139,10 @@ export default function HeroSection() {
 
 	return (
 		<section className="flex w-full flex-col items-center gap-6 text-center">
-			<h1 className="m-0 text-pretty text-center font-sans text-3xl leading-[1.35] font-semibold tracking-[-0.01em] text-charcoal md:text-5xl md:leading-[1.25] lg:text-5xl">
+			<h1
+				className="m-0 box-border w-screen max-w-6xl px-4 text-pretty text-center font-sans text-3xl leading-[1.35] font-bold tracking-[-0.02em] text-charcoal uppercase md:text-5xl md:leading-[1.25] xl:text-6xl"
+				style={{ wordSpacing: "0.08em" }}
+			>
 				{/* initial={false} skips animation on the first render */}
 				<AnimatePresence mode="wait" initial={false}>
 					<StreamingText key={text} text={text} shouldReduceMotion={Boolean(shouldReduceMotion)} />

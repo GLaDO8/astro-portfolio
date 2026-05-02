@@ -15,7 +15,7 @@ export default function PhotoFrameWidget() {
 				width={halftone.width}
 				height={halftone.height}
 				loading="eager"
-				className="-rotate-3 h-34 w-40 rounded-sm bg-white object-cover p-1.25 shadow-[0_12px_30px_rgba(42,35,29,0.14),0_0_4px_rgba(122,122,122,0.18)]"
+				className="-rotate-3 h-34 w-40 rounded-sm bg-white object-cover p-1.25 shadow-[0_12px_30px_rgba(42,35,29,0.2),0_0_4px_rgba(122,122,122,0.2)]"
 				draggable={false}
 			/>
 			<div className="absolute -right-6 -bottom-12 -rotate-8 scale-[0.7]">
