@@ -45,7 +45,7 @@ export default function SnapsGallery({ snaps, priorityCount = 0 }: SnapsGalleryP
 				return (
 					<motion.figure
 						key={item.src}
-						className={cn("flex-none border-12 border-white", randomRotation())}
+						className="flex-none border-12 border-white"
 						data-snap-span={item.span}
 						data-snap-date={`${item.date} ${item.year}`}
 					>
