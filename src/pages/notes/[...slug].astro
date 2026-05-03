@@ -4,11 +4,11 @@ import ArticleProse from "@/components/mdoc/ArticleProse.astro";
 import Page from "@/layouts/Page.astro";
 
 export async function getStaticPaths() {
-	const notes = await getCollection("notes", ({ data }) => !data.draft);
-	return notes.map((note) => ({
-		params: { slug: note.id },
-		props: { note },
-	}));
+    const notes = await getCollection("notes", ({ data }) => !data.draft);
+    return notes.map((note) => ({
+        params: { slug: note.id },
+        props: { note },
+    }));
 }
 
 const { note } = Astro.props;
@@ -16,62 +16,63 @@ const { Content } = await render(note);
 const publishedDate = note.data.date.toISOString();
 const publishedDay = publishedDate.slice(0, 10);
 const readableDate = note.data.date.toLocaleDateString("en-US", {
-	year: "numeric",
-	month: "long",
-	day: "numeric",
-	timeZone: "UTC",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
 });
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "Article",
-	headline: note.data.title,
-	description: note.data.description,
-	datePublished: publishedDate,
-	author: {
-		"@type": "Person",
-		"@id": "https://shrey.fyi/#person",
-		name: "Shreyas Gupta",
-	},
-	publisher: {
-		"@type": "Person",
-		"@id": "https://shrey.fyi/#person",
-		name: "Shreyas Gupta",
-	},
-	url: `https://shrey.fyi/notes/${note.id}`,
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: note.data.title,
+    description: note.data.description,
+    datePublished: publishedDate,
+    author: {
+        "@type": "Person",
+        "@id": "https://shrey.fyi/#person",
+        name: "Shreyas Gupta",
+    },
+    publisher: {
+        "@type": "Person",
+        "@id": "https://shrey.fyi/#person",
+        name: "Shreyas Gupta",
+    },
+    url: `https://shrey.fyi/notes/${note.id}`,
 };
 ---
 
 <Page
-	title={`${note.data.title} — Shreyas Gupta`}
-	description={note.data.description}
-	bodyClass="bg-parchment"
-	class="bg-parchment"
-	seo={{
-		ogType: "article",
-		article: {
-			publishedTime: publishedDate,
-		},
-		jsonLd,
-	}}
+    title={`${note.data.title} — Shreyas Gupta`}
+    description={note.data.description}
+    bodyClass="bg-white"
+    class="bg-white"
+    navBlurBackground="white"
+    seo={{
+        ogType: "article",
+        article: {
+            publishedTime: publishedDate,
+        },
+        jsonLd,
+    }}
 >
-	<time
-		datetime={publishedDay}
-		class="font-sans col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 text-center text-slate pt-12"
-	>
-		{readableDate}
-	</time>
-	<h1
-		class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.15] tracking-[-0.02em] text-charcoal mb-16 text-center text-balance md:text-5xl md:leading-[1.1] lg:text-6xl"
-	>
-		{note.data.title}
-	</h1>
+    <time
+        datetime={publishedDay}
+        class="font-sans col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 text-center text-slate pt-12"
+    >
+        {readableDate}
+    </time>
+    <h1
+        class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.15] tracking-[-0.02em] text-charcoal mb-16 text-center text-balance md:text-5xl md:leading-[1.1] lg:text-6xl"
+    >
+        {note.data.title}
+    </h1>
 
-	<article
-		class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
-	>
-		<ArticleProse>
-			<Content />
-		</ArticleProse>
-	</article>
+    <article
+        class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
+    >
+        <ArticleProse>
+            <Content />
+        </ArticleProse>
+    </article>
 </Page>
