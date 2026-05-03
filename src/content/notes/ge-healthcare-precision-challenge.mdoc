@@ -4,31 +4,34 @@ description: "A quiet essay on growing up, losing playfulness, and the trap of a
 date: 2019-02-23
 ---
 
-We had 8 crushed cans of Red Bulls, 4 packets of half-eaten chips, two pairs of drowsy red eyes and 8 hours left. I hadn’t slept in days and all we did was stare at our screens. This was our first hackathon at GE Healthcare’s JFWTC campus, Bengaluru.
+My first hackathon at GE Healthcare’s JFWTC campus in Bangalore. We haven't slept in days and I'm 8 Red Bulls in.
 
-For students, hackathons are like ice cream trucks — selling swag, goodies and a carnival ticket. They romanticize the world of code and silicon, glittering it with ridiculous dumps of food and cash. The effectiveness of such large scale hackathons which rely on [extrinsic factors of motivation](https://www.verywellmind.com/what-is-self-determination-theory-2795387) to attract students and incubate innovation, can be debated. Or one could argue that the goal is not to innovate, but to rather encourage students to indulge in this field. Either way, we were sold on the idea. We were desperately looking for one and luckily fell upon GE Healthcare’s precision challenge. There was an ideation phase followed by a 24-hour on-site implementation challenge. We submitted our [proposal](https://slides.com/shreyasgupta/deck-2e991b) within hours and were surprisingly amongst 36 teams all over India invited for the 24-hour coding sprint.
+For students, hackathons are like ice cream trucks — selling swag, goodies and a carnival ticket. They romanticize building silly things with ridiculous amounts of food and cash. The goal isn't to innovate, but rather encourage kids to just build. Either way, we were sold on the idea. We were desperately looking for one, found GE Healthcare’s precision challenge, submitted our [proposal](https://slides.com/shreyasgupta/deck-2e991b) and were in the top 36 teams selected for the 24-hour hackathon. 
 
-Collecting and maintaining medical data while respecting all privacy concerns is difficult. Under the US [Health Insurance Portability and Accountability Act (HIPAA)](https://www.hipaajournal.com/hipaa-compliance-checklist/), there are 18 identifiers that must be treated with special care while collecting medical data. For many cases, collecting facial information becomes necessary, especially in the case of dermatology. Keeping records of patients who were diagnosed with acne, melanoma, rosacea, Eczema, skin tan etc. usually requires collection of images of the faces of the patients. In order to make the data non-identifiable, the images are usually cropped to show a specific part of the face, usually the forehead, cheeks and the mouth region. One other way to remove personal identifiers is to apply a censor bars on the eyes and mouth. Both ways need a significant manual preprocessing time.
+## The idea
 
-Our idea was to automate this process while creating a parseable dataset with metadata. This will help researchers save data preparation time and easily share it for research and learning purposes.
+We proposed a pipeline for preparing medical datasets that stripped sensitive personal identifiers (PII) from medical images while preserving the necessary information for research and learning. 
+
+Under the US [Health Insurance Portability and Accountability Act (HIPAA)](https://www.hipaajournal.com/hipaa-compliance-checklist/), there are 18 identifiers to be handled when collecting medical data. For many cases, collecting facial information becomes necessary, especially in the case of dermatology. Keeping records of patients who were diagnosed with acne, melanoma, rosacea, Eczema, skin tan etc. usually requires collection of images of the faces of the patients. In order to make the data non-identifiable, the images are usually cropped to show a specific part of the face, usually the forehead, cheeks and the mouth region. One other way to remove personal identifiers is to apply a censor bars on the eyes and mouth. Both ways need a significant manual preprocessing time.
 
 ![Masked face example](/notes/ge-healthcare-precision-challenge/masking-example.webp)
 
-We made our first mistake by going to the event with very little preparation, and It’s virtually impossible to complete a project with a front-end in a measly 24 hours. Nevertheless, we woke up that morning, barely showered and grabbed an Uber to JFWTC.
-
-The place was ridiculous. They had this pantry setup with continental breakfast, a mini bakery, a juice bar and an ice bowl with a million Red Bulls just waiting to get you diabetic. After a small introductory session, we all got our workstations for the rest of the night.
+## Hack day
 
 ![4 hours into the challenge](/notes/ge-healthcare-precision-challenge/four-hours-into-challenge.jpg)
-
 <p align="center"><i>4 hours into the challenge.</i></p>
 
-Our solution was an electron app where the user can dump multiple images and we clean it and parse it into a dataset. and we weren’t familiar with electron. I managed to bootstrap together an image cleaning pipeline by midnight and started working on a presentable demo while my teammate worked on getting the app to work.
+The event setup was insane - huge breakfast spread, a bakery, juice bar and a million redbulls.
+
+For our demo, we built an electron app where users can do a data dump of several images and we clean it and parse it into a dataset. I managed to bootstrap together an image cleaning pipeline by midnight and started working on a presentable demo while my teammate worked figuring out Electron.
 
 We had 8 hours left and we were trying to figure out how to display our final outputs in the app. After 2 hours of going through documentation and tutorials, I had given up on my dreams of holding a giant cheque and took a nap. When I finally did wake up, my teammate had figured out a solution (which I didn't hear thanks, to my hearing loss. Damn you ATH-M50s) and went for his nap shift. Still in the impression that we are screwed, I started preparing our pitch to the judges.
 
 Below is an illustration of how our solution would clean images and bundle them into a dataset. We used [dlib's Resnet architecture](http://dlib.net) to identify facial features. We then masked the features using Pillow. The textual information were identified using [EAST text detection](https://arxiv.org/abs/1704.03155) which we later blurred out.
 
 ![Flow chart of how our idea functions](/notes/ge-healthcare-precision-challenge/pipeline-flow.jpg)
+
+## Demo
 
 Fast forward to 9AM, we were done with our prototype and the pitch decks. There were multiple panels set up for screening all the 36 teams. We had to pitch our idea and present a live demo of the prototype to 3 judges in our panel, and we aced it. I could see the amusement in the judges eyes when we displayed our output. Once the screenings were over, we were asked to be seated in the main hall for the results. After toying around with us for an hour they finally started announcing the finalists, and when the emcee struggled pronouncing one of the team names, we knew we made it to the finals.
 
@@ -38,18 +41,14 @@ Our team name was **GLaDOS.SHoDAN**, a weird portmanteau of **GLaDOS** (Genetic 
 He just wanted to choose something cool.
 {% /sidenote %}
 
-
-
 I was in the impression that we were done, they'll give us something and call it a day. But for the finals, the top 5 teams had to compete in a shark tank style pitch to the audience and the panelists. We went in pretty early for our pitch and did pretty ok, though we didn't get any questions, unlike others who were being grilled, and it's generally a good thing to get a lot of questions. Looking at other teams, who worked ideas far more innovative than ours, I had lost all hopes on getting through. I went and sat in the corner in dismay for the rest of the event. But as it turned out, we actually **won**! 2nd runner up. Bagged 50K cash, an internship and got to hold the cheque! Although there were far more exciting projects, they weren't really executable.
 
 ![Our team holding a cheque of 50,000 rupees](/notes/ge-healthcare-precision-challenge/team-cheque.webp)
 
 <p align="center"><i>You don't need to see our faces, we didn't bath for a week.</i></p>
 
-Hackathons are intimidating. I wouldn't have even thought about participating two years back. But to be honest, they aren't that hard to crack. As I write this article, I have participated in around six competitions and what I've learned is, they are all about the art of pitching. We need to sell the idea, not its technical prowess.
+## Learnings
 
-We usually get lost in finding the technical novelty when finding the right product-solution and market fit is the key. One extremely effective way of figuring that out is **by observing** our environment. There are a hundred different interactions and events happening around you, many of them being suboptimal or riddled with issues. Note them down on a notepad or an app, even if you don't know how you can solve it. The next time you participate in a hackathon, you'll have an ample number of problems to work on, and you'll be cashing in on giant cheques like hotcakes.
+Hackathons are intimidating. I wouldn't have even thought about participating two years back. Honestly they aren't that hard to crack. As I write this article, I have participated in six of these things and it's mostly about the art of selling. You sell the idea, not its technical prowess. We get lost in finding the technical novelty when PMF is key. 
 
-![Michael Scott from The Office giving cheque to a stripper](/notes/ge-healthcare-precision-challenge/michael-scott-cheque.jpg)
-
-<p align="center"><i>I love this episode.</i></p>
+Observe your environment. So much that's happening around you is suboptimal and riddled with issues. Note them down even if you don't know how you can solve it. Next time you spot a hackathon, you'll have ample number of problems to cash in on.

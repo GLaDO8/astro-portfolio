@@ -18,7 +18,7 @@ const panelVariants = {
 };
 const bodyVariants = {
 	open: { opacity: 1, y: 0 },
-	closed: { opacity: 0, y: -4 },
+	closed: { opacity: 0, y: -8 },
 };
 
 export default function Accordion({ title, subtitle = defaultSubtitle, children }: AccordionProps) {
