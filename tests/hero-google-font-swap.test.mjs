@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
-import { dirname, resolve } from "node:path";
-import { after, before, test } from "node:test";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { before, test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { createServer } from "vite";
+import ts from "typescript";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-let server;
+const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 let parseGoogleFontsEmbed;
 let getHeroGoogleFontFamilyValue;
 let getHeroGoogleFontSizeValue;
@@ -13,19 +13,14 @@ let getHeroGoogleLetterSpacingValue;
 let getHeroGoogleLineHeightValue;
 
 before(async () => {
-	server = await createServer({
-		appType: "custom",
-		logLevel: "silent",
-		root,
-		server: {
-			middlewareMode: true,
-		},
-		resolve: {
-			alias: {
-				"@": resolve(root, "src"),
-			},
+	const source = readFileSync(resolve(root, "src/dev/heroGoogleFontSwap.ts"), "utf8");
+	const { outputText } = ts.transpileModule(source, {
+		compilerOptions: {
+			module: ts.ModuleKind.ESNext,
+			target: ts.ScriptTarget.ES2022,
 		},
 	});
+	const moduleUrl = `data:text/javascript;base64,${Buffer.from(outputText).toString("base64")}`;
 
 	({
 		parseGoogleFontsEmbed,
@@ -33,11 +28,7 @@ before(async () => {
 		getHeroGoogleFontSizeValue,
 		getHeroGoogleLetterSpacingValue,
 		getHeroGoogleLineHeightValue,
-	} = await server.ssrLoadModule("/src/lib/heroGoogleFontSwap.ts"));
-});
-
-after(async () => {
-	await server?.close();
+	} = await import(moduleUrl));
 });
 
 test("parses the stylesheet link from a full Google Fonts embed snippet", () => {

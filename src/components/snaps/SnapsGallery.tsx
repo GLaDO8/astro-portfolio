@@ -31,6 +31,12 @@ function getSnapGalleryHeight(item: SnapsGalleryItem) {
 	return "h-96";
 }
 
+const rotations = ["-rotate-[3deg]", "rotate-[2deg]", "-rotate-[2deg]", "rotate-[3deg]"];
+
+function randomRotation() {
+	return rotations[Math.floor(Math.random() * rotations.length)];
+}
+
 export default function SnapsGallery({ snaps, priorityCount = 0 }: SnapsGalleryProps) {
 	return (
 		<motion.div
@@ -45,7 +51,7 @@ export default function SnapsGallery({ snaps, priorityCount = 0 }: SnapsGalleryP
 				return (
 					<motion.figure
 						key={item.src}
-						className="flex-none border-12 border-white"
+						className={cn("flex-none border-12 border-white", randomRotation())}
 						data-snap-span={item.span}
 						data-snap-date={`${item.date} ${item.year}`}
 					>

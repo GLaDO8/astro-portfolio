@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import AgentationToolbar from "@/components/AgentationToolbar";
-import DevMeasurer from "@/components/DevMeasurer";
+import AgentationToolbar from "@/dev/AgentationToolbar";
+import DevMeasurer from "@/dev/DevMeasurer";
 
 const getRouteKey = () =>
 	`${window.location.pathname}${window.location.search}${window.location.hash}`;

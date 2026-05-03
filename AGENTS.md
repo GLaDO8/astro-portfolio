@@ -7,18 +7,25 @@ Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Moti
 ## Key Files
 - `src/layouts/Document.astro` — document and app-shell layout. Owns SEO, font preloading, global CSS, `ClientRouter`, Lenis bootstrapping, skip link, dev-only toolbar mounting, shared max-width shell, optional navbar, main content wrapper, and page enter/leave state used by shell transitions.
 - `src/layouts/Page.astro` — standard interior page layout. Composes `Document` and applies the default content grid for non-home pages.
-- `src/components/Navbar.astro` — segmented top navigation. Owns progressive navbar blur, sticky placement, persisted transition wrapper, active-link detection, subdomain menu behavior, and client-side re-sync after Astro route transitions.
+- `src/components/Navbar.astro` — shared top navigation. Owns progressive navbar blur, sticky placement, persisted transition wrapper, active-link detection, subdomain menu behavior, and client-side re-sync after Astro route transitions.
 
 ## Code style and conventions
 - Simplicity first, this is a personal website not enterprise software. Start with the simplest implementation then layer in complexity as needed.
-- Keep every planning artifact inside `plans/`. Use `plans/plan.md` as the active plan/index when a generic plan pointer is needed; do not create, symlink, or leave `./plan.md` in the project root. If a tool generates a root `plan.md`, move it into `plans/` before continuing. This repo-local rule overrides the general planning-doc instruction to symlink an active plan at `./plan.md`.
-- When using Paper MCP for recreation or parity work, read the repo-local skill at `.codex/skills/paper-parity/SKILL.md` first.
-- Create semantic tokens from `@theme` in @src/styles/global.css only when the style is reusable across multiple components.
+- Use `pnpm` for all repo scripts. Do not use `npm` unless the task is explicitly about npm compatibility.
+- Keep every planning artifact inside `plans/`. This repo-local rule overrides the general planning-doc instruction to symlink an active plan at `./plan.md`.
+- Create semantic tokens from `@theme` in `src/styles/global.css` only when the style is reusable across multiple components.
 - Prefer using Motion library APIs for animations over complex custom CSS animations.
 - Use `cn()` for conditional class composition and concatenation.
 - Promote reusable values to `@theme` in `src/styles/global.css`
 - Avoid arbitrary one-off spacing/sizing values like `pt-[23px]`. If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
 - Arbitrary colors (`bg-[#hex]`) are OK temporarily; promote to `@theme` token if reused.
+- Dev-only UI and helpers belong under `src/dev/`, not alongside production components or shared library code.
+
+## Agent workflow
+- For narrow changes, prefer `pnpm run verify:changed`.
+- For Markdoc/content/routing changes, prefer `pnpm run verify:content`.
+- Use `pnpm run build:astro` for Astro's build without the `pnpm images` prepass, and `pnpm run build` for the full production build.
+- Browser verification should be one focused probe per concern: collect computed styles, bounding rects, parent chain, and `outerHTML` for the actual visible element in a single `agent-browser eval` whenever possible.
 
 ## Understand the DOM
 For structural styling, complex DOM changes, or CSS/layout debugging, inspect the rendered DOM first. The rendered DOM is the source of truth. Do not infer selector paths from Astro/React source alone when the change depends on parent/child relationships in the final DOM.

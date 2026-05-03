@@ -15,7 +15,7 @@ import {
 	setHeroGoogleFontSize,
 	setHeroGoogleLetterSpacing,
 	setHeroGoogleLineHeight,
-} from "@/lib/heroGoogleFontSwap";
+} from "@/dev/heroGoogleFontSwap";
 
 const STORAGE_PREFIX = "site:hero-google-font-swap:v2";
 const EMBED_STORAGE_KEY = `${STORAGE_PREFIX}:embed`;

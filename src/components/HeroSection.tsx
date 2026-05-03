@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import shuffled from "@/lib/fisher-shuffle";
 
 const descriptions = [
 	"Shreyas is a design engineer and a serial hobbyist.",
@@ -22,16 +23,6 @@ type StreamingTextProps = {
 	text: string;
 	shouldReduceMotion: boolean;
 };
-
-// Uses the shuffle bag algorithm by Fisher-Yates. Bag starts empty, adds all descriptions and then pops them till it's empty again.
-function shuffled(arr: string[]) {
-	const a = [...arr];
-	for (let i = a.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[a[i], a[j]] = [a[j], a[i]];
-	}
-	return a;
-}
 
 function getStreamingWords(text: string) {
 	let letterIndex = 0;

@@ -6,9 +6,12 @@
 	"scripts": {
 		"dev": "astro dev",
 		"build": "pnpm images && astro build",
+		"build:astro": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
 		"test": "node --test tests/**/*.test.mjs",
+		"verify:changed": "node scripts/verify-changed.mjs",
+		"verify:content": "node scripts/verify-content.mjs",
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
@@ -37,6 +40,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.9",
+		"@markdoc/markdoc": "0.5.7",
 		"@types/node": "^25.3.5",
 		"@types/react": "^19.0.0",
 		"@types/react-dom": "^19.0.0",
