@@ -140,6 +140,7 @@ export default function HeroSection() {
 	return (
 		<section className="flex w-full flex-col items-center gap-6 text-center">
 			<h1
+				data-hero-rotating-text
 				className="m-0 box-border w-screen max-w-6xl px-4 text-pretty text-center font-sans text-3xl leading-[1.35] font-bold tracking-[-0.02em] text-charcoal uppercase md:text-5xl md:leading-[1.25] xl:text-6xl"
 				style={{ wordSpacing: "0.08em" }}
 			>

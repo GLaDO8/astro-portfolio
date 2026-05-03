@@ -1,5 +1,6 @@
 ---
 import HeroSection from "@/components/HeroSection";
+import HeroGoogleFontSwapWidget from "@/components/HeroGoogleFontSwapWidget";
 import HomeWidgetStrip from "@/components/widgets/HomeWidgetStrip.astro";
 import Page from "@/layouts/Page.astro";
 import { getSongData } from "@/lib/widgetConfig";
@@ -9,6 +10,7 @@ const homeTextColumn =
 const homeWidgetColumn =
     "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const songData = await getSongData();
+const enableHeroFontSwap = import.meta.env.DEV;
 
 const jsonLd = {
     "@context": "https://schema.org",
@@ -47,6 +49,7 @@ const jsonLd = {
 
     <div class:list={[homeTextColumn, "flex min-w-0 flex-col items-center gap-9"]}>
         <HeroSection client:visible />
+        {enableHeroFontSwap && <HeroGoogleFontSwapWidget client:load />}
 
         <div
             class="text-pretty font-sans text-lg leading-[1.8] font-medium tracking-[-0.02em] text-charcoal md:text-2xl md:px-12 pt-8"
