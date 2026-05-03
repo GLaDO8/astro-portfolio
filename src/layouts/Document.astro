@@ -13,6 +13,7 @@ interface Props {
 	mainClass?: string;
 	navClass?: string;
 	navBlurBackground?: string;
+	constrainShell?: boolean;
 	showNavigation?: boolean;
 	seo?: {
 		ogType?: "website" | "article";
@@ -33,6 +34,7 @@ const {
 	mainClass,
 	navClass,
 	navBlurBackground,
+	constrainShell = true,
 	showNavigation = true,
 	seo = {},
 } = Astro.props;
@@ -62,7 +64,12 @@ const isDev = import.meta.env.DEV;
 			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-charcoal"
 			>Skip to content</a
 		>
-		<div class="relative mx-auto flex min-h-dvh max-w-7xl flex-col">
+		<div
+			class:list={[
+				"relative mx-auto flex min-h-dvh flex-col",
+				constrainShell && "max-w-7xl",
+			]}
+		>
 			{
 				showNavigation && (
 					<Navbar

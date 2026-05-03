@@ -1,6 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
+import SnapsGallery from "@/components/snaps/SnapsGallery";
 import SnapsLayout from "@/layouts/SnapsLayout.astro";
 import { getRequiredImageAsset } from "@/lib/imageAssets";
 
@@ -280,36 +280,21 @@ const firstRowItemCount = (() => {
 <SnapsLayout
     title="Snaps — Shreyas Gupta"
     description="A collection of photographs by Shreyas Gupta."
-    bodyClass="bg-white"
+    bodyClass="bg-parchment"
+    navBlurBackground="bg-parchment"
 >
     <!-- Title -->
-    <div class="flex flex-col items-center gap-0 mb-16">
+    <div class="flex flex-col items-center gap-0 mb-16 mt-8">
         <h1
             class="font-sans font-bold text-6xl leading-none text-charcoal pb-4 md:text-7xl lg:text-8xl uppercase"
         >
             Photo Roll
         </h1>
-        <p class="font-sans text-lg text-slate md:text-xl">
+        <p class="font-sans font-medium text-lg text-slate md:text-xl">
             Poetry written with my cameras.
         </p>
     </div>
 
     <!-- Photo grid -->
-    <div class="flex gap-x-4 items-center" data-snaps-grid>
-        {
-            snaps.map((item, itemIndex) => (
-                // flex-none means do not grow, do no shrink, use the specified width
-                <div class="w-128 flex-none">
-                    <Image
-                        class:list={["w-full object-cover"]}
-                        src={item.image}
-                        alt={
-                            item.caption ||
-                            `Photograph taken on ${item.date}, ${item.year}`
-                        }
-                    />
-                </div>
-            ))
-        }
-    </div>
+    <SnapsGallery snaps={snaps} priorityCount={firstRowItemCount} client:visible />
 </SnapsLayout>

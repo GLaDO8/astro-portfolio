@@ -2,32 +2,25 @@
 import Document from "./Document.astro";
 
 interface Props {
-    title: string;
-    description: string;
-    bodyClass?: string;
-    class?: string;
-    navBlurBackground?: string;
-    seo?: {
-        ogType?: "website" | "article";
-        ogImage?: string;
-        ogImageAlt?: string;
-        article?: {
-            publishedTime: string;
-        };
-        noindex?: boolean;
-        jsonLd?: Record<string, unknown>;
-    };
+	title: string;
+	description: string;
+	bodyClass?: string;
+	class?: string;
+	navBlurBackground?: string;
+	seo?: {
+		ogType?: "website" | "article";
+		ogImage?: string;
+		ogImageAlt?: string;
+		article?: {
+			publishedTime: string;
+		};
+		noindex?: boolean;
+		jsonLd?: Record<string, unknown>;
+	};
 }
 
-const {
-    title,
-    description,
-    bodyClass,
-    class: className,
-    navBlurBackground,
-    seo,
-} = Astro.props;
-const mainClass = ["sm:px-5 px-0 pb-20", className].filter(Boolean).join(" ");
+const { title, description, bodyClass, class: className, navBlurBackground, seo } = Astro.props;
+const mainClass = ["px-0 pb-20", className].filter(Boolean).join(" ");
 ---
 
 <Document
@@ -36,6 +29,7 @@ const mainClass = ["sm:px-5 px-0 pb-20", className].filter(Boolean).join(" ");
     bodyClass={bodyClass}
     mainClass={mainClass}
     navBlurBackground={navBlurBackground}
+    constrainShell={false}
     seo={seo}
 >
     <slot />
