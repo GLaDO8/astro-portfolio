@@ -1,20 +1,22 @@
 ---
 import aeropressStandModelUrl from "@/assets/sidequests/aeropress-stand.glb?url";
 import v60StandModelUrl from "@/assets/sidequests/v60-stand.glb?url";
-import Page from "@/layouts/Page.astro";
+import CADRender, { type CADModel } from "@/components/sidequests/CADRender";
+import SidequestsCanvas from "@/components/sidequests/SidequestsCanvas";
+import Document from "@/layouts/Document.astro";
 
 const cadModels = [
 	{
 		id: "v60-skadis",
 		src: v60StandModelUrl,
-		alt: "Rotating blue CAD model of a V60 Skadis mount",
+		alt: "Rotating white 3D model of a V60 Skadis mount",
 	},
 	{
 		id: "aeropress-skadis-stand",
 		src: aeropressStandModelUrl,
-		alt: "Rotating blue CAD model of an Aeropress Skadis stand",
+		alt: "Rotating white 3D model of an Aeropress Skadis stand",
 	},
-];
+] satisfies CADModel[];
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -25,95 +27,70 @@ const jsonLd = {
 };
 ---
 
-<Page
+<Document
     title="Sidequests — Shreyas Gupta"
     description="Side projects, prototypes, and experiments by Shreyas Gupta."
-    bodyClass="bg-beige"
-    class="bg-beige"
+    bodyClass="sidequests-body bg-beige"
+    mainClass="sidequests-page"
+    navClass="sidequests-navbar"
+    constrainShell={false}
     seo={{ jsonLd }}
 >
-    <section
-        class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
-    >
-        <header class="mt-8">
+    <SidequestsCanvas client:load>
+        <header class="sidequests-canvas__intro">
             <h1
                 class="font-sans text-4xl leading-[1.1] font-bold tracking-[-0.03em] text-primary text-balance md:text-5xl"
             >
                 Sidequests
             </h1>
-            <p class="mt-4 max-w-2xl font-sans text-base leading-relaxed text-secondary md:text-lg">
+            <p
+                class="mt-4 max-w-2xl font-sans text-base leading-relaxed text-secondary md:text-lg"
+            >
                 Side projects, prototypes, and playful builds.
             </p>
         </header>
 
-        <div class="mt-10 flex flex-wrap gap-8">
+        <div class="sidequests-canvas__models">
             {
                 cadModels.map((model) => (
-                    <model-viewer
-                        src={model.src}
-                        alt={model.alt}
-                        auto-rotate
-                        auto-rotate-delay="0"
-                        camera-controls
-                        interaction-prompt="none"
-                        loading="lazy"
-                        reveal="auto"
-                        rotation-per-second="24deg"
-                        shadow-intensity="0"
-                        touch-action="pan-y"
-                        data-cad-model={model.id}
-                        class="block h-[200px] w-[200px]"
-                        style="--poster-color: transparent;"
-                    />
+                    <CADRender model={model} />
                 ))
             }
         </div>
-    </section>
+    </SidequestsCanvas>
 
-    <script>
-        const cadModelViewers = document.querySelectorAll("[data-cad-model]");
-
-        for (const cadModelViewer of cadModelViewers) {
-            const cadBlue = [0.05, 0.32, 0.95, 1];
-
-            cadModelViewer.addEventListener("load", () => {
-                for (const material of cadModelViewer.model?.materials ?? []) {
-                    material.pbrMetallicRoughness.setBaseColorFactor(cadBlue);
-                    material.pbrMetallicRoughness.setMetallicFactor(0);
-                    material.pbrMetallicRoughness.setRoughnessFactor(0.55);
-                }
-            });
+    <style>
+        .sidequests-canvas__intro {
+            position: absolute;
+            top: calc(50% - 13rem);
+            left: calc(50% - 30rem);
+            max-width: 28rem;
+            padding: 0 1rem;
+            user-select: text;
         }
 
-        if (cadModelViewers.length > 0) {
-            let hasRequestedViewer = false;
+        .sidequests-canvas__models {
+            position: absolute;
+            top: calc(50% - 5.5rem);
+            left: calc(50% + 2rem);
+            display: grid;
+            grid-template-columns: repeat(2, minmax(14rem, 18rem));
+            gap: 1.5rem;
+        }
 
-            const loadViewer = () => {
-                if (hasRequestedViewer) {
-                    return;
-                }
+        @media (max-width: 48rem) {
+            .sidequests-canvas__intro {
+                top: calc(50% - 21rem);
+                left: calc(50% - 11rem);
+                max-width: 22rem;
+            }
 
-                hasRequestedViewer = true;
-                import("@google/model-viewer");
-            };
-
-            if ("IntersectionObserver" in window) {
-                const observer = new IntersectionObserver(
-                    (entries) => {
-                        if (entries.some((entry) => entry.isIntersecting)) {
-                            observer.disconnect();
-                            loadViewer();
-                        }
-                    },
-                    { rootMargin: "200px" },
-                );
-
-                for (const cadModelViewer of cadModelViewers) {
-                    observer.observe(cadModelViewer);
-                }
-            } else {
-                loadViewer();
+            .sidequests-canvas__models {
+                top: calc(50% - 10rem);
+                left: calc(50% - 9.5rem);
+                grid-template-columns: minmax(15rem, 19rem);
+                gap: 1.25rem;
             }
         }
-    </script>
-</Page>
+    </style>
+</Document>
