@@ -24,6 +24,7 @@
 		"@astrojs/markdoc": "^1.0.4",
 		"@astrojs/react": "^5.0.4",
 		"@astrojs/sitemap": "^3.7.2",
+		"@google/model-viewer": "^4.2.0",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.2.1",
 		"agentation": "^2.3.0",

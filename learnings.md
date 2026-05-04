@@ -10,3 +10,4 @@
 - browser's default flex behaviour is flex: 0 1 auto;
 - the details and summary tags are browser's native way to create a disclosure component or an accordion component.
 - tailwind generates CSS at dev/build time, not runtime, so you cannot manipulate tailwind classes with JS on runtime.
+- glb files are great way for packaging the CAD model, textures etc into one file for rendering on the web. Google model viewer is considered the most performant way to render models on the web. 

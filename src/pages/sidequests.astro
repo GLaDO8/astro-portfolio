@@ -1,5 +1,20 @@
 ---
+import aeropressStandModelUrl from "@/assets/sidequests/aeropress-stand.glb?url";
+import v60StandModelUrl from "@/assets/sidequests/v60-stand.glb?url";
 import Page from "@/layouts/Page.astro";
+
+const cadModels = [
+	{
+		id: "v60-skadis",
+		src: v60StandModelUrl,
+		alt: "Rotating blue CAD model of a V60 Skadis mount",
+	},
+	{
+		id: "aeropress-skadis-stand",
+		src: aeropressStandModelUrl,
+		alt: "Rotating blue CAD model of an Aeropress Skadis stand",
+	},
+];
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -30,5 +45,75 @@ const jsonLd = {
                 Side projects, prototypes, and playful builds.
             </p>
         </header>
+
+        <div class="mt-10 flex flex-wrap gap-8">
+            {
+                cadModels.map((model) => (
+                    <model-viewer
+                        src={model.src}
+                        alt={model.alt}
+                        auto-rotate
+                        auto-rotate-delay="0"
+                        camera-controls
+                        interaction-prompt="none"
+                        loading="lazy"
+                        reveal="auto"
+                        rotation-per-second="24deg"
+                        shadow-intensity="0"
+                        touch-action="pan-y"
+                        data-cad-model={model.id}
+                        class="block h-[200px] w-[200px]"
+                        style="--poster-color: transparent;"
+                    />
+                ))
+            }
+        </div>
     </section>
+
+    <script>
+        const cadModelViewers = document.querySelectorAll("[data-cad-model]");
+
+        for (const cadModelViewer of cadModelViewers) {
+            const cadBlue = [0.05, 0.32, 0.95, 1];
+
+            cadModelViewer.addEventListener("load", () => {
+                for (const material of cadModelViewer.model?.materials ?? []) {
+                    material.pbrMetallicRoughness.setBaseColorFactor(cadBlue);
+                    material.pbrMetallicRoughness.setMetallicFactor(0);
+                    material.pbrMetallicRoughness.setRoughnessFactor(0.55);
+                }
+            });
+        }
+
+        if (cadModelViewers.length > 0) {
+            let hasRequestedViewer = false;
+
+            const loadViewer = () => {
+                if (hasRequestedViewer) {
+                    return;
+                }
+
+                hasRequestedViewer = true;
+                import("@google/model-viewer");
+            };
+
+            if ("IntersectionObserver" in window) {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        if (entries.some((entry) => entry.isIntersecting)) {
+                            observer.disconnect();
+                            loadViewer();
+                        }
+                    },
+                    { rootMargin: "200px" },
+                );
+
+                for (const cadModelViewer of cadModelViewers) {
+                    observer.observe(cadModelViewer);
+                }
+            } else {
+                loadViewer();
+            }
+        }
+    </script>
 </Page>
