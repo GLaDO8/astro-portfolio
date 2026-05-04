@@ -1,21 +1,20 @@
 ---
-import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
 import ArticleProse from "@/components/mdoc/ArticleProse.astro";
 import Page from "@/layouts/Page.astro";
 import { getImageAsset } from "@/lib/imageAssets";
 
 const themeStyles: Record<string, string> = {
-    "hot-text":
-        "prose-h2:text-base md:prose-h2:text-base prose-h2:text-[#DA0288] prose-h2:uppercase",
+	"hot-text": "prose-h2:text-base md:prose-h2:text-base prose-h2:text-[#DA0288] prose-h2:uppercase",
 };
 
 export async function getStaticPaths() {
-    const studies = await getCollection("caseStudies");
-    return studies.map((study) => ({
-        params: { slug: study.id },
-        props: { study },
-    }));
+	const studies = await getCollection("caseStudies");
+	return studies.map((study) => ({
+		params: { slug: study.id },
+		props: { study },
+	}));
 }
 
 const { study } = Astro.props;
@@ -27,24 +26,24 @@ const heroImageAlt = study.data.heroImageAlt ?? study.data.title;
 const publishedDate = study.data.date.toISOString();
 const publishedDay = publishedDate.slice(0, 10);
 const readableDate = study.data.date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+	timeZone: "UTC",
 });
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: study.data.title,
-    description: study.data.description,
-    datePublished: publishedDate,
-    author: {
-        "@type": "Person",
-        "@id": "https://shrey.fyi/#person",
-        name: "Shreyas Gupta",
-    },
-    url: `https://shrey.fyi/work/${study.id}`,
+	"@context": "https://schema.org",
+	"@type": "CreativeWork",
+	name: study.data.title,
+	description: study.data.description,
+	datePublished: publishedDate,
+	author: {
+		"@type": "Person",
+		"@id": "https://shrey.fyi/#person",
+		name: "Shreyas Gupta",
+	},
+	url: `https://shrey.fyi/work/${study.id}`,
 };
 ---
 
@@ -87,13 +86,13 @@ const jsonLd = {
     }
     <time
         datetime={publishedDay}
-        class="font-sans col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 text-center text-slate pb-4"
+        class="font-sans col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 text-center text-secondary pb-4"
     >
         {readableDate}
     </time>
     <h1
         class:list={[
-            "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.15] tracking-[-0.02em] text-charcoal text-center text-balance md:text-5xl md:leading-[1.1] lg:text-6xl",
+            "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.15] tracking-[-0.02em] text-primary text-center text-balance md:text-5xl md:leading-[1.1] lg:text-6xl",
             heroImageSrc ? "mb-8 md:mb-10" : "mb-16",
         ]}
     >

@@ -105,7 +105,7 @@ export default function CodeBlockCopyButton({ code }: CodeBlockCopyButtonProps) 
 	return (
 		<button
 			type="button"
-			className="absolute top-2 right-2 z-10 grid size-7 cursor-pointer place-items-center rounded-sm border border-charcoal/10 bg-white text-charcoal transition duration-200 ease-out hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal"
+			className="absolute top-2 right-2 z-10 grid size-7 cursor-pointer place-items-center rounded-sm border border-primary/10 bg-white text-primary transition duration-200 ease-out hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 			aria-label={controlLabel}
 			title={controlLabel}
 			onClick={handleCopy}

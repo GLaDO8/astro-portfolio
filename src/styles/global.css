@@ -11,11 +11,10 @@
 
 @theme {
 	/* Colors */
-	--color-parchment: #f4f5f0; /* background */
-	--color-charcoal: #2a231d; /* text primary */
-	--color-slate: #7a715f; /* text secondary */
-	--color-mist: oklch(92.5% 0.005 214.3); /* soft surface */
-	--color-fog: #ddd2c1; /* subtle divider */
+	--color-beige: #f4f5f0; /* background */
+	--color-primary: #2a231d; /* text primary */
+	--color-secondary: #7a715f; /* text secondary */
+	--color-tertiary: #ddd2c1; /* subtle divider */
 
 	/* Grid */
 	--grid-template-columns-16: repeat(16, minmax(0, 1fr));

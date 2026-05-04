@@ -12,10 +12,10 @@ const { content, language, maxHeight } = Astro.props;
 const trimmed = content.replace(/\n$/, "");
 ---
 
-<div class="p-3 border rounded-lg flex flex-col gap-3 border-charcoal/10 shadow-sm">
+<div class="p-3 border rounded-lg flex flex-col gap-3 border-primary/10 shadow-sm">
     <div><p class="text-sm font-semibold">Bounding boxes with svg</p> <div></div></div>
     <div
-        class="codeblock not-prose relative bg-zinc-50 border border-charcoal/10 rounded-sm overflow-hidden font-mono text-base leading-relaxed font-medium"
+        class="codeblock not-prose relative bg-zinc-50 border border-primary/10 rounded-sm overflow-hidden font-mono text-base leading-relaxed font-medium"
         style={maxHeight ? `--codeblock-max-height: ${maxHeight}` : undefined}
         data-lenis-prevent={maxHeight ? "" : undefined}
         data-codeblock

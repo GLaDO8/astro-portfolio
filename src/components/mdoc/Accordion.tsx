@@ -1,7 +1,7 @@
-import { motion, useReducedMotion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { type ReactNode, useId, useState } from "react";
-import plusIconSvg from "/Plus.svg?raw";
 import minusIconSvg from "/minus.svg?raw";
+import plusIconSvg from "/Plus.svg?raw";
 
 interface AccordionProps {
 	title: string;
@@ -35,7 +35,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 	return (
 		<motion.section
 			layout={!shouldReduceMotion}
-			className="not-prose my-8 overflow-hidden rounded-lg border border-charcoal/10 bg-white"
+			className="not-prose my-8 overflow-hidden rounded-lg border border-primary/10 bg-white"
 		>
 			<button
 				type="button"

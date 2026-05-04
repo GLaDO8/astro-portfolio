@@ -50,7 +50,7 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 		return (
 			<motion.span
 				key={text}
-				className="inline text-charcoal"
+				className="inline text-primary"
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}
@@ -66,7 +66,7 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 	return (
 		<motion.span
 			key={text}
-			className="inline text-charcoal"
+			className="inline text-primary"
 			aria-label={text}
 			exit={{ opacity: 0, y: -4 }}
 			transition={{ duration: 0.08, ease: "easeOut" }}
@@ -132,7 +132,7 @@ export default function HeroSection() {
 		<section className="flex w-full flex-col items-center gap-6 text-center">
 			<h1
 				data-hero-rotating-text
-				className="m-0 box-border w-screen max-w-6xl px-4 text-pretty text-center font-sans text-3xl leading-[1.35] font-bold tracking-[-0.02em] text-charcoal uppercase md:text-5xl md:leading-[1.25] xl:text-6xl"
+				className="m-0 box-border w-screen max-w-6xl px-4 text-pretty text-center font-sans text-3xl leading-[1.35] font-bold tracking-[-0.02em] text-primary uppercase md:text-5xl md:leading-[1.25] xl:text-6xl"
 				style={{ wordSpacing: "0.08em" }}
 			>
 				{/* initial={false} skips animation on the first render */}
@@ -148,7 +148,7 @@ export default function HeroSection() {
 					whileTap={{ scale: 1.05 }}
 					type="button"
 					onClick={cycle}
-					className="cursor-pointer rounded-full bg-gradient-to-b from-[#faffff] from-[68%] to-[#fcfff1] px-4 pb-1.75 pt-1.5 md:px-6 md:pb-2.5 md:pt-2 font-sans text-base font-semibold tracking-[-0.02em] text-charcoal shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15),inset_0px_2px_0px_0px_white] md:text-xl"
+					className="cursor-pointer rounded-full bg-gradient-to-b from-[#faffff] from-[68%] to-[#fcfff1] px-4 pb-1.75 pt-1.5 md:px-6 md:pb-2.5 md:pt-2 font-sans text-base font-semibold tracking-[-0.02em] text-primary shadow-[0px_0px_8px_0px_rgba(88,104,110,0.15),inset_0px_2px_0px_0px_white] md:text-xl"
 				>
 					What else ?
 				</motion.button>
@@ -160,7 +160,7 @@ export default function HeroSection() {
 						href="https://github.com/GLaDO8"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-charcoal/80 hover:text-charcoal"
+						className="text-primary/80 hover:text-primary"
 					>
 						<svg
 							className="size-5 md:size-6"
@@ -178,7 +178,7 @@ export default function HeroSection() {
 						href="https://x.com/wutamelonshrey"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-charcoal/80 hover:text-charcoal"
+						className="text-primary/80 hover:text-primary"
 					>
 						<svg
 							className="size-5 md:size-6"
@@ -196,7 +196,7 @@ export default function HeroSection() {
 						href="https://www.instagram.com/wutamelonshrey/"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-charcoal/80 hover:text-charcoal"
+						className="text-primary/80 hover:text-primary"
 					>
 						<svg
 							className="size-5 md:size-6"
