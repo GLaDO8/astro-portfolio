@@ -19,78 +19,61 @@ I can't be the only one with these issue.
 
 I put out a google form and talked to a few folks, and surely I was right - most Indian households still use traditional pressure cookers and many were annoyed like me.
 
-![bar plot of rice and pulses cooking methods](/case-studies/one-more-whistle/cooking-methods-bar.webp)
-{% sidenote %}
-Note - The survey was filled by **young adults between 20-27 years old,** meaning most of them were students and don’t regularly get involved in kitchen activities, which explains why most respondents found it problematic because one would assume that years of cooking rice in pressure cookers would’ve tempered the learning for most house cooks.
-{% /sidenote %}
-![Sankey plot of cooking practices](/case-studies/one-more-whistle/cooking-practices-sankey.png)
+![bar plot of rice and pulses cooking methods](/case-studies/one-more-whistle/bar-viz@3x.png)
 
-Talking to the participants' parents revealed interesting stuff.
+![Sankey plot of cooking practices](/case-studies/one-more-whistle/sankey-viz@3x.png)
 
-- **The duration of the whistle is important.** There are times when the whistle comes for a jiffy, but this is something which is not counted towards the tally.
-- The responsibility of looking after the pressure cooker is usually given to someone when the cook has some other work. For example, if mom has to get ready for work or a zoom meeting, she will ask her daughter to keep a look out for the cooker whistles, who reluctantly agrees, but **forgets**.
-- In independent houses and villas, with kitchens being on the ground floor and rooms being usually on the next floor, it’s almost **impossible to hear** the whistles. This forces family members to come down and sit somewhere near the kitchen and continue their work if they are asked to switch off the cooker after a few whistles.
-- People said they would rather continue working on their **assignment submission**, continue their **yoga session**, **watching TV** or **binging Netflix** if they weren't asked to count the whistles.
+The form was filled mostly by students, who likely haven't built muscle memory from cooking over years. Talking to their parents was interesting,
 
-The running narrative among all the participants was that they don’t like standing in the kitchen and waiting for the whistles.
+- Length of the whistle is important - there are times when the whistle comes for a split second, which is not counted.
+- Just like my home, they usually ask someone to look after the cooker if they are busy. If mum's getting ready for work, she will ask her daughter to look after the cooker for whistles.
+- Independent houses have kitchens on the ground floor and bedrooms on the top floor, making it difficult to hear the whistles. So they come down, sit near the kitchen and continue their work.
+
+No one likes standing in the kitchen and waiting for the whistles.
 
 ## Some internet research
 
-Turns out the "[supposedly correct](https://www.hawkinscookers.com/Cookbooks/Ventura%20IM.pdf)" way to use pressure cookers was to put the cooker on high heat for pressure to build up and then put it on simmer heat to keep the pressure in. Some of the [discussions](https://www.facebook.com/groups/RecipesForLockdowns/permalink/4616027938422804/) on this Facebook group called, "Simple recipes for complicated times" suggested the same, saying that counting whistles is wrong as you lose all the pressure that's built, and we end up wasting energy.
+Pressure cooker manuals suggest the "[correct](https://www.hawkinscookers.com/Cookbooks/Ventura%20IM.pdf)" way to use pressure cookers is to put them on high heat for pressure to build up and then put it on simmer heat to keep the pressure in. Some of the conversations on this Facebook group called [Simple recipes for complicated times](https://www.facebook.com/groups/RecipesForLockdowns/permalink/4616027938422804/) suggests the same, "counting whistle technique isn't right, you lose all the pressure that's built and waste energy".
 
-Other [discussions](https://www.facebook.com/groups/RecipesForLockdowns/permalink/4603552646337000/) suggested that many people preferred counting whistles simply because it has become a habit through generations and it's a lot more convenient. In a world that gets busier by the day, our kitchens get messy and complex. Family members have to keep up with their morning schedule, their kid's lunch for school and getting ready for work. In a world like this, the cooker whistle quickly becomes a vital affordance for indicating that the food is cooked. It is still problematic for some, especially the younger generations, and they are the people I am designing for.
+Counting whistles is convenient though, as this [discussion](https://www.facebook.com/groups/RecipesForLockdowns/permalink/4603552646337000/) suggests. Life's busy, everyone has their morning schedule, their kid's lunch to prepare and get ready for work. In a world like this, the cooker whistle becomes a great affordance for "your rice is cooked".
 
-But is the energy wastage significant enough?
+It's still annoying though. 
 
+## Do you waste energy though?
+Not really. I calculated the energy consumption for both the methods by cooking rice on an induction cooktop. 
 
-Not really. I did some experiments and compared the energy consumption for both methods using an induction cooktop to measure the energy used. 
+In the timer method, the induction was set to high heat (1600W) for 7 minutes and simmer (800W) for 6 minutes. I then cooked rice with by counting 4 whistles at different power levels.
 
-![Plot of experiment results](/case-studies/one-more-whistle/experiment-results.webp)
+![Plot of experiment results](/case-studies/one-more-whistle/visualisation@3x.png)
 
-The plot shows that the energy consumption is almost the same for both the methods, which means you don't save much energy by doing it the **right** way. This only tells us that forcing people to change their **mental models** about using pressure cookers isn't wise, and the right path to solving this is to design a solution which will help the younger generation Indians count the cooker whistles easily.
+The plot shows that the energy consumption isn't dramatically different, you don't save much by doing it the "right" way. 
 
-## Designing & building a prototype
+Forcing people to change their mental models about using pressure cookers won't work, maybe I should simply help folks count the cooker whistles more easily.
 
-There are two aspects to solving the whistle problem
+## Building a prototype
 
-1. Seamless recognition of the cooker whistles
-2. Notifying the user when the whistles have been counted
+I needed to recognise cooker whistles and then build notification system. So I trained a **whistle recognition model** which can detect and count the cooker whistles. 
 
-For the first part, I build a **whistle recognition model** which can accurately detect and count the cooker whistles. The data collection for training the model took around a month, where I used my smartphone's microphone to record cooker whistles while simulating the settings in which the user will be using the app. The recordings were taken in a variety of surroundings and situations based on my findings. 
+I spent a month collecting data with my iPhone recording cooker whistles in a variety of surroundings while making sure they have noises from the kitchen, television, conversations, keyboard clicking etc. You can find the dataset [here](https://github.com/GLaDO8/whistle_data).
 
-- Noises from the kitchen utensils, running water, ice dispenser, cooking, environmental noises, television, speakers, conversations and keyboard clicking.
-- In surroundings like kitchen, main hall, bedrooms located far away from the kitchen
+Then I trained a simple sound classification model using Xcode's [Create ML](https://developer.apple.com/machine-learning/create-ml/) service, which was able to detect whistles longer than 2 seconds with almost 98% accuracy.
 
-I trained the model using Xcode's Create ML service, which was able to detect cooker whistles with 99% accuracy and the model was just under 5MB! The model further checks if the whistle sound is detected for at least **2 seconds** to count it as a whistle. 
+The notification system had to work in all these scenarios,
 
-For the second part, I brainstormed all possible scenarios where the app will be used and how the app can help.
+1. You are busy on your computer or scrolling your phone.
+2. You are in a room far away from the kitchen.
+3. You have work and want to delegate "whistle counting" to someone else.
 
-1. **The user is busy with work on their computer** - People working on their computers are relatively more attentive to mail notifications than their smartphone notifications, and in such cases, they can opt for a email notification and get back to their work. 
-2. **The user is in a room far away from the kitchen** - People can opt for an alarm notification and leave their smartphone somewhere close enough to the kitchen but also close enough for them to hear the alarm. 
-3. **The user is scrolling his/her phone, unaware of the number of whistles already out** - People who simply want to be on their smartphone and be oblivious to the cooker whistles in the background, can opt for a simple push notification when the whistles have been counted. 
-4. **The cook has some urgent work, and wants to delegate the task of counting the whistles to someone at home** - This is a very common scenario, and in such case one can leave their smartphone near the kitchen and choose to notify someone else via SMS or email when the cooker whistles have been counted. 
+I needed an app to send SMS/Email notifications to anyone who wanted to be notified (or even self) when the whistle have been counted by my model, so they can go turn off the cooker.
 
-In all these cases, the person who is notified has to simply switch off the cooker, eliminating the need of relocating to somewhere near the kitchen and disrupting their work. 
+## Designing the app
 
-![branding assets for Whistl App](/case-studies/one-more-whistle/whistl-branding.png)
-
-Given the **utilitarian purpose** of the app, I made the information flow very conversational, making it easy for users to jump right in and use the app. Some key factors which drove the design process,
-
-1. Clean, high-contrast UI for easy readability by elder generations who want to delegate the task of counting whistles.
-2. Declarative UI structure for simple, no-nonsense app usage.
-3. Forgiving and flexible UX
-
-The notification methods are present on the home page itself, and lets users set preferences. The whistle detection screen has a real-time view microphone output view which shows whether the model detected a whistle, and also provides a timeline of whistle detections. The timeline is helpful to get a temporal estimate of when was the last whistle detected. The app also lets you customise the number of whistles you want to count, on the fly. This is helpful in case you change your mind or feel the food should cook for longer. 
+The app has a simple conversational information flow, making it easy for anyone to jump right in and use the app. You decide the number of whistles to count and how you want to be notified when counting is complete.
 
 ![Home Screen and Main App Screen](/case-studies/one-more-whistle/whistl-main-screens.png)
 
-![Notification preference popups on the homescreen](/case-studies/one-more-whistle/whistl-notification-popups.png)
+The whistle detection screen has a real-time waveform of the microphone output with a timeline of whistle detections. The timeline is helpful to get a temporal estimate of when was the last whistle detected. You can adjust the number of whistles you want to count on the fly if you change your mind or feel the food should cook for longer. 
 
-In my first prototype testing, I got the following feedback from users. 
+![branding assets for Whistl App](/case-studies/one-more-whistle/whistl-branding.png)
 
-1. Some people said they preferred getting a phone call when all whistles have been counted. 
-2. The ability to notify someone is useful, but it will be better if they get notified through an alarm of some sort, as they miss out on a SMS or email notifications.
-
-Phone calls and alarms are naturally something we prefer as they are relatively more intrusive and better at grabbing people's attention. So I added an option where the user can notify someone through an automated phone call, which is simpler to use and implement, 
-
-Never got around to releasing this app, maybe some day.
+I Never got around to releasing this app, but I did use it myself and found it very helpful. You can find the project code [here](https://github.com/GLaDO8/Whistl).
