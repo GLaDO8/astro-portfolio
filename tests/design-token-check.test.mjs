@@ -12,9 +12,10 @@ import {
 
 const THEME_CSS = `
 @theme {
-	--color-parchment: oklch(98.7% 0.002 197.1);
-	--color-charcoal: #2a231d;
-	--color-slate: #7a715f;
+	--color-beige: oklch(98.7% 0.002 197.1);
+	--color-primary: #2a231d;
+	--color-secondary: #7a715f;
+	--color-tertiary: #ddd2c1;
 	--text-sm: 0.875rem;
 	--text-sm--line-height: calc(1.25 / 0.875);
 	--text-base: 1rem;
@@ -44,7 +45,12 @@ test("extractThemeTokens reads typography and color tokens from @theme", () => {
 	const tokens = extractThemeTokens(THEME_CSS);
 
 	assert.deepEqual([...tokens.textTokens].sort(), ["text-base", "text-sm", "text-xl"]);
-	assert.deepEqual([...tokens.colorTokens].sort(), ["charcoal", "parchment", "slate"]);
+	assert.deepEqual([...tokens.colorTokens].sort(), [
+		"beige",
+		"primary",
+		"secondary",
+		"tertiary",
+	]);
 });
 
 test("runDesignTokenCheck fails on typography drift and warns on color drift", async () => {
@@ -52,7 +58,7 @@ test("runDesignTokenCheck fails on typography drift and warns on color drift", a
 		{
 			"src/styles/global.css": THEME_CSS,
 			"src/components/Example.astro": `
-				<div class="text-[14px] bg-[#ffeedd] text-charcoal">Hello</div>
+				<div class="text-[14px] bg-[#ffeedd] text-primary">Hello</div>
 				<style>
 					.card { font-size: 18px; color: #333f46; }
 				</style>
@@ -83,7 +89,7 @@ test("runDesignTokenCheck allows token usage without findings", async () => {
 			"src/styles/global.css": THEME_CSS,
 			"src/components/Okay.tsx": `
 				export function Okay() {
-					return <p className="text-base bg-parchment text-charcoal">Ready</p>;
+					return <p className="text-base bg-beige text-primary">Ready</p>;
 				}
 			`,
 		},

@@ -163,7 +163,7 @@ function MusicStripLine({ className, shouldReduceMotion, text }: MusicStripLineP
 		<p
 			ref={viewportRef}
 			className={cn(
-				"overflow-hidden py-0.5 font-sans leading-tight text-charcoal",
+				"overflow-hidden py-0.5 font-sans leading-tight text-primary",
 				className,
 				shouldAnimate &&
 					"[mask-image:linear-gradient(to_right,transparent,black_14px,black_calc(100%-14px),transparent)]",
@@ -603,7 +603,7 @@ export default function MusicWidget({ songData }: Props) {
 							<button
 								type="button"
 								className={cn(
-									"absolute right-3 bottom-3 z-40 grid size-4.5 place-items-center rounded-full  bg-white transition duration-200 ease-out  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal active:translate-y-0 cursor-pointer disabled:pointer-events-none disabled:opacity-45 hover:scale-110",
+									"absolute right-3 bottom-3 z-40 grid size-4.5 place-items-center rounded-full  bg-white transition duration-200 ease-out  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:translate-y-0 cursor-pointer disabled:pointer-events-none disabled:opacity-45 hover:scale-110",
 									isPlayingPreview && "scale-105",
 								)}
 								onClick={togglePreview}
