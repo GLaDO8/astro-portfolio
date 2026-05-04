@@ -125,6 +125,18 @@ function matchingTests(files) {
 		tests.add("tests/hero-google-font-swap.test.mjs");
 	}
 
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file === "src/dev/devOverlayStyles.js" ||
+				file === "src/dev/DevToolbars.tsx" ||
+				file === "tests/dev-overlay-styles.test.mjs",
+		)
+	) {
+		tests.add("tests/dev-overlay-styles.test.mjs");
+	}
+
 	if (hasAny(files, (file) => file === "scripts/check-design-tokens.mjs")) {
 		tests.add("tests/design-token-check.test.mjs");
 	}

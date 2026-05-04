@@ -43,7 +43,7 @@ export default function CADRender({ model }: CADRenderProps) {
 					min-height: 12rem;
 					overflow: hidden;
 					border: 0.75rem solid white;
-					border-radius: 0.125rem;
+					border-radius: 0.5rem;
 					background-color: var(--cad-render-blueprint);
 					background-image:
 						linear-gradient(rgba(255, 255, 255, 0.2) 2px, transparent 1px),
