@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/cn";
 import shuffled from "@/lib/fisher-shuffle";
 
 const descriptions = [
@@ -15,8 +16,8 @@ const descriptions = [
 
 const STREAM_LETTER_DELAY = 0.007;
 const STREAM_LETTER_DURATION = 0.1;
-const TIGHT_KERNING_PAIRS: Record<string, string> = {
-	ya: "-0.08em",
+const TIGHT_KERNING_PAIR_CLASSES: Record<string, string> = {
+	ya: "-ml-[0.08em]",
 };
 
 type StreamingTextProps = {
@@ -39,7 +40,7 @@ function getStreamingWords(text: string) {
 				letter,
 				key: `${letter}-${letterIndex}`,
 				delay: letterIndex++ * STREAM_LETTER_DELAY,
-				marginLeft: TIGHT_KERNING_PAIRS[pair],
+				kerningClassName: TIGHT_KERNING_PAIR_CLASSES[pair],
 			};
 		}),
 	}));
@@ -74,11 +75,10 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 			{words.map(({ key, hasTrailingSpace, letters }) => (
 				<Fragment key={key}>
 					<span aria-hidden="true" className="inline-block whitespace-nowrap">
-						{letters.map(({ key: letterKey, letter, delay, marginLeft }) => (
+						{letters.map(({ key: letterKey, letter, delay, kerningClassName }) => (
 							<motion.span
 								key={letterKey}
-								className="inline-block"
-								style={marginLeft ? { marginLeft } : undefined}
+								className={cn("inline-block", kerningClassName)}
 								initial={{ opacity: 0, y: "0.35em", filter: "blur(8px)" }}
 								animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
 								transition={{
@@ -132,8 +132,7 @@ export default function HeroSection() {
 		<section className="flex w-full flex-col items-center gap-6 text-center">
 			<h1
 				data-hero-rotating-text
-				className="m-0 box-border w-screen max-w-6xl px-4 text-pretty text-center font-sans text-3xl leading-[1.35] font-bold tracking-[-0.02em] text-primary uppercase md:text-5xl md:leading-[1.25] xl:text-6xl"
-				style={{ wordSpacing: "0.08em" }}
+				className="m-0 box-border w-screen max-w-6xl px-4 text-pretty text-center font-sans text-3xl leading-[1.35] font-bold tracking-[-0.02em] text-primary uppercase [word-spacing:0.08em] md:text-5xl md:leading-[1.25] xl:text-6xl"
 			>
 				{/* initial={false} skips animation on the first render */}
 				<AnimatePresence mode="wait" initial={false}>

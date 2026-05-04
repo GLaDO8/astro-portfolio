@@ -1,5 +1,6 @@
 ---
 import { Code } from "astro:components";
+import { cn } from "@/lib/cn";
 import CodeBlockCopyButton from "./CodeBlockCopyButton";
 
 interface Props {
@@ -10,13 +11,23 @@ interface Props {
 
 const { content, language, maxHeight } = Astro.props;
 const trimmed = content.replace(/\n$/, "");
+const maxHeightClasses: Record<string, string> = {
+	"24rem": "[--codeblock-max-height:24rem]",
+};
+const maxHeightClass = maxHeight ? maxHeightClasses[maxHeight] : undefined;
+
+if (maxHeight && !maxHeightClass) {
+	throw new Error(`Unsupported CodeBlock maxHeight "${maxHeight}". Add a Tailwind class mapping.`);
+}
 ---
 
 <div class="p-3 border rounded-lg flex flex-col gap-3 border-primary/10 shadow-sm">
     <div><p class="text-sm font-semibold">Bounding boxes with svg</p> <div></div></div>
     <div
-        class="codeblock not-prose relative bg-zinc-50 border border-primary/10 rounded-sm overflow-hidden font-mono text-base leading-relaxed font-medium"
-        style={maxHeight ? `--codeblock-max-height: ${maxHeight}` : undefined}
+        class={cn(
+            "codeblock not-prose relative bg-zinc-50 border border-primary/10 rounded-sm overflow-hidden font-mono text-base leading-relaxed font-medium",
+            maxHeightClass,
+        )}
         data-lenis-prevent={maxHeight ? "" : undefined}
         data-codeblock
     >

@@ -1,5 +1,7 @@
 import { type PointerEvent, type ReactNode, useCallback, useEffect, useRef } from "react";
 
+import { cn } from "@/lib/cn";
+
 type SidequestsCanvasProps = {
 	readonly children: ReactNode;
 	readonly ariaLabel?: string;
@@ -33,6 +35,23 @@ type CADModelViewerElement = HTMLElement & {
 };
 
 const cadMaterialColor: [number, number, number, number] = [220 / 255, 220 / 255, 220 / 255, 1];
+
+const canvasClassName = cn(
+	"[--sidequests-dot-x:0px] [--sidequests-dot-y:0px]",
+	"absolute inset-0 overflow-hidden select-none touch-none cursor-grab",
+	"[background-image:radial-gradient(circle,rgba(42,35,29,0.22)_1px,transparent_1px)]",
+	"[background-position:calc(50%_+_var(--sidequests-dot-x))_calc(50%_+_var(--sidequests-dot-y))]",
+	"[background-size:1.5rem_1.5rem]",
+	"[&.is-dragging]:cursor-grabbing",
+);
+
+const stageClassName = cn(
+	"[--sidequests-pan-x:0px] [--sidequests-pan-y:0px]",
+	"absolute top-1/2 left-1/2 h-[64rem] w-[72rem] will-change-transform",
+	"[transform:translate3d(calc(-50%_+_var(--sidequests-pan-x)),calc(-50%_+_var(--sidequests-pan-y)),0)]",
+	"[&>astro-slot]:contents",
+	"md:h-[clamp(48rem,112dvh,62rem)] md:w-[clamp(72rem,128vw,96rem)]",
+);
 
 function applyCADMaterial(viewer: CADModelViewerElement) {
 	for (const material of viewer.model?.materials ?? []) {
@@ -224,7 +243,7 @@ export default function SidequestsCanvas({
 	return (
 		<section
 			ref={canvasRef}
-			className="sidequests-canvas"
+			className={canvasClassName}
 			aria-label={ariaLabel}
 			data-sidequests-canvas=""
 			onPointerDown={handlePointerDown}
@@ -232,81 +251,9 @@ export default function SidequestsCanvas({
 			onPointerUp={handlePointerUp}
 			onPointerCancel={handlePointerUp}
 		>
-			<div ref={stageRef} className="sidequests-canvas__stage" data-sidequests-stage="">
+			<div ref={stageRef} className={stageClassName} data-sidequests-stage="">
 				{children}
 			</div>
-
-			<style>{`
-				.sidequests-body {
-					overflow: hidden;
-				}
-
-				.sidequests-navbar {
-					position: fixed;
-					top: 1rem;
-					left: 50%;
-					z-index: 40;
-					width: min(calc(100% - 2rem), 39.25rem);
-					max-width: calc(100% - 2rem);
-					margin-bottom: 0;
-					transform: translateX(-50%);
-				}
-
-				.sidequests-page {
-					position: relative;
-					display: block;
-					height: 100dvh;
-					min-height: 100dvh;
-					overflow: hidden;
-					background: var(--color-beige);
-				}
-
-				.sidequests-canvas {
-					--sidequests-dot-x: 0px;
-					--sidequests-dot-y: 0px;
-					position: absolute;
-					inset: 0;
-					overflow: hidden;
-					background-image: radial-gradient(circle, rgba(42, 35, 29, 0.22) 1px, transparent 1px);
-					background-position:
-						calc(50% + var(--sidequests-dot-x)) calc(50% + var(--sidequests-dot-y));
-					background-size: 1.5rem 1.5rem;
-					cursor: grab;
-					touch-action: none;
-					user-select: none;
-				}
-
-				.sidequests-canvas.is-dragging {
-					cursor: grabbing;
-				}
-
-				.sidequests-canvas__stage {
-					--sidequests-pan-x: 0px;
-					--sidequests-pan-y: 0px;
-					position: absolute;
-					top: 50%;
-					left: 50%;
-					width: clamp(72rem, 128vw, 96rem);
-					height: clamp(48rem, 112dvh, 62rem);
-					transform: translate3d(
-						calc(-50% + var(--sidequests-pan-x)),
-						calc(-50% + var(--sidequests-pan-y)),
-						0
-					);
-					will-change: transform;
-				}
-
-				.sidequests-canvas__stage > astro-slot {
-					display: contents;
-				}
-
-				@media (max-width: 48rem) {
-					.sidequests-canvas__stage {
-						width: 72rem;
-						height: 64rem;
-					}
-				}
-			`}</style>
 		</section>
 	);
 }

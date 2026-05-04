@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import CopyIcon from "/Copy.svg?raw";
 import CheckIcon from "/Check.svg?raw";
+import CopyIcon from "/Copy.svg?raw";
 
 interface CodeBlockCopyButtonProps {
 	code: string;
@@ -19,10 +19,8 @@ async function writeToClipboard(text: string) {
 
 	const textarea = document.createElement("textarea");
 	textarea.value = text;
+	textarea.className = "fixed top-0 left-[-9999px]";
 	textarea.setAttribute("readonly", "");
-	textarea.style.position = "fixed";
-	textarea.style.left = "-9999px";
-	textarea.style.top = "0";
 	document.body.append(textarea);
 	textarea.select();
 	document.execCommand("copy");

@@ -1,4 +1,5 @@
 ---
+import { cn } from "@/lib/cn";
 import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
 interface Props {
@@ -15,7 +16,10 @@ const {
 const shellClass = ["sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className]
 	.filter(Boolean)
 	.join(" ");
-const blurStyle = `--navbar-blur-background: ${blurBackground};`;
+const blurBackgroundClass =
+	blurBackground === "white"
+		? "[--navbar-blur-background:white]"
+		: "[--navbar-blur-background:var(--color-beige)]";
 
 const links = [
 	{ href: "/work", label: "work" },
@@ -37,7 +41,7 @@ const inactiveLinkClass = "text-primary/70 hover:text-primary";
 ---
 
 <!-- progressive blur -->
-<div class="navbar-blur" style={blurStyle} aria-hidden="true">
+<div class={cn("navbar-blur", blurBackgroundClass)} aria-hidden="true">
     <div class="navbar-blur__background"></div>
     <div class="navbar-blur__filter navbar-blur__filter--soft"></div>
     <div class="navbar-blur__filter navbar-blur__filter--medium"></div>

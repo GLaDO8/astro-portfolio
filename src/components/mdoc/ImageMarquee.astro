@@ -37,8 +37,29 @@ const durations: Record<string, string> = {
 	default: "35s",
 	fast: "20s",
 };
-const duration = durations[speed];
-const animDirection = direction === "right" ? "reverse" : "normal";
+const gapClasses: Record<string, string> = {
+	"1rem": "gap-4",
+};
+const animationClasses: Record<string, Record<string, string>> = {
+	slow: {
+		left: "animate-[marquee-scroll_60s_linear_infinite_normal]",
+		right: "animate-[marquee-scroll_60s_linear_infinite_reverse]",
+	},
+	default: {
+		left: "animate-[marquee-scroll_35s_linear_infinite_normal]",
+		right: "animate-[marquee-scroll_35s_linear_infinite_reverse]",
+	},
+	fast: {
+		left: "animate-[marquee-scroll_20s_linear_infinite_normal]",
+		right: "animate-[marquee-scroll_20s_linear_infinite_reverse]",
+	},
+};
+const gapClass = gapClasses[gap];
+const animationClass = animationClasses[speed]?.[direction];
+
+if (!gapClass) {
+	throw new Error(`Unsupported ImageMarquee gap "${gap}". Add a Tailwind class mapping.`);
+}
 ---
 
 <div
@@ -48,8 +69,11 @@ const animDirection = direction === "right" ? "reverse" : "normal";
     aria-label="Scrolling image gallery"
 >
     <div
-        class="flex w-max hover:[animation-play-state:paused]"
-        style={`gap: ${gap}; animation: marquee-scroll ${duration} linear infinite ${animDirection};`}
+        class={cn(
+            "flex w-max hover:[animation-play-state:paused] motion-reduce:animate-none",
+            gapClass,
+            animationClass,
+        )}
     >
         {
             items.map((img) => (

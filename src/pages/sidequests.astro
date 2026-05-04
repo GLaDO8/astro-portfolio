@@ -28,69 +28,34 @@ const jsonLd = {
 ---
 
 <Document
-    title="Sidequests — Shreyas Gupta"
-    description="Side projects, prototypes, and experiments by Shreyas Gupta."
-    bodyClass="sidequests-body bg-beige"
-    mainClass="sidequests-page"
-    navClass="sidequests-navbar"
-    constrainShell={false}
-    seo={{ jsonLd }}
+	title="Sidequests — Shreyas Gupta"
+	description="Side projects, prototypes, and experiments by Shreyas Gupta."
+	bodyClass="overflow-hidden bg-beige"
+	mainClass="relative block h-dvh min-h-dvh overflow-hidden bg-beige"
+	navClass="fixed top-4 left-1/2 z-40 mb-0 w-[min(calc(100%_-_2rem),39.25rem)] max-w-[calc(100%_-_2rem)] -translate-x-1/2"
+	constrainShell={false}
+	seo={{ jsonLd }}
 >
-    <SidequestsCanvas client:load>
-        <header class="sidequests-canvas__intro">
-            <h1
-                class="font-sans text-4xl leading-[1.1] font-bold tracking-[-0.03em] text-primary text-balance md:text-5xl"
-            >
-                Sidequests
-            </h1>
-            <p
-                class="mt-4 max-w-2xl font-sans text-base leading-relaxed text-secondary md:text-lg"
-            >
-                Side projects, prototypes, and playful builds.
-            </p>
-        </header>
+	<SidequestsCanvas client:load>
+		<header
+			class="absolute top-[calc(50%_-_21rem)] left-[calc(50%_-_11rem)] max-w-[22rem] select-text px-4 md:top-[calc(50%_-_13rem)] md:left-[calc(50%_-_30rem)] md:max-w-md"
+		>
+			<h1
+				class="font-sans text-4xl leading-[1.1] font-bold tracking-[-0.03em] text-primary text-balance md:text-5xl"
+			>
+				Sidequests
+			</h1>
+			<p
+				class="mt-4 max-w-2xl font-sans text-base leading-relaxed text-secondary md:text-lg"
+			>
+				Side projects, prototypes, and playful builds.
+			</p>
+		</header>
 
-        <div class="sidequests-canvas__models">
-            {
-                cadModels.map((model) => (
-                    <CADRender model={model} />
-                ))
-            }
-        </div>
-    </SidequestsCanvas>
-
-    <style>
-        .sidequests-canvas__intro {
-            position: absolute;
-            top: calc(50% - 13rem);
-            left: calc(50% - 30rem);
-            max-width: 28rem;
-            padding: 0 1rem;
-            user-select: text;
-        }
-
-        .sidequests-canvas__models {
-            position: absolute;
-            top: calc(50% - 5.5rem);
-            left: calc(50% + 2rem);
-            display: grid;
-            grid-template-columns: repeat(2, minmax(14rem, 18rem));
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 48rem) {
-            .sidequests-canvas__intro {
-                top: calc(50% - 21rem);
-                left: calc(50% - 11rem);
-                max-width: 22rem;
-            }
-
-            .sidequests-canvas__models {
-                top: calc(50% - 10rem);
-                left: calc(50% - 9.5rem);
-                grid-template-columns: minmax(15rem, 19rem);
-                gap: 1.25rem;
-            }
-        }
-    </style>
+		<div
+			class="absolute top-[calc(50%_-_10rem)] left-[calc(50%_-_9.5rem)] grid grid-cols-[minmax(15rem,19rem)] gap-5 md:top-[calc(50%_-_5.5rem)] md:left-[calc(50%_+_2rem)] md:grid-cols-[repeat(2,minmax(14rem,18rem))] md:gap-6"
+		>
+			{cadModels.map((model) => <CADRender model={model} />)}
+		</div>
+	</SidequestsCanvas>
 </Document>

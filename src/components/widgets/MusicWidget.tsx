@@ -173,9 +173,8 @@ function MusicStripLine({ className, shouldReduceMotion, text }: MusicStripLineP
 			<motion.span
 				className={cn(
 					"whitespace-nowrap",
-					shouldAnimate ? "inline-flex w-max text-left" : "block w-full",
+					shouldAnimate ? "inline-flex w-max gap-6 text-left" : "block w-full",
 				)}
-				style={shouldAnimate ? { gap: MUSIC_STRIP_GAP_PX } : undefined}
 				animate={shouldAnimate ? { x: [0, -stripDistance] } : { x: 0 }}
 				transition={
 					shouldAnimate
@@ -532,11 +531,9 @@ export default function MusicWidget({ songData }: Props) {
 							ref={recordSurfaceRef}
 							className={cn(
 								"absolute inset-0 cursor-grab rounded-full active:cursor-grabbing [clip-path:circle(50%)] touch-action-none",
+								"[--record-spin-offset:0deg]",
 								shouldSpinRecord && "music-widget-vinyl-spin",
 							)}
-							style={
-								{ "--record-spin-offset": `${scratchRotation.current}deg` } as React.CSSProperties
-							}
 							onPointerDown={handlePointerDown}
 							onPointerMove={handlePointerMove}
 							onPointerUp={stopScratching}

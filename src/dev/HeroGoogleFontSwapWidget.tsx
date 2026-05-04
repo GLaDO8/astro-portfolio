@@ -334,8 +334,7 @@ function HeroGoogleFontSwapControls({
 	const widget = (
 		<div
 			data-hero-google-font-swap
-			className="fixed bottom-4 left-4 w-[min(21rem,calc(100vw-2rem))] text-left font-sans text-sm text-primary"
-			style={{ zIndex: 2147483647 }}
+			className="fixed bottom-4 left-4 z-[2147483647] w-[min(21rem,calc(100vw-2rem))] text-left font-sans text-sm text-primary"
 		>
 			{isOpen ? (
 				<div className="rounded-lg border border-primary/10 bg-white/95 p-3 shadow-[0_14px_40px_rgba(42,35,29,0.14)] backdrop-blur">

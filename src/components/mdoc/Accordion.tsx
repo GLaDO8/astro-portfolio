@@ -87,6 +87,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 				initial={false}
 				animate={motionState}
 				variants={panelVariants}
+				className="overflow-hidden"
 				transition={
 					shouldReduceMotion
 						? { duration: 0 }
@@ -95,7 +96,6 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 								ease: [0.22, 1, 0.36, 1],
 							}
 				}
-				style={{ overflow: "hidden" }}
 			>
 				<motion.div
 					variants={bodyVariants}
