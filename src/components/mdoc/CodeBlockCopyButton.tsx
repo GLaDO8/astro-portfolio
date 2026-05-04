@@ -1,12 +1,15 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import CopyIcon from "/Copy.svg?raw";
+import CheckIcon from "/Check.svg?raw";
 
 interface CodeBlockCopyButtonProps {
 	code: string;
 }
 
 const copiedResetDelay = 1600;
-const copyIconSrc = "/Copy.svg";
+const COPY_ICON_SRC = `data:image/svg+xml,${encodeURIComponent(CopyIcon)}`;
+const CHECK_ICON_SRC = `data:image/svg+xml,${encodeURIComponent(CheckIcon)}`;
 
 async function writeToClipboard(text: string) {
 	if (navigator.clipboard?.writeText) {
@@ -24,46 +27,6 @@ async function writeToClipboard(text: string) {
 	textarea.select();
 	document.execCommand("copy");
 	textarea.remove();
-}
-
-function CopyIcon() {
-	return (
-		<motion.img
-			src={copyIconSrc}
-			alt=""
-			aria-hidden="true"
-			className="pointer-events-none absolute inset-0 size-4 object-contain"
-			draggable={false}
-			initial={{ scale: 0 }}
-			animate={{ scale: 1 }}
-			exit={{ scale: 0 }}
-			transition={{
-				scale: { type: "spring", visualDuration: 0.25, bounce: 0.4 },
-			}}
-		/>
-	);
-}
-
-function CheckIcon() {
-	return (
-		<motion.svg
-			className="pointer-events-none absolute inset-0 size-3.5"
-			viewBox="0 0 16 16"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="1.9"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			initial={{ scale: 0 }}
-			animate={{ scale: 1 }}
-			exit={{ scale: 0 }}
-			transition={{
-				scale: { type: "spring", visualDuration: 0.25, bounce: 0.4 },
-			}}
-		>
-			<path d="M3.5 8.5 6.5 11.5 12.5 4.5" />
-		</motion.svg>
-	);
 }
 
 export default function CodeBlockCopyButton({ code }: CodeBlockCopyButtonProps) {
@@ -105,7 +68,7 @@ export default function CodeBlockCopyButton({ code }: CodeBlockCopyButtonProps) 
 	return (
 		<button
 			type="button"
-			className="absolute top-2 right-2 z-10 grid size-7 cursor-pointer place-items-center rounded-sm border border-primary/10 bg-white text-primary transition duration-200 ease-out hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+			className="absolute top-2 right-2 z-10 grid size-7 cursor-pointer place-items-center rounded-sm border border-primary/10 bg-white text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 			aria-label={controlLabel}
 			title={controlLabel}
 			onClick={handleCopy}
@@ -113,7 +76,18 @@ export default function CodeBlockCopyButton({ code }: CodeBlockCopyButtonProps) 
 		>
 			<span className="relative block size-4" aria-hidden="true">
 				<AnimatePresence initial={false}>
-					{copied ? <CheckIcon key="check" /> : <CopyIcon key="copy" />}
+					<motion.img
+						key={copied ? "check" : "copy"}
+						src={copied ? CHECK_ICON_SRC : COPY_ICON_SRC}
+						className="pointer-events-none size-4 absolute inset-0"
+						draggable={false}
+						initial={{ scale: 0 }}
+						animate={{ scale: 1 }}
+						exit={{ scale: 0 }}
+						transition={{
+							scale: { type: "spring", visualDuration: 0.25, bounce: 0.4 },
+						}}
+					></motion.img>
 				</AnimatePresence>
 			</span>
 		</button>
