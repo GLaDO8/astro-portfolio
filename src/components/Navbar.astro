@@ -10,7 +10,7 @@ interface Props {
 const {
     currentPath = Astro.url.pathname,
     class: className,
-    blurBackground = "var(--color-parchment)",
+    blurBackground = "var(--color-beige)",
 } = Astro.props;
 const shellClass = ["sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className]
     .filter(Boolean)
@@ -32,8 +32,8 @@ const subdomainLinks = [
     },
 ];
 
-const activeLinkClass = "text-charcoal font-semibold";
-const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
+const activeLinkClass = "text-primary font-semibold";
+const inactiveLinkClass = "text-primary/70 hover:text-primary";
 ---
 
 <!-- progressive blur -->
@@ -55,14 +55,14 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
             <div class="relative flex items-center gap-2" data-navbar-menu-root>
                 <a
                     href="/"
-                    class="font-semibold text-charcoal no-underline"
+                    class="font-semibold text-primary no-underline"
                     aria-label="shrey.fyi home"
                 >
                     <span class="pb-0.5 text-lg">shrey.fyi</span>
                 </a>
                 <button
                     type="button"
-                    class="group flex size-5 items-center justify-center rounded-full bg-fog/45 text-charcoal/55 transition-all hover:scale-120 hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-charcoal/45"
+                    class="group flex size-5 items-center justify-center rounded-full bg-tertiary/45 text-primary/55 transition-all hover:scale-120 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary/45"
                     aria-label="Open subdomain menu"
                     aria-controls="subdomain-menu"
                     aria-expanded="false"
@@ -87,7 +87,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 
                 <div
                     id="subdomain-menu"
-                    class="absolute top-full left-0 z-50 mt-3 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-fog/40 bg-white p-1.5 shadow-[0_18px_50px_rgba(42,35,29,0.14)] backdrop-blur-md"
+                    class="absolute top-full left-0 z-50 mt-3 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-tertiary/40 bg-white p-1.5 shadow-[0_18px_50px_rgba(42,35,29,0.14)] backdrop-blur-md"
                     hidden
                     data-navbar-menu
                 >
@@ -98,7 +98,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
                                     <li>
                                         <a
                                             href={href}
-                                            class="flex items-start gap-3 rounded-md px-2.5 py-2 text-charcoal no-underline transition-colors duration-200 hover:bg-fog/35 focus-visible:bg-fog/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal/35"
+                                            class="flex items-start gap-3 rounded-md px-2.5 py-2 text-primary no-underline transition-colors duration-200 hover:bg-tertiary/35 focus-visible:bg-tertiary/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/35"
                                             data-navbar-menu-item
                                         >
                                             <span
@@ -117,7 +117,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
                                                 <span class="block text-sm leading-tight font-semibold">
                                                     {label}
                                                 </span>
-                                                <span class="mt-1 block text-xs leading-snug text-slate">
+                                                <span class="mt-1 block text-xs leading-snug text-secondary">
                                                     {description}
                                                 </span>
                                             </span>
@@ -157,8 +157,8 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
 <script>
     import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
-    const activeClasses = ["text-charcoal", "font-semibold"];
-    const inactiveClasses = ["text-charcoal/70", "hover:text-charcoal"];
+    const activeClasses = ["text-primary", "font-semibold"];
+    const inactiveClasses = ["text-primary/70", "hover:text-primary"];
 
     const getNavbar = () => document.querySelector<HTMLElement>("[data-navbar]");
 
@@ -344,7 +344,7 @@ const inactiveLinkClass = "text-charcoal/70 hover:text-charcoal";
         height: 140px;
         pointer-events: none;
         z-index: 30;
-        --navbar-blur-background: var(--color-parchment);
+        --navbar-blur-background: var(--color-beige);
     }
 
     .navbar-blur__background,

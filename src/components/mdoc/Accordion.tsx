@@ -35,7 +35,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 	return (
 		<motion.section
 			layout={!shouldReduceMotion}
-			className="not-prose my-8 overflow-hidden rounded-lg border border-charcoal/10 bg-white"
+			className="not-prose my-8 overflow-hidden rounded-lg border border-primary/10 bg-white"
 		>
 			<button
 				type="button"

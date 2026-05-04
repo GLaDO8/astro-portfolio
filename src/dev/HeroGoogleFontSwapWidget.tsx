@@ -334,18 +334,18 @@ function HeroGoogleFontSwapControls({
 	const widget = (
 		<div
 			data-hero-google-font-swap
-			className="fixed bottom-4 left-4 w-[min(21rem,calc(100vw-2rem))] text-left font-sans text-sm text-charcoal"
+			className="fixed bottom-4 left-4 w-[min(21rem,calc(100vw-2rem))] text-left font-sans text-sm text-primary"
 			style={{ zIndex: 2147483647 }}
 		>
 			{isOpen ? (
-				<div className="rounded-lg border border-charcoal/10 bg-white/95 p-3 shadow-[0_14px_40px_rgba(42,35,29,0.14)] backdrop-blur">
+				<div className="rounded-lg border border-primary/10 bg-white/95 p-3 shadow-[0_14px_40px_rgba(42,35,29,0.14)] backdrop-blur">
 					<div className="flex items-center justify-between gap-3">
 						<label htmlFor={inputId} className="font-semibold">
 							Hero font
 						</label>
 						<button
 							type="button"
-							className="rounded-md px-2 py-1 text-xs font-semibold text-slate transition-colors hover:bg-fog/60 hover:text-charcoal"
+							className="rounded-md px-2 py-1 text-xs font-semibold text-secondary transition-colors hover:bg-tertiary/60 hover:text-primary"
 							onClick={() => setIsOpen(false)}
 						>
 							Close
@@ -355,7 +355,7 @@ function HeroGoogleFontSwapControls({
 					<textarea
 						id={inputId}
 						data-hero-google-font-swap-input
-						className="mt-3 min-h-28 w-full resize-y rounded-md border border-charcoal/15 bg-parchment/50 p-2 font-mono text-xs leading-relaxed text-charcoal outline-none transition-colors placeholder:text-slate/70 focus:border-charcoal/40"
+						className="mt-3 min-h-28 w-full resize-y rounded-md border border-primary/15 bg-beige/50 p-2 font-mono text-xs leading-relaxed text-primary outline-none transition-colors placeholder:text-secondary/70 focus:border-primary/40"
 						value={draftEmbedCode}
 						placeholder="Paste Google Fonts embed code, @import, or https://fonts.googleapis.com/css2?..."
 						onChange={(event) => setDraftEmbedCode(event.target.value)}
@@ -372,7 +372,7 @@ function HeroGoogleFontSwapControls({
 						<div className="min-w-0 flex-1 basis-24">
 							<label
 								htmlFor={fontSizeInputId}
-								className="flex items-center justify-between gap-3 text-xs font-semibold text-slate"
+								className="flex items-center justify-between gap-3 text-xs font-semibold text-secondary"
 							>
 								<span>Font size</span>
 								<span className="font-normal">px</span>
@@ -380,7 +380,7 @@ function HeroGoogleFontSwapControls({
 							<input
 								id={fontSizeInputId}
 								data-hero-google-font-swap-size-input
-								className="mt-1 w-full rounded-md border border-charcoal/15 bg-parchment/50 px-2 py-1.5 font-mono text-xs text-charcoal outline-none transition-colors placeholder:text-slate/70 focus:border-charcoal/40"
+								className="mt-1 w-full rounded-md border border-primary/15 bg-beige/50 px-2 py-1.5 font-mono text-xs text-primary outline-none transition-colors placeholder:text-secondary/70 focus:border-primary/40"
 								type="number"
 								min="1"
 								step="1"
@@ -394,7 +394,7 @@ function HeroGoogleFontSwapControls({
 						<div className="min-w-0 flex-1 basis-24">
 							<label
 								htmlFor={letterSpacingInputId}
-								className="flex items-center justify-between gap-3 text-xs font-semibold text-slate"
+								className="flex items-center justify-between gap-3 text-xs font-semibold text-secondary"
 							>
 								<span>Letter spacing</span>
 								<span className="font-normal">px</span>
@@ -402,7 +402,7 @@ function HeroGoogleFontSwapControls({
 							<input
 								id={letterSpacingInputId}
 								data-hero-google-font-swap-letter-spacing-input
-								className="mt-1 w-full rounded-md border border-charcoal/15 bg-parchment/50 px-2 py-1.5 font-mono text-xs text-charcoal outline-none transition-colors placeholder:text-slate/70 focus:border-charcoal/40"
+								className="mt-1 w-full rounded-md border border-primary/15 bg-beige/50 px-2 py-1.5 font-mono text-xs text-primary outline-none transition-colors placeholder:text-secondary/70 focus:border-primary/40"
 								type="number"
 								step="0.1"
 								inputMode="decimal"
@@ -415,7 +415,7 @@ function HeroGoogleFontSwapControls({
 						<div className="min-w-0 flex-1 basis-24">
 							<label
 								htmlFor={lineHeightInputId}
-								className="flex items-center justify-between gap-3 text-xs font-semibold text-slate"
+								className="flex items-center justify-between gap-3 text-xs font-semibold text-secondary"
 							>
 								<span>Line height</span>
 								<span className="font-normal">ratio</span>
@@ -423,7 +423,7 @@ function HeroGoogleFontSwapControls({
 							<input
 								id={lineHeightInputId}
 								data-hero-google-font-swap-line-height-input
-								className="mt-1 w-full rounded-md border border-charcoal/15 bg-parchment/50 px-2 py-1.5 font-mono text-xs text-charcoal outline-none transition-colors placeholder:text-slate/70 focus:border-charcoal/40"
+								className="mt-1 w-full rounded-md border border-primary/15 bg-beige/50 px-2 py-1.5 font-mono text-xs text-primary outline-none transition-colors placeholder:text-secondary/70 focus:border-primary/40"
 								type="number"
 								min="0.1"
 								step="0.05"
@@ -436,13 +436,13 @@ function HeroGoogleFontSwapControls({
 					</div>
 
 					<div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-						<p className={error ? "text-xs font-medium text-red-700" : "text-xs text-slate"}>
+						<p className={error ? "text-xs font-medium text-red-700" : "text-xs text-secondary"}>
 							{error ?? status}
 						</p>
 						<div className="flex items-center gap-2">
 							<button
 								type="button"
-								className="rounded-md px-2.5 py-1 text-xs font-semibold text-slate transition-colors hover:bg-fog/60 hover:text-charcoal"
+								className="rounded-md px-2.5 py-1 text-xs font-semibold text-secondary transition-colors hover:bg-tertiary/60 hover:text-primary"
 								onClick={onClear}
 							>
 								Reset
@@ -450,7 +450,7 @@ function HeroGoogleFontSwapControls({
 							<button
 								type="button"
 								data-hero-google-font-swap-apply
-								className="rounded-md bg-charcoal px-3 py-1 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+								className="rounded-md bg-primary px-3 py-1 text-xs font-semibold text-white transition-opacity hover:opacity-90"
 								onClick={applyDraft}
 							>
 								Apply
@@ -462,7 +462,7 @@ function HeroGoogleFontSwapControls({
 				<button
 					type="button"
 					data-hero-google-font-swap-trigger
-					className="rounded-full border border-charcoal/10 bg-white/95 px-3 py-2 font-semibold text-charcoal shadow-[0_10px_30px_rgba(42,35,29,0.12)] backdrop-blur transition-transform hover:-translate-y-0.5"
+					className="rounded-full border border-primary/10 bg-white/95 px-3 py-2 font-semibold text-primary shadow-[0_10px_30px_rgba(42,35,29,0.12)] backdrop-blur transition-transform hover:-translate-y-0.5"
 					onClick={() => setIsOpen(true)}
 				>
 					{getTrialButtonLabel(fontFamily, trialFontSize, trialLetterSpacing, trialLineHeight)}

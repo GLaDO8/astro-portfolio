@@ -97,7 +97,7 @@ export default function SnapsWidget() {
 							draggable={false}
 						/>
 					) : null}
-					<div className="h-[4.35rem] w-full overflow-hidden rounded-[1px] bg-mist">
+					<div className="h-[4.35rem] w-full overflow-hidden rounded-[1px] bg-white">
 						<img
 							src={polaroid.image.src}
 							alt=""
