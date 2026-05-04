@@ -15,6 +15,7 @@ interface Props {
 	navBlurBackground?: string;
 	constrainShell?: boolean;
 	showNavigation?: boolean;
+	preloadCodeFont?: boolean;
 	seo?: {
 		ogType?: "website" | "article";
 		ogImage?: string;
@@ -36,6 +37,7 @@ const {
 	navBlurBackground,
 	constrainShell = true,
 	showNavigation = true,
+	preloadCodeFont = false,
 	seo = {},
 } = Astro.props;
 const isDev = import.meta.env.DEV;
@@ -52,7 +54,16 @@ const isDev = import.meta.env.DEV;
 			cssVariable="--font-commissioner"
 			preload={[{ weight: "400", style: "normal" }]}
 		/>
-		<Font cssVariable="--font-recursive" />
+		{
+			preloadCodeFont ? (
+				<Font
+					cssVariable="--font-recursive"
+					preload={[{ weight: "500", style: "normal" }]}
+				/>
+			) : (
+				<Font cssVariable="--font-recursive" />
+			)
+		}
 		<ClientRouter />
 		<script is:inline>
 			document.documentElement.dataset.shellTransitions = "true";

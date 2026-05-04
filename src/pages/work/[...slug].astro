@@ -4,6 +4,7 @@ import { getCollection, render } from "astro:content";
 import ArticleProse from "@/components/mdoc/ArticleProse.astro";
 import Page from "@/layouts/Page.astro";
 import { getImageAsset } from "@/lib/imageAssets";
+import { hasCodeFence } from "@/lib/markdocContent";
 
 const themeStyles: Record<string, string> = {
 	"hot-text": "prose-h2:text-base md:prose-h2:text-base prose-h2:text-[#DA0288] prose-h2:uppercase",
@@ -53,6 +54,7 @@ const jsonLd = {
     bodyClass="bg-white"
     class="bg-white"
     navBlurBackground="white"
+    preloadCodeFont={hasCodeFence(study.body)}
     seo={{
         ogType: "article",
         article: {

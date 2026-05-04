@@ -2,37 +2,39 @@
 import Document from "./Document.astro";
 
 interface Props {
-    title: string;
-    description: string;
-    bodyClass?: string;
-    class?: string;
-    navBlurBackground?: string;
-    seo?: {
-        ogType?: "website" | "article";
-        ogImage?: string;
-        ogImageAlt?: string;
-        article?: {
-            publishedTime: string;
-        };
-        noindex?: boolean;
-        jsonLd?: Record<string, unknown>;
-    };
+	title: string;
+	description: string;
+	bodyClass?: string;
+	class?: string;
+	navBlurBackground?: string;
+	preloadCodeFont?: boolean;
+	seo?: {
+		ogType?: "website" | "article";
+		ogImage?: string;
+		ogImageAlt?: string;
+		article?: {
+			publishedTime: string;
+		};
+		noindex?: boolean;
+		jsonLd?: Record<string, unknown>;
+	};
 }
 
 const {
-    title,
-    description,
-    bodyClass,
-    class: className,
-    navBlurBackground,
-    seo,
+	title,
+	description,
+	bodyClass,
+	class: className,
+	navBlurBackground,
+	preloadCodeFont,
+	seo,
 } = Astro.props;
 const mainClass = [
-    "grid grid-cols-4 md:grid-cols-12 lg:grid-cols-16 gap-x-4 md:gap-x-5 lg:gap-x-6 px-4 pt-8 pb-20 content-start",
-    className,
+	"grid grid-cols-4 md:grid-cols-12 lg:grid-cols-16 gap-x-4 md:gap-x-5 lg:gap-x-6 px-4 pt-8 pb-20 content-start",
+	className,
 ]
-    .filter(Boolean)
-    .join(" ");
+	.filter(Boolean)
+	.join(" ");
 ---
 
 <Document
@@ -41,6 +43,7 @@ const mainClass = [
     bodyClass={bodyClass}
     mainClass={mainClass}
     navBlurBackground={navBlurBackground}
+    preloadCodeFont={preloadCodeFont}
     seo={seo}
 >
     <slot />

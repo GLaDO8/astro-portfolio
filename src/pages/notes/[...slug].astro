@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import ArticleProse from "@/components/mdoc/ArticleProse.astro";
 import Page from "@/layouts/Page.astro";
+import { hasCodeFence } from "@/lib/markdocContent";
 
 export async function getStaticPaths() {
 	const notes = await getCollection("notes", ({ data }) => !data.draft);
@@ -48,6 +49,7 @@ const jsonLd = {
     bodyClass="bg-white"
     class="bg-white"
     navBlurBackground="white"
+    preloadCodeFont={hasCodeFence(note.body)}
     seo={{
         ogType: "article",
         article: {
