@@ -1,5 +1,6 @@
 ---
 import { Code } from "astro:components";
+import CodeBlockCopyButton from "./CodeBlockCopyButton";
 
 interface Props {
 	content: string;
@@ -11,12 +12,17 @@ const { content, language, maxHeight } = Astro.props;
 const trimmed = content.replace(/\n$/, "");
 ---
 
-<div
-    class="codeblock not-prose bg-zinc-50 border border-charcoal/10 rounded-lg overflow-hidden font-mono text-base leading-relaxed font-medium"
-    style={maxHeight ? `--codeblock-max-height: ${maxHeight}` : undefined}
-    data-lenis-prevent={maxHeight ? "" : undefined}
->
-    <Code code={trimmed} lang={language || "text"} theme="github-light" />
+<div class="p-3 border rounded-lg flex flex-col gap-3 border-charcoal/10 shadow-sm">
+    <div><p class="text-sm font-semibold">Bounding boxes with svg</p> <div></div></div>
+    <div
+        class="codeblock not-prose relative bg-zinc-50 border border-charcoal/10 rounded-sm overflow-hidden font-mono text-base leading-relaxed font-medium"
+        style={maxHeight ? `--codeblock-max-height: ${maxHeight}` : undefined}
+        data-lenis-prevent={maxHeight ? "" : undefined}
+        data-codeblock
+    >
+        <CodeBlockCopyButton code={trimmed} client:load />
+        <Code code={trimmed} lang={language || "text"} theme="github-light" />
+    </div>
 </div>
 
 <style>
@@ -37,7 +43,7 @@ const trimmed = content.replace(/\n$/, "");
         max-height: var(--codeblock-max-height, none);
         overflow: auto;
         margin: 0;
-        padding: 1.5rem 1rem;
+        padding: 2.75rem 1rem 1.5rem;
         font-family: inherit;
         font-variation-settings: inherit;
         font-size: var(--text-sm);
