@@ -51,7 +51,13 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 						{isOpen ? collapsedSubtitle : subtitle}
 					</p>
 				</div>
-				<div className="size-8 shrink-0 rounded-full bg-[#fbe5f3]">
+				<motion.div
+					className="size-8 shrink-0 rounded-full bg-[#fbe5f3]"
+					whileHover={{ scale: 1.15 }}
+					transition={{
+						scale: { type: "spring", visualDuration: 0.15, bounce: 0.4 },
+					}}
+				>
 					<span className="relative block size-8">
 						<AnimatePresence initial={false}>
 							<motion.img
@@ -70,7 +76,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 							></motion.img>
 						</AnimatePresence>
 					</span>
-				</div>
+				</motion.div>
 			</button>
 
 			<motion.div
