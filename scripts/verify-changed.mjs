@@ -96,6 +96,18 @@ function matchingTests(files) {
 	if (
 		hasAny(
 			files,
+			(file) =>
+				file === "src/pages/snaps.astro" ||
+				file.startsWith("src/assets/snaps/") ||
+				file === "tests/snaps-assets.test.mjs",
+		)
+	) {
+		tests.add("tests/snaps-assets.test.mjs");
+	}
+
+	if (
+		hasAny(
+			files,
 			(file) => file === "src/layouts/Document.astro" || file === "src/layouts/SnapsLayout.astro",
 		)
 	) {

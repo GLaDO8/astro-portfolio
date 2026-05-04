@@ -32,18 +32,21 @@ function getSnapGalleryHeight(item: SnapsGalleryItem) {
 }
 
 const rotations = ["-rotate-[3deg]", "rotate-[2deg]", "-rotate-[2deg]", "rotate-[3deg]"];
-
+const rotationMotion = [-3, 2, -2, 3];
 function randomRotation() {
 	return rotations[Math.floor(Math.random() * rotations.length)];
+}
+
+function randomRotationMotion() {
+	return rotationMotion[Math.floor(Math.random() * rotationMotion.length)];
 }
 
 export default function SnapsGallery({ snaps, priorityCount = 0 }: SnapsGalleryProps) {
 	return (
 		<motion.div
-			className="flex w-full items-center gap-x-24 overflow-x-scroll overflow-y-hidden overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-24"
+			className="flex w-full items-center gap-x-24 overflow-x-scroll overflow-y-hidden overscroll-x-contain px-24 py-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
 			data-snaps-grid=""
 			initial={false}
-			transition={{ type: "spring" }}
 		>
 			{snaps.map((item, itemIndex) => {
 				const isPriority = itemIndex < priorityCount;
@@ -51,9 +54,14 @@ export default function SnapsGallery({ snaps, priorityCount = 0 }: SnapsGalleryP
 				return (
 					<motion.figure
 						key={item.src}
-						className={cn("flex-none border-12 border-white", randomRotation())}
+						className={cn(
+							"rounded-md flex-none border-12 border-white bg-white shadow-[0_12px_34px_-12px_rgb(42_35_29_/_0.42),0_4px_16px_-8px_rgb(42_35_29_/_0.24),0_1px_3px_rgb(42_35_29_/_0.1)]",
+							randomRotation(),
+						)}
 						data-snap-span={item.span}
 						data-snap-date={`${item.date} ${item.year}`}
+						whileHover={{ scale: 1.05, rotate: randomRotationMotion() }}
+						transition={{ type: "spring", bounce: 0.3, visualDuration: 0.2 }}
 					>
 						<img
 							className={cn("object-cover w-full", getSnapGalleryHeight(item))}
