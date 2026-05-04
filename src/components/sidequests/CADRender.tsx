@@ -1,4 +1,6 @@
-import { type CSSProperties, createElement } from "react";
+import { createElement } from "react";
+
+import { cn } from "@/lib/cn";
 
 export type CADModel = {
 	readonly id: string;
@@ -10,13 +12,21 @@ type CADRenderProps = {
 	readonly model: CADModel;
 };
 
-const modelViewerStyle = {
-	"--poster-color": "transparent",
-} as CSSProperties;
+const figureClassName = cn(
+	"relative aspect-square min-h-48 overflow-hidden rounded-lg",
+	"border-[0.75rem] border-white bg-[#3182d9] bg-center",
+	"bg-[image:linear-gradient(rgba(255,255,255,0.2)_2px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.2)_2px,transparent_1px)]",
+	"bg-[length:2.1rem_2.1rem] shadow-[0_1.5rem_3rem_rgba(42,35,29,0.14)]",
+);
+
+const modelViewerClassName = cn(
+	"relative z-[1] block h-full w-full",
+	"[--poster-color:transparent]",
+);
 
 export default function CADRender({ model }: CADRenderProps) {
 	return (
-		<figure className="cad-render">
+		<figure className={figureClassName}>
 			{createElement("model-viewer", {
 				src: model.src,
 				alt: model.alt,
@@ -31,36 +41,8 @@ export default function CADRender({ model }: CADRenderProps) {
 				"touch-action": "pan-y",
 				"data-cad-model": model.id,
 				"data-sidequests-pan-ignore": "",
-				className: "cad-render__model",
-				style: modelViewerStyle,
+				className: modelViewerClassName,
 			})}
-
-			<style>{`
-				.cad-render {
-					--cad-render-blueprint: #3182d9;
-					position: relative;
-					aspect-ratio: 1;
-					min-height: 12rem;
-					overflow: hidden;
-					border: 0.75rem solid white;
-					border-radius: 0.5rem;
-					background-color: var(--cad-render-blueprint);
-					background-image:
-						linear-gradient(rgba(255, 255, 255, 0.2) 2px, transparent 1px),
-						linear-gradient(90deg, rgba(255, 255, 255, 0.2) 2px, transparent 1px);
-					background-position: center;
-					background-size: 2.1rem 2.1rem;
-					box-shadow: 0 1.5rem 3rem rgba(42, 35, 29, 0.14);
-				}
-
-				.cad-render__model {
-					position: relative;
-					z-index: 1;
-					display: block;
-					width: 100%;
-					height: 100%;
-				}
-			`}</style>
 		</figure>
 	);
 }
