@@ -13,9 +13,7 @@ const {
 	class: className,
 	blurBackground = "var(--color-beige)",
 } = Astro.props;
-const shellClass = ["sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className]
-	.filter(Boolean)
-	.join(" ");
+const shellClass = cn("sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className);
 const blurBackgroundClass =
 	blurBackground === "white"
 		? "[--navbar-blur-background:white]"
