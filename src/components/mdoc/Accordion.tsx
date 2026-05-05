@@ -20,6 +20,12 @@ const bodyVariants = {
 	open: { opacity: 1, y: 0 },
 	closed: { opacity: 0, y: -8 },
 };
+const accordionContentClassName = [
+	"px-6 pt-4 pb-9 font-sans text-lg leading-relaxed font-medium text-[#333f46]",
+	"[&>*+*]:mt-4 [&>astro-slot>*+*]:mt-4",
+	"[&_a]:text-primary/70 [&_a:hover]:text-primary",
+	"[&_a]:underline [&_a]:decoration-dotted [&_a]:decoration-2 [&_a]:underline-offset-3",
+].join(" ");
 
 export default function Accordion({ title, subtitle = defaultSubtitle, children }: AccordionProps) {
 	const shouldReduceMotion = useReducedMotion();
@@ -107,7 +113,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 									ease: "easeOut",
 								}
 					}
-					className="px-6 pt-4 pb-9 font-sans text-lg leading-relaxed font-medium text-[#333f46] [&>*+*]:mt-4 [&>astro-slot>*+*]:mt-4"
+					className={accordionContentClassName}
 				>
 					{children}
 				</motion.div>

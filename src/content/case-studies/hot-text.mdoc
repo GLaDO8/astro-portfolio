@@ -13,12 +13,12 @@ Wayground is an education platform helping teachers and school admins drive stud
 ## Problem statement
 We have been adding various question types that appear in US state tests to our assessments tool to strengthen our key moat - help districts prepare students for state tests while giving teachers and students a more engaging classroom experience. 
 
-Hot Text is a common question type on English US state tests, and we needed to add support for it.
+Hot text is a common question type on English US state tests, and we needed to add support for it.
 
 ![image-1](/case-studies/hottext/ht-image1.webp)
 
 ## How Hot text works
-Hot Text is simple - students select specific words, phrases, or sentences from a provided text to answer a question. It's basically prettier MCQs.
+Hot text is simple - students select specific words, phrases, or sentences from a provided text to answer a question. It's basically prettier MCQs.
 
 ![Hot text options are created using `bg-color` and `border` on a `<span>`, quite horrendous.](/case-studies/hottext/ht-image2.png)
 
@@ -27,17 +27,19 @@ We wanted Wayground’s Hot text to be visually engaging and fun for students wi
 
 I iterated over a variety of approaches before landing on “paper with highlighter markings as options” metaphor. This evoked a feeling a tangibility and playfulness that the team liked. 
 
-There are a variety of ways to recreate highlights in code as shown below. 
+There are several ways to create highlights in code as shown below. 
 
 ![image-3](/case-studies/hottext/ht-image3.webp)
 
-{% accordion title="Using generated SVGs for creating highlights" subtitle="Click to read more about this" %}
+Although elegant, we didn't go down the dynamic SVG route as we didn't want to ship client-side code for generating SVGs.
+
+{% accordion title="Creating highlighter SVGs dynamically" subtitle="Click to read more about this" %}
 
 To make highlight options look like one cohesive entity, one of the ideas was to add a border around the highlight options with some softness through corner radius. 
 
 The border would create separation that would help students differentiate between two consecutive sentence options. This is a common scenario in state tests’ hot text where almost everything is an option.
 
-Below is the code snippet that dynamically creates SVG bounding boxes with border. Codepen link to prototype [here](https://codepen.io/XshreyasguptaX/pen/pvyZyyy).
+Below is a code snippet that dynamically creates SVG bounding boxes with border for any piece of text within a paragraph. Codepen link to prototype [here](https://codepen.io/XshreyasguptaX/pen/pvyZyyy).
 
 ```js {% maxHeight="24rem" %}
 <script>
@@ -144,12 +146,14 @@ Below is the code snippet that dynamically creates SVG bounding boxes with borde
 
 {% /accordion %}
 
-But what if highlights were literally highlighter pen markings? How will highlights work if two sentence options are adjacent to each other? 
+I tried other ideas, what if highlights were literally highlighter pen markings? How will highlights work if two sentence options are adjacent and close to each other? 
 
-I tinkered around with the highlight metaphor quite a bit and made the paper feel more tactile as you can see below.
+Below are some of the highlighter style experiments that I tried. 
 
 {% marquee images="/case-studies/hottext/paper-sheet-01.webp,,/case-studies/hottext/paper-sheet-02.webp,,/case-studies/hottext/paper-sheet-03.webp,,/case-studies/hottext/paper-sheet-04.webp,,/case-studies/hottext/paper-sheet-05.webp,,/case-studies/hottext/paper-sheet-06.webp,,/case-studies/hottext/paper-sheet-07.webp" speed="slow" height="xl"/%}
 
+
+We eventually chose highlights made with different `bg-color` on a span, with numbered markings at the start of the highlight for easy reference.
 
 ![image-4](/case-studies/hottext/ht-image4.webp)
 
@@ -158,4 +162,4 @@ I tinkered around with the highlight metaphor quite a bit and made the paper fee
 
 Most teachers in the US are slow adopters of new capabilities. Feature work takes time to mature. For question types, we stopped tracking adoption metrics early in the release cycle and focus on CSAT scores to make iterative improvements.
 
-As I am writing this, Hot text has a CSAT of 4.2/5. 1000+ teachers have used Hot text in their classrooms.
+As I am writing this, Hot text has a CSAT of 4.2/5. A more in-depth teardown of Hot text is available on request.
