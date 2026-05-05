@@ -1,5 +1,5 @@
 ---
-title: "Beyond the prompt box: using LLMs for labelling question creation"
+title: "Beyond the prompt box: using LLMs for creating labeling questions"
 description: "A design case study on creating engaging hot text question types for Wayground's state test preparation platform."
 date: 2024-09-01
 theme: "hot-text"
@@ -9,79 +9,63 @@ theme: "hot-text"
 
 Wayground (formerly Quizizz) is an education platform helping teachers drive student outcomes with tools to create content like assessments & lessons, track student understanding, content libraries and more.
 
-Our assessments tool supports around 20+ question types, and our premium plan gives access to premium question types like Labelling, in addition to unlimited assessment creation.
+Our assessments tool supports around 20+ question types, and our premium plan gives access to premium question types like Labeling, in addition to unlimited assessment creation.
 
 ## Problem statement
 
-We wanted to improve creation and consumption experience for premium question types across the platform, so that teachers built trust in our premium offering.
+We wanted to improve the creation and consumption experience of premium question types across the platform, so that teachers build trust in our premium offering.
 
-We started with Labelling QT as, 
-1. It was commonly used by science, biology and social studies teachers
+{% sidenote %}
+QT is a cute shorthand for question type we use internally.
+{% /sidenote %}
+
+We started with Labeling QT as, 
+1. It was commonly used by science, biology and social studies teachers (good chunk of our user base).
 2. It had the highest drop off rates of all premium question type creation experience.
 
-## How Labelling QT works
-Labelling is used to ask questions like "label the parts of a flower" or "Annotate the map with landmarks", and students have to drag the appropriate labels onto the blanks on the image.
+## How Labeling QT works
+Labeling is used to ask questions like "label the parts of a flower" or "Annotate the map with landmarks", and students have to drag the appropriate labels onto the blanks on the image.
 
-[image of how labelling question works]
+![image-1](/case-studies/labeling/labeling-working.webp)
 
-In the old experience, teachers created a labeling question inside a WYSIWYG-style editor that mirrored what students would eventually see.
+The old creation experience was a WYSIWYG-style editor that mirrored what students would eventually see when the question was answered. 
 
-[image or illustration of how the old creation UI looked like, maybe a isometric layout of 3-4 creation UI that show the steps that teachers have to take]
+But teachers found it quite confusing, something we learnt through hotjar recordings, conversations with teachers and analytics data.
 
-In practice, teachers found our WYSIWYG editor quite confusing. Through Hotjar recordings, conversations with teachers and analytics data, we listed down potential issues with our editor.
-
-[bento of problems teachers faced when creating Labelling questions]
-1. most labelling questions had a simple question prompt like "label this image" and having that upfront was unnecessary
-2. Image selected was the first thing most teachers did, but the UI didn't mimic the teacher flow and added complexity
-3. Teachers were leaving the platform to search for images in google, when they could do it on Wayground.
-4. Labelling questions often had images with labels and annotations in them, forcing teachers to manually remove them before using. 
-5. Label creation process was unintuitive and frustrating. Teachers thought they could add labels directly on the image, but they couldn't.
-
-## Initial ideas
-We knew the question creation needs to be image-first, which breaks the WYSIWYG paradigm.
+**[bento of problems teachers faced when creating Labelling questions]**
 
 ## Using vision models to accelerate question creation
 
-We wanted to reduce the time taken to create a labelling question using LLMs but throwing a prompt box at the teacher didn't feel right, they were still kinda getting used to prompting and image generation is expensive. 
+We wanted to reduce the time taken to create a labeling question using LLMs but throwing a prompt box at the teacher didn't feel right, It's 2024 and they were still kinda getting used to prompting. 
 
-We tried various approaches for generating labels without requiring teachers to type long prompts. 
-1. Given an image, select a category of labels that the teacher wants - for a plant cell, a. cell components, b. tissue layers, c. cell function.
-  2. Then select the number of labels to generate
-3. We then skipped the number of labels as VLMs were great at estimating the number of labels generally added to each image. 
-4. We realised, the category of labels is essentially the question itself! We can make it more magical by asking the teacher what question they want to ask.
-  5. For labels, we tried this pattern where hovering on the question shows you the labels that will be added on the image. 
+Also, image generation is expensive and teachers generally have an image in mind before they start creating a labeling question. Can we help them select an image quickly and generate labels?
 
-[talk about how we handled, latency, label placement issues, issues with label hallucinations]
-[add a visual talking about early iterations on label placement]
+We prototyped various flows before arriving at this pipeline.
+
+![image-2](/case-studies/labeling/pipeline.webp)
+
+Teachers select an image on Wayground, we analyse it, suggest questions that can be asked and generate labels automatically. 
+
+
+{% accordion title="Handling hallus" subtitle="Click to read more about this" %}
+
+
+{% /accordion %}
+
 
 ## Label creation experience
 
-## V1 approach (shipped 2024)
-[flow of the image-first labelling experience which is shown alongside a video of how the question works]
-1. image selection first - google images or upload
-2. improve search quality with labels toggle
-3. once image is selected, AI understands chosen image
-4. system generates a set of plausible labeling questions and corresponding labels
-5. teacher picks a question and labels are added to the image
-6. teacher can edit the labels or pick a different question
+LLMs aren't perfect, teachers should be able to edit labels and make final adjustments, but our editor was rough. You can't add labels directly on the image, editing was tough and the labels didn't have a pointer, so it often covered the subject.   
 
-## V2 experience (shipped 2026)
+**[bento of of label problems]**
+
+So we revamped our editor and the label creation experience. 
 
 
-## Why this project was unique
+## Full flow
 
-What makes this project meaningful to me is not just that it improved a workflow, but **how** it used AI.
+[flow of the image-first labeling experience which is shown alongside a video of how the question works]
 
-In 2024, the most obvious way to make something “AI-powered” was to add a prompt box. We deliberately chose not to do that.
-
-Instead, we built AI into the existing teacher workflow:
-- the teacher picks an image
-- the system understands the image
-- it proposes likely questions and labels
-- the teacher reviews visually
-- the teacher stays in control
-
----
 
 ## Impact
 
@@ -89,10 +73,10 @@ The redesign meaningfully improved the creation experience for Labeling.
 
 **Quantitative outcomes**
 
-- **Save rate increased from ~48–52% to ~75%**
-- **Average creation time reduced from ~8 minutes to ~5.5–6 minutes**
-- **AI suggestions were accepted about 1 in 3 times**
-- **Labeling question creation volume increased**, though not dramatically
+- Save rate increased from ~48–52% to ~75%
+- Average creation time reduced from ~8 minutes to ~5.5–6 minutes
+- AI suggestions were accepted about 1 in 3 times
+- Labeling question creation volume increased, though not dramatically
 
 **Qualitative outcomes**
 - the flow became much easier for new users to understand

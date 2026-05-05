@@ -77,7 +77,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 								animate={{ scale: 1 }}
 								exit={{ scale: 0 }}
 								transition={{
-									scale: { type: "spring", visualDuration: 0.3, bounce: 0.4 },
+									scale: { type: "spring", visualDuration: 0.2, bounce: 0.4 },
 								}}
 							></motion.img>
 						</AnimatePresence>
