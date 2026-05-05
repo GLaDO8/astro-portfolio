@@ -2,22 +2,28 @@
 import type { SongData } from "@/lib/widgetConfig";
 import MusicWidget from "./MusicWidget";
 import PhotoFrameWidget from "./PhotoFrameWidget";
+import SidequestsMapWidget from "./SidequestsMapWidget";
 import SnapsWidget from "./SnapsWidget";
 
 interface Props {
-    songData: SongData;
+	songData: SongData;
 }
 
 const { songData } = Astro.props;
+const enableSidequestsMapDialkit = import.meta.env.DEV;
+const sidequestsMapDialkitIslandPath = "../../dev/SidequestsMapDialkitIsland.astro";
+const SidequestsMapDialkitIsland = enableSidequestsMapDialkit
+	? (await import(/* @vite-ignore */ sidequestsMapDialkitIslandPath)).default
+	: null;
 ---
 
 <section
     data-home-widget-strip
-    class="h-44 w-full overflow-visible pt-8 sm:h-52 md:h-78 md:mt-12"
+    class="h-48 w-full overflow-visible pt-8 sm:h-56 md:h-78 md:mt-12"
     aria-label="Personal widgets"
 >
     <div
-        class="relative left-1/2 flex w-max origin-top -translate-x-1/2 scale-[0.66] items-start sm:justify-between md:justify-center gap-12 sm:scale-[0.82] md:scale-[1.05] md:gap-24 lg:scale-[1.12] lg:gap-28"
+        class="relative left-1/2 flex w-max origin-top -translate-x-1/2 scale-[0.66] items-start gap-10 sm:scale-[0.82] sm:justify-between sm:gap-12 md:scale-[1.05] md:justify-center md:gap-16 lg:scale-[1.12] lg:gap-20"
     >
         <div class="rotate-[9deg]">
             <div data-home-widget class="mt-5 shrink-0">
@@ -37,6 +43,21 @@ const { songData } = Astro.props;
         >
             <div data-home-widget>
                 <SnapsWidget client:visible />
+            </div>
+        </a>
+        <a
+            href="/sidequests"
+            class="-mt-3 -ml-8 block shrink-0 rotate-[6deg] no-underline"
+            aria-label="Open side quests"
+        >
+            <div data-home-widget>
+                {
+                    SidequestsMapDialkitIsland ? (
+                        <SidequestsMapDialkitIsland />
+                    ) : (
+                        <SidequestsMapWidget client:visible />
+                    )
+                }
             </div>
         </a>
     </div>
