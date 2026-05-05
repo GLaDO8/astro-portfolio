@@ -14,10 +14,7 @@ const {
 	blurBackground = "var(--color-beige)",
 } = Astro.props;
 const shellClass = cn("sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className);
-const blurBackgroundClass =
-	blurBackground === "white"
-		? "[--navbar-blur-background:white]"
-		: "[--navbar-blur-background:var(--color-beige)]";
+const blurBackgroundStyle = `--navbar-blur-background: ${blurBackground}`;
 
 const links = [
 	{ href: "/work", label: "work" },
@@ -39,7 +36,7 @@ const inactiveLinkClass = "text-primary/70 hover:text-primary";
 ---
 
 <!-- progressive blur -->
-<div class={cn("navbar-blur", blurBackgroundClass)} aria-hidden="true">
+<div class="navbar-blur" style={blurBackgroundStyle} aria-hidden="true">
     <div class="navbar-blur__background"></div>
     <div class="navbar-blur__filter navbar-blur__filter--soft"></div>
     <div class="navbar-blur__filter navbar-blur__filter--medium"></div>
@@ -357,7 +354,7 @@ const inactiveLinkClass = "text-primary/70 hover:text-primary";
 
     .navbar-blur__background {
         background: var(--navbar-blur-background);
-        opacity: 0.9;
+        opacity: 0.8;
         -webkit-mask-image: linear-gradient(
             to bottom,
             black 0%,

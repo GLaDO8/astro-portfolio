@@ -14,6 +14,18 @@ test("Navbar merges shell classes so page-level layout overrides win", () => {
 	assert.match(navbarComponent, /const shellClass = cn\(/);
 });
 
+test("Navbar applies blur background through an inline custom property", () => {
+	assert.match(
+		navbarComponent,
+		/const blurBackgroundStyle = `--navbar-blur-background: \$\{blurBackground\}`/,
+	);
+	assert.match(
+		navbarComponent,
+		/<div class="navbar-blur" style=\{blurBackgroundStyle\} aria-hidden="true">/,
+	);
+	assert.doesNotMatch(navbarComponent, /\[--navbar-blur-background:/);
+});
+
 test("sidequests navbar shell does not keep the default full-width sticky wrapper", () => {
 	assert.ok(sidequestsNavClass);
 

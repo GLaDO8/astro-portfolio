@@ -20,8 +20,9 @@ const figureClassName = cn(
 );
 
 const modelViewerClassName = cn(
-	"relative z-[1] block h-full w-full",
+	"relative z-[1] block h-full w-full overflow-hidden",
 	"[--poster-color:transparent]",
+	"[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
 );
 
 export default function CADRender({ model }: CADRenderProps) {
@@ -33,6 +34,7 @@ export default function CADRender({ model }: CADRenderProps) {
 				"auto-rotate": "",
 				"auto-rotate-delay": "0",
 				"camera-controls": "",
+				"disable-zoom": "",
 				"interaction-prompt": "none",
 				loading: "lazy",
 				reveal: "auto",
