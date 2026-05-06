@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import Markdoc from "@markdoc/markdoc";
 import markdocConfig from "../markdoc.config.ts";
+import { articleProseClass } from "../src/lib/articleProse.ts";
 
 const accordionComponent = readFileSync("src/components/mdoc/Accordion.tsx", "utf8");
 
@@ -16,17 +17,33 @@ test("Markdown links in Markdoc open in a new tab", () => {
 	assert.match(html, /rel="noopener noreferrer"/);
 });
 
-test("Accordion content keeps the article link affordance inside the not-prose island", () => {
+test("Accordion chrome stays out of prose while content keeps article link styling", () => {
 	assert.match(accordionComponent, /not-prose/);
+	assert.match(accordionComponent, /articleProseClass/);
 
 	for (const className of [
-		"[&_a]:text-primary/70",
-		"[&_a:hover]:text-primary",
-		"[&_a]:underline",
-		"[&_a]:decoration-dotted",
-		"[&_a]:decoration-2",
-		"[&_a]:underline-offset-3",
+		"prose-a:text-primary/70",
+		"prose-a:hover:text-primary",
+		"prose-a:decoration-dotted",
+		"prose-a:decoration-2",
+		"prose-a:underline-offset-3",
 	]) {
-		assert.ok(accordionComponent.includes(className), `Missing ${className}`);
+		assert.ok(articleProseClass.includes(className), `Missing ${className}`);
+	}
+});
+
+test("Accordion content uses the shared article Markdown styling", () => {
+	assert.match(accordionComponent, /articleProseClass/);
+
+	for (const className of [
+		"prose",
+		"md:prose-lg",
+		"prose-li:marker:text-primary",
+		"prose-code:bg-zinc-50",
+		"prose-code:border-zinc-300",
+		"prose-code:rounded",
+		"prose-headings:font-sans",
+	]) {
+		assert.ok(articleProseClass.includes(className), `Missing ${className}`);
 	}
 });

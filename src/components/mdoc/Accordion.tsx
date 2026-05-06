@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { type ReactNode, useId, useState } from "react";
+import { articleProseClass } from "@/lib/articleProse";
 import minusIconSvg from "/minus.svg?raw";
 import plusIconSvg from "/Plus.svg?raw";
 
@@ -20,12 +21,7 @@ const bodyVariants = {
 	open: { opacity: 1, y: 0 },
 	closed: { opacity: 0, y: -8 },
 };
-const accordionContentClassName = [
-	"px-6 pt-4 pb-9 font-sans text-lg leading-relaxed font-medium text-[#333f46]",
-	"[&>*+*]:mt-4 [&>astro-slot>*+*]:mt-4",
-	"[&_a]:text-primary/70 [&_a:hover]:text-primary",
-	"[&_a]:underline [&_a]:decoration-dotted [&_a]:decoration-2 [&_a]:underline-offset-3",
-].join(" ");
+const accordionContentClassName = [articleProseClass, "max-w-none px-6 pt-4 pb-9"].join(" ");
 
 export default function Accordion({ title, subtitle = defaultSubtitle, children }: AccordionProps) {
 	const shouldReduceMotion = useReducedMotion();
@@ -41,7 +37,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 	return (
 		<motion.section
 			layout={!shouldReduceMotion}
-			className="not-prose my-8 overflow-hidden rounded-lg border border-primary/10 bg-white"
+			className="my-8 overflow-hidden rounded-lg border border-primary/10 bg-white"
 		>
 			<button
 				type="button"
@@ -49,7 +45,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 				aria-expanded={isOpen}
 				aria-controls={contentId}
 				onClick={toggleAccordion}
-				className="flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left"
+				className="not-prose flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left"
 			>
 				<div className="flex flex-col gap-2.5">
 					<p className="font-sans text-lg font-bold text-[#da0288]">{title}</p>
