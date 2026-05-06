@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar.astro";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
 import DevToolbars from "@/dev/DevToolbars";
+import { cn } from "@/lib/cn";
 
 interface Props {
     title: string;
@@ -75,7 +76,7 @@ const isDev = import.meta.env.DEV;
             class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-primary"
             >Skip to content</a
         >
-        <div class="relative z-20 w-full bg-beige">
+        <div class={cn("relative z-20 w-full", bodyClass)}>
             <div
                 class:list={[
                     "relative mx-auto flex min-h-dvh flex-col",
