@@ -7,204 +7,223 @@ import "@/styles/global.css";
 import DevToolbars from "@/dev/DevToolbars";
 
 interface Props {
-	title: string;
-	description: string;
-	bodyClass?: string;
-	mainClass?: string;
-	navClass?: string;
-	navBlurBackground?: string;
-	constrainShell?: boolean;
-	showNavigation?: boolean;
-	preloadCodeFont?: boolean;
-	seo?: {
-		ogType?: "website" | "article";
-		ogImage?: string;
-		ogImageAlt?: string;
-		article?: {
-			publishedTime: string;
-		};
-		noindex?: boolean;
-		jsonLd?: Record<string, unknown>;
-	};
+    title: string;
+    description: string;
+    bodyClass?: string;
+    mainClass?: string;
+    navClass?: string;
+    navBlurBackground?: string;
+    constrainShell?: boolean;
+    showNavigation?: boolean;
+    preloadCodeFont?: boolean;
+    seo?: {
+        ogType?: "website" | "article";
+        ogImage?: string;
+        ogImageAlt?: string;
+        article?: {
+            publishedTime: string;
+        };
+        noindex?: boolean;
+        jsonLd?: Record<string, unknown>;
+    };
 }
 
 const {
-	title,
-	description,
-	bodyClass,
-	mainClass,
-	navClass,
-	navBlurBackground,
-	constrainShell = true,
-	showNavigation = true,
-	preloadCodeFont = false,
-	seo = {},
+    title,
+    description,
+    bodyClass,
+    mainClass,
+    navClass,
+    navBlurBackground,
+    constrainShell = true,
+    showNavigation = true,
+    preloadCodeFont = false,
+    seo = {},
 } = Astro.props;
 const isDev = import.meta.env.DEV;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{title}</title>
-		<SEO title={title} description={description} {...seo} />
-		<Font
-			cssVariable="--font-commissioner"
-			preload={[{ weight: "400", style: "normal" }]}
-		/>
-		{
-			preloadCodeFont ? (
-				<Font
-					cssVariable="--font-recursive"
-					preload={[{ weight: "500", style: "normal" }]}
-				/>
-			) : (
-				<Font cssVariable="--font-recursive" />
-			)
-		}
-		<ClientRouter />
-		<script is:inline>
-			document.documentElement.dataset.shellTransitions = "true";
-		</script>
-	</head>
-	<body class={bodyClass}>
-		<a
-			href="#main-content"
-			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-primary"
-			>Skip to content</a
-		>
-		<div
-			class:list={[
-				"relative mx-auto flex min-h-dvh flex-col",
-				constrainShell && "max-w-7xl",
-			]}
-		>
-			{
-				showNavigation && (
-					<Navbar
-						currentPath={Astro.url.pathname}
-						class={navClass}
-						blurBackground={navBlurBackground}
-					/>
-				)
-			}
-			<main
-				id="main-content"
-				class:list={["min-w-0 flex-1", mainClass]}
-				data-shell-content
-				data-page-state="entering"
-			>
-				<slot />
-			</main>
-		</div>
-		{isDev && <DevToolbars client:only="react" />}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{title}</title>
+        <SEO title={title} description={description} {...seo} />
+        <Font
+            cssVariable="--font-commissioner"
+            preload={[{ weight: "400", style: "normal" }]}
+        />
+        {
+            preloadCodeFont ? (
+                <Font
+                    cssVariable="--font-recursive"
+                    preload={[{ weight: "500", style: "normal" }]}
+                />
+            ) : (
+                <Font cssVariable="--font-recursive" />
+            )
+        }
+        <ClientRouter />
+        <script is:inline>
+            document.documentElement.dataset.shellTransitions = "true";
+        </script>
+    </head>
+    <body class={bodyClass}>
+        <a
+            href="#main-content"
+            class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-primary"
+            >Skip to content</a
+        >
+        <div class="relative z-20 w-full bg-beige">
+            <div
+                class:list={[
+                    "relative mx-auto flex min-h-dvh flex-col",
+                    constrainShell && "max-w-7xl",
+                ]}
+            >
+                {
+                    showNavigation && (
+                        <Navbar
+                            currentPath={Astro.url.pathname}
+                            class={navClass}
+                            blurBackground={navBlurBackground}
+                        />
+                    )
+                }
+                <main
+                    id="main-content"
+                    class:list={["min-w-0 flex-1", mainClass]}
+                    data-shell-content
+                    data-page-state="entering"
+                >
+                    <slot />
+                </main>
+            </div>
+        </div>
+        <footer
+            class="z-0 h-24 bg-[#353631] bg-[linear-gradient(rgba(74,75,70,1)_1.5px,transparent_1px),linear-gradient(90deg,rgba(74,75,70,1)_1.5px,transparent_1px)] bg-[size:20px_20px] sticky bottom-0 w-full flex items-center justify-center"
+        >
+            <p
+                class="text-base text-white/70 font-medium font-sans p-2 px-6 bg-[#353631] border-[1.5px] border-[#4a4b46] mt-1"
+            >
+                Source code available on <a
+                    href="https://github.com/GLaDO8/astro-portfolio"
+                    class="text-white font-semibold">Github</a
+                >
+            </p>
+        </footer>
+        {isDev && <DevToolbars client:only="react" />}
 
-		<script>
-			const getContent = () =>
-				document.querySelector<HTMLElement>("[data-shell-content]");
+        <script>
+            const getContent = () =>
+                document.querySelector<HTMLElement>("[data-shell-content]");
 
-			const enterContent = () => {
-				const content = getContent();
+            const enterContent = () => {
+                const content = getContent();
 
-				if (!content) {
-					return;
-				}
+                if (!content) {
+                    return;
+                }
 
-				requestAnimationFrame(() => {
-					content.dataset.pageState = "entered";
-				});
-			};
+                requestAnimationFrame(() => {
+                    content.dataset.pageState = "entered";
+                });
+            };
 
-			const leaveContent = () => {
-				const content = getContent();
+            const leaveContent = () => {
+                const content = getContent();
 
-				if (!content || content.dataset.pageState === "leaving") {
-					return;
-				}
+                if (!content || content.dataset.pageState === "leaving") {
+                    return;
+                }
 
-				content.dataset.pageState = "leaving";
-			};
+                content.dataset.pageState = "leaving";
+            };
 
-			document.addEventListener("astro:before-preparation", leaveContent);
-			document.addEventListener("astro:page-load", enterContent);
+            document.addEventListener("astro:before-preparation", leaveContent);
+            document.addEventListener("astro:page-load", enterContent);
 
-			enterContent();
-		</script>
+            enterContent();
+        </script>
 
-	<script>
-		import Lenis from "lenis";
+        <script>
+            import Lenis from "lenis";
 
-			const lenis = new Lenis({
-				lerp: 0.2, // Lower = smoother/slower (0.03–0.2). Set to undefined to use duration instead.
-				// duration: 1.2, // Higher = slower. Only used when lerp is undefined.
-				smoothWheel: true,
-				easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-			});
+            const lenis = new Lenis({
+                lerp: 0.2, // Lower = smoother/slower (0.03–0.2). Set to undefined to use duration instead.
+                // duration: 1.2, // Higher = slower. Only used when lerp is undefined.
+                smoothWheel: true,
+                easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            });
 
-			function raf(time: number) {
-				lenis.raf(time);
-				requestAnimationFrame(raf);
-			}
+            function raf(time: number) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
 
-		requestAnimationFrame(raf);
-	</script>
+            requestAnimationFrame(raf);
+        </script>
 
-	<style is:global>
-		html.lenis,
-		html.lenis body {
-			height: auto;
-		}
+        <style is:global>
+            html.lenis,
+            html.lenis body {
+                height: auto;
+            }
 
-		.lenis.lenis-stopped {
-			overflow: hidden;
-		}
+            .lenis.lenis-stopped {
+                overflow: hidden;
+            }
 
-		.lenis.lenis-smooth [data-lenis-prevent] {
-			overscroll-behavior: contain;
-		}
+            .lenis.lenis-smooth [data-lenis-prevent] {
+                overscroll-behavior: contain;
+            }
 
-		:root {
-			--shell-page-transition-duration: 260ms;
-			--shell-page-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
-		}
+            :root {
+                --shell-page-transition-duration: 260ms;
+                --shell-page-transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+            }
 
-		html[data-shell-transitions="true"] [data-shell-content] {
-			opacity: 0;
-			transform: translateY(1rem);
-			filter: blur(10px);
-			transition:
-				opacity var(--shell-page-transition-duration) var(--shell-page-transition-ease),
-				transform var(--shell-page-transition-duration) var(--shell-page-transition-ease),
-				filter var(--shell-page-transition-duration) var(--shell-page-transition-ease);
-			transition-behavior: allow-discrete;
-			will-change: opacity, transform, filter;
-		}
+            html[data-shell-transitions="true"] [data-shell-content] {
+                opacity: 0;
+                transform: translateY(1rem);
+                filter: blur(10px);
+                transition:
+                    opacity var(--shell-page-transition-duration)
+                        var(--shell-page-transition-ease),
+                    transform var(--shell-page-transition-duration)
+                        var(--shell-page-transition-ease),
+                    filter var(--shell-page-transition-duration)
+                        var(--shell-page-transition-ease);
+                transition-behavior: allow-discrete;
+                will-change: opacity, transform, filter;
+            }
 
-		html[data-shell-transitions="true"] [data-shell-content][data-page-state="entered"] {
-			opacity: 1;
-			transform: translateY(0);
-			filter: blur(0);
-		}
+            html[data-shell-transitions="true"]
+                [data-shell-content][data-page-state="entered"] {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
 
-		html[data-shell-transitions="true"] [data-shell-content][data-page-state="leaving"] {
-			opacity: 0;
-			transform: translateY(0.75rem);
-			filter: blur(8px);
-			pointer-events: none;
-		}
+            html[data-shell-transitions="true"]
+                [data-shell-content][data-page-state="leaving"] {
+                opacity: 0;
+                transform: translateY(0.75rem);
+                filter: blur(8px);
+                pointer-events: none;
+            }
 
-		@media (prefers-reduced-motion: reduce) {
-			:root {
-				--shell-page-transition-duration: 1ms;
-			}
+            @media (prefers-reduced-motion: reduce) {
+                :root {
+                    --shell-page-transition-duration: 1ms;
+                }
 
-			html[data-shell-transitions="true"] [data-shell-content] {
-				filter: none;
-				transform: none;
-			}
-		}
-	</style>
-	</body>
+                html[data-shell-transitions="true"] [data-shell-content] {
+                    filter: none;
+                    transform: none;
+                }
+            }
+        </style>
+    </body>
 </html>
