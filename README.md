@@ -1,18 +1,9 @@
-# Shreyas's Personal Website
+# Shreyas's Personal Website (v2)
 
-This is the source for `shrey.fyi`, a static personal website for writing, design case studies, experiments, side projects, and visual notes.
+This is the source for `shrey.fyi`, my static personal website.
 
 ## Tech Stack
-
-- **Astro 6** for the static site, routing, content collections, font loading, and build pipeline.
-- **React 19** for interactive islands such as widgets, galleries, copy buttons, and animated sections.
-- **Markdoc / MDOC** for long-form notes and case studies in `src/content`.
-- **Tailwind CSS v4** through the Vite plugin, with shared tokens in `src/styles/global.css`.
-- **Motion** for interface and page-level animation.
-- **Lottie** through `lottie-web` for embedded motion pieces inside MDOC content.
-- **Lenis** for smooth scrolling behavior.
-- **Biome** for formatting and linting.
-- **Sharp** plus local image scripts for asset optimization.
+I am using a simple stack with **Astro and React** for content collections and interactive islands, **tailwind and motion** for styling and animations, **markdoc** for content authoring, and **Lenis** for smooth scrolling.
 
 ## Project Structure
 
