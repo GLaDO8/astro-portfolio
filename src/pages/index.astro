@@ -5,33 +5,34 @@ import HeroGoogleFontSwapWidget from "@/dev/HeroGoogleFontSwapWidget";
 import Page from "@/layouts/Page.astro";
 import { getSongData } from "@/lib/widgetConfig";
 
-const homeTextColumn = "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
+const homeTextColumn =
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
 const homeWidgetColumn =
-	"col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const songData = await getSongData();
 const enableHeroFontSwap = import.meta.env.DEV;
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [
-		{
-			"@type": "WebSite",
-			"@id": "https://shrey.fyi/#website",
-			url: "https://shrey.fyi",
-			name: "Shreyas Gupta",
-			description:
-				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-			publisher: { "@id": "https://shrey.fyi/#person" },
-		},
-		{
-			"@type": "Person",
-			"@id": "https://shrey.fyi/#person",
-			name: "Shreyas Gupta",
-			url: "https://shrey.fyi",
-			jobTitle: "Designer",
-			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-		},
-	],
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://shrey.fyi/#website",
+            url: "https://shrey.fyi",
+            name: "Shreyas Gupta",
+            description:
+                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+            publisher: { "@id": "https://shrey.fyi/#person" },
+        },
+        {
+            "@type": "Person",
+            "@id": "https://shrey.fyi/#person",
+            name: "Shreyas Gupta",
+            url: "https://shrey.fyi",
+            jobTitle: "Designer",
+            sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+        },
+    ],
 };
 ---
 
@@ -51,7 +52,7 @@ const jsonLd = {
         {enableHeroFontSwap && <HeroGoogleFontSwapWidget client:load />}
 
         <div
-            class="text-pretty font-sans text-lg leading-[1.8] font-medium tracking-[-0.02em] text-primary md:text-2xl md:px-12 pt-8"
+            class="text-pretty font-sans text-lg leading-[1.7] font-medium tracking-[-0.02em] text-primary md:text-xl md:px-16 pt-8"
         >
             <p class="text-pretty">
                 I’ve spent the last 5 years working on and beyond the visible interface of
