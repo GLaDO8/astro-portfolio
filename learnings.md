@@ -7,8 +7,10 @@
 - `data-*` are plain HTML markers for adding semantic metadata to HTML elements that needn't be unique like id and needn't pollute class space.
 - the content in frontmatter of Astro is executed at buildtime or on server if SSR, it is not shipped to the client.
 - Border box means border lies outside the div, to have something inside, you need to use inset box shadow
-- browser's default flex behaviour is flex: 0 1 auto;
+- browser's default flex behaviour is `flex: 0 1 auto;`
 - the details and summary tags are browser's native way to create a disclosure component or an accordion component.
 - tailwind generates CSS at dev/build time, not runtime, so you cannot manipulate tailwind classes with JS on runtime.
-- glb files are great way for packaging the CAD model, textures etc into one file for rendering on the web. Google model viewer is considered the most performant way to render models on the web. 
+- `.glb` files are great way for packaging the CAD model, textures etc into one file for rendering on the web. Google model viewer is considered the most performant way to render models on the web. 
+- `useRef` is persistent value that does not re-render UI on change, while `useState` is persistent value that re-renders UI when changed. It only persists while the component is mounted, on page refresh it is killed.
 - this is the syntax for adding captions to images in markdown ![Accessible description of the image](/case-studies/labeling/pipeline.webp "Visible caption under the image")
+- memoization is caching and reuse of a value if the inputs into it didn't change.

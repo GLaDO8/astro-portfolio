@@ -103,9 +103,7 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 export default function HeroSection() {
 	const shouldReduceMotion = useReducedMotion();
 	const bagRef = useRef<string[]>([]);
-	const buttonClickAudioRef = useRef<HTMLAudioElement | null>(null);
-	const closeTooltipTimeoutRef = useRef<number | null>(null);
-	const copyFeedbackTimeoutRef = useRef<number | null>(null);
+	const buttonClickAudioRef = useRef<HTMLAudioElement | null>(null); //value can be HTMLAudioElement or null
 	const [text, setText] = useState(descriptions[0]);
 
 	const playButtonClickSound = useCallback(() => {
@@ -137,14 +135,6 @@ export default function HeroSection() {
 
 	useEffect(() => {
 		return () => {
-			if (closeTooltipTimeoutRef.current) {
-				window.clearTimeout(closeTooltipTimeoutRef.current);
-			}
-
-			if (copyFeedbackTimeoutRef.current) {
-				window.clearTimeout(copyFeedbackTimeoutRef.current);
-			}
-
 			if (buttonClickAudioRef.current) {
 				buttonClickAudioRef.current.pause();
 				buttonClickAudioRef.current.src = "";
