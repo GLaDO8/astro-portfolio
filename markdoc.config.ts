@@ -122,6 +122,34 @@ export default defineMarkdocConfig({
 				},
 			},
 		},
+		lottie: {
+			render: component("./src/components/mdoc/Lottie.astro"),
+			selfClosing: true,
+			attributes: {
+				src: { type: String, required: true },
+				label: { type: String },
+				caption: { type: String },
+				width: {
+					type: String,
+					default: "wide",
+					matches: ["default", "wide", "full"],
+				},
+				align: {
+					type: String,
+					default: "center",
+					matches: ["center", "left", "right"],
+				},
+				maxWidth: { type: String },
+				aspectRatio: {
+					type: String,
+					default: "video",
+					matches: ["video", "square"],
+				},
+				loop: { type: Boolean, default: true },
+				autoplay: { type: Boolean, default: true },
+				controls: { type: Boolean, default: true },
+			},
+		},
 		figure: {
 			render: figureComponent,
 			selfClosing: true,

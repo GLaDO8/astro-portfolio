@@ -4,6 +4,7 @@ import process from "node:process";
 const CONTENT_TESTS = [
 	"tests/markdoc-link.test.mjs",
 	"tests/markdoc-image.test.mjs",
+	"tests/markdoc-lottie.test.mjs",
 	"tests/markdoc-sidenote.test.mjs",
 	"tests/content-images.test.mjs",
 	"tests/content-grid-layout.test.mjs",

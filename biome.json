@@ -68,7 +68,7 @@
 		}
 	],
 	"files": {
-		"includes": ["**", "!.claude", "!.codex", "!dist", "!.astro"],
+		"includes": ["**", "!.claude", "!.codex", "!dist", "!.astro", "!public/lottie/*.json"],
 		"ignoreUnknown": true,
 		"maxSize": 1048576
 	}

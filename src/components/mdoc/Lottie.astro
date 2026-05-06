@@ -1,0 +1,248 @@
+---
+import { cn } from "@/lib/cn";
+
+interface Props {
+	src: string;
+	label?: string;
+	caption?: string;
+	width?: "default" | "wide" | "full";
+	align?: "center" | "left" | "right";
+	maxWidth?: string;
+	aspectRatio?: "video" | "square";
+	loop?: boolean;
+	autoplay?: boolean;
+	controls?: boolean;
+	renderer?: "svg" | "canvas" | "html";
+}
+
+const {
+	src,
+	label,
+	caption,
+	width = "wide",
+	align = "center",
+	maxWidth,
+	aspectRatio = "video",
+	loop = true,
+	autoplay = true,
+	controls = true,
+	renderer = "svg",
+} = Astro.props;
+
+const maxWidthClasses: Record<string, string> = {
+	"24rem": "max-w-96",
+	"28rem": "max-w-md",
+	"32rem": "max-w-lg",
+	"36rem": "max-w-xl",
+	"42rem": "max-w-2xl",
+	"48rem": "max-w-3xl",
+	"56rem": "max-w-4xl",
+	"64rem": "max-w-5xl",
+	"72rem": "max-w-6xl",
+	"80rem": "max-w-7xl",
+};
+const aspectRatioClasses: Record<NonNullable<Props["aspectRatio"]>, string> = {
+	video: "aspect-video",
+	square: "aspect-square",
+};
+const maxWidthClass = maxWidth ? maxWidthClasses[maxWidth] : undefined;
+
+if (maxWidth && !maxWidthClass) {
+	throw new Error(`Unsupported Lottie maxWidth "${maxWidth}". Add a Tailwind class mapping.`);
+}
+
+const wrapperClass = cn(
+	"not-prose my-16 w-full",
+	width !== "default" && `figure-${width}`,
+	align === "center" && "flex flex-col items-center",
+	align === "left" && "flex flex-col items-start",
+	align === "right" && "flex flex-col items-end",
+	maxWidthClass,
+);
+const playerLabel = label ?? caption ?? "Lottie animation";
+---
+
+<figure class={wrapperClass}>
+    <mdoc-lottie-player
+        class={cn(
+            "relative block w-full overflow-hidden rounded-xl",
+            aspectRatioClasses[aspectRatio],
+        )}
+        data-src={src}
+        data-loop={String(loop)}
+        data-autoplay={String(autoplay)}
+        data-controls={String(controls)}
+        data-renderer={renderer}
+        aria-label={playerLabel}
+    >
+        <div class="h-full w-full" data-lottie-stage aria-hidden="true"></div>
+        {
+            controls && (
+                <button
+                    type="button"
+                    class="absolute right-3 bottom-3 grid size-9 place-items-center rounded-full border border-zinc-200 bg-white/90 text-primary shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    data-lottie-toggle
+                    aria-label="Pause animation"
+                    aria-pressed="true"
+                >
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                        focusable="false"
+                        data-lottie-play-icon
+                        hidden
+                    >
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                        focusable="false"
+                        data-lottie-pause-icon
+                    >
+                        <path d="M7 5h4v14H7zM13 5h4v14h-4z" />
+                    </svg>
+                </button>
+            )
+        }
+    </mdoc-lottie-player>
+    {
+        caption && (
+            <figcaption class="mt-2 font-sans text-sm text-secondary">
+                {caption}
+            </figcaption>
+        )
+    }
+</figure>
+
+<script>
+    import lottie from "lottie-web";
+
+    const lottieElementName = "mdoc-lottie-player";
+
+    if (!customElements.get(lottieElementName)) {
+        class MdocLottiePlayer extends HTMLElement {
+            #animation;
+            #isPlaying = false;
+            #toggleButton;
+
+            connectedCallback() {
+                if (this.#animation) {
+                    return;
+                }
+
+                const stage = this.querySelector("[data-lottie-stage]");
+                const src = this.dataset.src;
+
+                if (!(stage instanceof HTMLElement) || !src) {
+                    return;
+                }
+
+                const reduceMotion = window.matchMedia(
+                    "(prefers-reduced-motion: reduce)",
+                ).matches;
+                const shouldAutoplay =
+                    this.#readBoolean("autoplay", true) && !reduceMotion;
+
+                this.#toggleButton = this.querySelector("[data-lottie-toggle]");
+                this.#toggleButton?.addEventListener("click", this.#togglePlayback);
+
+                this.#animation = lottie.loadAnimation({
+                    container: stage,
+                    renderer: this.dataset.renderer || "svg",
+                    loop: this.#readBoolean("loop", true),
+                    autoplay: shouldAutoplay,
+                    path: src,
+                    rendererSettings: {
+                        preserveAspectRatio: "xMidYMid meet",
+                    },
+                });
+
+                this.#animation.addEventListener("DOMLoaded", () => {
+                    if (!shouldAutoplay) {
+                        this.#animation?.goToAndStop(0, true);
+                    }
+                });
+
+                this.#animation.addEventListener("complete", () => {
+                    if (!this.#readBoolean("loop", true)) {
+                        this.#setPlaying(false);
+                    }
+                });
+
+                this.#setPlaying(shouldAutoplay);
+            }
+
+            disconnectedCallback() {
+                this.#toggleButton?.removeEventListener("click", this.#togglePlayback);
+                this.#animation?.destroy();
+                this.#animation = undefined;
+                this.#toggleButton = undefined;
+                this.#isPlaying = false;
+            }
+
+            #readBoolean(name, defaultValue) {
+                const value = this.dataset[name];
+
+                if (value === undefined) {
+                    return defaultValue;
+                }
+
+                return value !== "false";
+            }
+
+            #setPlaying(isPlaying) {
+                this.#isPlaying = isPlaying;
+                this.dataset.playing = String(isPlaying);
+
+                if (!this.#toggleButton) {
+                    return;
+                }
+
+                this.#toggleButton.setAttribute(
+                    "aria-label",
+                    isPlaying ? "Pause animation" : "Play animation",
+                );
+                this.#toggleButton.setAttribute("aria-pressed", String(isPlaying));
+                this.#toggleButton
+                    .querySelector("[data-lottie-play-icon]")
+                    ?.toggleAttribute("hidden", isPlaying);
+                this.#toggleButton
+                    .querySelector("[data-lottie-pause-icon]")
+                    ?.toggleAttribute("hidden", !isPlaying);
+            }
+
+            #togglePlayback = () => {
+                if (!this.#animation) {
+                    return;
+                }
+
+                if (this.#isPlaying) {
+                    this.#animation.pause();
+                    this.#setPlaying(false);
+                    return;
+                }
+
+                this.#animation.play();
+                this.#setPlaying(true);
+            };
+        }
+
+        customElements.define(lottieElementName, MdocLottiePlayer);
+    }
+</script>
+
+<style is:global>
+    mdoc-lottie-player [data-lottie-stage] > svg,
+    mdoc-lottie-player [data-lottie-stage] > canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+</style>

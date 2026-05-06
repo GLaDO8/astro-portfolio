@@ -16,7 +16,7 @@ const BIOME_EXTENSIONS = new Set([
 	".tsx",
 ]);
 const DESIGN_TOKEN_EXTENSIONS = new Set([".astro", ".css", ".js", ".jsx", ".mdoc", ".ts", ".tsx"]);
-const IGNORED_PREFIXES = ["dist/", ".astro/", "node_modules/", ".codex/"];
+const IGNORED_PREFIXES = ["dist/", ".astro/", "node_modules/", ".codex/", "public/lottie/"];
 
 function run(command, args) {
 	console.log(`$ ${[command, ...args].join(" ")}`);
@@ -76,6 +76,7 @@ function matchingTests(files) {
 	) {
 		tests.add("tests/markdoc-link.test.mjs");
 		tests.add("tests/markdoc-image.test.mjs");
+		tests.add("tests/markdoc-lottie.test.mjs");
 		tests.add("tests/markdoc-sidenote.test.mjs");
 		tests.add("tests/content-images.test.mjs");
 		tests.add("tests/content-grid-layout.test.mjs");
