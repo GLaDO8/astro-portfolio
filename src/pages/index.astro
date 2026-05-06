@@ -11,6 +11,8 @@ const homeWidgetColumn =
     "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const songData = await getSongData();
 const enableHeroFontSwap = import.meta.env.DEV;
+const homeDescriptionLinkClass =
+    "font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
 
 const jsonLd = {
     "@context": "https://schema.org",
@@ -70,34 +72,29 @@ const jsonLd = {
                     href="https://wayground.com/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="underline decoration-3 decoration-dotted underline-offset-4 transition-colors hover:opacity-85 font-semibold"
-                    >Wayground/Quizizz</a
+                    class={homeDescriptionLinkClass}>Wayground/Quizizz</a
                 >, where I worked on AI creator tools for teachers. Before that, I built a
                 context-aware SQL editor at
                 <a
                     href="https://atlan.com/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="underline decoration-3 decoration-dotted underline-offset-4 transition-colors hover:opacity-85 font-semibold"
-                    >Atlan</a
+                    class={homeDescriptionLinkClass}>Atlan</a
                 >. Find all my past roles <a
                     href="https://www.linkedin.com/in/shreyas-gupta/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="underline decoration-3 decoration-dotted underline-offset-4 transition-colors hover:opacity-85 font-semibold"
-                    >here</a
+                    class={homeDescriptionLinkClass}>here</a
                 >. Open for client work, shoot a <a
                     href="https://x.com/wutamelonshrey"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="underline decoration-3 decoration-dotted underline-offset-4 transition-colors hover:opacity-85 font-semibold"
-                    >DM</a
+                    class={homeDescriptionLinkClass}>DM</a
                 > or send an <a
                     href="mailto:gshreyas@icloud.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="underline decoration-3 decoration-dotted underline-offset-4 transition-colors hover:opacity-85 font-semibold"
-                    >email</a
+                    class={homeDescriptionLinkClass}>email</a
                 >.
             </p>
         </div>

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+
+/*@layer base is for global defaults*/
 @layer base {
 	html {
 		-webkit-font-smoothing: antialiased;
@@ -9,6 +11,7 @@
 	}
 }
 
+/*@theme is for custom design tokens that generate utilities*/
 @theme {
 	/* Colors */
 	--color-beige: #f4f5f0; /* background */
@@ -23,6 +26,9 @@
 	--radius-md: 1.5rem;
 }
 
+/*@theme inline says tailwind to inline the css variable directly, used for when values are another set of css variables*/
+
+/* @theme inline is great for mapping Tailwind font tokens to Astro font variables. */
 @theme inline {
 	--font-sans: var(--font-commissioner);
 	--font-mono: var(--font-recursive);
