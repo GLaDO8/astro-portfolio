@@ -1,22 +1,16 @@
 ---
-import aeropressStandModelUrl from "@/assets/sidequests/aeropress-stand.glb?url";
+import { Image } from "astro:assets";
+import v60Photo from "@/assets/sidequests/v60.png";
 import v60StandModelUrl from "@/assets/sidequests/v60-stand.glb?url";
 import CADRender, { type CADModel } from "@/components/sidequests/CADRender";
 import SidequestsCanvas from "@/components/sidequests/SidequestsCanvas";
 import Document from "@/layouts/Document.astro";
 
-const cadModels = [
-	{
-		id: "v60-skadis",
-		src: v60StandModelUrl,
-		alt: "Rotating white 3D model of a V60 Skadis mount",
-	},
-	{
-		id: "aeropress-skadis-stand",
-		src: aeropressStandModelUrl,
-		alt: "Rotating white 3D model of an Aeropress Skadis stand",
-	},
-] satisfies CADModel[];
+const v60Model = {
+	id: "v60-skadis",
+	src: v60StandModelUrl,
+	alt: "Rotating 3D model of a V60 stand for an IKEA SKADIS pegboard",
+} satisfies CADModel;
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -37,25 +31,56 @@ const jsonLd = {
 	seo={{ jsonLd }}
 >
 	<SidequestsCanvas client:load>
-		<header
-			class="absolute top-[calc(50%_-_21rem)] left-[calc(50%_-_11rem)] max-w-[22rem] select-text px-4 md:top-[calc(50%_-_13rem)] md:left-[calc(50%_-_30rem)] md:max-w-md"
+		<section
+			class="v60-feature absolute top-[10rem] left-1/2 flex w-[min(calc(100vw_-_2.5rem),36rem)] -translate-x-1/2 flex-col items-center gap-4 select-text md:top-4 md:flex-row md:items-start md:justify-center md:gap-5 lg:gap-6"
+			aria-labelledby="v60-stand-title"
 		>
-			<h1
-				class="font-sans text-4xl leading-[1.1] font-bold tracking-[-0.03em] text-primary text-balance md:text-5xl"
+			<figure
+				class="w-full max-w-[17rem] shrink-0 overflow-hidden rounded-md border-[0.375rem] border-white bg-white shadow-[0_0.75rem_1.5rem_rgba(42,35,29,0.14)] md:w-[52%]"
 			>
-				Sidequests
-			</h1>
-			<p
-				class="mt-4 max-w-2xl font-sans text-base leading-relaxed text-secondary md:text-lg"
-			>
-				Side projects, prototypes, and playful builds.
-			</p>
-		</header>
+				<Image
+					src={v60Photo}
+					alt="Ceramic V60 held upright on a white IKEA SKADIS pegboard"
+					loading="eager"
+					class="block h-full w-full object-cover"
+					sizes="(min-width: 768px) 17rem, min(17rem, calc(100vw - 3.25rem))"
+				/>
+			</figure>
 
-		<div
-			class="absolute top-[calc(50%_-_10rem)] left-[calc(50%_-_9.5rem)] grid grid-cols-[minmax(15rem,19rem)] gap-5 md:top-[calc(50%_-_5.5rem)] md:left-[calc(50%_+_2rem)] md:grid-cols-[repeat(2,minmax(14rem,18rem))] md:gap-6"
-		>
-			{cadModels.map((model) => <CADRender model={model} />)}
-		</div>
+			<div
+				class="flex w-full max-w-[15rem] flex-col gap-5 md:w-[42%] md:max-w-[15.5rem] md:gap-6"
+			>
+				<CADRender
+					client:load
+					model={v60Model}
+					className="w-full min-h-24 border-[0.375rem] bg-[length:1.05rem_1.05rem] shadow-[0_0.75rem_1.5rem_rgba(42,35,29,0.14)]"
+				/>
+
+				<div class="px-0.5 md:px-2">
+					<h1
+						id="v60-stand-title"
+						class="font-sans text-2xl leading-[1.12] font-bold text-primary text-balance"
+					>
+						V60 Stand for IKEA Pegboard
+					</h1>
+					<p
+						class="mt-3.5 font-sans text-base leading-relaxed font-semibold text-secondary"
+					>
+						Designed a CAD model in Shapr3D for holding a ceramic V60 upright
+						on an IKEA SKADIS pegboard.
+					</p>
+				</div>
+			</div>
+		</section>
 	</SidequestsCanvas>
 </Document>
+
+<style>
+	@media (min-width: 48rem) {
+		.v60-feature {
+			flex-direction: row;
+			align-items: flex-start;
+			justify-content: center;
+		}
+	}
+</style>

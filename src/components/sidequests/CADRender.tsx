@@ -1,4 +1,4 @@
-import { createElement } from "react";
+import { createElement, useEffect, useRef } from "react";
 
 import { cn } from "@/lib/cn";
 
@@ -10,6 +10,7 @@ export type CADModel = {
 
 type CADRenderProps = {
 	readonly model: CADModel;
+	readonly className?: string;
 };
 
 const shadowScrollbarStyleId = "cad-render-scrollbar-reset";
@@ -54,10 +55,40 @@ export function hideCADModelViewerScrollbars(viewer: HTMLElement) {
 	shadowRoot.append(style);
 }
 
-export default function CADRender({ model }: CADRenderProps) {
+export default function CADRender({ model, className }: CADRenderProps) {
+	const modelViewerRef = useRef<HTMLElement | null>(null);
+
+	useEffect(() => {
+		const viewer = modelViewerRef.current;
+
+		if (!viewer) {
+			return;
+		}
+
+		let isDisposed = false;
+
+		const handleModelLoad = () => {
+			hideCADModelViewerScrollbars(viewer);
+		};
+
+		viewer.addEventListener("load", handleModelLoad);
+
+		void import("@google/model-viewer").then(() => {
+			if (!isDisposed) {
+				hideCADModelViewerScrollbars(viewer);
+			}
+		});
+
+		return () => {
+			isDisposed = true;
+			viewer.removeEventListener("load", handleModelLoad);
+		};
+	}, []);
+
 	return (
-		<figure className={figureClassName}>
+		<figure className={cn(figureClassName, className)}>
 			{createElement("model-viewer", {
+				ref: modelViewerRef,
 				src: model.src,
 				alt: model.alt,
 				"auto-rotate": "",

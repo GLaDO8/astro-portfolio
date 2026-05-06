@@ -24,3 +24,10 @@ test("CAD model viewer keeps rotation controls but disables zoom", () => {
 	assert.match(source, /"camera-controls":\s*""/);
 	assert.match(source, /"disable-zoom":\s*""/);
 });
+
+test("CAD model viewer applies the shared material override", () => {
+	assert.match(canvasSource, /const cadMaterialColor/);
+	assert.match(canvasSource, /setBaseColorFactor\(cadMaterialColor\)/);
+	assert.match(canvasSource, /setMetallicFactor\(0\.7\)/);
+	assert.match(canvasSource, /setRoughnessFactor\(0\.7\)/);
+});

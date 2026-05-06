@@ -21,7 +21,7 @@ const bodyVariants = {
 	open: { opacity: 1, y: 0 },
 	closed: { opacity: 0, y: -8 },
 };
-const accordionContentClassName = [articleProseClass, "max-w-none px-6 pt-4 pb-9"].join(" ");
+const accordionContentClassName = [articleProseClass, "max-w-none px-6 pb-6"].join(" ");
 
 export default function Accordion({ title, subtitle = defaultSubtitle, children }: AccordionProps) {
 	const shouldReduceMotion = useReducedMotion();
