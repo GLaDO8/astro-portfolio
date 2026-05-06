@@ -16,6 +16,8 @@ const descriptions = [
 
 const STREAM_LETTER_DELAY = 0.007;
 const STREAM_LETTER_DURATION = 0.1;
+const BUTTON_CLICK_SOUND_PATH = "/button-click.mp3";
+const BUTTON_CLICK_SOUND_VOLUME = 0.32;
 const TIGHT_KERNING_PAIR_CLASSES: Record<string, string> = {
 	ya: "-ml-[0.08em]",
 };
@@ -101,11 +103,28 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 export default function HeroSection() {
 	const shouldReduceMotion = useReducedMotion();
 	const bagRef = useRef<string[]>([]);
+	const buttonClickAudioRef = useRef<HTMLAudioElement | null>(null);
 	const closeTooltipTimeoutRef = useRef<number | null>(null);
 	const copyFeedbackTimeoutRef = useRef<number | null>(null);
 	const [text, setText] = useState(descriptions[0]);
 
+	const playButtonClickSound = useCallback(() => {
+		let audio = buttonClickAudioRef.current;
+
+		if (!audio) {
+			audio = new Audio(BUTTON_CLICK_SOUND_PATH);
+			audio.preload = "auto";
+			audio.volume = BUTTON_CLICK_SOUND_VOLUME;
+			buttonClickAudioRef.current = audio;
+		}
+
+		audio.currentTime = 0;
+		void audio.play().catch(() => {});
+	}, []);
+
 	const cycle = useCallback(() => {
+		playButtonClickSound();
+
 		if (bagRef.current.length === 0) {
 			bagRef.current = shuffled(descriptions.filter((description) => description !== text));
 		}
@@ -114,7 +133,7 @@ export default function HeroSection() {
 		if (nextText) {
 			setText(nextText);
 		}
-	}, [text]);
+	}, [playButtonClickSound, text]);
 
 	useEffect(() => {
 		return () => {
@@ -124,6 +143,12 @@ export default function HeroSection() {
 
 			if (copyFeedbackTimeoutRef.current) {
 				window.clearTimeout(copyFeedbackTimeoutRef.current);
+			}
+
+			if (buttonClickAudioRef.current) {
+				buttonClickAudioRef.current.pause();
+				buttonClickAudioRef.current.src = "";
+				buttonClickAudioRef.current = null;
 			}
 		};
 	}, []);
