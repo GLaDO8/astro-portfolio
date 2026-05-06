@@ -1,5 +1,6 @@
 import { type PointerEvent, type ReactNode, useCallback, useEffect, useRef } from "react";
 
+import { hideCADModelViewerScrollbars } from "@/components/sidequests/CADRender";
 import { cn } from "@/lib/cn";
 
 type SidequestsCanvasProps = {
@@ -188,7 +189,10 @@ export default function SidequestsCanvas({
 		let observer: IntersectionObserver | undefined;
 
 		const handleModelLoad = (event: Event) => {
-			applyCADMaterial(event.currentTarget as CADModelViewerElement);
+			const viewer = event.currentTarget as CADModelViewerElement;
+
+			hideCADModelViewerScrollbars(viewer);
+			applyCADMaterial(viewer);
 		};
 
 		const loadViewer = async () => {
@@ -204,6 +208,7 @@ export default function SidequestsCanvas({
 			}
 
 			for (const viewer of cadModelViewers) {
+				hideCADModelViewerScrollbars(viewer);
 				applyCADMaterial(viewer);
 			}
 		};

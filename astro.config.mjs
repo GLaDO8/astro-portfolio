@@ -46,6 +46,9 @@ export default defineConfig({
 		prefetchAll: true,
 	},
 	vite: {
+		optimizeDeps: {
+			include: ["@google/model-viewer"],
+		},
 		plugins: [tailwindcss()],
 	},
 	output: "static",

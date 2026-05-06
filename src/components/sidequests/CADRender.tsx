@@ -12,6 +12,22 @@ type CADRenderProps = {
 	readonly model: CADModel;
 };
 
+const shadowScrollbarStyleId = "cad-render-scrollbar-reset";
+const shadowScrollbarReset = `
+:host,
+* {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+:host::-webkit-scrollbar,
+*::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	height: 0;
+}
+`;
+
 const figureClassName = cn(
 	"relative aspect-square min-h-48 overflow-hidden rounded-lg",
 	"border-[0.75rem] border-white bg-[#3182d9] bg-center",
@@ -24,6 +40,19 @@ const modelViewerClassName = cn(
 	"[--poster-color:transparent]",
 	"[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
 );
+
+export function hideCADModelViewerScrollbars(viewer: HTMLElement) {
+	const shadowRoot = viewer.shadowRoot;
+
+	if (!shadowRoot || shadowRoot.getElementById(shadowScrollbarStyleId)) {
+		return;
+	}
+
+	const style = document.createElement("style");
+	style.id = shadowScrollbarStyleId;
+	style.textContent = shadowScrollbarReset;
+	shadowRoot.append(style);
+}
 
 export default function CADRender({ model }: CADRenderProps) {
 	return (
