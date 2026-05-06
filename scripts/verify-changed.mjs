@@ -98,6 +98,17 @@ function matchingTests(files) {
 		hasAny(
 			files,
 			(file) =>
+				file === "src/components/snaps/SnapsGallery.tsx" ||
+				file === "tests/snaps-gallery-wheel.test.mjs",
+		)
+	) {
+		tests.add("tests/snaps-gallery-wheel.test.mjs");
+	}
+
+	if (
+		hasAny(
+			files,
+			(file) =>
 				file === "src/pages/snaps.astro" ||
 				file.startsWith("src/assets/snaps/") ||
 				file === "tests/snaps-assets.test.mjs",

@@ -1,5 +1,6 @@
 import type { ImageMetadata } from "astro";
 import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
 import { cn } from "@/lib/cn";
 
 export type SnapsGalleryItem = {
@@ -33,6 +34,7 @@ function getSnapGalleryHeight(item: SnapsGalleryItem) {
 
 const rotations = ["-rotate-[3deg]", "rotate-[2deg]", "-rotate-[2deg]", "rotate-[3deg]"];
 const rotationMotion = [-3, 2, -2, 3];
+const scrollEdgeTolerance = 1;
 function randomRotation() {
 	return rotations[Math.floor(Math.random() * rotations.length)];
 }
@@ -41,11 +43,69 @@ function randomRotationMotion() {
 	return rotationMotion[Math.floor(Math.random() * rotationMotion.length)];
 }
 
+function getWheelScrollDelta(event: WheelEvent, element: HTMLElement) {
+	const dominantDelta =
+		Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+
+	if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+		return dominantDelta * 16;
+	}
+
+	if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+		return dominantDelta * element.clientWidth;
+	}
+
+	return dominantDelta;
+}
+
+function canScrollHorizontally(element: HTMLElement, delta: number) {
+	const maxScrollLeft = element.scrollWidth - element.clientWidth;
+
+	if (maxScrollLeft <= 0 || delta === 0) {
+		return false;
+	}
+
+	if (delta > 0) {
+		return element.scrollLeft < maxScrollLeft - scrollEdgeTolerance;
+	}
+
+	return element.scrollLeft > scrollEdgeTolerance;
+}
+
 export default function SnapsGallery({ snaps, priorityCount = 0 }: SnapsGalleryProps) {
+	const galleryRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const gallery = galleryRef.current;
+
+		if (!gallery) {
+			return;
+		}
+
+		const handleWheel = (event: WheelEvent) => {
+			const delta = getWheelScrollDelta(event, gallery);
+
+			if (!canScrollHorizontally(gallery, delta)) {
+				return;
+			}
+
+			event.preventDefault();
+			gallery.scrollLeft += delta;
+		};
+
+		gallery.addEventListener("wheel", handleWheel, { passive: false });
+
+		return () => {
+			gallery.removeEventListener("wheel", handleWheel);
+		};
+	}, []);
+
 	return (
 		<motion.div
+			ref={galleryRef}
 			className="flex w-full items-center gap-x-24 overflow-x-scroll overflow-y-hidden overscroll-x-contain px-24 py-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
 			data-snaps-grid=""
+			data-lenis-prevent=""
 			initial={false}
 		>
 			{snaps.map((item, itemIndex) => {
