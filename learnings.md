@@ -14,3 +14,5 @@
 - `useRef` is persistent value that does not re-render UI on change, while `useState` is persistent value that re-renders UI when changed. It only persists while the component is mounted, on page refresh it is killed.
 - this is the syntax for adding captions to images in markdown ![Accessible description of the image](/case-studies/labeling/pipeline.webp "Visible caption under the image")
 - memoization is caching and reuse of a value if the inputs into it didn't change.
+- A stable function retains it's identity across re-renders. 
+- 

@@ -1,17 +1,9 @@
+import { useSound } from "@web-kits/audio/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import shuffled from "@/lib/fisher-shuffle";
-import { useSound } from "@web-kits/audio/react";
 
-function WhatElseButtonClick() {
-	const play = useSound({
-		source: { type: "sine", frequency: 880 },
-		envelope: { decay: 0.1 },
-		gain: 0.3,
-	});
-	return play;
-}
 const descriptions = [
 	"Shreyas is a design engineer and a serial hobbyist.",
 	"Shreyas is a professional kitty psspss-er with a 3D printer.",
@@ -25,8 +17,6 @@ const descriptions = [
 
 const STREAM_LETTER_DELAY = 0.007;
 const STREAM_LETTER_DURATION = 0.1;
-const BUTTON_CLICK_SOUND_PATH = "/button-click.mp3";
-const BUTTON_CLICK_SOUND_VOLUME = 0.32;
 const TIGHT_KERNING_PAIR_CLASSES: Record<string, string> = {
 	ya: "-ml-[0.08em]",
 };
@@ -112,22 +102,12 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 export default function HeroSection() {
 	const shouldReduceMotion = useReducedMotion();
 	const bagRef = useRef<string[]>([]);
-	const buttonClickAudioRef = useRef<HTMLAudioElement | null>(null); //value can be HTMLAudioElement or null
+	const playButtonClickSound = useSound({
+		source: { type: "sine", frequency: 1200 },
+		envelope: { decay: 0.03 },
+		gain: 0.3,
+	});
 	const [text, setText] = useState(descriptions[0]);
-
-	const playButtonClickSound = useCallback(() => {
-		let audio = buttonClickAudioRef.current;
-
-		if (!audio) {
-			audio = new Audio(BUTTON_CLICK_SOUND_PATH);
-			audio.preload = "auto";
-			audio.volume = BUTTON_CLICK_SOUND_VOLUME;
-			buttonClickAudioRef.current = audio;
-		}
-
-		audio.currentTime = 0;
-		void audio.play().catch(() => {});
-	}, []);
 
 	const cycle = useCallback(() => {
 		playButtonClickSound();
@@ -141,16 +121,6 @@ export default function HeroSection() {
 			setText(nextText);
 		}
 	}, [playButtonClickSound, text]);
-
-	useEffect(() => {
-		return () => {
-			if (buttonClickAudioRef.current) {
-				buttonClickAudioRef.current.pause();
-				buttonClickAudioRef.current.src = "";
-				buttonClickAudioRef.current = null;
-			}
-		};
-	}, []);
 
 	return (
 		<section className="flex w-full flex-col items-center gap-6 text-center">
