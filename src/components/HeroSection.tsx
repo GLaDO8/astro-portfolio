@@ -2,7 +2,16 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import shuffled from "@/lib/fisher-shuffle";
+import { useSound } from "@web-kits/audio/react";
 
+function WhatElseButtonClick() {
+	const play = useSound({
+		source: { type: "sine", frequency: 880 },
+		envelope: { decay: 0.1 },
+		gain: 0.3,
+	});
+	return play;
+}
 const descriptions = [
 	"Shreyas is a design engineer and a serial hobbyist.",
 	"Shreyas is a professional kitty psspss-er with a 3D printer.",

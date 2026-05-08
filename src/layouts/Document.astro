@@ -1,6 +1,7 @@
 ---
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
+import GlobalSoundProvider from "@/components/GlobalSoundProvider";
 import Navbar from "@/components/Navbar.astro";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
@@ -8,38 +9,38 @@ import DevToolbars from "@/dev/DevToolbars";
 import { cn } from "@/lib/cn";
 
 interface Props {
-    title: string;
-    description: string;
-    bodyClass?: string;
-    mainClass?: string;
-    navClass?: string;
-    navBlurBackground?: string;
-    constrainShell?: boolean;
-    showNavigation?: boolean;
-    preloadCodeFont?: boolean;
-    seo?: {
-        ogType?: "website" | "article";
-        ogImage?: string;
-        ogImageAlt?: string;
-        article?: {
-            publishedTime: string;
-        };
-        noindex?: boolean;
-        jsonLd?: Record<string, unknown>;
-    };
+	title: string;
+	description: string;
+	bodyClass?: string;
+	mainClass?: string;
+	navClass?: string;
+	navBlurBackground?: string;
+	constrainShell?: boolean;
+	showNavigation?: boolean;
+	preloadCodeFont?: boolean;
+	seo?: {
+		ogType?: "website" | "article";
+		ogImage?: string;
+		ogImageAlt?: string;
+		article?: {
+			publishedTime: string;
+		};
+		noindex?: boolean;
+		jsonLd?: Record<string, unknown>;
+	};
 }
 
 const {
-    title,
-    description,
-    bodyClass,
-    mainClass,
-    navClass,
-    navBlurBackground,
-    constrainShell = true,
-    showNavigation = true,
-    preloadCodeFont = false,
-    seo = {},
+	title,
+	description,
+	bodyClass,
+	mainClass,
+	navClass,
+	navBlurBackground,
+	constrainShell = true,
+	showNavigation = true,
+	preloadCodeFont = false,
+	seo = {},
 } = Astro.props;
 const isDev = import.meta.env.DEV;
 ---
@@ -98,7 +99,9 @@ const isDev = import.meta.env.DEV;
                     data-shell-content
                     data-page-state="entering"
                 >
-                    <slot />
+                    <GlobalSoundProvider client:load>
+                        <slot />
+                    </GlobalSoundProvider>
                 </main>
             </div>
         </div>
