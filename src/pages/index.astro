@@ -1,4 +1,9 @@
 ---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import hotTextImage from "@/assets/case-studies/hottext/Frame@2x.webp";
+import labelingImage from "@/assets/case-studies/labeling/labeling-working.webp";
+import whistleImage from "@/assets/case-studies/one-more-whistle/whistl-main-screens.png";
 import HeroSection from "@/components/HeroSection";
 import HomeWidgetStrip from "@/components/widgets/HomeWidgetStrip.astro";
 import HeroGoogleFontSwapWidget from "@/dev/HeroGoogleFontSwapWidget";
@@ -9,10 +14,29 @@ const homeTextColumn =
     "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
 const homeWidgetColumn =
     "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
+const homeWorkColumn =
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const songData = await getSongData();
+const studies = (await getCollection("caseStudies"))
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .filter((study) => study.id !== "wayground-creation");
 const enableHeroFontSwap = import.meta.env.DEV;
 const homeDescriptionLinkClass =
     "font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
+const workImages = {
+    "hot-text": {
+        src: hotTextImage,
+        alt: "Paper card with highlighted text on a pink background.",
+    },
+    labelling: {
+        src: labelingImage,
+        alt: "Labeling question interface with draggable labels.",
+    },
+    "one-more-whistle": {
+        src: whistleImage,
+        alt: "Mobile app screens for the pressure cooker whistle counter prototype.",
+    },
+} as const;
 
 const jsonLd = {
     "@context": "https://schema.org",
@@ -99,4 +123,186 @@ const jsonLd = {
             </p>
         </div>
     </div>
+
+    <section class:list={[homeWorkColumn, "min-w-0 pt-4"]} aria-labelledby="work-heading">
+        <div class="mb-6 text-center">
+            <div>
+                <h2
+                    id="work-heading"
+                    class="font-sans text-xl leading-none font-semibold tracking-[-0.03em] text-secondary md:text-lg"
+                >
+                    WORK
+                </h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+            {
+                studies.map((study) => {
+                    const image = workImages[study.id as keyof typeof workImages];
+
+                    return (
+                        <a
+                            href={`/work/${study.id}`}
+                            class="receipt-card group relative flex min-h-[30rem] flex-col bg-white px-5 pt-8 pb-9 text-primary no-underline transition-transform duration-200 hover:-translate-y-1 lg:px-6 lg:pt-9 lg:pb-10"
+                        >
+                            <div class="mb-5 border-b border-dashed border-primary/25 pb-4">
+                                <p class="font-sans text-xs leading-none font-medium tracking-[0.08em] text-secondary uppercase">
+                                    {study.data.date.toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "short",
+                                    })}
+                                </p>
+                                <h3 class="mt-3 font-sans text-2xl leading-[1.02] font-bold tracking-[-0.045em] text-balance text-primary">
+                                    {study.data.title}
+                                </h3>
+                            </div>
+
+                            {image && (
+                                <div class="relative mb-5 aspect-[4/3] overflow-hidden bg-tertiary/30">
+                                    <Image
+                                        src={image.src}
+                                        alt={image.alt}
+                                        widths={[360, 520, 720, 900]}
+                                        sizes="(min-width: 768px) 28vw, 92vw"
+                                        class="h-full w-full object-cover"
+                                    />
+                                </div>
+                            )}
+
+                            <div class="mt-auto flex justify-end pt-5">
+                                <span
+                                    aria-hidden="true"
+                                    class="flex size-6 items-center justify-center text-secondary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                                >
+                                    <svg
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="size-5"
+                                    >
+                                        <path d="M5 11L11 5" />
+                                        <path d="M6 5H11V10" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+                    );
+                })
+            }
+        </div>
+    </section>
 </Page>
+
+<style>
+    :global(.receipt-card) {
+        filter: drop-shadow(0 18px 34px rgba(42, 35, 29, 0.12));
+        clip-path: polygon(
+            0 1rem,
+            2% 0.35rem,
+            4% 1rem,
+            6% 0.35rem,
+            8% 1rem,
+            10% 0.35rem,
+            12% 1rem,
+            14% 0.35rem,
+            16% 1rem,
+            18% 0.35rem,
+            20% 1rem,
+            22% 0.35rem,
+            24% 1rem,
+            26% 0.35rem,
+            28% 1rem,
+            30% 0.35rem,
+            32% 1rem,
+            34% 0.35rem,
+            36% 1rem,
+            38% 0.35rem,
+            40% 1rem,
+            42% 0.35rem,
+            44% 1rem,
+            46% 0.35rem,
+            48% 1rem,
+            50% 0.35rem,
+            52% 1rem,
+            54% 0.35rem,
+            56% 1rem,
+            58% 0.35rem,
+            60% 1rem,
+            62% 0.35rem,
+            64% 1rem,
+            66% 0.35rem,
+            68% 1rem,
+            70% 0.35rem,
+            72% 1rem,
+            74% 0.35rem,
+            76% 1rem,
+            78% 0.35rem,
+            80% 1rem,
+            82% 0.35rem,
+            84% 1rem,
+            86% 0.35rem,
+            88% 1rem,
+            90% 0.35rem,
+            92% 1rem,
+            94% 0.35rem,
+            96% 1rem,
+            98% 0.35rem,
+            100% 1rem,
+            100% calc(100% - 1rem),
+            98% calc(100% - 0.35rem),
+            96% calc(100% - 1rem),
+            94% calc(100% - 0.35rem),
+            92% calc(100% - 1rem),
+            90% calc(100% - 0.35rem),
+            88% calc(100% - 1rem),
+            86% calc(100% - 0.35rem),
+            84% calc(100% - 1rem),
+            82% calc(100% - 0.35rem),
+            80% calc(100% - 1rem),
+            78% calc(100% - 0.35rem),
+            76% calc(100% - 1rem),
+            74% calc(100% - 0.35rem),
+            72% calc(100% - 1rem),
+            70% calc(100% - 0.35rem),
+            68% calc(100% - 1rem),
+            66% calc(100% - 0.35rem),
+            64% calc(100% - 1rem),
+            62% calc(100% - 0.35rem),
+            60% calc(100% - 1rem),
+            58% calc(100% - 0.35rem),
+            56% calc(100% - 1rem),
+            54% calc(100% - 0.35rem),
+            52% calc(100% - 1rem),
+            50% calc(100% - 0.35rem),
+            48% calc(100% - 1rem),
+            46% calc(100% - 0.35rem),
+            44% calc(100% - 1rem),
+            42% calc(100% - 0.35rem),
+            40% calc(100% - 1rem),
+            38% calc(100% - 0.35rem),
+            36% calc(100% - 1rem),
+            34% calc(100% - 0.35rem),
+            32% calc(100% - 1rem),
+            30% calc(100% - 0.35rem),
+            28% calc(100% - 1rem),
+            26% calc(100% - 0.35rem),
+            24% calc(100% - 1rem),
+            22% calc(100% - 0.35rem),
+            20% calc(100% - 1rem),
+            18% calc(100% - 0.35rem),
+            16% calc(100% - 1rem),
+            14% calc(100% - 0.35rem),
+            12% calc(100% - 1rem),
+            10% calc(100% - 0.35rem),
+            8% calc(100% - 1rem),
+            6% calc(100% - 0.35rem),
+            4% calc(100% - 1rem),
+            2% calc(100% - 0.35rem),
+            0 calc(100% - 1rem)
+        );
+    }
+</style>
