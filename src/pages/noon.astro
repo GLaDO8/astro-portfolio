@@ -137,7 +137,7 @@ const quotes = [
             {
                 quotes.map((person) => (
                     <figure class="relative flex min-h-full flex-col justify-between gap-8 rounded-md border border-black/8 bg-white p-5">
-                        <blockquote class="text-pretty font-sans text-lg leading-[1.7] font-base text-primary md:text-xl">
+                        <blockquote class="text-pretty font-sans text-lg leading-[1.7] font-medium text-primary md:text-xl">
                             "{person.quote}"
                         </blockquote>
 
@@ -148,7 +148,7 @@ const quotes = [
                                     alt=""
                                     loading="lazy"
                                     decoding="async"
-                                    class="size-14 shrink-0 rounded-full border border-black/8 object-cover"
+                                    class="size-10 shrink-0 rounded-full border border-black/8 object-cover"
                                 />
                             ) : (
                                 <div class="flex size-14 shrink-0 items-center justify-center rounded-full border border-black/8 bg-[#faffff] font-sans text-base font-bold text-primary">
@@ -159,7 +159,7 @@ const quotes = [
                                 <p class="font-sans text-base font-bold leading-tight text-primary">
                                     {person.name}
                                 </p>
-                                <p class="font-sans text-sm leading-snug text-secondary">
+                                <p class="font-sans text-base leading-snug text-secondary">
                                     {person.role}
                                 </p>
                             </div>
