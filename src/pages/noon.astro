@@ -3,99 +3,94 @@ import NoonPortfolioButton from "@/components/NoonPortfolioButton";
 import Document from "@/layouts/Document.astro";
 
 const pitchLinkClass =
-	"font-semibold underline decoration-2 decoration-dotted underline-offset-4 transition-opacity hover:opacity-75";
+    "font-semibold underline decoration-2 decoration-dotted underline-offset-4 transition-opacity hover:opacity-75";
 
 const quotes = [
-	{
-		name: "KV Ketan",
-		role: "Head of Design, Wayground",
-		initials: "KV",
-		photo: "/noon/ketan.jpeg",
-		quote: "You are genuinely one of the smartest and caring designer I have met.",
-		linkedin: "https://www.linkedin.com/in/kvketan/",
-	},
-	{
-		name: "Varun Banka",
-		role: "Founder, Atlan",
-		initials: "VB",
-		photo: "/noon/varun.jpeg",
-		quote: "Love how you do your demos, I'm going to steal how you start them. Love the 120%.",
-		linkedin: "https://www.linkedin.com/in/varunbanka/",
-	},
-	{
-		name: "Shekh Ali",
-		role: "Engineer, Atlan",
-		initials: "SA",
-		photo: "/noon/ali.jpeg",
-		quote:
-			"One thing I have picked up from Shreyas is - No matter how long it takes, fixing paper cuts like small subtle interactions and bugs make so much difference.",
-		linkedin: "https://www.linkedin.com/in/shekh-aliul/",
-	},
-	{
-		name: "Ankita",
-		role: "PM, Clari",
-		initials: "A",
-		photo: "/noon/ankita.jpeg",
-		quote: "Shreyas, It warms my heart to see how you leverage data in your design process.",
-		linkedin: "https://www.linkedin.com/in/ankta/",
-	},
-	{
-		name: "Vaidehi Dalmia",
-		role: "PM at Atlan",
-		initials: "VD",
-		photo: "/noon/vaidehi.jpeg",
-		quote:
-			"I just wanted to say how inspired I have been by your bias for action and fearlessness to question! Thank you for continously raising the PM-design bar.",
-		linkedin: "https://www.linkedin.com/in/vaidehidalmia/",
-	},
-	{
-		name: "Aman Awasthy",
-		role: "Sr. Product Designer, Wayground",
-		initials: "AA",
-		photo: "/noon/aman.jpeg",
-		quote:
-			"The level of curiosity you harbor is inspiring, very iconoclastic personality and quite an expert at everything you do.",
-		linkedin: "https://www.linkedin.com/in/aman-awasthy-74986971/",
-	},
-	{
-		name: "Chinmay Joshi",
-		role: "Engineering Manager, Wayground",
-		initials: "CJ",
-		photo: "/noon/chinmay.jpeg",
-		quote: "Shreyas, what are you buddy? Designer, presenter, developer, PM, more like everything!",
-		linkedin: "https://www.linkedin.com/in/chinmayjoshi94/",
-	},
-	{
-		name: "Darshita Patankar",
-		role: "Visual Designer, Wayground",
-		initials: "DP",
-		photo: "/noon/darshita.jpeg",
-		quote:
-			"Your design sense and craft really inspires me, to always ask the deeper questions, the depth of opinion and clarity you bring, looking at design beyond screens.",
-		linkedin: "https://www.linkedin.com/in/darshitapatankar/",
-	},
-	{
-		name: "Anonymous feedback",
-		role: "Atlan",
-		initials: "AN",
-		quote:
-			"Shreyas has consistently given his 120% to any product areas or modules he owns AND made contributions to both company and design team culture. He pushes himself and the rest of the team to adopt better design practices, & doesn't shy away from sharing feedback when he feels something isn't working.",
-	},
-	{
-		name: "Anonymous feedback",
-		role: "Wayground",
-		initials: "AN",
-		quote:
-			"You had this way of cutting through the noise in design reviews. While everyone else would go off on tangents, you'd bring it back to the core by asking simple but sharp questions. It forced everyone to pause and actually think about the decisions we were making.",
-	},
+    {
+        name: "KV Ketan",
+        role: "Head of Design, Wayground",
+        initials: "KV",
+        photo: "/noon/ketan.jpeg",
+        quote: "You are genuinely one of the smartest and caring designer I have met.",
+        linkedin: "https://www.linkedin.com/in/kvketan/",
+    },
+    {
+        name: "Varun Banka",
+        role: "Founder, Atlan",
+        initials: "VB",
+        photo: "/noon/varun.jpeg",
+        quote: "Love how you do your demos, I'm going to steal how you start them. Love the 120%.",
+        linkedin: "https://www.linkedin.com/in/varunbanka/",
+    },
+    {
+        name: "Shekh Ali",
+        role: "Engineer, Atlan",
+        initials: "SA",
+        photo: "/noon/ali.jpeg",
+        quote: "One thing I have picked up from Shreyas is - No matter how long it takes, fixing paper cuts like small subtle interactions and bugs make so much difference.",
+        linkedin: "https://www.linkedin.com/in/shekh-aliul/",
+    },
+    {
+        name: "Ankita",
+        role: "PM, Clari",
+        initials: "A",
+        photo: "/noon/ankita.jpeg",
+        quote: "Shreyas, It warms my heart to see how you leverage data in your design process.",
+        linkedin: "https://www.linkedin.com/in/ankta/",
+    },
+    {
+        name: "Vaidehi Dalmia",
+        role: "PM at Atlan",
+        initials: "VD",
+        photo: "/noon/vaidehi.jpeg",
+        quote: "I just wanted to say how inspired I have been by your bias for action and fearlessness to question! Thank you for continously raising the PM-design bar.",
+        linkedin: "https://www.linkedin.com/in/vaidehidalmia/",
+    },
+    {
+        name: "Aman Awasthy",
+        role: "Sr. Product Designer, Wayground",
+        initials: "AA",
+        photo: "/noon/aman.jpeg",
+        quote: "The level of curiosity you harbor is inspiring, very iconoclastic personality and quite an expert at everything you do.",
+        linkedin: "https://www.linkedin.com/in/aman-awasthy-74986971/",
+    },
+    {
+        name: "Chinmay Joshi",
+        role: "Engineering Manager, Wayground",
+        initials: "CJ",
+        photo: "/noon/chinmay.jpeg",
+        quote: "Shreyas, what are you buddy? Designer, presenter, developer, PM, more like everything!",
+        linkedin: "https://www.linkedin.com/in/chinmayjoshi94/",
+    },
+    {
+        name: "Darshita Patankar",
+        role: "Visual Designer, Wayground",
+        initials: "DP",
+        photo: "/noon/darshita.jpeg",
+        quote: "Your design sense and craft really inspires me, to always ask the deeper questions, the depth of opinion and clarity you bring, looking at design beyond screens.",
+        linkedin: "https://www.linkedin.com/in/darshitapatankar/",
+    },
+    {
+        name: "Anonymous feedback",
+        role: "Atlan",
+        initials: "AN",
+        quote: "Shreyas has consistently given his 120% to any product areas or modules he owns AND made contributions to both company and design team culture. He pushes himself and the rest of the team to adopt better design practices, & doesn't shy away from sharing feedback when he feels something isn't working.",
+    },
+    {
+        name: "Anonymous feedback",
+        role: "Wayground",
+        initials: "AN",
+        quote: "You had this way of cutting through the noise in design reviews. While everyone else would go off on tangents, you'd bring it back to the core by asking simple but sharp questions. It forced everyone to pause and actually think about the decisions we were making.",
+    },
 ];
 
-const shouldShowAvatar = (person: (typeof quotes)[number]) => !person.name.startsWith("Anonymous");
+const shouldShowAvatar = (person: (typeof quotes)[number]) =>
+    !person.name.startsWith("Anonymous");
 const anonymousQuotes = quotes.filter((person) => !shouldShowAvatar(person));
 const namedQuotes = quotes.filter(shouldShowAvatar);
 const quoteColumns = [
-	[...namedQuotes.filter((_, index) => index % 2 === 0), anonymousQuotes[0]],
-	[...namedQuotes.filter((_, index) => index % 2 === 1), anonymousQuotes[1]],
+    [...namedQuotes.filter((_, index) => index % 2 === 0), anonymousQuotes[0]],
+    [...namedQuotes.filter((_, index) => index % 2 === 1), anonymousQuotes[1]],
 ].filter((column) => column.every(Boolean));
 ---
 
@@ -170,7 +165,7 @@ const quoteColumns = [
                 quoteColumns.map((column) => (
                     <div class="flex flex-col gap-4">
                         {column.map((person) => (
-                            <figure class="relative flex w-full flex-col justify-between gap-8 rounded-md border border-black/8 bg-white p-5">
+                            <figure class="relative flex w-full flex-col justify-between gap-8 rounded-md border border-black/8 bg-white p-5 shadow-xs">
                                 <blockquote class="text-pretty font-sans text-lg leading-[1.7] font-medium text-primary md:text-xl">
                                     "{person.quote}"
                                 </blockquote>
