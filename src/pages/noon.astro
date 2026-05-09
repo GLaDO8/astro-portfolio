@@ -3,86 +3,100 @@ import NoonPortfolioButton from "@/components/NoonPortfolioButton";
 import Document from "@/layouts/Document.astro";
 
 const pitchLinkClass =
-    "font-semibold underline decoration-2 decoration-dotted underline-offset-4 transition-opacity hover:opacity-75";
+	"font-semibold underline decoration-2 decoration-dotted underline-offset-4 transition-opacity hover:opacity-75";
 
 const quotes = [
-    {
-        name: "KV Ketan",
-        role: "Head of Design, Wayground",
-        initials: "KV",
-        photo: "/noon/ketan.jpeg",
-        quote: "You are genuinely one of the smartest and caring designer I have met.",
-        linkedin: "https://www.linkedin.com/in/kvketan/",
-    },
-    {
-        name: "Varun Banka",
-        role: "Founder, Atlan",
-        initials: "VB",
-        photo: "/noon/varun.jpeg",
-        quote: "Love how you do your demos, I'm going to steal how you start them. Love the 120%.",
-        linkedin: "https://www.linkedin.com/in/varunbanka/",
-    },
-    {
-        name: "Shekh Ali",
-        role: "Engineer, Atlan",
-        initials: "SA",
-        photo: "/noon/ali.jpeg",
-        quote: "One thing I have picked up from Shreyas is - No matter how long it takes, fixing paper cuts like small subtle interactions and bugs make so much difference.",
-        linkedin: "https://www.linkedin.com/in/shekh-aliul/",
-    },
-    {
-        name: "Ankita",
-        role: "PM, Clari",
-        initials: "A",
-        photo: "/noon/ankita.jpeg",
-        quote: "Shreyas, It warms my heart to see how you leverage data in your design process.",
-        linkedin: "https://www.linkedin.com/in/ankta/",
-    },
-    {
-        name: "Vaidehi Dalmia",
-        role: "PM at Atlan",
-        initials: "VD",
-        photo: "/noon/vaidehi.jpeg",
-        quote: "I just wanted to say how inspired I have been by your bias for action and fearlessness to question! Thank you for continously raising the PM-design bar.",
-        linkedin: "https://www.linkedin.com/in/vaidehidalmia/",
-    },
-    {
-        name: "Aman Awasthy",
-        role: "Sr. Product Designer, Wayground",
-        initials: "AA",
-        photo: "/noon/aman.jpeg",
-        quote: "The level of curiosity you harbor is inspiring, very iconoclastic personality and quite an expert at everything you do.",
-        linkedin: "https://www.linkedin.com/in/aman-awasthy-74986971/",
-    },
-    {
-        name: "Chinmay Joshi",
-        role: "Engineering Manager, Wayground",
-        initials: "CJ",
-        photo: "/noon/chinmay.jpeg",
-        quote: "Shreyas, what are you buddy? Designer, presenter, developer, PM, more like everything!",
-        linkedin: "https://www.linkedin.com/in/chinmayjoshi94/",
-    },
-    {
-        name: "Darshita Patankar",
-        role: "Visual Designer, Wayground",
-        initials: "DP",
-        photo: "/noon/darshita.jpeg",
-        quote: "Your design sense and craft really inspires me, to always ask the deeper questions, the depth of opinion and clarity you bring, looking at design beyond screens.",
-        linkedin: "https://www.linkedin.com/in/darshitapatankar/",
-    },
-    {
-        name: "Anonymous feedback",
-        role: "Atlan",
-        initials: "AN",
-        quote: "Shreyas has consistently given his 120% to any product areas or modules he owns AND made contributions to both company and design team culture. He pushes himself and the rest of the team to adopt better design practices, & doesn't shy away from sharing feedback when he feels something isn't working.",
-    },
-    {
-        name: "Anonymous feedback",
-        role: "Wayground",
-        initials: "AN",
-        quote: "You had this way of cutting through the noise in design reviews. While everyone else would go off on tangents, you'd bring it back to the core by asking simple but sharp questions. It forced everyone to pause and actually think about the decisions we were making.",
-    },
+	{
+		name: "KV Ketan",
+		role: "Head of Design, Wayground",
+		initials: "KV",
+		photo: "/noon/ketan.jpeg",
+		quote: "You are genuinely one of the smartest and caring designer I have met.",
+		linkedin: "https://www.linkedin.com/in/kvketan/",
+	},
+	{
+		name: "Varun Banka",
+		role: "Founder, Atlan",
+		initials: "VB",
+		photo: "/noon/varun.jpeg",
+		quote: "Love how you do your demos, I'm going to steal how you start them. Love the 120%.",
+		linkedin: "https://www.linkedin.com/in/varunbanka/",
+	},
+	{
+		name: "Shekh Ali",
+		role: "Engineer, Atlan",
+		initials: "SA",
+		photo: "/noon/ali.jpeg",
+		quote:
+			"One thing I have picked up from Shreyas is - No matter how long it takes, fixing paper cuts like small subtle interactions and bugs make so much difference.",
+		linkedin: "https://www.linkedin.com/in/shekh-aliul/",
+	},
+	{
+		name: "Ankita",
+		role: "PM, Clari",
+		initials: "A",
+		photo: "/noon/ankita.jpeg",
+		quote: "Shreyas, It warms my heart to see how you leverage data in your design process.",
+		linkedin: "https://www.linkedin.com/in/ankta/",
+	},
+	{
+		name: "Vaidehi Dalmia",
+		role: "PM at Atlan",
+		initials: "VD",
+		photo: "/noon/vaidehi.jpeg",
+		quote:
+			"I just wanted to say how inspired I have been by your bias for action and fearlessness to question! Thank you for continously raising the PM-design bar.",
+		linkedin: "https://www.linkedin.com/in/vaidehidalmia/",
+	},
+	{
+		name: "Aman Awasthy",
+		role: "Sr. Product Designer, Wayground",
+		initials: "AA",
+		photo: "/noon/aman.jpeg",
+		quote:
+			"The level of curiosity you harbor is inspiring, very iconoclastic personality and quite an expert at everything you do.",
+		linkedin: "https://www.linkedin.com/in/aman-awasthy-74986971/",
+	},
+	{
+		name: "Chinmay Joshi",
+		role: "Engineering Manager, Wayground",
+		initials: "CJ",
+		photo: "/noon/chinmay.jpeg",
+		quote: "Shreyas, what are you buddy? Designer, presenter, developer, PM, more like everything!",
+		linkedin: "https://www.linkedin.com/in/chinmayjoshi94/",
+	},
+	{
+		name: "Darshita Patankar",
+		role: "Visual Designer, Wayground",
+		initials: "DP",
+		photo: "/noon/darshita.jpeg",
+		quote:
+			"Your design sense and craft really inspires me, to always ask the deeper questions, the depth of opinion and clarity you bring, looking at design beyond screens.",
+		linkedin: "https://www.linkedin.com/in/darshitapatankar/",
+	},
+	{
+		name: "Anonymous feedback",
+		role: "Atlan",
+		initials: "AN",
+		quote:
+			"Shreyas has consistently given his 120% to any product areas or modules he owns AND made contributions to both company and design team culture. He pushes himself and the rest of the team to adopt better design practices, & doesn't shy away from sharing feedback when he feels something isn't working.",
+	},
+	{
+		name: "Anonymous feedback",
+		role: "Wayground",
+		initials: "AN",
+		quote:
+			"You had this way of cutting through the noise in design reviews. While everyone else would go off on tangents, you'd bring it back to the core by asking simple but sharp questions. It forced everyone to pause and actually think about the decisions we were making.",
+	},
 ];
+
+const shouldShowAvatar = (person: (typeof quotes)[number]) => !person.name.startsWith("Anonymous");
+const anonymousQuotes = quotes.filter((person) => !shouldShowAvatar(person));
+const namedQuotes = quotes.filter(shouldShowAvatar);
+const quoteColumns = [
+	[...namedQuotes.filter((_, index) => index % 2 === 0), anonymousQuotes[0]],
+	[...namedQuotes.filter((_, index) => index % 2 === 1), anonymousQuotes[1]],
+].filter((column) => column.every(Boolean));
 ---
 
 <Document
@@ -151,62 +165,66 @@ const quotes = [
             </div>
         </section>
 
-        <section class="columns-1 gap-4 md:columns-2">
+        <section class="grid gap-4 md:grid-cols-2 md:items-start">
             {
-                quotes.map((person) => (
-                    <figure class="relative mb-4 flex w-full break-inside-avoid flex-col justify-between gap-8 rounded-md border border-black/8 bg-white p-5">
-                        <blockquote class="text-pretty font-sans text-lg leading-[1.7] font-medium text-primary md:text-xl">
-                            "{person.quote}"
-                        </blockquote>
+                quoteColumns.map((column) => (
+                    <div class="flex flex-col gap-4">
+                        {column.map((person) => (
+                            <figure class="relative flex w-full flex-col justify-between gap-8 rounded-md border border-black/8 bg-white p-5">
+                                <blockquote class="text-pretty font-sans text-lg leading-[1.7] font-medium text-primary md:text-xl">
+                                    "{person.quote}"
+                                </blockquote>
 
-                        <figcaption class="flex items-center gap-3">
-                            {person.photo ? (
-                                <div class="relative size-10 shrink-0">
-                                    <div class="flex size-10 items-center justify-center rounded-full border border-black/8 bg-[#faffff] font-sans text-sm font-bold text-primary">
-                                        {person.initials}
+                                <figcaption class="flex items-center gap-3">
+                                    {shouldShowAvatar(person) && person.photo ? (
+                                        <div class="relative size-10 shrink-0">
+                                            <div class="flex size-10 items-center justify-center rounded-full border border-black/8 bg-[#faffff] font-sans text-sm font-bold text-primary">
+                                                {person.initials}
+                                            </div>
+                                            <img
+                                                src={person.photo}
+                                                alt=""
+                                                loading="lazy"
+                                                decoding="async"
+                                                onerror="this.remove()"
+                                                class="absolute inset-0 size-10 rounded-full border border-black/8 object-cover"
+                                            />
+                                        </div>
+                                    ) : shouldShowAvatar(person) ? (
+                                        <div class="flex size-10 shrink-0 items-center justify-center rounded-full border border-black/8 bg-[#faffff] font-sans text-sm font-bold text-primary">
+                                            {person.initials}
+                                        </div>
+                                    ) : null}
+                                    <div class="min-w-0">
+                                        <p class="font-sans text-base font-bold leading-tight text-primary">
+                                            {person.name}
+                                        </p>
+                                        <p class="font-sans text-base leading-snug text-secondary">
+                                            {person.role}
+                                        </p>
                                     </div>
-                                    <img
-                                        src={person.photo}
-                                        alt=""
-                                        loading="lazy"
-                                        decoding="async"
-                                        onerror="this.remove()"
-                                        class="absolute inset-0 size-10 rounded-full border border-black/8 object-cover"
-                                    />
-                                </div>
-                            ) : (
-                                <div class="flex size-14 shrink-0 items-center justify-center rounded-full border border-black/8 bg-[#faffff] font-sans text-base font-bold text-primary">
-                                    {person.initials}
-                                </div>
-                            )}
-                            <div class="min-w-0">
-                                <p class="font-sans text-base font-bold leading-tight text-primary">
-                                    {person.name}
-                                </p>
-                                <p class="font-sans text-base leading-snug text-secondary">
-                                    {person.role}
-                                </p>
-                            </div>
-                        </figcaption>
-                        {person.linkedin && (
-                            <a
-                                href={person.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={`${person.name} on LinkedIn`}
-                                class="absolute right-5 bottom-5 inline-flex size-8 items-center justify-center rounded-full text-primary/70 transition-colors hover:text-primary"
-                            >
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="size-4"
-                                    aria-hidden="true"
-                                >
-                                    <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27h-.02ZM5.32 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.02H3.54V9H7.1v11.45ZM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0Z" />
-                                </svg>
-                            </a>
-                        )}
-                    </figure>
+                                </figcaption>
+                                {person.linkedin && (
+                                    <a
+                                        href={person.linkedin}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={`${person.name} on LinkedIn`}
+                                        class="absolute right-5 bottom-5 inline-flex size-8 items-center justify-center rounded-full text-primary/70 transition-colors hover:text-primary"
+                                    >
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                            class="size-4"
+                                            aria-hidden="true"
+                                        >
+                                            <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27h-.02ZM5.32 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.02H3.54V9H7.1v11.45ZM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0Z" />
+                                        </svg>
+                                    </a>
+                                )}
+                            </figure>
+                        ))}
+                    </div>
                 ))
             }
         </section>
