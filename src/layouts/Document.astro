@@ -17,6 +17,7 @@ interface Props {
 	navBlurBackground?: string;
 	constrainShell?: boolean;
 	showNavigation?: boolean;
+	showFooter?: boolean;
 	preloadCodeFont?: boolean;
 	seo?: {
 		ogType?: "website" | "article";
@@ -39,6 +40,7 @@ const {
 	navBlurBackground,
 	constrainShell = true,
 	showNavigation = true,
+	showFooter = true,
 	preloadCodeFont = false,
 	seo = {},
 } = Astro.props;
@@ -105,18 +107,21 @@ const isDev = import.meta.env.DEV;
                 </main>
             </div>
         </div>
-        <footer
-            class="z-0 h-24 bg-[#353631] bg-[linear-gradient(rgba(74,75,70,1)_1.5px,transparent_1px),linear-gradient(90deg,rgba(74,75,70,1)_1.5px,transparent_1px)] bg-[size:20px_20px] sticky bottom-0 w-full flex items-center justify-center"
-        >
-            <p
-                class="text-base text-white/70 font-medium font-sans p-2 px-6 bg-[#353631] border-[1.5px] border-[#4a4b46] mt-1"
-            >
-                Source code available on <a
-                    href="https://github.com/GLaDO8/astro-portfolio"
-                    class="text-white font-semibold">Github</a
-                >
-            </p>
-        </footer>
+        {
+            showFooter && (
+                <footer class="z-0 h-24 bg-[#353631] bg-[linear-gradient(rgba(74,75,70,1)_1.5px,transparent_1px),linear-gradient(90deg,rgba(74,75,70,1)_1.5px,transparent_1px)] bg-[size:20px_20px] sticky bottom-0 w-full flex items-center justify-center">
+                    <p class="text-base text-white/70 font-medium font-sans p-2 px-6 bg-[#353631] border-[1.5px] border-[#4a4b46] mt-1">
+                        Source code available on{" "}
+                        <a
+                            href="https://github.com/GLaDO8/astro-portfolio"
+                            class="text-white font-semibold"
+                        >
+                            Github
+                        </a>
+                    </p>
+                </footer>
+            )
+        }
         {isDev && <DevToolbars client:only="react" />}
 
         <script>
