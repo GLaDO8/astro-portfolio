@@ -55,12 +55,26 @@ const quotes = [
         linkedin: "https://www.linkedin.com/in/aman-awasthy-74986971/",
     },
     {
+        name: "Chinmay Joshi",
+        role: "Engineering Manager, Wayground",
+        initials: "CJ",
+        photo: "/noon/chinmay.jpeg",
+        quote: "Shreyas, what are you buddy? Designer, presenter, developer, PM, more like everything!",
+        linkedin: "https://www.linkedin.com/in/chinmayjoshi94/",
+    },
+    {
         name: "Darshita Patankar",
         role: "Visual Designer, Wayground",
         initials: "DP",
         photo: "/noon/darshita.jpeg",
         quote: "Your design sense and craft really inspires me, to always ask the deeper questions, the depth of opinion and clarity you bring, looking at design beyond screens.",
         linkedin: "https://www.linkedin.com/in/darshitapatankar/",
+    },
+    {
+        name: "Anonymous feedback",
+        role: "Atlan",
+        initials: "AN",
+        quote: "Shreyas has consistently given his 120% to any product areas or modules he owns AND made contributions to both company and design team culture. He pushes himself and the rest of the team to adopt better design practices, & doesn't shy away from sharing feedback when he feels something isn't working.",
     },
     {
         name: "Anonymous feedback",
@@ -126,30 +140,40 @@ const quotes = [
                 <br />
                 <p>
                     I'll let my peers speak for me, please feel free to reach out to them.
-                    Excited to talk to you folks about the role :)
+                    (These are excerpts from my "Kudos" Figma file with all the feedback
+                    I've received).
                 </p>
                 <br />
-                <p>PS: Website's still very WIP, but I wanted to start a conversation.</p>
+                <p>
+                    Excited to talk to you folks about the role! Also, Website's still
+                    very WIP, but I wanted to start a conversation.
+                </p>
             </div>
         </section>
 
-        <section class="grid gap-4 md:grid-cols-2">
+        <section class="columns-1 gap-4 md:columns-2">
             {
                 quotes.map((person) => (
-                    <figure class="relative flex min-h-full flex-col justify-between gap-8 rounded-md border border-black/8 bg-white p-5">
+                    <figure class="relative mb-4 flex w-full break-inside-avoid flex-col justify-between gap-8 rounded-md border border-black/8 bg-white p-5">
                         <blockquote class="text-pretty font-sans text-lg leading-[1.7] font-medium text-primary md:text-xl">
                             "{person.quote}"
                         </blockquote>
 
                         <figcaption class="flex items-center gap-3">
                             {person.photo ? (
-                                <img
-                                    src={person.photo}
-                                    alt=""
-                                    loading="lazy"
-                                    decoding="async"
-                                    class="size-10 shrink-0 rounded-full border border-black/8 object-cover"
-                                />
+                                <div class="relative size-10 shrink-0">
+                                    <div class="flex size-10 items-center justify-center rounded-full border border-black/8 bg-[#faffff] font-sans text-sm font-bold text-primary">
+                                        {person.initials}
+                                    </div>
+                                    <img
+                                        src={person.photo}
+                                        alt=""
+                                        loading="lazy"
+                                        decoding="async"
+                                        onerror="this.remove()"
+                                        class="absolute inset-0 size-10 rounded-full border border-black/8 object-cover"
+                                    />
+                                </div>
                             ) : (
                                 <div class="flex size-14 shrink-0 items-center justify-center rounded-full border border-black/8 bg-[#faffff] font-sans text-base font-bold text-primary">
                                     {person.initials}
