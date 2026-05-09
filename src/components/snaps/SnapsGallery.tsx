@@ -24,12 +24,12 @@ function getSnapAlt(item: SnapsGalleryItem) {
 function getSnapGalleryHeight(item: SnapsGalleryItem) {
 	const ratio = item.image.height / item.image.width;
 	if (ratio > 1.6) {
-		return "h-180";
+		return "h-[clamp(18rem,44dvh,45rem)] lg:h-180";
 	}
 	if (ratio > 1) {
-		return "h-144";
+		return "h-[clamp(16rem,38dvh,36rem)] lg:h-144";
 	}
-	return "h-96";
+	return "h-[clamp(12rem,28dvh,24rem)] lg:h-96";
 }
 
 const rotations = ["-rotate-[3deg]", "rotate-[2deg]", "-rotate-[2deg]", "rotate-[3deg]"];
@@ -103,7 +103,7 @@ export default function SnapsGallery({ snaps, priorityCount = 0 }: SnapsGalleryP
 	return (
 		<motion.div
 			ref={galleryRef}
-			className="flex w-full items-center gap-x-24 overflow-x-scroll overflow-y-hidden overscroll-x-contain px-24 py-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+			className="flex w-full items-center gap-x-10 overflow-x-scroll overflow-y-hidden overscroll-x-contain px-5 py-6 sm:gap-x-14 sm:px-8 md:gap-x-20 md:px-16 lg:gap-x-24 lg:px-24 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
 			data-snaps-grid=""
 			data-lenis-prevent=""
 			initial={false}
