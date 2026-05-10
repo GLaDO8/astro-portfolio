@@ -22,14 +22,16 @@ function collectMdocFiles(directory) {
 
 const contentFiles = collectMdocFiles("src/content");
 
-test("content uses Markdown image syntax instead of figure tags", () => {
+test("content uses Markdown image syntax except for stroke opt-outs", () => {
 	const offenders = [];
 
 	for (const file of contentFiles) {
 		const source = readFileSync(file, "utf8");
 
-		if (/{%\s*figure\b/.test(source)) {
-			offenders.push(file);
+		for (const match of source.matchAll(/{%\s*figure\b([^%]*)\/%}/g)) {
+			if (!/\bnoStroke=true\b/.test(match[1])) {
+				offenders.push(file);
+			}
 		}
 	}
 
@@ -39,11 +41,30 @@ test("content uses Markdown image syntax instead of figure tags", () => {
 test("Markdown image references are local and backed by an asset file", () => {
 	const offenders = [];
 	const markdownImagePattern = /!\[[^\]]*]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
+	const figureImagePattern = /{%\s*figure\b[^%]*\bsrc="([^"]+)"[^%]*\/%}/g;
 
 	for (const file of contentFiles) {
 		const source = readFileSync(file, "utf8");
 
 		for (const match of source.matchAll(markdownImagePattern)) {
+			const src = match[1];
+
+			if (/^https?:\/\//.test(src)) {
+				offenders.push(`${file}: external image ${src}`);
+				continue;
+			}
+
+			if (!src.startsWith("/")) continue;
+
+			const assetPath = join("src/assets", src);
+			const publicPath = join("public", src);
+
+			if (!existsSync(assetPath) && !existsSync(publicPath)) {
+				offenders.push(`${file}: missing image asset ${src}`);
+			}
+		}
+
+		for (const match of source.matchAll(figureImagePattern)) {
 			const src = match[1];
 
 			if (/^https?:\/\//.test(src)) {

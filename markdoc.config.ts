@@ -168,6 +168,7 @@ export default defineMarkdocConfig({
 					matches: ["center", "left", "right"],
 				},
 				maxWidth: { type: String },
+				noStroke: { type: Boolean, default: false },
 			},
 		},
 	},

@@ -28,11 +28,17 @@ Labeling is used to ask questions like "label the parts of a flower" or "Annotat
 
 ![image-1](/case-studies/labeling/labeling-working.webp)
 
-
-
-## Using vision models to accelerate question creation
+## What wasn't working
 
 The old creation experience was a WYSIWYG-style editor that mirrored what students would eventually see when the question was answered, but teachers found it quite confusing, something we learnt through hotjar recordings, conversations with teachers and analytics data.
+
+You couldn't add labels by pointing and clicking on the image, the labels didn't have a specific pointer so it often covered the subject, The editor UI was overwhelming and teachers were leaving the platform to find images on google even though we had a google image search integration.
+
+{% figure src="/case-studies/labeling/problems.png" alt="image of problems" noStroke=true width="wide" /%}
+
+Let's explore how we addressed these issues.
+
+## Using vision models to accelerate question creation
 
 We wanted to reduce the time taken to create a labeling question using LLMs but throwing a prompt box at the teacher didn't feel right, It's 2024 and they were still kinda getting used to prompting. 
 
@@ -65,7 +71,7 @@ So for V1 (2024) we simply provided all labels asked the teacher to reposition t
 
 ## Label creation experience
 
-LLMs aren't perfect, teachers should be able to edit labels and make final adjustments, but our editor was rough. You can't add labels directly on the image, editing was tough and the labels didn't have a pointer, so it often covered the subject.   
+LLMs aren't perfect, teachers should be able to edit labels and make final adjustments. 
 
 **[bento of  label problems]**
 

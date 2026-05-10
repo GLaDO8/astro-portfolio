@@ -5,62 +5,70 @@ import { getImageAsset } from "@/lib/imageAssets";
 import { getImageEdgeTone } from "@/lib/imageEdgeTone";
 
 interface Props {
-    src: string;
-    alt?: string;
-    caption?: string;
-    width?: "default" | "wide" | "full";
-    align?: "center" | "left" | "right";
-    maxWidth?: string;
+	src: string;
+	alt?: string;
+	caption?: string;
+	width?: "default" | "wide" | "full";
+	align?: "center" | "left" | "right";
+	maxWidth?: string;
+	noStroke?: boolean;
 }
 
 const {
-    src,
-    alt = "",
-    caption,
-    width = "default",
-    align = "center",
-    maxWidth,
+	src,
+	alt = "",
+	caption,
+	width = "default",
+	align = "center",
+	maxWidth,
+	noStroke = false,
 } = Astro.props;
 const image = getImageAsset(src);
 const maxWidthClasses: Record<string, string> = {
-    "24rem": "max-w-96",
-    "28rem": "max-w-md",
-    "32rem": "max-w-lg",
-    "36rem": "max-w-xl",
-    "42rem": "max-w-2xl",
-    "48rem": "max-w-3xl",
-    "56rem": "max-w-4xl",
-    "64rem": "max-w-5xl",
-    "72rem": "max-w-6xl",
-    "80rem": "max-w-7xl",
+	"24rem": "max-w-96",
+	"28rem": "max-w-md",
+	"32rem": "max-w-lg",
+	"36rem": "max-w-xl",
+	"42rem": "max-w-2xl",
+	"48rem": "max-w-3xl",
+	"56rem": "max-w-4xl",
+	"64rem": "max-w-5xl",
+	"72rem": "max-w-6xl",
+	"80rem": "max-w-7xl",
 };
 const maxWidthClass = maxWidth ? maxWidthClasses[maxWidth] : undefined;
 
 if (maxWidth && !maxWidthClass) {
-    throw new Error(
-        `Unsupported Figure maxWidth "${maxWidth}". Add a Tailwind class mapping.`,
-    );
+	throw new Error(`Unsupported Figure maxWidth "${maxWidth}". Add a Tailwind class mapping.`);
 }
 
 const imageEdgeTone = image ? await getImageEdgeTone(src) : undefined;
 const imageEdgeShadowClass =
-    imageEdgeTone === "dark" ? "figure-media-edge-dark" : "figure-media-edge-light";
+	imageEdgeTone === "dark" ? "figure-media-edge-dark" : "figure-media-edge-light";
+const imageClass = cn("w-full", !noStroke && "rounded-xl");
 
 const wrapperClass = cn(
-    "not-prose my-16 w-full",
-    width !== "default" && `figure-${width}`,
-    align === "center" && "flex flex-col items-center",
-    align === "left" && "flex flex-col items-start",
-    align === "right" && "flex flex-col items-end",
-    maxWidthClass,
+	"not-prose my-16 w-full",
+	width !== "default" && `figure-${width}`,
+	align === "center" && "flex flex-col items-center",
+	align === "left" && "flex flex-col items-start",
+	align === "right" && "flex flex-col items-end",
+	maxWidthClass,
 );
 ---
 
 <figure class={wrapperClass}>
     {
         image ? (
-            <span class={cn("figure-media", imageEdgeShadowClass)}>
-                <Image src={image} alt={alt} loading="lazy" class="w-full rounded-xl" />
+            <span
+                class={cn(
+                    "figure-media",
+                    !noStroke && "figure-media-rounded",
+                    !noStroke && "figure-media-stroked",
+                    !noStroke && imageEdgeShadowClass,
+                )}
+            >
+                <Image src={image} alt={alt} loading="lazy" class={imageClass} />
             </span>
         ) : (
             <img
@@ -86,10 +94,13 @@ const wrapperClass = cn(
         position: relative;
         display: block;
         overflow: hidden;
+    }
+
+    .figure-media-rounded {
         border-radius: var(--radius-xl);
     }
 
-    .figure-media::after {
+    .figure-media-stroked::after {
         position: absolute;
         inset: 0;
         border-radius: inherit;
