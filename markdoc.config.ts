@@ -150,6 +150,10 @@ export default defineMarkdocConfig({
 				controls: { type: Boolean, default: true },
 			},
 		},
+		labelCreationBento: {
+			render: component("./src/components/mdoc/LabelCreationBento.astro"),
+			selfClosing: true,
+		},
 		figure: {
 			render: figureComponent,
 			selfClosing: true,

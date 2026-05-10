@@ -1,0 +1,100 @@
+---
+const animations = [
+	{
+		src: "/lottie/Frame-2147231211.json",
+		label: "Add a label by clicking the image",
+		className: "aspect-[659/556]",
+	},
+	{
+		src: "/lottie/Frame-2147231212.json",
+		label: "Change label orientation",
+		className: "aspect-[467/556]",
+	},
+	{
+		src: "/lottie/Frame-2147231213.json",
+		label: "Edit positioned labels in the labeling editor",
+		className: "aspect-[1146/398] md:col-span-2",
+	},
+];
+---
+
+<figure class="not-prose figure-wide my-16">
+	<div class="label-creation-bento grid gap-5">
+		{
+			animations.map((animation) => (
+				<label-creation-lottie
+					class={`block overflow-hidden bg-white ${animation.className}`}
+					data-src={animation.src}
+					aria-label={animation.label}
+				>
+					<div class="h-full w-full" data-lottie-stage aria-hidden="true" />
+				</label-creation-lottie>
+			))
+		}
+	</div>
+</figure>
+
+<script>
+	import lottie from "lottie-web";
+
+	const elementName = "label-creation-lottie";
+
+	if (!customElements.get(elementName)) {
+		class LabelCreationLottie extends HTMLElement {
+			#animation;
+
+			connectedCallback() {
+				if (this.#animation) {
+					return;
+				}
+
+				const stage = this.querySelector("[data-lottie-stage]");
+				const src = this.dataset.src;
+
+				if (!(stage instanceof HTMLElement) || !src) {
+					return;
+				}
+
+				const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+				this.#animation = lottie.loadAnimation({
+					container: stage,
+					renderer: "svg",
+					loop: true,
+					autoplay: !reduceMotion,
+					path: src,
+					rendererSettings: {
+						preserveAspectRatio: "xMidYMid meet",
+					},
+				});
+
+				this.#animation.addEventListener("DOMLoaded", () => {
+					if (reduceMotion) {
+						this.#animation?.goToAndStop(0, true);
+					}
+				});
+			}
+
+			disconnectedCallback() {
+				this.#animation?.destroy();
+				this.#animation = undefined;
+			}
+		}
+
+		customElements.define(elementName, LabelCreationLottie);
+	}
+</script>
+
+<style>
+	@media (min-width: 48rem) {
+		.label-creation-bento {
+			grid-template-columns: minmax(0, 659fr) minmax(0, 467fr);
+		}
+	}
+
+	label-creation-lottie [data-lottie-stage] > svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+</style>
