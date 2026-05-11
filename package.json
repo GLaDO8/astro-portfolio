@@ -27,6 +27,7 @@
 		"@google/model-viewer": "^4.2.0",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.2.1",
+		"@vercel/analytics": "^2.0.1",
 		"@web-kits/audio": "^0.1.0",
 		"agentation": "^2.3.0",
 		"astro": "^6.2.1",
