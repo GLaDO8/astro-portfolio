@@ -8,6 +8,7 @@ import "@/styles/global.css";
 import DevToolbars from "@/dev/DevToolbars";
 import { cn } from "@/lib/cn";
 import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 
 interface Props {
     title: string;
@@ -236,5 +237,5 @@ const isDev = import.meta.env.DEV;
                 }
             }
         </style>
-    </body>
+    </body><SpeedInsights />
 </html>
