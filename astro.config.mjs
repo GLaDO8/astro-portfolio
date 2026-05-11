@@ -20,7 +20,7 @@ export default defineConfig({
 						weight: "100 900",
 						style: "normal",
 						stretch: "75% 125%",
-						display: "optional",
+						display: "swap",
 					},
 				],
 			},
