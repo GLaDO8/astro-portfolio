@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AgentationToolbar from "@/dev/AgentationToolbar";
 import DevMeasurer from "@/dev/DevMeasurer";
 import { devOverlayStylePreserver } from "@/dev/devOverlayStyles.js";
+import SidequestsPositioner from "@/dev/SidequestsPositioner";
 
 type AstroBeforeSwapEvent = Event & {
 	newDocument?: Document;
@@ -56,6 +57,7 @@ export default function DevToolbars() {
 		<>
 			<DevMeasurer key={`measurer:${routeKey}`} />
 			<AgentationToolbar key={`agentation:${routeKey}`} />
+			<SidequestsPositioner key={`sidequests-positioner:${routeKey}`} />
 		</>
 	);
 }
