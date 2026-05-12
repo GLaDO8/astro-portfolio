@@ -2,6 +2,7 @@
 import type { SongData } from "@/lib/widgetConfig";
 import MusicWidget from "./MusicWidget";
 import PhotoFrameWidget from "./PhotoFrameWidget";
+import SidequestWidget from "./SidequestWidget";
 import SnapsWidget from "./SnapsWidget";
 
 interface Props {
@@ -13,11 +14,11 @@ const { songData } = Astro.props;
 
 <section
     data-home-widget-strip
-    class="h-44 w-full overflow-visible pt-8 sm:h-52 md:h-78 md:mt-12"
+    class="h-52 w-full overflow-visible pt-8 sm:h-56 md:h-78 md:mt-12"
     aria-label="Personal widgets"
 >
     <div
-        class="relative left-1/2 flex w-max origin-top -translate-x-1/2 scale-[0.66] items-start sm:justify-between md:justify-center gap-12 sm:scale-[0.82] md:scale-[1.05] md:gap-24 lg:scale-[1.12] lg:gap-28"
+        class="relative left-1/2 flex w-max origin-top -translate-x-1/2 scale-[0.58] items-start gap-8 sm:scale-[0.72] md:scale-[0.92] md:gap-14 lg:scale-[1.02] lg:gap-18 xl:scale-[1.08] xl:gap-20"
     >
         <div class="rotate-[9deg]">
             <div data-home-widget class="mt-5 shrink-0">
@@ -31,8 +32,17 @@ const { songData } = Astro.props;
             </div>
         </div>
         <a
+            href="/sidequests"
+            class="-mt-14 -ml-12 block shrink-0 no-underline"
+            aria-label="Open sidequests"
+        >
+            <div data-home-widget>
+                <SidequestWidget client:visible />
+            </div>
+        </a>
+        <a
             href="/snaps"
-            class="-mt-2 -ml-12 block shrink-0 no-underline"
+            class="-mt-2 -ml-14 block shrink-0 no-underline"
             aria-label="Open photo roll"
         >
             <div data-home-widget>
