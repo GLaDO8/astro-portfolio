@@ -3,9 +3,9 @@ import mapArtwork from "@/assets/widgets/sidequest-map.png";
 import { cn } from "@/lib/cn";
 
 const panelTransition = {
-	type: "spring" as const,
-	duration: 0.3,
-	bounce: 0,
+	type: "tween" as const,
+	duration: 0.28,
+	ease: [0.22, 1, 0.36, 1] as const,
 };
 
 const panelTransforms = [
@@ -48,6 +48,13 @@ const mapHalves = [
 		rest: { x: -19 },
 		hover: { x: 0 },
 	},
+] as const;
+
+const foldLighting = [
+	"linear-gradient(to right, transparent 68%, rgba(255,255,255,0.2) 84%, rgba(42,35,29,0.16) 100%)",
+	"linear-gradient(to right, rgba(42,35,29,0.12) 0%, rgba(255,255,255,0.14) 14%, transparent 30%), linear-gradient(to right, transparent 60%, rgba(255,255,255,0.2) 78%, rgba(42,35,29,0.22) 100%)",
+	"linear-gradient(to right, rgba(42,35,29,0.2) 0%, rgba(255,255,255,0.18) 18%, transparent 38%), linear-gradient(to right, transparent 70%, rgba(255,255,255,0.16) 86%, rgba(42,35,29,0.12) 100%)",
+	"linear-gradient(to right, rgba(42,35,29,0.14) 0%, rgba(255,255,255,0.14) 16%, transparent 34%)",
 ] as const;
 
 export default function SidequestMapWidget() {
@@ -94,7 +101,7 @@ export default function SidequestMapWidget() {
 								>
 									<div
 										className={cn(
-											"h-full w-full overflow-hidden bg-cover bg-no-repeat",
+											"relative h-full w-full overflow-hidden bg-cover bg-no-repeat",
 											index === 0 && "rounded-l-[1px]",
 											index === panelTransforms.length - 1 && "rounded-r-[1px]",
 										)}
@@ -103,7 +110,13 @@ export default function SidequestMapWidget() {
 											backgroundPosition: `${(index / (panelTransforms.length - 1)) * 100}% center`,
 											backgroundSize: "400% 100%",
 										}}
-									/>
+									>
+										<div
+											className="pointer-events-none absolute inset-0"
+											style={{ background: foldLighting[index] }}
+											aria-hidden="true"
+										/>
+									</div>
 								</motion.div>
 							);
 						})}
