@@ -6,7 +6,7 @@ import pencil from "@/assets/widgets/pencil.png";
 
 const toolTransition = {
 	type: "spring",
-	visualDuration: 0.28,
+	visualDuration: 0.2,
 	bounce: 0.45,
 } as const;
 
@@ -16,7 +16,7 @@ const tools = [
 		alt: "",
 		className: "left-3 top-28 z-20 w-23 origin-center",
 		rest: { x: 0, y: 0, rotate: 50 },
-		hover: { x: -16, y: -8, rotate: 42 },
+		hover: { x: -16, y: -20, rotate: 42 },
 	},
 	{
 		src: callipers,
@@ -30,7 +30,11 @@ const tools = [
 		alt: "",
 		className: "left-33 top-17 z-20 w-31 origin-center",
 		rest: { x: 0, y: 0, rotate: 88 },
-		hover: { x: 18, y: -13, rotate: 99 },
+		hover: {
+			x: 10,
+			y: -30,
+			rotate: 95,
+		},
 	},
 ] as const;
 
