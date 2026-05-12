@@ -7,80 +7,80 @@ import SidequestsCanvas from "@/components/sidequests/SidequestsCanvas";
 import Document from "@/layouts/Document.astro";
 
 const v60Model = {
-	id: "v60-skadis",
-	src: v60StandModelUrl,
-	alt: "Rotating 3D model of a V60 stand for an IKEA SKADIS pegboard",
+    id: "v60-skadis",
+    src: v60StandModelUrl,
+    alt: "Rotating 3D model of a V60 stand for an IKEA SKADIS pegboard",
 } satisfies CADModel;
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "CollectionPage",
-	name: "Sidequests",
-	description: "Side projects, prototypes, and experiments by Shreyas Gupta.",
-	url: "https://shrey.fyi/sidequests",
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Sidequests",
+    description: "Side projects, prototypes, and experiments by Shreyas Gupta.",
+    url: "https://shrey.fyi/sidequests",
 };
 ---
 
 <Document
-	title="Sidequests — Shreyas Gupta"
-	description="Side projects, prototypes, and experiments by Shreyas Gupta."
-	bodyClass="overflow-hidden bg-beige"
-	mainClass="relative block h-dvh min-h-dvh overflow-hidden bg-beige"
-	navClass="fixed top-4 left-1/2 z-40 mb-0 w-[min(calc(100%_-_2rem),39.25rem)] max-w-[calc(100%_-_2rem)] -translate-x-1/2"
-	constrainShell={false}
-	seo={{ jsonLd }}
+    title="Sidequests — Shreyas Gupta"
+    description="Side projects, prototypes, and experiments by Shreyas Gupta."
+    bodyClass="overflow-hidden bg-beige"
+    mainClass="relative block h-dvh min-h-dvh overflow-hidden bg-beige"
+    navClass="fixed top-4 left-1/2 z-40 mb-0 w-[min(calc(100%_-_2rem),39.25rem)] max-w-[calc(100%_-_2rem)] -translate-x-1/2"
+    constrainShell={false}
+    seo={{ jsonLd }}
 >
-	<SidequestsCanvas client:load>
-		<section
-			class="v60-feature absolute top-[10rem] left-1/2 flex w-[min(calc(100vw_-_2.5rem),36rem)] -translate-x-1/2 flex-col items-center gap-4 select-text md:top-4 md:flex-row md:items-start md:justify-center md:gap-5 lg:gap-6"
-			aria-labelledby="v60-stand-title"
-		>
-			<figure
-				class="w-full max-w-[17rem] shrink-0 overflow-hidden rounded-lg border-[0.375rem] border-white bg-white shadow-[0_0.75rem_1.5rem_rgba(42,35,29,0.14)] md:w-[52%]"
-			>
-				<Image
-					src={v60Photo}
-					alt="Ceramic V60 held upright on a white IKEA SKADIS pegboard"
-					loading="eager"
-					class="block h-full w-full object-cover"
-					sizes="(min-width: 768px) 17rem, min(17rem, calc(100vw - 3.25rem))"
-				/>
-			</figure>
+    <SidequestsCanvas client:load>
+        <section
+            class="v60-feature absolute top-[10rem] left-1/2 flex w-[min(calc(100vw_-_2.5rem),36rem)] -translate-x-1/2 flex-col items-center gap-4 select-text md:top-4 md:flex-row md:items-start md:justify-center md:gap-5 lg:gap-8"
+            aria-labelledby="v60-stand-title"
+        >
+            <figure
+                class="w-full max-w-[17rem] shrink-0 overflow-hidden border-12 border-white bg-white shadow-[0_0_2px_0_rgba(167,167,167,0.25),0_2px_6px_2px_rgba(122,122,122,0.25)] md:w-[52%] -rotate-4"
+            >
+                <Image
+                    src={v60Photo}
+                    alt="Ceramic V60 held upright on a white IKEA SKADIS pegboard"
+                    loading="eager"
+                    class="block h-full w-full object-cover"
+                    sizes="(min-width: 768px) 17rem, min(17rem, calc(100vw - 3.25rem))"
+                />
+            </figure>
 
-			<div
-				class="flex w-full max-w-[15rem] flex-col gap-5 md:w-[42%] md:max-w-[15.5rem] md:gap-6"
-			>
-				<CADRender
-					client:load
-					model={v60Model}
-					className="w-full min-h-24 border-[0.375rem] bg-[length:1.05rem_1.05rem] shadow-[0_0.75rem_1.5rem_rgba(42,35,29,0.14)]"
-				/>
+            <div
+                class="flex w-full max-w-[15rem] flex-col gap-5 md:w-[42%] md:max-w-[15.5rem] md:gap-6"
+            >
+                <CADRender
+                    client:load
+                    model={v60Model}
+                    className="w-full min-h-24 rounded-none border-12 bg-[length:1.05rem_1.05rem] shadow-[0_0_2px_0_rgba(167,167,167,0.25),0_2px_6px_2px_rgba(122,122,122,0.25)] rotate-4"
+                />
 
-				<div class="px-0.5 md:px-2">
-					<h1
-						id="v60-stand-title"
-						class="font-sans text-2xl leading-[1.12] font-bold text-primary text-balance"
-					>
-						V60 Stand for IKEA Pegboard
-					</h1>
-					<p
-						class="mt-3.5 font-sans text-base leading-relaxed font-semibold text-secondary"
-					>
-						Designed a CAD model in Shapr3D for holding a ceramic V60 upright
-						on an IKEA SKADIS pegboard.
-					</p>
-				</div>
-			</div>
-		</section>
-	</SidequestsCanvas>
+                <div class="px-0.5 md:px-2 -rotate-6">
+                    <h1
+                        id="v60-stand-title"
+                        class="font-sans text-2xl leading-[1.12] font-bold text-primary text-balance"
+                    >
+                        V60 Stand for IKEA Pegboard
+                    </h1>
+                    <p
+                        class="mt-3.5 font-sans text-base leading-relaxed font-semibold text-secondary"
+                    >
+                        Designed a CAD model in Shapr3D for holding a ceramic V60 upright
+                        on an IKEA SKADIS pegboard.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </SidequestsCanvas>
 </Document>
 
 <style>
-	@media (min-width: 48rem) {
-		.v60-feature {
-			flex-direction: row;
-			align-items: flex-start;
-			justify-content: center;
-		}
-	}
+    @media (min-width: 48rem) {
+        .v60-feature {
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+        }
+    }
 </style>
