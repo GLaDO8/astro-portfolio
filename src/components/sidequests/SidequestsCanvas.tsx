@@ -47,11 +47,11 @@ const canvasClassName = cn(
 );
 
 const stageClassName = cn(
-	"[--sidequests-pan-x:0px] [--sidequests-pan-y:0px]",
+	"[--sidequests-pan-x:0px] [--sidequests-pan-y:0px] [--sidequests-scale:0.76]",
 	"absolute top-1/2 left-1/2 h-[64rem] w-[72rem] will-change-transform",
-	"[transform:translate3d(calc(-50%_+_var(--sidequests-pan-x)),calc(-50%_+_var(--sidequests-pan-y)),0)]",
+	"[transform:translate3d(calc(-50%_+_var(--sidequests-pan-x)),calc(-50%_+_var(--sidequests-pan-y)),0)_scale(var(--sidequests-scale))]",
 	"[&>astro-slot]:contents",
-	"md:h-[clamp(48rem,112dvh,62rem)] md:w-[clamp(72rem,128vw,96rem)]",
+	"sm:[--sidequests-scale:0.84] md:h-[clamp(48rem,112dvh,62rem)] md:w-[clamp(72rem,128vw,96rem)] md:[--sidequests-scale:1]",
 );
 
 function applyCADMaterial(viewer: CADModelViewerElement) {

@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import coffeeScrubPhoto from "@/assets/sidequests/coffee.png";
 import v60Photo from "@/assets/sidequests/v60.png";
 import v60StandModelUrl from "@/assets/sidequests/v60-stand.glb?url";
 import CADRender, { type CADModel } from "@/components/sidequests/CADRender";
@@ -7,17 +8,17 @@ import SidequestsCanvas from "@/components/sidequests/SidequestsCanvas";
 import Document from "@/layouts/Document.astro";
 
 const v60Model = {
-    id: "v60-skadis",
-    src: v60StandModelUrl,
-    alt: "Rotating 3D model of a V60 stand for an IKEA SKADIS pegboard",
+	id: "v60-skadis",
+	src: v60StandModelUrl,
+	alt: "Rotating 3D model of a V60 stand for an IKEA SKADIS pegboard",
 } satisfies CADModel;
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "Sidequests",
-    description: "Side projects, prototypes, and experiments by Shreyas Gupta.",
-    url: "https://shrey.fyi/sidequests",
+	"@context": "https://schema.org",
+	"@type": "CollectionPage",
+	name: "Sidequests",
+	description: "Side projects, prototypes, and experiments by Shreyas Gupta.",
+	url: "https://shrey.fyi/sidequests",
 };
 ---
 
@@ -31,13 +32,13 @@ const jsonLd = {
     seo={{ jsonLd }}
 >
     <SidequestsCanvas client:load>
-        <section
-            class="v60-feature absolute top-[10rem] left-1/2 flex w-[min(calc(100vw_-_2.5rem),36rem)] -translate-x-1/2 flex-col items-center gap-4 select-text md:top-4 md:flex-row md:items-start md:justify-center md:gap-5 lg:gap-8"
-            aria-labelledby="v60-stand-title"
-        >
-            <figure
-                class="w-full max-w-[17rem] shrink-0 overflow-hidden border-12 border-white bg-white shadow-[0_0_2px_0_rgba(167,167,167,0.25),0_2px_6px_2px_rgba(122,122,122,0.25)] md:w-[52%] -rotate-4"
-            >
+		<section
+			class="v60-feature absolute top-4 left-1/2 flex w-[36rem] -translate-x-1/2 items-start justify-center gap-8 select-text"
+			aria-labelledby="v60-stand-title"
+		>
+			<figure
+				class="w-[52%] max-w-[17rem] shrink-0 overflow-hidden border-12 border-white bg-white shadow-[0_0_2px_0_rgba(167,167,167,0.25),0_2px_6px_2px_rgba(122,122,122,0.25)] -rotate-4"
+			>
                 <Image
                     src={v60Photo}
                     alt="Ceramic V60 held upright on a white IKEA SKADIS pegboard"
@@ -45,42 +46,58 @@ const jsonLd = {
                     class="block h-full w-full object-cover"
                     sizes="(min-width: 768px) 17rem, min(17rem, calc(100vw - 3.25rem))"
                 />
-            </figure>
+			</figure>
 
-            <div
-                class="flex w-full max-w-[15rem] flex-col gap-5 md:w-[42%] md:max-w-[15.5rem] md:gap-6"
-            >
-                <CADRender
-                    client:load
-                    model={v60Model}
+			<div class="flex w-[42%] max-w-[15.5rem] flex-col gap-6">
+				<CADRender
+					client:load
+					model={v60Model}
                     className="w-full min-h-24 rounded-none border-12 bg-[length:1.05rem_1.05rem] shadow-[0_0_2px_0_rgba(167,167,167,0.25),0_2px_6px_2px_rgba(122,122,122,0.25)] rotate-4"
                 />
 
-                <div class="px-0.5 md:px-2 -rotate-6">
-                    <h1
-                        id="v60-stand-title"
-                        class="font-sans text-2xl leading-[1.12] font-bold text-primary text-balance"
-                    >
+				<div class="px-0.5 md:px-2 -rotate-6">
+					<h1
+						id="v60-stand-title"
+						class="font-sans text-3xl leading-[1.12] font-bold text-primary text-balance md:text-2xl"
+					>
                         V60 Stand for IKEA Pegboard
                     </h1>
-                    <p
-                        class="mt-3.5 font-sans text-base leading-relaxed font-semibold text-secondary"
-                    >
+					<p
+						class="mt-3.5 font-sans text-lg leading-relaxed font-medium text-secondary md:text-base"
+					>
                         Designed a CAD model in Shapr3D for holding a ceramic V60 upright
                         on an IKEA SKADIS pegboard.
                     </p>
                 </div>
             </div>
         </section>
+
+		<section
+			class="absolute top-[22rem] left-[calc(50%_+_16rem)] flex w-[22rem] flex-col items-start gap-3 select-text"
+			aria-labelledby="coffee-scrub-title"
+		>
+            <Image
+				src={coffeeScrubPhoto}
+				alt="Glass jars filled with coffee scrub beside scattered coffee beans"
+				loading="lazy"
+				class="w-full max-w-[18rem] -rotate-6 [filter:drop-shadow(0_0_2px_rgba(167,167,167,0.25))_drop-shadow(0_2px_6px_rgba(122,122,122,0.25))]"
+				sizes="(min-width: 768px) 18rem, min(17rem, calc(100vw - 2.5rem))"
+			/>
+
+			<div class="max-w-[18rem] rotate-3 px-1">
+				<h2
+					id="coffee-scrub-title"
+					class="font-sans text-3xl leading-[1.12] font-bold text-primary text-balance md:text-2xl"
+				>
+                    Shea butter coffee scrub
+                </h2>
+				<p
+					class="mt-3 font-sans text-lg leading-relaxed font-medium text-secondary md:text-base"
+				>
+                    Made coffee scrub with used coffee grounds from my morning aeropress
+                    and used glass jars lying around the house (thanks Firstclub).
+                </p>
+            </div>
+        </section>
     </SidequestsCanvas>
 </Document>
-
-<style>
-    @media (min-width: 48rem) {
-        .v60-feature {
-            flex-direction: row;
-            align-items: flex-start;
-            justify-content: center;
-        }
-    }
-</style>
