@@ -3,6 +3,7 @@ import callipers from "@/assets/widgets/callipers.png";
 import hammer from "@/assets/widgets/hammer.png";
 import mat from "@/assets/widgets/mat.png";
 import pencil from "@/assets/widgets/pencil.png";
+import sdcard from "@/assets/widgets/sdcard.png";
 
 const toolTransition = {
 	type: "spring",
@@ -36,6 +37,13 @@ const tools = [
 			rotate: 95,
 		},
 	},
+	{
+		src: sdcard,
+		alt: "",
+		className: "left-28 top-28 z-30 w-22 origin-center scale-[0.2]",
+		rest: { x: 30, y: 70, rotate: -10 },
+		hover: { x: 80, y: -80, rotate: 2 },
+	},
 ] as const;
 
 export default function SidequestWidget() {
@@ -66,6 +74,9 @@ export default function SidequestWidget() {
 					className="h-auto w-full rounded-sm bg-white object-cover p-1.5 shadow-[0_12px_30px_rgba(42,35,29,0.2),0_0_4px_rgba(122,122,122,0.2)] scale-[0.95]"
 					draggable={false}
 				/>
+				<p className="absolute -bottom-7 left-18 z-40 font-sans text-sm font-semibold text-primary">
+					Sidequests
+				</p>
 			</motion.div>
 
 			{tools.map((tool) => (
@@ -84,10 +95,6 @@ export default function SidequestWidget() {
 					draggable={false}
 				/>
 			))}
-
-			<p className="absolute -bottom-2 left-20 z-40 rotate-[5deg] font-sans text-sm font-semibold text-primary">
-				Sidequests
-			</p>
 		</motion.div>
 	);
 }

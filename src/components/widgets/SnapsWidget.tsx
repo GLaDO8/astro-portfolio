@@ -5,11 +5,6 @@ import snapTwo from "@/assets/snaps/thumbnails/DSCF4283-thumb.webp";
 import snapThree from "@/assets/snaps/thumbnails/DSCF4449-thumb.webp";
 import { cn } from "@/lib/cn";
 
-const polaroidTransition = {
-	duration: 0.2,
-	ease: [0.22, 1, 0.36, 1] as const,
-};
-
 const widgetVariants = {
 	rest: {},
 	hover: {},
@@ -109,11 +104,11 @@ export default function SnapsWidget() {
 							draggable={false}
 						/>
 					</div>
+					{index === 2 ? (
+						<p className="absolute -bottom-8 right-2 font-sans text-sm font-semibold">Photo roll</p>
+					) : null}
 				</motion.div>
 			))}
-			<div className="absolute -bottom-7 right-11 rotate-26">
-				<p className="font-semibold text-sm font-sans">Photo roll</p>
-			</div>
 		</motion.div>
 	);
 }

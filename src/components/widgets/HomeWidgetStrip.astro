@@ -14,11 +14,11 @@ const { songData } = Astro.props;
 
 <section
     data-home-widget-strip
-    class="h-52 w-full overflow-visible pt-8 sm:h-56 md:h-78 md:mt-12"
+    class="h-84 w-full overflow-visible pt-8 sm:h-112 md:mt-12 md:h-78"
     aria-label="Personal widgets"
 >
     <div
-        class="relative left-1/2 flex w-max origin-top -translate-x-1/2 scale-[0.58] items-start gap-8 sm:scale-[0.72] md:scale-[0.92] md:gap-14 lg:scale-[1.02] lg:gap-18 xl:scale-[1.08] xl:gap-20"
+        class="place-items-center relative left-1/2 grid w-max origin-top -translate-x-1/2 scale-[0.65] grid-cols-2 items-start gap-x-6 gap-y-8 sm:scale-[0.72] sm:gap-x-8 sm:gap-y-10 md:flex md:scale-[0.92] md:gap-14 lg:scale-[1.02] lg:gap-18 xl:scale-[1.08] xl:gap-32"
     >
         <div class="rotate-[9deg]">
             <div data-home-widget class="mt-5 shrink-0">
@@ -33,7 +33,7 @@ const { songData } = Astro.props;
         </div>
         <a
             href="/sidequests"
-            class="-mt-14 -ml-12 block shrink-0 no-underline"
+            class="-mt-9 sm:-ml-8 block shrink-0 no-underline md:-mt-14 md:-ml-12"
             aria-label="Open sidequests"
         >
             <div data-home-widget>
@@ -42,7 +42,7 @@ const { songData } = Astro.props;
         </a>
         <a
             href="/snaps"
-            class="-mt-2 -ml-14 block shrink-0 no-underline"
+            class="-ml-10 sm:-mt-5 sm:-ml-10 block shrink-0 no-underline md:-mt-2 md:-ml-14"
             aria-label="Open photo roll"
         >
             <div data-home-widget>
