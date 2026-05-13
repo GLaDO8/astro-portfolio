@@ -26,6 +26,7 @@ const caseStudies = defineCollection({
 		title: z.string(),
 		description: z.string(),
 		date: z.date(),
+		projectType: z.string().optional(),
 		theme: z.string().optional(),
 		heroImage: z.string().optional(),
 		heroImageAlt: z.string().optional(),

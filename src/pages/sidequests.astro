@@ -1,5 +1,7 @@
 ---
 import { Image } from "astro:assets";
+import aeropressPhoto from "@/assets/sidequests/aeropress.png";
+import aeropressStandModelUrl from "@/assets/sidequests/aeropress-stand.glb?url";
 import coffeeScrubPhoto from "@/assets/sidequests/coffee.png";
 import v60Photo from "@/assets/sidequests/v60.png";
 import v60StandModelUrl from "@/assets/sidequests/v60-stand.glb?url";
@@ -11,6 +13,12 @@ const v60Model = {
 	id: "v60-skadis",
 	src: v60StandModelUrl,
 	alt: "Rotating 3D model of a V60 stand for an IKEA SKADIS pegboard",
+} satisfies CADModel;
+
+const aeropressModel = {
+	id: "aeropress-stand",
+	src: aeropressStandModelUrl,
+	alt: "Rotating 3D model of a minimal Aeropress drying stand",
 } satisfies CADModel;
 
 const jsonLd = {
@@ -103,5 +111,47 @@ const jsonLd = {
                 </p>
             </div>
         </section>
+
+		<section
+			class="absolute top-[32.37rem] left-[46.92rem] flex w-[31rem] items-start gap-6 select-text"
+			aria-labelledby="aeropress-stand-title"
+			data-sidequest-item="aeropress-stand"
+			data-sidequest-label="Aeropress stand"
+		>
+			<div class="flex w-[44%] max-w-[13.5rem] flex-col gap-4 pt-10">
+				<CADRender
+					client:load
+					model={aeropressModel}
+					className="w-full min-h-24 rounded-none border-12 bg-[length:1.05rem_1.05rem] shadow-[0_0_2px_0_rgba(167,167,167,0.25),0_2px_6px_2px_rgba(122,122,122,0.25)] -rotate-5"
+				/>
+
+				<div class="-rotate-3 px-1">
+					<h2
+						id="aeropress-stand-title"
+						class="font-sans text-3xl leading-[1.12] font-bold text-primary text-balance md:text-2xl"
+					>
+						Aeropress stand
+					</h2>
+					<p
+						class="mt-3 font-sans text-lg leading-relaxed font-medium text-secondary md:text-base"
+					>
+						Also designed a minimal stand for aeropress that helps dry it
+						after washing.
+					</p>
+				</div>
+			</div>
+
+			<figure
+				class="w-[56%] max-w-[15rem] shrink-0 overflow-hidden border-12 border-white bg-white shadow-[0_0_2px_0_rgba(167,167,167,0.25),0_2px_6px_2px_rgba(122,122,122,0.25)] rotate-4"
+			>
+				<Image
+					src={aeropressPhoto}
+					alt="Aeropress parts drying on a minimal stand mounted to a white pegboard"
+					loading="lazy"
+					class="block h-full w-full object-cover"
+					sizes="(min-width: 768px) 15rem, min(15rem, calc(100vw - 3.25rem))"
+				/>
+			</figure>
+		</section>
     </SidequestsCanvas>
 </Document>
