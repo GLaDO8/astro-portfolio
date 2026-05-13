@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { basename } from "node:path";
 import test from "node:test";
 import Markdoc from "@markdoc/markdoc";
 import markdocConfig from "../markdoc.config.ts";
@@ -55,4 +56,12 @@ test("Lottie component loads JSON by path and cleans up animation instances", ()
 	assert.match(lottieComponent, /path: src/);
 	assert.match(lottieComponent, /controls && \(/);
 	assert.match(lottieComponent, /this\.#animation\?\.destroy\(\)/);
+});
+
+test("labelling case study references the tracked lottie asset with matching case", () => {
+	const caseStudy = readFileSync("src/content/case-studies/labelling.mdoc", "utf8");
+	const lottieSrcMatch = caseStudy.match(/\{% lottie[^%]*src="\/lottie\/([^"]+)"/);
+
+	assert.ok(lottieSrcMatch);
+	assert.ok(readdirSync("public/lottie").includes(basename(lottieSrcMatch[1])));
 });
