@@ -3,12 +3,13 @@ import callipers from "@/assets/widgets/callipers.png";
 import hammer from "@/assets/widgets/hammer.png";
 import mat from "@/assets/widgets/mat.png";
 import pencil from "@/assets/widgets/pencil.png";
+import rpi from "@/assets/widgets/rpi.png";
 import sdcard from "@/assets/widgets/sdcard.png";
 
 const toolTransition = {
 	type: "spring",
-	visualDuration: 0.2,
-	bounce: 0.45,
+	visualDuration: 0.25,
+	bounce: 0.5,
 } as const;
 
 const tools = [
@@ -30,7 +31,7 @@ const tools = [
 		src: hammer,
 		alt: "",
 		className: "left-33 top-17 z-20 w-31 origin-center",
-		rest: { x: 0, y: 0, rotate: 88 },
+		rest: { x: 0, y: 10, rotate: 88 },
 		hover: {
 			x: 10,
 			y: -30,
@@ -43,6 +44,13 @@ const tools = [
 		className: "left-28 top-28 z-30 w-22 origin-center scale-[0.2]",
 		rest: { x: 30, y: 70, rotate: -10 },
 		hover: { x: 80, y: -80, rotate: 2 },
+	},
+	{
+		src: rpi,
+		alt: "",
+		className: "left-11 top-34 z-30 w-34 origin-center scale-[0.45]",
+		rest: { x: -50, y: -10, rotate: -8 },
+		hover: { x: -40, y: -40, rotate: -16 },
 	},
 ] as const;
 
@@ -86,7 +94,7 @@ export default function SidequestWidget() {
 					alt={tool.alt}
 					width={tool.src.width}
 					height={tool.src.height}
-					className={`pointer-events-none absolute select-none ${tool.className}`}
+					className={`pointer-events-none absolute select-none drop-shadow-[0_5px_5px_rgba(42,35,29,0.18)] ${tool.className}`}
 					variants={{
 						rest: tool.rest,
 						hover: tool.hover,

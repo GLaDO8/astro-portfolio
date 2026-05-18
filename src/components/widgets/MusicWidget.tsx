@@ -206,7 +206,7 @@ interface MusicMetadataStripProps {
 
 function MusicMetadataStrip({ label, shouldReduceMotion }: MusicMetadataStripProps) {
 	return (
-		<div className="absolute -bottom-2 left-1 z-40 w-36 rotate-[-2.5deg]">
+		<div className="absolute -bottom-2 -left-1 z-40 w-36 rotate-[-2.5deg]">
 			<MusicStripLine
 				key={label}
 				className="text-sm font-semibold"
@@ -574,7 +574,7 @@ export default function MusicWidget({ songData }: Props) {
 					</motion.div>
 
 					<div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] rotate-[-3deg] isolate z-30">
-						<div className="absolute inset-0 z-0 mask-[url(/sleeve.webp)] mask-center mask-no-repeat mask-size-[100%_100%]">
+						<div className="absolute inset-0 z-0 mask-[url(/sleeve.webp)] mask-center mask-no-repeat mask-size-[100%_100%] brightness-110 contrast-110">
 							<img
 								src={albumArt}
 								alt=""

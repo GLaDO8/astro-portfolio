@@ -10,54 +10,73 @@ import HeroGoogleFontSwapWidget from "@/dev/HeroGoogleFontSwapWidget";
 import Page from "@/layouts/Page.astro";
 import { getSongData } from "@/lib/widgetConfig";
 
-const homeTextColumn = "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
+const homeTextColumn =
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
 const homeWidgetColumn =
-	"col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const homeWorkColumn = "col-span-full";
 const songData = await getSongData();
-const homeStudyOrder = ["labelling", "hot-text", "one-more-whistle"];
+const homeStudyOrder = [
+    "wayground-creation",
+    "labelling",
+    "hot-text",
+    "one-more-whistle",
+];
 const studies = (await getCollection("caseStudies"))
-	.filter((study) => homeStudyOrder.includes(study.id))
-	.sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
+    .filter((study) => homeStudyOrder.includes(study.id))
+    .sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
 const enableHeroFontSwap = import.meta.env.DEV;
 const homeDescriptionLinkClass =
-	"font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
+    "font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
 const workImages = {
-	"hot-text": {
-		src: hotTextImage,
-		alt: "Highlighted hot text question prototype on a pink background.",
-	},
-	labelling: {
-		src: labelingImage,
-		alt: "Interactive labeling question prototype over a heart diagram.",
-	},
-	"one-more-whistle": {
-		src: whistleImage,
-		alt: "Whistl pressure cooker whistle counter app screen.",
-	},
+    "hot-text": {
+        src: hotTextImage,
+        alt: "Highlighted hot text question prototype on a pink background.",
+    },
+    labelling: {
+        src: labelingImage,
+        alt: "Interactive labeling question prototype over a heart diagram.",
+    },
+    "one-more-whistle": {
+        src: whistleImage,
+        alt: "Whistl pressure cooker whistle counter app screen.",
+    },
+} as const;
+const workTitles = {
+    "wayground-creation": "Rethinking how teachers create resources",
+} as const;
+const workRotations = {
+    "wayground-creation": "-rotate-6",
+    labelling: "-rotate-5",
+    "hot-text": "rotate-1",
+    "one-more-whistle": "-rotate-6",
+} as const;
+const workReleaseYears = {
+    labelling: 2025,
+    "hot-text": 2024,
 } as const;
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [
-		{
-			"@type": "WebSite",
-			"@id": "https://shrey.fyi/#website",
-			url: "https://shrey.fyi",
-			name: "Shreyas Gupta",
-			description:
-				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-			publisher: { "@id": "https://shrey.fyi/#person" },
-		},
-		{
-			"@type": "Person",
-			"@id": "https://shrey.fyi/#person",
-			name: "Shreyas Gupta",
-			url: "https://shrey.fyi",
-			jobTitle: "Designer",
-			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-		},
-	],
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://shrey.fyi/#website",
+            url: "https://shrey.fyi",
+            name: "Shreyas Gupta",
+            description:
+                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+            publisher: { "@id": "https://shrey.fyi/#person" },
+        },
+        {
+            "@type": "Person",
+            "@id": "https://shrey.fyi/#person",
+            name: "Shreyas Gupta",
+            url: "https://shrey.fyi",
+            jobTitle: "Designer",
+            sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+        },
+    ],
 };
 ---
 
@@ -80,22 +99,20 @@ const jsonLd = {
             class="text-pretty font-sans text-lg leading-[1.7] font-medium tracking-[-0.02em] text-primary md:text-xl md:px-16 pt-8"
         >
             <p class="text-pretty">
-                I’ve spent the last 5 years working on and beyond the visible interface of
-                products across domains like ed-tech, data and enterprise sales.
-            </p>
-            <br />
-            <p class="text-pretty">
                 I embody the idea that you can learn anything in due time and operate as a
-                high-functioning generalist. Currently rabbitholing Mycology, emergent
-                systems, D2C and CAD modeling.
+                high-functioning generalist. Currently rabbitholing mycology, emergent
+                systems, CAD modeling and jazz.
             </p>
             <br />
+
             <p class="text-pretty">
-                Previously Sr. Product Designer at <a
+                I've worked on and beyond the visible interface of products across domains
+                like ed-tech, data and enterprise sales. Previously Sr. Product Designer
+                at <a
                     href="https://wayground.com/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class={homeDescriptionLinkClass}>Wayground/Quizizz</a
+                    class={homeDescriptionLinkClass}>Wayground</a
                 >, where I worked on AI creator tools for teachers. Before that, I built a
                 context-aware SQL editor at
                 <a
@@ -108,53 +125,86 @@ const jsonLd = {
                     target="_blank"
                     rel="noopener noreferrer"
                     class={homeDescriptionLinkClass}>here</a
-                >. Open for client work, shoot a <a
-                    href="https://x.com/wutamelonshrey"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class={homeDescriptionLinkClass}>DM</a
-                > or send an <a
-                    href="mailto:gshreyas@icloud.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class={homeDescriptionLinkClass}>email</a
-                >.
+                >
             </p>
         </div>
     </div>
 
     <section
-        class:list={[homeWorkColumn, "min-w-0 pt-12"]}
+        class:list={[homeTextColumn, "min-w-0 pt-10 md:px-16"]}
         aria-labelledby="work-heading"
     >
-        <h2 id="work-heading" class="sr-only">Work</h2>
+        <h2
+            id="work-heading"
+            class="font-sans text-base leading-none font-semibold tracking-[-0.03em] text-secondary md:text-lg"
+        >
+            Select projects
+        </h2>
 
-        <div class="grid grid-cols-1 gap-x-7 gap-y-10 md:grid-cols-3">
+        <div class="mt-6 flex flex-col gap-5 md:gap-6">
             {
                 studies.map((study) => {
                     const image = workImages[study.id as keyof typeof workImages];
+                    const title =
+                        workTitles[study.id as keyof typeof workTitles] ??
+                        study.data.title;
+                    const rotation =
+                        workRotations[study.id as keyof typeof workRotations] ??
+                        "-rotate-3";
+                    const year =
+                        workReleaseYears[study.id as keyof typeof workReleaseYears] ??
+                        study.data.date.getFullYear();
 
                     return (
                         <a
                             href={`/work/${study.id}`}
-                            class="group block min-w-0 text-primary no-underline transition-transform duration-200 hover:-translate-y-1"
+                            class="group grid min-w-0 grid-cols-[4.75rem_minmax(0,1fr)_1.25rem] items-center gap-4 text-primary no-underline md:grid-cols-[5.25rem_minmax(0,1fr)_1.5rem] md:gap-5"
                         >
-                            {image && (
-                                <Image
-                                    src={image.src}
-                                    alt={image.alt}
-                                    widths={[420, 640, 840, 1200]}
-                                    sizes="(min-width: 768px) 28vw, 92vw"
-                                    class="block h-auto w-full"
-                                />
-                            )}
+                            <div
+                                class:list={[
+                                    "relative aspect-[1.45] w-full bg-white p-1  transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:rotate-0",
+                                    rotation,
+                                ]}
+                            >
+                                {image ? (
+                                    <Image
+                                        src={image.src}
+                                        alt={image.alt}
+                                        widths={[140, 220, 320]}
+                                        sizes="(min-width: 768px) 5.25rem, 4.75rem"
+                                        class="h-full w-full object-cover"
+                                    />
+                                ) : (
+                                    <div
+                                        aria-hidden="true"
+                                        class="flex h-full w-full items-center justify-center bg-tertiary/35 text-3xl font-black tracking-[-0.08em] text-black md:text-4xl"
+                                    >
+                                        !
+                                    </div>
+                                )}
+                            </div>
 
-                            <p class="mt-4 font-sans text-base leading-none font-semibold text-secondary">
-                                {study.data.projectType}
-                            </p>
-                            <h3 class="mt-2 font-sans text-2xl leading-[1.05] font-bold tracking-[-0.04em] text-balance text-primary">
-                                {study.data.title}
-                            </h3>
+                            <div class="min-w-0">
+                                <h3 class="text-balance font-sans text-base leading-[1.12] font-semibold tracking-[-0.03em] text-primary md:text-lg">
+                                    {title}
+                                </h3>
+                                <p class="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 font-sans text-sm leading-none font-medium tracking-[-0.03em] text-secondary md:text-base">
+                                    <span>{study.data.projectType ?? "Wayground"}</span>
+                                    <span>{year}</span>
+                                </p>
+                            </div>
+
+                            <span
+                                aria-hidden="true"
+                                class="justify-self-end transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                            >
+                                <img
+                                    src="/arrow-up-right.svg"
+                                    alt=""
+                                    class="size-4"
+                                    loading="lazy"
+                                />
+                            </span>
                         </a>
                     );
                 })
