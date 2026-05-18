@@ -462,7 +462,11 @@ export default function MusicWidget({ songData }: Props) {
 	};
 
 	return (
-		<div className="relative h-48 w-48 shrink-0">
+		<motion.div
+			className="relative h-48 w-48 shrink-0 origin-center"
+			whileHover={shouldReduceMotion ? undefined : { rotate: -6, scale: 1.1 }}
+			transition={{ type: "spring", visualDuration: 0.22, bounce: 0.35 }}
+		>
 			{canPlayPreview ? (
 				// biome-ignore lint/a11y/useMediaCaption: Music preview has no spoken dialogue.
 				<audio ref={audioRef} src={previewUrl} preload="none">
@@ -646,6 +650,6 @@ export default function MusicWidget({ songData }: Props) {
 					shouldReduceMotion={shouldReduceMotion}
 				/>
 			) : null}
-		</div>
+		</motion.div>
 	);
 }
