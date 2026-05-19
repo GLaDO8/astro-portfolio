@@ -4,15 +4,44 @@ import { Fragment, useCallback, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import shuffled from "@/lib/fisher-shuffle";
 
-const descriptions = [
-	"Shreyas is a design engineer and a serial hobbyist.",
-	"Shreyas is a professional kitty psspss-er with a 3D printer.",
-	"Shreyas writes poetry with his Fujifilm and has five tattoos.",
-	"Shreyas collects vinyls & builds mechanical keyboards.",
-	"Shreyas keeps a tiny home server and shares rent with two cats.",
-	"Shreyas calls himself an audiophile but uses Airpods.",
-	"Shreyas doesn't like drinking but steals coasters from bars.",
-	"Shreyas loves monospace fonts but you won't find any here.",
+type Description = {
+	text: string;
+	mobileText: string;
+};
+
+const descriptions: Description[] = [
+	{
+		text: "Shreyas is a design engineer and a serial hobbyist.",
+		mobileText: "Shreyas is a design\nengineer and a serial\nhobbyist.",
+	},
+	{
+		text: "Shreyas is a professional kitty psspss-er with a 3D printer.",
+		mobileText: "Shreyas is a professional\nkitty psspss-er with\na 3D printer.",
+	},
+	{
+		text: "Shreyas writes poetry with his Fujifilm and has five tattoos.",
+		mobileText: "Shreyas writes poetry\nwith his Fujifilm\nand has five tattoos.",
+	},
+	{
+		text: "Shreyas collects vinyls & builds mechanical keyboards.",
+		mobileText: "Shreyas collects vinyls\n& builds mechanical\nkeyboards.",
+	},
+	{
+		text: "Shreyas keeps a tiny home server and shares rent with two cats.",
+		mobileText: "Shreyas keeps a tiny\nhome server and shares\nrent with two cats.",
+	},
+	{
+		text: "Shreyas calls himself an audiophile but uses Airpods.",
+		mobileText: "Shreyas calls himself\nan audiophile but\nuses Airpods.",
+	},
+	{
+		text: "Shreyas doesn't like drinking but steals coasters from bars.",
+		mobileText: "Shreyas doesn't like\ndrinking but steals\ncoasters from bars.",
+	},
+	{
+		text: "Shreyas loves monospace fonts but you won't find any here.",
+		mobileText: "Shreyas loves monospace\nfonts but you won't\nfind any here.",
+	},
 ];
 
 const STREAM_LETTER_DELAY = 0.007;
@@ -23,17 +52,17 @@ const TIGHT_KERNING_PAIR_CLASSES: Record<string, string> = {
 
 type StreamingTextProps = {
 	text: string;
+	mobileText: string;
 	shouldReduceMotion: boolean;
 };
 
 function getStreamingWords(text: string) {
 	let letterIndex = 0;
-	const words = text.split(" ");
+	const words = text.split(/(\n| )/);
 
-	return words.map((word, wordIndex) => ({
+	return words.map((word) => ({
 		word,
 		key: `${word}-${letterIndex}`,
-		hasTrailingSpace: wordIndex < words.length - 1,
 		letters: Array.from(word).map((letter, index, letters) => {
 			const pair = `${letters[index - 1] ?? ""}${letter}`.toLowerCase();
 
@@ -47,35 +76,89 @@ function getStreamingWords(text: string) {
 	}));
 }
 
-function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
+function renderReducedMotionText(text: string) {
+	return text.split("\n").map((line, index, lines) => (
+		<Fragment key={lines.slice(0, index + 1).join("\n")}>
+			{line}
+			{index < lines.length - 1 ? <br /> : null}
+		</Fragment>
+	));
+}
+
+function StreamingText({ text, mobileText, shouldReduceMotion }: StreamingTextProps) {
 	if (shouldReduceMotion) {
 		return (
-			<motion.span
-				key={text}
-				className="inline text-primary"
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				exit={{ opacity: 0 }}
-				transition={{ duration: 0.16 }}
-			>
-				{text}
-			</motion.span>
+			<>
+				<motion.span
+					key={`mobile-${mobileText}`}
+					className="inline whitespace-nowrap text-primary md:hidden"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					transition={{ duration: 0.16 }}
+				>
+					{renderReducedMotionText(mobileText)}
+				</motion.span>
+				<motion.span
+					key={`desktop-${text}`}
+					className="hidden text-primary md:inline"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					transition={{ duration: 0.16 }}
+				>
+					{text}
+				</motion.span>
+			</>
 		);
 	}
 
 	const words = getStreamingWords(text);
+	const mobileWords = getStreamingWords(mobileText);
 
 	return (
+		<>
+			<StreamingWords
+				key={`mobile-${mobileText}`}
+				className="inline whitespace-nowrap md:hidden"
+				text={mobileText}
+				words={mobileWords}
+			/>
+			<StreamingWords
+				key={`desktop-${text}`}
+				className="hidden md:inline"
+				text={text}
+				words={words}
+			/>
+		</>
+	);
+}
+
+type StreamingWordsProps = {
+	className: string;
+	text: string;
+	words: ReturnType<typeof getStreamingWords>;
+};
+
+function StreamingWords({ className, text, words }: StreamingWordsProps) {
+	return (
 		<motion.span
-			key={text}
-			className="inline text-primary"
-			aria-label={text}
+			className={cn("text-primary", className)}
+			aria-label={text.replace(/\n/g, " ")}
 			exit={{ opacity: 0, y: -4 }}
 			transition={{ duration: 0.08, ease: "easeOut" }}
 		>
-			{words.map(({ key, hasTrailingSpace, letters }) => (
-				<Fragment key={key}>
-					<span aria-hidden="true" className="inline-block whitespace-nowrap">
+			{words.map(({ word, key, letters }) => {
+				if (word === "\n") {
+					return <br key={key} aria-hidden="true" />;
+				}
+
+				if (word === " ") {
+					return " ";
+				}
+
+				return (
+					<span key={key} aria-hidden="true" className="inline-block whitespace-nowrap">
 						{letters.map(({ key: letterKey, letter, delay, kerningClassName }) => (
 							<motion.span
 								key={letterKey}
@@ -92,45 +175,49 @@ function StreamingText({ text, shouldReduceMotion }: StreamingTextProps) {
 							</motion.span>
 						))}
 					</span>
-					{hasTrailingSpace ? " " : null}
-				</Fragment>
-			))}
+				);
+			})}
 		</motion.span>
 	);
 }
 
 export default function HeroSection() {
 	const shouldReduceMotion = useReducedMotion();
-	const bagRef = useRef<string[]>([]);
+	const bagRef = useRef<Description[]>([]);
 	const playButtonClickSound = useSound({
 		source: { type: "sine", frequency: 1200 },
 		envelope: { decay: 0.03 },
 		gain: 0.3,
 	});
-	const [text, setText] = useState(descriptions[0]);
+	const [description, setDescription] = useState(descriptions[0]);
 
 	const cycle = useCallback(() => {
 		playButtonClickSound();
 
 		if (bagRef.current.length === 0) {
-			bagRef.current = shuffled(descriptions.filter((description) => description !== text));
+			bagRef.current = shuffled(descriptions.filter((item) => item.text !== description.text));
 		}
 
-		const nextText = bagRef.current.pop();
-		if (nextText) {
-			setText(nextText);
+		const nextDescription = bagRef.current.pop();
+		if (nextDescription) {
+			setDescription(nextDescription);
 		}
-	}, [playButtonClickSound, text]);
+	}, [playButtonClickSound, description.text]);
 
 	return (
 		<section className="flex w-full flex-col items-center gap-6 text-center">
 			<h1
 				data-hero-rotating-text
-				className="m-0 box-border w-screen max-w-6xl px-4 text-pretty text-center font-sans text-3xl leading-[1.35] font-bold tracking-[-0.02em] text-primary uppercase [word-spacing:0.08em] md:text-5xl md:leading-[1.25] xl:text-6xl"
+				className="m-0 box-border h-[3.9em] w-screen overflow-hidden text-center font-sans text-hero-mobile leading-[1.3] font-bold tracking-[-0.02em] text-primary uppercase md:h-auto md:max-w-6xl md:px-4 md:text-5xl md:leading-[1.25] md:[word-spacing:0.08em] xl:text-6xl"
 			>
 				{/* initial={false} skips animation on the first render */}
 				<AnimatePresence mode="wait" initial={false}>
-					<StreamingText key={text} text={text} shouldReduceMotion={Boolean(shouldReduceMotion)} />
+					<StreamingText
+						key={description.text}
+						text={description.text}
+						mobileText={description.mobileText}
+						shouldReduceMotion={Boolean(shouldReduceMotion)}
+					/>
 				</AnimatePresence>
 			</h1>
 

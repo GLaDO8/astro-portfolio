@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-
 /*@layer base is for global defaults*/
 @layer base {
 	html {
@@ -24,6 +23,9 @@
 
 	/* Radius */
 	--radius-md: 1.5rem;
+
+	/* Typography */
+	--text-hero-mobile: 1.375rem;
 }
 
 /*@theme inline says tailwind to inline the css variable directly, used for when values are another set of css variables*/
