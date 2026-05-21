@@ -1,9 +1,5 @@
 ---
-import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import hotTextImage from "@/assets/work/hottext.png";
-import labelingImage from "@/assets/work/labeling.png";
-import whistleImage from "@/assets/work/whistl.png";
 import HeroSection from "@/components/HeroSection";
 import HomeWidgetStrip from "@/components/widgets/HomeWidgetStrip.astro";
 import HeroGoogleFontSwapWidget from "@/dev/HeroGoogleFontSwapWidget";
@@ -14,7 +10,6 @@ const homeTextColumn =
     "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
 const homeWidgetColumn =
     "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
-const homeWorkColumn = "col-span-full";
 const songData = await getSongData();
 const homeStudyOrder = [
     "wayground-creation",
@@ -25,31 +20,14 @@ const homeStudyOrder = [
 const studies = (await getCollection("caseStudies"))
     .filter((study) => homeStudyOrder.includes(study.id))
     .sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
+const writings = (await getCollection("notes", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
 const enableHeroFontSwap = import.meta.env.DEV;
 const homeDescriptionLinkClass =
     "font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
-const workImages = {
-    "hot-text": {
-        src: hotTextImage,
-        alt: "Highlighted hot text question prototype on a pink background.",
-    },
-    labelling: {
-        src: labelingImage,
-        alt: "Interactive labeling question prototype over a heart diagram.",
-    },
-    "one-more-whistle": {
-        src: whistleImage,
-        alt: "Whistl pressure cooker whistle counter app screen.",
-    },
-} as const;
 const workTitles = {
     "wayground-creation": "Rethinking how teachers create resources",
-} as const;
-const workRotations = {
-    "wayground-creation": "-rotate-6",
-    labelling: "-rotate-5",
-    "hot-text": "rotate-1",
-    "one-more-whistle": "-rotate-6",
 } as const;
 const workReleaseYears = {
     labelling: 2025,
@@ -136,21 +114,17 @@ const jsonLd = {
     >
         <h2
             id="work-heading"
-            class="font-sans text-base leading-none font-semibold tracking-[-0.03em] text-secondary md:text-lg"
+            class="font-sans text-base leading-none font-medium tracking-[-0.03em] text-secondary md:text-lg"
         >
             Select projects
         </h2>
 
-        <div class="mt-6 flex flex-col gap-5 md:gap-6">
+        <div class="mt-6 flex flex-col gap-5">
             {
                 studies.map((study) => {
-                    const image = workImages[study.id as keyof typeof workImages];
                     const title =
                         workTitles[study.id as keyof typeof workTitles] ??
                         study.data.title;
-                    const rotation =
-                        workRotations[study.id as keyof typeof workRotations] ??
-                        "-rotate-3";
                     const year =
                         workReleaseYears[study.id as keyof typeof workReleaseYears] ??
                         study.data.date.getFullYear();
@@ -158,53 +132,58 @@ const jsonLd = {
                     return (
                         <a
                             href={`/work/${study.id}`}
-                            class="group grid min-w-0 grid-cols-[4.75rem_minmax(0,1fr)_1.25rem] items-center gap-4 text-primary no-underline md:grid-cols-[5.25rem_minmax(0,1fr)_1.5rem] md:gap-5"
+                            class="group flex min-w-0 items-baseline justify-between gap-4 text-primary no-underline"
                         >
-                            <div
-                                class:list={[
-                                    "relative aspect-[1.45] w-full bg-white p-1  transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:rotate-0",
-                                    rotation,
-                                ]}
-                            >
-                                {image ? (
-                                    <Image
-                                        src={image.src}
-                                        alt={image.alt}
-                                        widths={[140, 220, 320]}
-                                        sizes="(min-width: 768px) 5.25rem, 4.75rem"
-                                        class="h-full w-full object-cover"
-                                    />
-                                ) : (
-                                    <div
-                                        aria-hidden="true"
-                                        class="flex h-full w-full items-center justify-center bg-tertiary/35 text-3xl font-black tracking-[-0.08em] text-black md:text-4xl"
-                                    >
-                                        !
-                                    </div>
-                                )}
-                            </div>
-
-                            <div class="min-w-0">
-                                <h3 class="text-balance font-sans text-base leading-[1.12] font-semibold tracking-[-0.03em] text-primary md:text-lg">
+                            <h3 class="min-w-0 text-balance font-sans text-base leading-[1.12] font-medium tracking-[-0.03em] text-primary md:text-lg">
+                                <span class="-mb-1 inline-block pb-1 bg-[linear-gradient(currentColor,currentColor)] bg-left-bottom bg-no-repeat bg-[length:0%_2px] transition-[background-size] duration-300 group-hover:bg-[length:100%_2px]">
                                     {title}
-                                </h3>
-                                <p class="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 font-sans text-sm leading-none font-medium tracking-[-0.03em] text-secondary md:text-base">
-                                    <span>{study.data.projectType ?? "Wayground"}</span>
-                                    <span>{year}</span>
-                                </p>
-                            </div>
-
-                            <span
-                                aria-hidden="true"
-                                class="justify-self-end transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                </span>
+                            </h3>
+                            <time
+                                datetime={String(year)}
+                                class="shrink-0 font-sans text-sm leading-none font-medium tracking-[-0.03em] text-secondary md:text-base"
                             >
-                                <img
-                                    src="/arrow-up-right.svg"
-                                    alt=""
-                                    class="size-4"
-                                    loading="lazy"
-                                />
-                            </span>
+                                {year}
+                            </time>
+                        </a>
+                    );
+                })
+            }
+        </div>
+    </section>
+
+    <section
+        class:list={[homeTextColumn, "min-w-0 pt-4 md:px-16"]}
+        aria-labelledby="writings-heading"
+    >
+        <h2
+            id="writings-heading"
+            class="font-sans text-base leading-none font-medium tracking-[-0.03em] text-secondary md:text-lg"
+        >
+            Writings
+        </h2>
+
+        <div class="mt-6 flex flex-col gap-5">
+            {
+                writings.map((writing) => {
+                    const year = writing.data.date.getUTCFullYear();
+
+                    return (
+                        <a
+                            href={`/writings/${writing.id}`}
+                            class="group flex min-w-0 items-baseline justify-between gap-4 text-primary no-underline"
+                        >
+                            <h3 class="min-w-0 text-balance font-sans text-base leading-[1.12] font-medium tracking-[-0.03em] text-primary md:text-lg">
+                                <span class="-mb-1 inline-block pb-1 bg-[linear-gradient(currentColor,currentColor)] bg-left-bottom bg-no-repeat bg-[length:0%_2px] transition-[background-size] duration-300 group-hover:bg-[length:100%_2px]">
+                                    {writing.data.title}
+                                </span>
+                            </h3>
+                            <time
+                                datetime={String(year)}
+                                class="shrink-0 font-sans text-sm leading-none font-medium tracking-[-0.03em] text-secondary md:text-base"
+                            >
+                                {year}
+                            </time>
                         </a>
                     );
                 })

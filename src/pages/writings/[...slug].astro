@@ -5,18 +5,18 @@ import Page from "@/layouts/Page.astro";
 import { hasCodeFence } from "@/lib/markdocContent";
 
 export async function getStaticPaths() {
-	const notes = await getCollection("notes", ({ data }) => !data.draft);
-	return notes.map((note) => ({
-		params: { slug: note.id },
-		props: { note },
+	const writings = await getCollection("notes", ({ data }) => !data.draft);
+	return writings.map((writing) => ({
+		params: { slug: writing.id },
+		props: { writing },
 	}));
 }
 
-const { note } = Astro.props;
-const { Content } = await render(note);
-const publishedDate = note.data.date.toISOString();
+const { writing } = Astro.props;
+const { Content } = await render(writing);
+const publishedDate = writing.data.date.toISOString();
 const publishedDay = publishedDate.slice(0, 10);
-const readableDate = note.data.date.toLocaleDateString("en-US", {
+const readableDate = writing.data.date.toLocaleDateString("en-US", {
 	year: "numeric",
 	month: "long",
 	day: "numeric",
@@ -26,8 +26,8 @@ const readableDate = note.data.date.toLocaleDateString("en-US", {
 const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "Article",
-	headline: note.data.title,
-	description: note.data.description,
+	headline: writing.data.title,
+	description: writing.data.description,
 	datePublished: publishedDate,
 	author: {
 		"@type": "Person",
@@ -39,17 +39,17 @@ const jsonLd = {
 		"@id": "https://shrey.fyi/#person",
 		name: "Shreyas Gupta",
 	},
-	url: `https://shrey.fyi/notes/${note.id}`,
+	url: `https://shrey.fyi/writings/${writing.id}`,
 };
 ---
 
 <Page
-    title={`${note.data.title} — Shreyas Gupta`}
-    description={note.data.description}
+    title={`${writing.data.title} — Shreyas Gupta`}
+    description={writing.data.description}
     bodyClass="bg-white"
     class="bg-white"
     navBlurBackground="white"
-    preloadCodeFont={hasCodeFence(note.body)}
+    preloadCodeFont={hasCodeFence(writing.body)}
     seo={{
         ogType: "article",
         article: {
@@ -67,7 +67,7 @@ const jsonLd = {
     <h1
         class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.15] tracking-[-0.02em] text-primary mb-16 text-center text-balance md:text-5xl md:leading-[1.1] lg:text-6xl"
     >
-        {note.data.title}
+        {writing.data.title}
     </h1>
 
     <article

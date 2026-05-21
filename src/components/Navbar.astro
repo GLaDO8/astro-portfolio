@@ -1,6 +1,5 @@
 ---
 import { cn } from "@/lib/cn";
-import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
 
 interface Props {
 	currentPath?: string;
@@ -8,15 +7,9 @@ interface Props {
 	blurBackground?: string;
 }
 
-const {
-	currentPath = Astro.url.pathname,
-	class: className,
-	blurBackground = "var(--color-beige)",
-} = Astro.props;
+const { class: className, blurBackground = "var(--color-beige)" } = Astro.props;
 const shellClass = cn("sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className);
 const blurBackgroundStyle = `--navbar-blur-background: ${blurBackground}`;
-
-const links = [{ href: "/notes", label: "notes" }];
 
 const subdomainLinks = [
 	{
@@ -26,9 +19,6 @@ const subdomainLinks = [
 		iconHref: "https://co2.shrey.fyi/favicon.ico",
 	},
 ];
-
-const activeLinkClass = "text-primary font-semibold";
-const inactiveLinkClass = "text-primary/70 hover:text-primary";
 ---
 
 <!-- progressive blur -->
@@ -43,7 +33,7 @@ const inactiveLinkClass = "text-primary/70 hover:text-primary";
 <div class={shellClass} data-navbar-shell>
     <div transition:persist transition:name="site-navbar">
         <nav
-            class="mx-auto flex w-full max-w-[39.25rem] items-center justify-between px-4 font-sans text-sm tracking-[-0.01em] md:px-0 md:text-lg pt-4"
+            class="mx-auto flex w-full max-w-[39.25rem] items-center px-4 font-sans text-sm tracking-[-0.01em] md:px-0 md:text-lg pt-4"
             aria-label="Primary navigation"
             data-navbar
         >
@@ -124,37 +114,11 @@ const inactiveLinkClass = "text-primary/70 hover:text-primary";
                     </ul>
                 </div>
             </div>
-
-            <div class="flex items-center gap-4 font-medium md:gap-6">
-                {
-                    links.map(({ href, label }) => {
-                        const isActive = isNavbarLinkActive(href, currentPath);
-                        return (
-                            <a
-                                href={href}
-                                class:list={[
-                                    "rounded-full py-1 transition-colors duration-200",
-                                    isActive ? activeLinkClass : inactiveLinkClass,
-                                ]}
-                                aria-current={isActive ? "page" : undefined}
-                                data-navbar-link
-                            >
-                                {label}
-                            </a>
-                        );
-                    })
-                }
-            </div>
         </nav>
     </div>
 </div>
 
 <script>
-    import { isNavbarLinkActive } from "@/lib/navbar-active-path.js";
-
-    const activeClasses = ["text-primary", "font-semibold"];
-    const inactiveClasses = ["text-primary/70", "hover:text-primary"];
-
     const getNavbar = () => document.querySelector<HTMLElement>("[data-navbar]");
 
     const getNavbarMenuElements = (navbar: HTMLElement) => ({
@@ -173,28 +137,6 @@ const inactiveLinkClass = "text-primary/70 hover:text-primary";
         button.setAttribute("aria-expanded", String(isOpen));
         menu.hidden = !isOpen;
         icon?.classList.toggle("rotate-180", isOpen);
-    };
-
-    const setLinkActiveState = (link: HTMLElement, isCurrent: boolean) => {
-        if (isCurrent) {
-            link.setAttribute("aria-current", "page");
-        } else {
-            link.removeAttribute("aria-current");
-        }
-
-        for (const className of activeClasses) {
-            link.classList.toggle(className, isCurrent);
-        }
-
-        for (const className of inactiveClasses) {
-            link.classList.toggle(className, !isCurrent);
-        }
-    };
-
-    const setActiveLink = (links: HTMLElement[], activeLink?: HTMLElement) => {
-        for (const currentLink of links) {
-            setLinkActiveState(currentLink, currentLink === activeLink);
-        }
     };
 
     const bindNavbarDocumentListeners = () => {
@@ -238,35 +180,10 @@ const inactiveLinkClass = "text-primary/70 hover:text-primary";
         });
     };
 
-    const syncNavbar = (pathname = window.location.pathname) => {
-        const navbar = getNavbar();
-        const links = navbar
-            ? Array.from(navbar.querySelectorAll<HTMLElement>("[data-navbar-link]"))
-            : [];
-
-        if (!navbar || links.length === 0) {
-            return;
-        }
-
-        const activeLink = links.find((link) =>
-            isNavbarLinkActive(link.getAttribute("href") ?? "", pathname),
-        );
-
-        setActiveLink(links, activeLink);
-    };
-
     const bindNavbar = () => {
         const navbar = getNavbar();
 
         if (!navbar || navbar.dataset.navbarBound === "true") {
-            return;
-        }
-
-        const links = Array.from(
-            navbar.querySelectorAll<HTMLElement>("[data-navbar-link]"),
-        );
-
-        if (links.length === 0) {
             return;
         }
 
@@ -289,40 +206,10 @@ const inactiveLinkClass = "text-primary/70 hover:text-primary";
             }
         });
 
-        for (const link of links) {
-            link.addEventListener("click", (event) => {
-                if (
-                    event.defaultPrevented ||
-                    event.button !== 0 ||
-                    event.metaKey ||
-                    event.ctrlKey ||
-                    event.shiftKey ||
-                    event.altKey
-                ) {
-                    return;
-                }
-
-                const href = link.getAttribute("href");
-
-                if (!href || href.startsWith("#") || link.target === "_blank") {
-                    return;
-                }
-
-                const nextUrl = new URL(href, window.location.href);
-
-                if (nextUrl.origin !== window.location.origin) {
-                    return;
-                }
-
-                setActiveLink(links, link);
-                setSubdomainMenuOpen(navbar, false);
-            });
-        }
     };
 
     const initNavbar = () => {
         bindNavbar();
-        syncNavbar();
     };
 
     document.addEventListener("astro:page-load", initNavbar);

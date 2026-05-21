@@ -9,8 +9,8 @@ test("work routes keep the Work tab active", () => {
 	assert.equal(isNavbarLinkActive("/", "/work/wayground-creation"), false);
 });
 
-test("notes routes keep the Notes tab active", () => {
-	assert.equal(isNavbarLinkActive("/notes", "/notes"), true);
-	assert.equal(isNavbarLinkActive("/notes", "/notes/field-notes"), true);
-	assert.equal(isNavbarLinkActive("/work", "/notes/field-notes"), false);
+test("writings routes keep the Writings tab active", () => {
+	assert.equal(isNavbarLinkActive("/writings", "/writings"), true);
+	assert.equal(isNavbarLinkActive("/writings", "/writings/field-notes"), true);
+	assert.equal(isNavbarLinkActive("/work", "/writings/field-notes"), false);
 });
