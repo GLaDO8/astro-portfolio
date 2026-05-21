@@ -10,67 +10,73 @@ import HeroGoogleFontSwapWidget from "@/dev/HeroGoogleFontSwapWidget";
 import Page from "@/layouts/Page.astro";
 import { getSongData } from "@/lib/widgetConfig";
 
-const homeTextColumn = "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
+const homeTextColumn =
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
 const homeWidgetColumn =
-	"col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const homeWorkColumn = "col-span-full";
 const songData = await getSongData();
-const homeStudyOrder = ["wayground-creation", "labelling", "hot-text", "one-more-whistle"];
+const homeStudyOrder = [
+    "wayground-creation",
+    "labelling",
+    "hot-text",
+    "one-more-whistle",
+];
 const studies = (await getCollection("caseStudies"))
-	.filter((study) => homeStudyOrder.includes(study.id))
-	.sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
+    .filter((study) => homeStudyOrder.includes(study.id))
+    .sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
 const enableHeroFontSwap = import.meta.env.DEV;
 const homeDescriptionLinkClass =
-	"font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
+    "font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
 const workImages = {
-	"hot-text": {
-		src: hotTextImage,
-		alt: "Highlighted hot text question prototype on a pink background.",
-	},
-	labelling: {
-		src: labelingImage,
-		alt: "Interactive labeling question prototype over a heart diagram.",
-	},
-	"one-more-whistle": {
-		src: whistleImage,
-		alt: "Whistl pressure cooker whistle counter app screen.",
-	},
+    "hot-text": {
+        src: hotTextImage,
+        alt: "Highlighted hot text question prototype on a pink background.",
+    },
+    labelling: {
+        src: labelingImage,
+        alt: "Interactive labeling question prototype over a heart diagram.",
+    },
+    "one-more-whistle": {
+        src: whistleImage,
+        alt: "Whistl pressure cooker whistle counter app screen.",
+    },
 } as const;
 const workTitles = {
-	"wayground-creation": "Rethinking how teachers create resources",
+    "wayground-creation": "Rethinking how teachers create resources",
 } as const;
 const workRotations = {
-	"wayground-creation": "-rotate-6",
-	labelling: "-rotate-5",
-	"hot-text": "rotate-1",
-	"one-more-whistle": "-rotate-6",
+    "wayground-creation": "-rotate-6",
+    labelling: "-rotate-5",
+    "hot-text": "rotate-1",
+    "one-more-whistle": "-rotate-6",
 } as const;
 const workReleaseYears = {
-	labelling: 2025,
-	"hot-text": 2024,
+    labelling: 2025,
+    "hot-text": 2024,
 } as const;
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [
-		{
-			"@type": "WebSite",
-			"@id": "https://shrey.fyi/#website",
-			url: "https://shrey.fyi",
-			name: "Shreyas Gupta",
-			description:
-				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-			publisher: { "@id": "https://shrey.fyi/#person" },
-		},
-		{
-			"@type": "Person",
-			"@id": "https://shrey.fyi/#person",
-			name: "Shreyas Gupta",
-			url: "https://shrey.fyi",
-			jobTitle: "Designer",
-			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-		},
-	],
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://shrey.fyi/#website",
+            url: "https://shrey.fyi",
+            name: "Shreyas Gupta",
+            description:
+                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+            publisher: { "@id": "https://shrey.fyi/#person" },
+        },
+        {
+            "@type": "Person",
+            "@id": "https://shrey.fyi/#person",
+            name: "Shreyas Gupta",
+            url: "https://shrey.fyi",
+            jobTitle: "Designer",
+            sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+        },
+    ],
 };
 ---
 
@@ -119,7 +125,7 @@ const jsonLd = {
                     target="_blank"
                     rel="noopener noreferrer"
                     class={homeDescriptionLinkClass}>here</a
-                >
+                >.
             </p>
         </div>
     </div>
