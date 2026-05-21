@@ -30,6 +30,7 @@ const caseStudies = defineCollection({
 		theme: z.string().optional(),
 		heroImage: z.string().optional(),
 		heroImageAlt: z.string().optional(),
+		draft: z.boolean().default(false),
 	}),
 });
 

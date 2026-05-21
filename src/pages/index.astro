@@ -6,55 +6,49 @@ import HeroGoogleFontSwapWidget from "@/dev/HeroGoogleFontSwapWidget";
 import Page from "@/layouts/Page.astro";
 import { getSongData } from "@/lib/widgetConfig";
 
-const homeTextColumn =
-    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
+const homeTextColumn = "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
 const homeWidgetColumn =
-    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
+	"col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const songData = await getSongData();
-const homeStudyOrder = [
-    "wayground-creation",
-    "labelling",
-    "hot-text",
-    "one-more-whistle",
-];
-const studies = (await getCollection("caseStudies"))
-    .filter((study) => homeStudyOrder.includes(study.id))
-    .sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
+const homeStudyOrder = ["wayground-creation", "labelling", "hot-text", "one-more-whistle"];
+const studies = (await getCollection("caseStudies", ({ data }) => !data.draft))
+	.filter((study) => homeStudyOrder.includes(study.id))
+	.sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
 const writings = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 const enableHeroFontSwap = import.meta.env.DEV;
 const homeDescriptionLinkClass =
-    "font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
+	"font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
 const workTitles = {
-    "wayground-creation": "Rethinking how teachers create resources",
+	"wayground-creation": "Rethinking how teachers create resources",
 } as const;
 const workReleaseYears = {
-    labelling: 2025,
-    "hot-text": 2024,
+	labelling: 2025,
+	"hot-text": 2024,
 } as const;
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-        {
-            "@type": "WebSite",
-            "@id": "https://shrey.fyi/#website",
-            url: "https://shrey.fyi",
-            name: "Shreyas Gupta",
-            description:
-                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-            publisher: { "@id": "https://shrey.fyi/#person" },
-        },
-        {
-            "@type": "Person",
-            "@id": "https://shrey.fyi/#person",
-            name: "Shreyas Gupta",
-            url: "https://shrey.fyi",
-            jobTitle: "Designer",
-            sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-        },
-    ],
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebSite",
+			"@id": "https://shrey.fyi/#website",
+			url: "https://shrey.fyi",
+			name: "Shreyas Gupta",
+			description:
+				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+			publisher: { "@id": "https://shrey.fyi/#person" },
+		},
+		{
+			"@type": "Person",
+			"@id": "https://shrey.fyi/#person",
+			name: "Shreyas Gupta",
+			url: "https://shrey.fyi",
+			jobTitle: "Designer",
+			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+		},
+	],
 };
 ---
 
@@ -132,12 +126,10 @@ const jsonLd = {
                     return (
                         <a
                             href={`/work/${study.id}`}
-                            class="group flex min-w-0 items-baseline justify-between gap-4 text-primary no-underline"
+                            class="group flex min-w-0 flex-col gap-1 text-primary no-underline transition-opacity hover:opacity-75 md:flex-row md:items-baseline md:justify-between md:gap-4"
                         >
                             <h3 class="min-w-0 text-balance font-sans text-base leading-[1.12] font-medium tracking-[-0.03em] text-primary md:text-lg">
-                                <span class="-mb-1 inline-block pb-1 bg-[linear-gradient(currentColor,currentColor)] bg-left-bottom bg-no-repeat bg-[length:0%_2px] transition-[background-size] duration-300 group-hover:bg-[length:100%_2px]">
-                                    {title}
-                                </span>
+                                {title}
                             </h3>
                             <time
                                 datetime={String(year)}
@@ -171,12 +163,10 @@ const jsonLd = {
                     return (
                         <a
                             href={`/writings/${writing.id}`}
-                            class="group flex min-w-0 items-baseline justify-between gap-4 text-primary no-underline"
+                            class="group flex min-w-0 flex-col gap-1 text-primary no-underline transition-opacity hover:opacity-75 md:flex-row md:items-baseline md:justify-between md:gap-4"
                         >
                             <h3 class="min-w-0 text-balance font-sans text-base leading-[1.12] font-medium tracking-[-0.03em] text-primary md:text-lg">
-                                <span class="-mb-1 inline-block pb-1 bg-[linear-gradient(currentColor,currentColor)] bg-left-bottom bg-no-repeat bg-[length:0%_2px] transition-[background-size] duration-300 group-hover:bg-[length:100%_2px]">
-                                    {writing.data.title}
-                                </span>
+                                {writing.data.title}
                             </h3>
                             <time
                                 datetime={String(year)}
