@@ -6,7 +6,7 @@ import SidequestWidget from "./SidequestWidget";
 import SnapsWidget from "./SnapsWidget";
 
 interface Props {
-    songData: SongData;
+	songData: SongData;
 }
 
 const { songData } = Astro.props;
@@ -85,12 +85,34 @@ const { songData } = Astro.props;
 
     const playWidgetHoverSound = defineSound(widgetHoverSound);
     const playWidgetClickSound = defineSound(widgetClickSound);
-    const playSound = (sound: () => unknown) => {
-        ensureReady()
-            .then(() => sound())
+    let isAudioReady = false;
+    let audioReadyPromise: Promise<unknown> | undefined;
+
+    const unlockAudio = () => {
+        audioReadyPromise ??= ensureReady()
+            .then((audio) => {
+                isAudioReady = audio.state === "running";
+                return audio;
+            })
             .catch(() => {
-                // Browsers may still block audio until a trusted user gesture.
+                audioReadyPromise = undefined;
             });
+
+        return audioReadyPromise;
+    };
+
+    const playReadySound = (sound: () => unknown) => {
+        if (!isAudioReady) {
+            return;
+        }
+
+        sound();
+    };
+
+    const playActivatedSound = (sound: () => unknown) => {
+        unlockAudio().then(() => {
+            playReadySound(sound);
+        });
     };
 
     const strip = document.querySelector<HTMLElement>("[data-home-widget-strip]");
@@ -107,8 +129,11 @@ const { songData } = Astro.props;
         },
     );
 
+    document.addEventListener("pointerdown", unlockAudio, { once: true, passive: true });
+    document.addEventListener("keydown", unlockAudio, { once: true });
+
     for (const widget of widgets) {
-        widget.addEventListener("pointerenter", () => playSound(playWidgetHoverSound));
+        widget.addEventListener("pointerenter", () => playReadySound(playWidgetHoverSound));
     }
 
     const linkedWidgets =
@@ -116,6 +141,6 @@ const { songData } = Astro.props;
         [];
 
     for (const link of linkedWidgets) {
-        link.addEventListener("pointerdown", () => playSound(playWidgetClickSound));
+        link.addEventListener("pointerdown", () => playActivatedSound(playWidgetClickSound));
     }
 </script>
