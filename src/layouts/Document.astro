@@ -5,46 +5,46 @@ import GlobalSoundProvider from "@/components/GlobalSoundProvider";
 import Navbar from "@/components/Navbar.astro";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
-import DevToolbars from "@/dev/DevToolbars";
-import { cn } from "@/lib/cn";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
+import DevToolbars from "@/dev/DevToolbars";
+import { cn } from "@/lib/cn";
 
 interface Props {
-    title: string;
-    description: string;
-    bodyClass?: string;
-    mainClass?: string;
-    navClass?: string;
-    navBlurBackground?: string;
-    constrainShell?: boolean;
-    showNavigation?: boolean;
-    showFooter?: boolean;
-    preloadCodeFont?: boolean;
-    seo?: {
-        ogType?: "website" | "article";
-        ogImage?: string;
-        ogImageAlt?: string;
-        article?: {
-            publishedTime: string;
-        };
-        noindex?: boolean;
-        jsonLd?: Record<string, unknown>;
-    };
+	title: string;
+	description: string;
+	bodyClass?: string;
+	mainClass?: string;
+	navClass?: string;
+	navBlurBackground?: string;
+	constrainShell?: boolean;
+	showNavigation?: boolean;
+	showFooter?: boolean;
+	preloadCodeFont?: boolean;
+	seo?: {
+		ogType?: "website" | "article";
+		ogImage?: string;
+		ogImageAlt?: string;
+		article?: {
+			publishedTime: string;
+		};
+		noindex?: boolean;
+		jsonLd?: Record<string, unknown>;
+	};
 }
 
 const {
-    title,
-    description,
-    bodyClass,
-    mainClass,
-    navClass,
-    navBlurBackground,
-    constrainShell = true,
-    showNavigation = true,
-    showFooter = true,
-    preloadCodeFont = false,
-    seo = {},
+	title,
+	description,
+	bodyClass,
+	mainClass,
+	navClass,
+	navBlurBackground,
+	constrainShell = true,
+	showNavigation = true,
+	showFooter = true,
+	preloadCodeFont = false,
+	seo = {},
 } = Astro.props;
 const isDev = import.meta.env.DEV;
 ---
@@ -160,21 +160,28 @@ const isDev = import.meta.env.DEV;
         </script>
 
         <script>
-            import Lenis from "lenis";
+            const reduceMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            ).matches;
 
-            const lenis = new Lenis({
-                lerp: 0.2, // Lower = smoother/slower (0.03–0.2). Set to undefined to use duration instead.
-                // duration: 1.2, // Higher = slower. Only used when lerp is undefined.
-                smoothWheel: true,
-                easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            });
+            if (!reduceMotion) {
+                import("lenis").then(({ default: Lenis }) => {
+                    const lenis = new Lenis({
+                        lerp: 0.2, // Lower = smoother/slower (0.03–0.2). Set to undefined to use duration instead.
+                        // duration: 1.2, // Higher = slower. Only used when lerp is undefined.
+                        smoothWheel: true,
+                        easing: (t: number) =>
+                            Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                    });
 
-            function raf(time: number) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
+                    function raf(time: number) {
+                        lenis.raf(time);
+                        requestAnimationFrame(raf);
+                    }
+
+                    requestAnimationFrame(raf);
+                });
             }
-
-            requestAnimationFrame(raf);
         </script>
 
         <style is:global>

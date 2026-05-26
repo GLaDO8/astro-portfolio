@@ -35,19 +35,37 @@ const animations = [
 </figure>
 
 <script>
-	import lottie from "lottie-web";
-
 	const elementName = "label-creation-lottie";
+	let lottieModulePromise;
 
 	if (!customElements.get(elementName)) {
 		class LabelCreationLottie extends HTMLElement {
 			#animation;
+			#observer;
 
 			connectedCallback() {
 				if (this.#animation) {
 					return;
 				}
 
+				if ("IntersectionObserver" in window) {
+					this.#observer = new IntersectionObserver((entries) => {
+						if (!entries.some((entry) => entry.isIntersecting)) {
+							return;
+						}
+
+						this.#observer?.disconnect();
+						this.#observer = undefined;
+						void this.#loadAnimation();
+					});
+					this.#observer.observe(this);
+					return;
+				}
+
+				void this.#loadAnimation();
+			}
+
+			async #loadAnimation() {
 				const stage = this.querySelector("[data-lottie-stage]");
 				const src = this.dataset.src;
 
@@ -56,6 +74,8 @@ const animations = [
 				}
 
 				const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+				lottieModulePromise ??= import("lottie-web");
+				const { default: lottie } = await lottieModulePromise;
 
 				this.#animation = lottie.loadAnimation({
 					container: stage,
@@ -76,7 +96,9 @@ const animations = [
 			}
 
 			disconnectedCallback() {
+				this.#observer?.disconnect();
 				this.#animation?.destroy();
+				this.#observer = undefined;
 				this.#animation = undefined;
 			}
 		}

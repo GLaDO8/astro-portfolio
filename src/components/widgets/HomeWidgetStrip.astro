@@ -14,17 +14,59 @@ const { songData } = Astro.props;
 
 <section
     data-home-widget-strip
-    class="h-70 w-full overflow-visible pt-2 sm:h-72 md:mt-12 md:h-78 md:pt-8"
+    class="relative left-1/2 h-70 w-screen -translate-x-1/2 overflow-hidden pt-2 sm:h-72 md:left-auto md:mt-12 md:h-78 md:w-full md:translate-x-0 md:overflow-visible md:pt-8"
     aria-label="Personal widgets"
 >
     <div
-        class="home-widget-strip-scroller -mx-4 -mt-10 overflow-x-auto overflow-y-hidden px-4 pt-16 pb-8 md:mx-0 md:mt-0 md:overflow-visible md:px-0 md:pt-0 md:pb-0"
+        class="home-widget-strip-scroller -mt-10 touch-pan-x overflow-x-auto overflow-y-hidden overscroll-x-contain pt-16 pb-8 md:mt-0 md:overflow-visible md:pt-0 md:pb-0"
     >
         <div
-            class="flex w-max items-start gap-5 [zoom:0.9] sm:gap-2 sm:[zoom:0.78] md:relative md:left-1/2 md:origin-top md:-translate-x-1/2 md:scale-[0.92] md:gap-14 md:[zoom:1] lg:scale-[1.02] lg:gap-18 xl:scale-[1.08] xl:gap-32"
+            data-home-widget-track
+            class="flex w-max animate-[home-widget-marquee_52s_linear_infinite_normal] items-start gap-5 [zoom:0.9] hover:[animation-play-state:paused] motion-reduce:animate-none sm:gap-2 sm:[zoom:0.78] md:relative md:left-1/2 md:origin-top md:-translate-x-1/2 md:scale-[0.92] md:animate-none md:gap-14 md:[zoom:1] lg:scale-[1.02] lg:gap-18 xl:scale-[1.08] xl:gap-32"
         >
-            <div class="rotate-[9deg]">
-                <div data-home-widget class="ml-8 mt-5 shrink-0">
+            <div
+                data-home-widget-copy
+                class="ml-10 rotate-[9deg] md:hidden"
+                aria-hidden="true"
+            >
+                <div data-home-widget class="mt-5 shrink-0">
+                    <PhotoFrameWidget client:visible />
+                </div>
+            </div>
+
+            <div
+                data-home-widget-copy
+                class="ml-12 shrink-0 rotate-[-7deg] md:hidden"
+                aria-hidden="true"
+            >
+                <div data-home-widget>
+                    <MusicWidget songData={songData} client:visible />
+                </div>
+            </div>
+            <a
+                data-home-widget-copy
+                href="/sidequests"
+                class="-mt-12 ml-4 block shrink-0 no-underline md:hidden"
+                aria-hidden="true"
+                tabindex="-1"
+            >
+                <div data-home-widget>
+                    <SidequestWidget client:visible />
+                </div>
+            </a>
+            <a
+                data-home-widget-copy
+                href="/snaps"
+                class="block shrink-0 no-underline sm:-mt-4 sm:-ml-4 md:hidden"
+                aria-hidden="true"
+                tabindex="-1"
+            >
+                <div data-home-widget>
+                    <SnapsWidget client:visible />
+                </div>
+            </a>
+            <div class="ml-10 rotate-[9deg] md:ml-0">
+                <div data-home-widget class="mt-5 shrink-0 md:ml-8">
                     <PhotoFrameWidget client:visible />
                 </div>
             </div>
@@ -52,17 +94,71 @@ const { songData } = Astro.props;
                     <SnapsWidget client:visible />
                 </div>
             </a>
+            <div
+                data-home-widget-copy
+                class="ml-10 rotate-[9deg] md:hidden"
+                aria-hidden="true"
+            >
+                <div data-home-widget class="mt-5 shrink-0">
+                    <PhotoFrameWidget client:visible />
+                </div>
+            </div>
+
+            <div
+                data-home-widget-copy
+                class="ml-12 shrink-0 rotate-[-7deg] md:hidden"
+                aria-hidden="true"
+            >
+                <div data-home-widget>
+                    <MusicWidget songData={songData} client:visible />
+                </div>
+            </div>
+            <a
+                data-home-widget-copy
+                href="/sidequests"
+                class="-mt-12 ml-4 block shrink-0 no-underline md:hidden"
+                aria-hidden="true"
+                tabindex="-1"
+            >
+                <div data-home-widget>
+                    <SidequestWidget client:visible />
+                </div>
+            </a>
+            <a
+                data-home-widget-copy
+                href="/snaps"
+                class="block shrink-0 no-underline sm:-mt-4 sm:-ml-4 md:hidden"
+                aria-hidden="true"
+                tabindex="-1"
+            >
+                <div data-home-widget>
+                    <SnapsWidget client:visible />
+                </div>
+            </a>
         </div>
     </div>
 </section>
 
 <style>
+    @keyframes home-widget-marquee {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-33.333333%);
+        }
+    }
+
     .home-widget-strip-scroller {
         scrollbar-width: none;
     }
 
     .home-widget-strip-scroller::-webkit-scrollbar {
         display: none;
+    }
+
+    .home-widget-strip-scroller[data-user-interacting="true"] [data-home-widget-track] {
+        animation-play-state: paused;
     }
 </style>
 
@@ -116,7 +212,111 @@ const { songData } = Astro.props;
     };
 
     const strip = document.querySelector<HTMLElement>("[data-home-widget-strip]");
+    const scroller = strip?.querySelector<HTMLElement>(".home-widget-strip-scroller");
+    const track = strip?.querySelector<HTMLElement>("[data-home-widget-track]");
     const widgets = strip?.querySelectorAll<HTMLElement>("[data-home-widget]") ?? [];
+    const repeatedLinks =
+        strip?.querySelectorAll<HTMLAnchorElement>("[data-home-widget-copy] a[href]") ??
+        [];
+    let resumeMarqueeTimeout: number | undefined;
+    let isWrappingScroll = false;
+
+    for (const link of repeatedLinks) {
+        link.tabIndex = -1;
+    }
+
+    const isMobileStrip = () => window.matchMedia("(max-width: 767px)").matches;
+
+    const getWidgetSetWidth = () => {
+        if (!track || !isMobileStrip()) {
+            return 0;
+        }
+
+        return track.scrollWidth / 3;
+    };
+
+    const centerLoopScroll = () => {
+        if (!scroller) {
+            return;
+        }
+
+        const setWidth = getWidgetSetWidth();
+
+        if (!setWidth) {
+            scroller.scrollLeft = 0;
+            return;
+        }
+
+        scroller.scrollLeft = setWidth;
+    };
+
+    const wrapLoopScroll = () => {
+        if (!scroller || isWrappingScroll) {
+            return;
+        }
+
+        const setWidth = getWidgetSetWidth();
+
+        if (!setWidth) {
+            return;
+        }
+
+        const minScrollLeft = setWidth * 0.5;
+        const maxScrollLeft = setWidth * 1.5;
+        let nextScrollLeft = scroller.scrollLeft;
+
+        if (nextScrollLeft < minScrollLeft) {
+            nextScrollLeft += setWidth;
+        } else if (nextScrollLeft > maxScrollLeft) {
+            nextScrollLeft -= setWidth;
+        } else {
+            return;
+        }
+
+        isWrappingScroll = true;
+        scroller.scrollLeft = nextScrollLeft;
+        requestAnimationFrame(() => {
+            isWrappingScroll = false;
+        });
+    };
+
+    const pauseMarquee = () => {
+        window.clearTimeout(resumeMarqueeTimeout);
+        scroller?.setAttribute("data-user-interacting", "true");
+    };
+
+    const resumeMarqueeAfterIdle = () => {
+        window.clearTimeout(resumeMarqueeTimeout);
+        resumeMarqueeTimeout = window.setTimeout(() => {
+            scroller?.removeAttribute("data-user-interacting");
+        }, 1200);
+    };
+
+    scroller?.addEventListener("pointerdown", pauseMarquee, { passive: true });
+    scroller?.addEventListener("pointerup", resumeMarqueeAfterIdle, { passive: true });
+    scroller?.addEventListener("pointercancel", resumeMarqueeAfterIdle, { passive: true });
+    scroller?.addEventListener("pointerleave", resumeMarqueeAfterIdle, { passive: true });
+    scroller?.addEventListener(
+        "wheel",
+        () => {
+            pauseMarquee();
+            resumeMarqueeAfterIdle();
+        },
+        { passive: true },
+    );
+    scroller?.addEventListener(
+        "scroll",
+        () => {
+            wrapLoopScroll();
+            pauseMarquee();
+            resumeMarqueeAfterIdle();
+        },
+        { passive: true },
+    );
+    scroller?.addEventListener("focusin", pauseMarquee);
+    scroller?.addEventListener("focusout", resumeMarqueeAfterIdle);
+    centerLoopScroll();
+    window.addEventListener("resize", centerLoopScroll);
 
     animate(
         widgets,

@@ -122,13 +122,13 @@ const playerLabel = label ?? caption ?? "Lottie animation";
 </figure>
 
 <script>
-    import lottie from "lottie-web";
-
     const lottieElementName = "mdoc-lottie-player";
+    let lottieModulePromise;
 
     if (!customElements.get(lottieElementName)) {
         class MdocLottiePlayer extends HTMLElement {
             #animation;
+            #observer;
             #isPlaying = false;
             #toggleButton;
 
@@ -137,6 +137,24 @@ const playerLabel = label ?? caption ?? "Lottie animation";
                     return;
                 }
 
+                if ("IntersectionObserver" in window) {
+                    this.#observer = new IntersectionObserver((entries) => {
+                        if (!entries.some((entry) => entry.isIntersecting)) {
+                            return;
+                        }
+
+                        this.#observer?.disconnect();
+                        this.#observer = undefined;
+                        void this.#loadAnimation();
+                    });
+                    this.#observer.observe(this);
+                    return;
+                }
+
+                void this.#loadAnimation();
+            }
+
+            async #loadAnimation() {
                 const stage = this.querySelector("[data-lottie-stage]");
                 const src = this.dataset.src;
 
@@ -152,6 +170,9 @@ const playerLabel = label ?? caption ?? "Lottie animation";
 
                 this.#toggleButton = this.querySelector("[data-lottie-toggle]");
                 this.#toggleButton?.addEventListener("click", this.#togglePlayback);
+
+                lottieModulePromise ??= import("lottie-web");
+                const { default: lottie } = await lottieModulePromise;
 
                 this.#animation = lottie.loadAnimation({
                     container: stage,
@@ -180,8 +201,10 @@ const playerLabel = label ?? caption ?? "Lottie animation";
             }
 
             disconnectedCallback() {
+                this.#observer?.disconnect();
                 this.#toggleButton?.removeEventListener("click", this.#togglePlayback);
                 this.#animation?.destroy();
+                this.#observer = undefined;
                 this.#animation = undefined;
                 this.#toggleButton = undefined;
                 this.#isPlaying = false;
