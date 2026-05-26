@@ -19,6 +19,7 @@ test("article prose expands only top-level media and code blocks", () => {
 		articleProseComponent,
 		/\[data-article-prose\]\s*>\s*article\s*>\s*:is\(\.figure-wide,\s*\.codeblock\)/,
 	);
+	assert.match(articleProseComponent, /\.figure-wider\s*\{/);
 	assert.match(articleProseComponent, /\.figure-extrawide\s*\{/);
 	assert.doesNotMatch(articleProseComponent, /p:has\(>\s*img\)/);
 });

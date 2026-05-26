@@ -20,15 +20,17 @@ const findings = [
 ];
 ---
 
-<section class="not-prose figure-wide my-12 grid gap-10 md:my-16 md:grid-cols-3 md:gap-12">
-	{
-		findings.map((finding) => (
-			<div>
-				<div class="mb-6 h-3 w-3 bg-pink-700" aria-hidden="true" />
-				<p class="m-0 font-sans text-base font-medium text-primary text-pretty leading-snug md:text-lg">
-					{finding.leading} <strong>{finding.strong}</strong> {finding.trailing}
-				</p>
-			</div>
-		))
-	}
+<section
+	class="not-prose figure-wider my-12 grid gap-10 md:my-16 md:grid-cols-3 md:gap-12"
+>
+    {
+        findings.map((finding) => (
+            <div class="bg-neutral-100 p-6 rounded-lg">
+                <div class="mb-6 h-2 w-2 bg-pink-700" aria-hidden="true" />
+                <p class="m-0 font-sans text-base font-medium text-primary text-pretty leading-snug md:text-lg">
+                    {finding.leading} <strong>{finding.strong}</strong> {finding.trailing}
+                </p>
+            </div>
+        ))
+    }
 </section>

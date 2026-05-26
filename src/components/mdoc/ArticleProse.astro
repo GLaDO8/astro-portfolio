@@ -29,15 +29,20 @@ const { class: className } = Astro.props;
             --article-prose-grid-gap: 1.25rem;
         }
 
-        [data-article-prose] > article > :is(.figure-wide, .codeblock) {
-            width: calc(125% + var(--article-prose-grid-gap) / 4);
-            margin-left: calc((-100% - var(--article-prose-grid-gap)) / 8);
-        }
+		[data-article-prose] > article > :is(.figure-wide, .codeblock) {
+			width: calc(125% + var(--article-prose-grid-gap) / 4);
+			margin-left: calc((-100% - var(--article-prose-grid-gap)) / 8);
+		}
 
-        [data-article-prose] > article > .figure-extrawide {
-            width: calc(200% + var(--article-prose-grid-gap));
-            margin-left: calc((-100% - var(--article-prose-grid-gap)) / 2);
-        }
+		[data-article-prose] > article > .figure-wider {
+			width: calc(150% + var(--article-prose-grid-gap) / 2);
+			margin-left: calc((-100% - var(--article-prose-grid-gap)) / 4);
+		}
+
+		[data-article-prose] > article > .figure-extrawide {
+			width: calc(200% + var(--article-prose-grid-gap));
+			margin-left: calc((-100% - var(--article-prose-grid-gap)) / 2);
+		}
 
         [data-article-prose] > article > .figure-full {
             width: 100vw;
