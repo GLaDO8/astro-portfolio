@@ -93,3 +93,52 @@ test("MusicWidget omits the preview control when no preview is available", async
 	assert.doesNotMatch(html, /<button/);
 	assert.doesNotMatch(html, /aria-label="Preview unavailable for Track"/);
 });
+
+test("MusicWidget gives each vinyl label clipPath a unique id", async () => {
+	const server = await createServer({
+		appType: "custom",
+		logLevel: "silent",
+		root,
+		server: {
+			middlewareMode: true,
+		},
+		resolve: {
+			alias: {
+				"@": resolve(root, "src"),
+			},
+		},
+	});
+	after(() => server.close());
+
+	const { default: MusicWidget } = await server.ssrLoadModule(
+		"/src/components/widgets/MusicWidget.tsx",
+	);
+	const songData = {
+		artist: "Artist",
+		title: "Track",
+		album: "Album",
+		albumArt: "/album.jpg",
+		previewUrl: "/preview.m4a",
+		trackUrl: "/track",
+		message: "",
+		label: "",
+	};
+
+	const html = renderToStaticMarkup(
+		React.createElement(
+			React.Fragment,
+			null,
+			React.createElement(MusicWidget, { songData }),
+			React.createElement(MusicWidget, { songData }),
+		),
+	);
+
+	const clipIds = [...html.matchAll(/<clipPath id="([^"]+)"/g)].map((match) => match[1]);
+	const clipReferences = [...html.matchAll(/clip-path="url\(#([^)]+)\)"/g)].map(
+		(match) => match[1],
+	);
+
+	assert.equal(clipIds.length, 2);
+	assert.deepEqual(new Set(clipIds).size, clipIds.length);
+	assert.deepEqual(clipReferences, clipIds);
+});

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import type { SongData } from "@/lib/widgetConfig";
 import pauseIconSvg from "../../assets/widgets/pause.svg?raw";
@@ -226,6 +226,7 @@ export default function MusicWidget({ songData }: Props) {
 	const cachedRect = useRef<DOMRect | null>(null);
 	const recordRef = useRef<HTMLDivElement>(null);
 	const recordSurfaceRef = useRef<HTMLDivElement>(null);
+	const vinylLabelClipId = `${VINYL_LABEL_CLIP_ID}-${useId().replaceAll(":", "")}`;
 	const shouldReduceMotion = useReducedMotion();
 	const albumArt = songData.albumArt || "/vinyl-album-art.svg";
 	const artistName = songData.artist.trim();
@@ -553,7 +554,7 @@ export default function MusicWidget({ songData }: Props) {
 								aria-label="Album art"
 							>
 								<defs>
-									<clipPath id={VINYL_LABEL_CLIP_ID}>
+									<clipPath id={vinylLabelClipId} clipPathUnits="userSpaceOnUse">
 										<path d={VINYL_LABEL_PATH} />
 									</clipPath>
 								</defs>
@@ -564,7 +565,7 @@ export default function MusicWidget({ songData }: Props) {
 									width="59"
 									height="59"
 									preserveAspectRatio="xMidYMid slice"
-									clipPath={`url(#${VINYL_LABEL_CLIP_ID})`}
+									clipPath={`url(#${vinylLabelClipId})`}
 								/>
 							</svg>
 						</div>

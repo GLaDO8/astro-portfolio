@@ -170,13 +170,13 @@ const { songData } = Astro.props;
     const widgetHoverSound = {
         source: { type: "sine", frequency: { start: 500, end: 880 } },
         envelope: { attack: 0.001, decay: 0.04, sustain: 0, release: 0.02 },
-        gain: 0.12,
+        gain: 0.072,
     } satisfies SoundDefinition;
 
     const widgetClickSound = {
         source: { type: "triangle", frequency: { start: 1040, end: 520 } },
         envelope: { attack: 0.001, decay: 0.07, sustain: 0, release: 0.02 },
-        gain: 0.18,
+        gain: 0.108,
     } satisfies SoundDefinition;
 
     const playWidgetHoverSound = defineSound(widgetHoverSound);
@@ -329,11 +329,16 @@ const { songData } = Astro.props;
         },
     );
 
-    document.addEventListener("pointerdown", unlockAudio, { once: true, passive: true });
-    document.addEventListener("keydown", unlockAudio, { once: true });
+    document.addEventListener("pointerdown", unlockAudio, {
+        capture: true,
+        once: true,
+        passive: true,
+    });
+    document.addEventListener("click", unlockAudio, { capture: true, once: true, passive: true });
+    document.addEventListener("keydown", unlockAudio, { capture: true, once: true });
 
     for (const widget of widgets) {
-        widget.addEventListener("pointerenter", () => playReadySound(playWidgetHoverSound));
+        widget.addEventListener("pointerenter", () => playActivatedSound(playWidgetHoverSound));
     }
 
     const linkedWidgets =

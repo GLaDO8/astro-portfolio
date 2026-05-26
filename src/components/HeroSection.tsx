@@ -187,7 +187,7 @@ export default function HeroSection() {
 	const playButtonClickSound = useSound({
 		source: { type: "sine", frequency: 1200 },
 		envelope: { decay: 0.03 },
-		gain: 0.3,
+		gain: 0.18,
 	});
 	const [description, setDescription] = useState(descriptions[0]);
 
