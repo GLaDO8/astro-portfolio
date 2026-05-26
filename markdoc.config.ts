@@ -154,6 +154,14 @@ export default defineMarkdocConfig({
 			render: component("./src/components/mdoc/LabelCreationBento.astro"),
 			selfClosing: true,
 		},
+		investigationFindings: {
+			render: component("./src/components/mdoc/InvestigationFindings.astro"),
+			selfClosing: true,
+		},
+		labelCategoryIterations: {
+			render: component("./src/components/mdoc/LabelCategoryIterations.astro"),
+			selfClosing: true,
+		},
 		figure: {
 			render: figureComponent,
 			selfClosing: true,
@@ -164,7 +172,7 @@ export default defineMarkdocConfig({
 				width: {
 					type: String,
 					default: "default",
-					matches: ["default", "wide", "full"],
+					matches: ["default", "wide", "extrawide", "full"],
 				},
 				align: {
 					type: String,

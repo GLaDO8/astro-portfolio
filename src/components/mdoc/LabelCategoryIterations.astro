@@ -1,0 +1,44 @@
+---
+import { Image } from "astro:assets";
+import labelCategoryWithCount from "@/assets/case-studies/labeling/label-cat-with-count.png";
+import labelCategoryWithNoCount from "@/assets/case-studies/labeling/label-cat-with-no-count.png";
+
+const iterations = [
+	{
+		number: "1",
+		text: "We started with asking teachers to provide the category of labels they want to generate, along with no of labels.",
+		image: labelCategoryWithNoCount,
+		alt: "Label creation UI with separate controls for label category and number of labels.",
+	},
+	{
+		number: "2",
+		text: "But we realised that no of labels and label category are closely associated.\n\nFor example, “Chambers of heart” should ideally be 4 labels. It doesn’t make sense for it to be a choice, so we combined them.",
+		image: labelCategoryWithCount,
+		alt: "Label creation UI with label category options that include the number of labels.",
+	},
+] as const;
+---
+
+<section class="not-prose figure-extrawide my-16 grid gap-14">
+	{
+		iterations.map((iteration) => (
+			<div class="grid gap-6 md:grid-cols-2 md:items-start md:gap-12">
+				<Image
+					src={iteration.image}
+					alt={iteration.alt}
+					loading="lazy"
+					class="w-full max-w-sm rounded-xl md:justify-self-end"
+				/>
+
+				<div class="max-w-md">
+					<p class="m-0 mb-5 inline-flex size-10 items-center justify-center bg-pink-100 font-sans text-base font-bold text-pink-700 md:text-lg">
+						{iteration.number}
+					</p>
+					<p class="m-0 whitespace-pre-line font-sans text-base font-medium leading-snug text-primary text-pretty md:text-lg">
+						{iteration.text}
+					</p>
+				</div>
+			</div>
+		))
+	}
+</section>

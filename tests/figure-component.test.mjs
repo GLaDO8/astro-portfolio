@@ -20,3 +20,7 @@ test("Figure can omit rounded image corners with the stroke", () => {
 	assert.match(figureComponent, /!noStroke && "figure-media-rounded"/);
 	assert.match(figureComponent, /const imageClass = cn\("w-full", !noStroke && "rounded-xl"\)/);
 });
+
+test("Figure supports an extrawide layout option", () => {
+	assert.match(figureComponent, /"default" \| "wide" \| "extrawide" \| "full"/);
+});

@@ -34,6 +34,11 @@ const { class: className } = Astro.props;
             margin-left: calc((-100% - var(--article-prose-grid-gap)) / 8);
         }
 
+        [data-article-prose] > article > .figure-extrawide {
+            width: calc(200% + var(--article-prose-grid-gap));
+            margin-left: calc((-100% - var(--article-prose-grid-gap)) / 2);
+        }
+
         [data-article-prose] > article > .figure-full {
             width: 100vw;
             margin-left: calc((100% - 100vw) / 2);

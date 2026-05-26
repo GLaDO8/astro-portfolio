@@ -1,0 +1,34 @@
+---
+const findings = [
+	{
+		leading: "Watching",
+		strong: "200+ Hotjar recordings",
+		trailing: "of teacher and student usage. These were great for observing teachers in the wild.",
+	},
+	{
+		leading: "Having",
+		strong: "exploratory calls",
+		trailing:
+			"where we observed relevant subject teachers create a labeling question from scratch.",
+	},
+	{
+		leading: "Looking at",
+		strong: "analytics",
+		trailing:
+			"to understand funnel drop-offs and patterns in labeling content across our public library.",
+	},
+];
+---
+
+<section class="not-prose figure-wide my-12 grid gap-10 md:my-16 md:grid-cols-3 md:gap-12">
+	{
+		findings.map((finding) => (
+			<div>
+				<div class="mb-6 h-3 w-3 bg-pink-700" aria-hidden="true" />
+				<p class="m-0 font-sans text-base font-medium text-primary text-pretty leading-snug md:text-lg">
+					{finding.leading} <strong>{finding.strong}</strong> {finding.trailing}
+				</p>
+			</div>
+		))
+	}
+</section>

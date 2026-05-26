@@ -17,7 +17,12 @@ const homeStudyOrder = [
     "hot-text",
     "one-more-whistle",
 ];
-const studies = (await getCollection("caseStudies", ({ data }) => !data.draft))
+const studies = (
+    await getCollection(
+        "caseStudies",
+        ({ id, data }) => !data.draft || id === "wayground-creation",
+    )
+)
     .filter((study) => homeStudyOrder.includes(study.id))
     .sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
 const writings = (await getCollection("notes", ({ data }) => !data.draft)).sort(
@@ -30,6 +35,7 @@ const workTitles = {
     "wayground-creation": "Rethinking how teachers create resources",
 } as const;
 const workReleaseYears = {
+    "wayground-creation": "soon",
     labelling: 2025,
     "hot-text": 2024,
 } as const;
@@ -133,21 +139,36 @@ const jsonLd = {
                     const year =
                         workReleaseYears[study.id as keyof typeof workReleaseYears] ??
                         study.data.date.getFullYear();
+                    const isUnavailable = study.id === "wayground-creation";
+                    const rowClass =
+                        "group flex min-w-0 flex-col gap-1 text-primary no-underline transition-opacity md:flex-row md:items-baseline md:justify-between md:gap-4";
 
-                    return (
-                        <a
-                            href={`/work/${study.id}`}
-                            class="group flex min-w-0 flex-col gap-1 text-primary no-underline transition-opacity hover:opacity-75 md:flex-row md:items-baseline md:justify-between md:gap-4"
-                        >
+                    const dateClass =
+                        "shrink-0 font-mono text-sm leading-none font-medium tracking-normal text-secondary md:text-base";
+                    const dateLabel = isUnavailable ? (
+                        <span class={dateClass}>soon</span>
+                    ) : (
+                        <time datetime={String(year)} class={dateClass}>
+                            {year}
+                        </time>
+                    );
+                    const contents = (
+                        <>
                             <h3 class="min-w-0 text-balance font-sans text-base leading-[1.12] font-medium tracking-[-0.03em] text-primary md:text-lg">
                                 {title}
                             </h3>
-                            <time
-                                datetime={String(year)}
-                                class="shrink-0 font-sans text-sm leading-none font-medium tracking-[-0.03em] text-secondary md:text-base"
-                            >
-                                {year}
-                            </time>
+                            {dateLabel}
+                        </>
+                    );
+
+                    return isUnavailable ? (
+                        <div class={rowClass}>{contents}</div>
+                    ) : (
+                        <a
+                            href={`/work/${study.id}`}
+                            class:list={[rowClass, "hover:opacity-75"]}
+                        >
+                            {contents}
                         </a>
                     );
                 })
@@ -181,7 +202,7 @@ const jsonLd = {
                             </h3>
                             <time
                                 datetime={String(year)}
-                                class="shrink-0 font-sans text-sm leading-none font-medium tracking-[-0.03em] text-secondary md:text-base"
+                                class="shrink-0 font-mono text-sm leading-none font-medium tracking-normal text-secondary md:text-base"
                             >
                                 {year}
                             </time>

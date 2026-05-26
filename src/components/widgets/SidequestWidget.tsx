@@ -1,10 +1,10 @@
 import { motion, useReducedMotion } from "motion/react";
-import callipers from "@/assets/widgets/callipers.png";
-import hammer from "@/assets/widgets/hammer.png";
-import mat from "@/assets/widgets/mat.png";
-import pencil from "@/assets/widgets/pencil.png";
-import rpi from "@/assets/widgets/rpi.png";
-import sdcard from "@/assets/widgets/sdcard.png";
+import callipers from "@/assets/widgets/callipers.webp";
+import hammer from "@/assets/widgets/hammer.webp";
+import mat from "@/assets/widgets/mat.webp";
+import pencil from "@/assets/widgets/pencil.webp";
+import rpi from "@/assets/widgets/rpi.webp";
+import sdcard from "@/assets/widgets/sdcard.webp";
 
 const toolTransition = {
 	type: "spring",

@@ -4,36 +4,35 @@ import { cn } from "@/lib/cn";
 import CodeBlockCopyButton from "./CodeBlockCopyButton";
 
 interface Props {
-	content: string;
-	language?: string;
-	maxHeight?: string;
+    content: string;
+    language?: string;
+    maxHeight?: string;
 }
 
 const { content, language, maxHeight } = Astro.props;
 const trimmed = content.replace(/\n$/, "");
 const maxHeightClasses: Record<string, string> = {
-	"24rem": "[--codeblock-max-height:24rem]",
+    "24rem": "[--codeblock-max-height:24rem]",
 };
 const maxHeightClass = maxHeight ? maxHeightClasses[maxHeight] : undefined;
 
 if (maxHeight && !maxHeightClass) {
-	throw new Error(`Unsupported CodeBlock maxHeight "${maxHeight}". Add a Tailwind class mapping.`);
+    throw new Error(
+        `Unsupported CodeBlock maxHeight "${maxHeight}". Add a Tailwind class mapping.`,
+    );
 }
 ---
 
-<div class="p-3 border rounded-lg flex flex-col gap-3 border-primary/10 shadow-sm">
-    <div><p class="text-sm font-semibold">Bounding boxes with svg</p> <div></div></div>
-    <div
-        class={cn(
-            "codeblock not-prose relative bg-zinc-50 border border-primary/10 rounded-sm overflow-hidden font-mono text-base leading-relaxed font-medium",
-            maxHeightClass,
-        )}
-        data-lenis-prevent={maxHeight ? "" : undefined}
-        data-codeblock
-    >
-        <CodeBlockCopyButton code={trimmed} client:load />
-        <Code code={trimmed} lang={language || "text"} theme="github-light" />
-    </div>
+<div
+    class={cn(
+        "codeblock not-prose relative bg-zinc-50 border border-primary/10 rounded-sm overflow-hidden font-mono text-base leading-relaxed font-medium",
+        maxHeightClass,
+    )}
+    data-lenis-prevent={maxHeight ? "" : undefined}
+    data-codeblock
+>
+    <CodeBlockCopyButton code={trimmed} client:load />
+    <Code code={trimmed} lang={language || "text"} theme="github-light" />
 </div>
 
 <style>

@@ -34,6 +34,7 @@ test("Accordion chrome stays out of prose while content keeps article link styli
 
 test("Accordion content uses the shared article Markdown styling", () => {
 	assert.match(accordionComponent, /articleProseClass/);
+	assert.match(accordionComponent, /prose-li:marker:font-medium/);
 
 	for (const className of [
 		"prose",
