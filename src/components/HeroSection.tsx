@@ -11,36 +11,36 @@ type Description = {
 
 const descriptions: Description[] = [
 	{
-		text: "Shreyas is a design engineer and a serial hobbyist.",
-		mobileText: "Shreyas is a design\nengineer and a serial\nhobbyist.",
+		text: "Shreyas is a design engineer and a serial hobbyist",
+		mobileText: "Shreyas is a design\nengineer and a serial\nhobbyist",
 	},
 	{
-		text: "Shreyas is a professional kitty psspss-er with a 3D printer.",
-		mobileText: "Shreyas is a professional\nkitty psspss-er with\na 3D printer.",
+		text: "Shreyas is a professional kitty psspss-er with a 3D printer",
+		mobileText: "Shreyas is a professional\nkitty psspss-er with\na 3D printer",
 	},
 	{
-		text: "Shreyas writes poetry with his Fujifilm and has five tattoos.",
-		mobileText: "Shreyas writes poetry\nwith his Fujifilm\nand has five tattoos.",
+		text: "Shreyas writes poetry with his Fujifilm and has five tattoos",
+		mobileText: "Shreyas writes poetry\nwith his Fujifilm\nand has five tattoos",
 	},
 	{
-		text: "Shreyas collects vinyls & builds mechanical keyboards.",
-		mobileText: "Shreyas collects vinyls\n& builds mechanical\nkeyboards.",
+		text: "Shreyas collects vinyls & builds mechanical keyboards",
+		mobileText: "Shreyas collects vinyls\n& builds mechanical\nkeyboards",
 	},
 	{
-		text: "Shreyas keeps a tiny home server and shares rent with two cats.",
-		mobileText: "Shreyas keeps a tiny\nhome server and shares\nrent with two cats.",
+		text: "Shreyas keeps a tiny home server and shares rent with two cats",
+		mobileText: "Shreyas keeps a tiny\nhome server and shares\nrent with two cats",
 	},
 	{
-		text: "Shreyas calls himself an audiophile but uses Airpods.",
-		mobileText: "Shreyas calls himself\nan audiophile but\nuses Airpods.",
+		text: "Shreyas calls himself an audiophile but uses Airpods",
+		mobileText: "Shreyas calls himself\nan audiophile but\nuses Airpods",
 	},
 	{
-		text: "Shreyas doesn't like drinking but steals coasters from bars.",
-		mobileText: "Shreyas doesn't like\ndrinking but steals\ncoasters from bars.",
+		text: "Shreyas doesn't like drinking but steals coasters from bars",
+		mobileText: "Shreyas doesn't like\ndrinking but steals\ncoasters from bars",
 	},
 	{
-		text: "Shreyas loves monospace fonts but you won't find any here.",
-		mobileText: "Shreyas loves monospace\nfonts but you won't\nfind any here.",
+		text: "Shreyas loves monospace fonts but you won't find any here",
+		mobileText: "Shreyas loves monospace\nfonts but you won't\nfind any here",
 	},
 ];
 
