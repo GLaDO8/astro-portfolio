@@ -5,6 +5,7 @@ const GOOGLE_FONT_PRECONNECT_ID = "hero-google-font-swap-googleapis-preconnect";
 const GOOGLE_FONT_STATIC_PRECONNECT_ID = "hero-google-font-swap-gstatic-preconnect";
 const HERO_GOOGLE_FONT_FAMILY_PROPERTY = "--hero-google-font-swap-family";
 const HERO_GOOGLE_FONT_SIZE_PROPERTY = "--hero-google-font-swap-size";
+const HERO_GOOGLE_FONT_WEIGHT_PROPERTY = "--hero-google-font-swap-weight";
 const HERO_GOOGLE_LETTER_SPACING_PROPERTY = "--hero-google-font-swap-letter-spacing";
 const HERO_GOOGLE_LINE_HEIGHT_PROPERTY = "--hero-google-font-swap-line-height";
 const HERO_GOOGLE_METRIC_OVERRIDES_STYLE_ID = "hero-google-font-swap-metric-overrides";
@@ -135,6 +136,39 @@ export function clearHeroGoogleFontSize(doc = document) {
 	syncHeroGoogleMetricOverrides(doc);
 }
 
+export function getHeroGoogleFontWeightValue(fontWeight: string) {
+	const trimmedFontWeight = fontWeight.trim();
+
+	if (!trimmedFontWeight) {
+		return "";
+	}
+
+	const numericFontWeight = Number(trimmedFontWeight);
+
+	if (!Number.isInteger(numericFontWeight) || numericFontWeight < 1 || numericFontWeight > 1000) {
+		return "";
+	}
+
+	return `${numericFontWeight}`;
+}
+
+export function setHeroGoogleFontWeight(fontWeight: string, doc = document) {
+	const fontWeightValue = getHeroGoogleFontWeightValue(fontWeight);
+
+	if (!fontWeightValue) {
+		clearHeroGoogleFontWeight(doc);
+		return;
+	}
+
+	doc.documentElement.style.setProperty(HERO_GOOGLE_FONT_WEIGHT_PROPERTY, fontWeightValue);
+	syncHeroGoogleMetricOverrides(doc);
+}
+
+export function clearHeroGoogleFontWeight(doc = document) {
+	doc.documentElement.style.removeProperty(HERO_GOOGLE_FONT_WEIGHT_PROPERTY);
+	syncHeroGoogleMetricOverrides(doc);
+}
+
 export function getHeroGoogleLetterSpacingValue(letterSpacing: string) {
 	const trimmedLetterSpacing = letterSpacing.trim();
 
@@ -208,6 +242,9 @@ function syncHeroGoogleMetricOverrides(doc: Document) {
 	const fontSize = doc.documentElement.style
 		.getPropertyValue(HERO_GOOGLE_FONT_SIZE_PROPERTY)
 		.trim();
+	const fontWeight = doc.documentElement.style
+		.getPropertyValue(HERO_GOOGLE_FONT_WEIGHT_PROPERTY)
+		.trim();
 	const letterSpacing = doc.documentElement.style
 		.getPropertyValue(HERO_GOOGLE_LETTER_SPACING_PROPERTY)
 		.trim();
@@ -217,6 +254,7 @@ function syncHeroGoogleMetricOverrides(doc: Document) {
 	const declarations = [
 		fontFamily ? `font-family: var(${HERO_GOOGLE_FONT_FAMILY_PROPERTY});` : "",
 		fontSize ? `font-size: var(${HERO_GOOGLE_FONT_SIZE_PROPERTY});` : "",
+		fontWeight ? `font-weight: var(${HERO_GOOGLE_FONT_WEIGHT_PROPERTY});` : "",
 		letterSpacing ? `letter-spacing: var(${HERO_GOOGLE_LETTER_SPACING_PROPERTY});` : "",
 		lineHeight ? `line-height: var(${HERO_GOOGLE_LINE_HEIGHT_PROPERTY});` : "",
 	]

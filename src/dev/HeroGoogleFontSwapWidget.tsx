@@ -3,9 +3,11 @@ import { createPortal } from "react-dom";
 import {
 	clearHeroGoogleFontFamily,
 	clearHeroGoogleFontSize,
+	clearHeroGoogleFontWeight,
 	clearHeroGoogleLetterSpacing,
 	clearHeroGoogleLineHeight,
 	getHeroGoogleFontSizeValue,
+	getHeroGoogleFontWeightValue,
 	getHeroGoogleLetterSpacingValue,
 	getHeroGoogleLineHeightValue,
 	installHeroGoogleFontStylesheet,
@@ -13,6 +15,7 @@ import {
 	removeHeroGoogleFontStylesheet,
 	setHeroGoogleFontFamily,
 	setHeroGoogleFontSize,
+	setHeroGoogleFontWeight,
 	setHeroGoogleLetterSpacing,
 	setHeroGoogleLineHeight,
 } from "@/dev/heroGoogleFontSwap";
@@ -20,6 +23,7 @@ import {
 const STORAGE_PREFIX = "site:hero-google-font-swap:v2";
 const EMBED_STORAGE_KEY = `${STORAGE_PREFIX}:embed`;
 const FONT_SIZE_STORAGE_KEY = `${STORAGE_PREFIX}:size`;
+const FONT_WEIGHT_STORAGE_KEY = `${STORAGE_PREFIX}:weight`;
 const LETTER_SPACING_STORAGE_KEY = `${STORAGE_PREFIX}:letter-spacing`;
 const LINE_HEIGHT_STORAGE_KEY = `${STORAGE_PREFIX}:line-height`;
 
@@ -27,6 +31,7 @@ type HeroGoogleFontSwapState = {
 	embedCode: string;
 	fontFamily: string | null;
 	trialFontSize: string;
+	trialFontWeight: string;
 	trialLetterSpacing: string;
 	trialLineHeight: string;
 	status: string;
@@ -41,6 +46,7 @@ type HeroGoogleFontSwapControlsProps = {
 	embedCode: string;
 	fontFamily: string | null;
 	trialFontSize: string;
+	trialFontWeight: string;
 	trialLetterSpacing: string;
 	trialLineHeight: string;
 	status: string;
@@ -48,6 +54,7 @@ type HeroGoogleFontSwapControlsProps = {
 	onApply: (
 		embedCode: string,
 		trialFontSize: string,
+		trialFontWeight: string,
 		trialLetterSpacing: string,
 		trialLineHeight: string,
 	) => boolean;
@@ -58,6 +65,7 @@ const defaultState: HeroGoogleFontSwapState = {
 	embedCode: "",
 	fontFamily: null,
 	trialFontSize: "",
+	trialFontWeight: "",
 	trialLetterSpacing: "",
 	trialLineHeight: "",
 	status: "No trial font",
@@ -67,12 +75,14 @@ const defaultState: HeroGoogleFontSwapState = {
 function getTrialSummary(
 	fontFamily: string | null,
 	fontSizeValue: string,
+	fontWeightValue: string,
 	letterSpacingValue: string,
 	lineHeightValue: string,
 ) {
 	const parts = [
 		fontFamily ?? "Hero font",
 		fontSizeValue,
+		fontWeightValue && `${fontWeightValue} weight`,
 		letterSpacingValue && `${letterSpacingValue} LS`,
 		lineHeightValue && `${lineHeightValue} LH`,
 	].filter(Boolean);
@@ -83,16 +93,24 @@ function getTrialSummary(
 function getTrialButtonLabel(
 	fontFamily: string | null,
 	trialFontSize: string,
+	trialFontWeight: string,
 	trialLetterSpacing: string,
 	trialLineHeight: string,
 ) {
-	if (!fontFamily && !trialFontSize && !trialLetterSpacing && !trialLineHeight) {
+	if (
+		!fontFamily &&
+		!trialFontSize &&
+		!trialFontWeight &&
+		!trialLetterSpacing &&
+		!trialLineHeight
+	) {
 		return "Hero font";
 	}
 
 	return [
 		fontFamily ?? "Hero font",
 		trialFontSize && `${trialFontSize}px`,
+		trialFontWeight && `${trialFontWeight} weight`,
 		trialLetterSpacing && `${trialLetterSpacing}px LS`,
 		trialLineHeight && `${trialLineHeight} LH`,
 	]
@@ -107,6 +125,7 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 		(
 			embedCode: string,
 			trialFontSize: string,
+			trialFontWeight: string,
 			trialLetterSpacing: string,
 			trialLineHeight: string,
 		) => {
@@ -116,13 +135,21 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 
 			const trimmedEmbedCode = embedCode.trim();
 			const trimmedFontSize = trialFontSize.trim();
+			const trimmedFontWeight = trialFontWeight.trim();
 			const trimmedLetterSpacing = trialLetterSpacing.trim();
 			const trimmedLineHeight = trialLineHeight.trim();
 			const fontSizeValue = getHeroGoogleFontSizeValue(trimmedFontSize);
+			const fontWeightValue = getHeroGoogleFontWeightValue(trimmedFontWeight);
 			const letterSpacingValue = getHeroGoogleLetterSpacingValue(trimmedLetterSpacing);
 			const lineHeightValue = getHeroGoogleLineHeightValue(trimmedLineHeight);
 
-			if (!trimmedEmbedCode && !trimmedFontSize && !trimmedLetterSpacing && !trimmedLineHeight) {
+			if (
+				!trimmedEmbedCode &&
+				!trimmedFontSize &&
+				!trimmedFontWeight &&
+				!trimmedLetterSpacing &&
+				!trimmedLineHeight
+			) {
 				return false;
 			}
 
@@ -131,10 +158,25 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 					embedCode,
 					fontFamily: null,
 					trialFontSize: trimmedFontSize,
+					trialFontWeight: trimmedFontWeight,
 					trialLetterSpacing: trimmedLetterSpacing,
 					trialLineHeight: trimmedLineHeight,
 					status: "Could not apply size",
 					error: "Use a positive px font size.",
+				});
+				return false;
+			}
+
+			if (trimmedFontWeight && !fontWeightValue) {
+				setState({
+					embedCode,
+					fontFamily: null,
+					trialFontSize: trimmedFontSize,
+					trialFontWeight: trimmedFontWeight,
+					trialLetterSpacing: trimmedLetterSpacing,
+					trialLineHeight: trimmedLineHeight,
+					status: "Could not apply weight",
+					error: "Use a whole-number font weight from 1 to 1000.",
 				});
 				return false;
 			}
@@ -144,6 +186,7 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 					embedCode,
 					fontFamily: null,
 					trialFontSize: trimmedFontSize,
+					trialFontWeight: trimmedFontWeight,
 					trialLetterSpacing: trimmedLetterSpacing,
 					trialLineHeight: trimmedLineHeight,
 					status: "Could not apply letter spacing",
@@ -157,6 +200,7 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 					embedCode,
 					fontFamily: null,
 					trialFontSize: trimmedFontSize,
+					trialFontWeight: trimmedFontWeight,
 					trialLetterSpacing: trimmedLetterSpacing,
 					trialLineHeight: trimmedLineHeight,
 					status: "Could not apply line height",
@@ -171,6 +215,14 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 			} else {
 				window.localStorage.removeItem(FONT_SIZE_STORAGE_KEY);
 				clearHeroGoogleFontSize();
+			}
+
+			if (trimmedFontWeight) {
+				window.localStorage.setItem(FONT_WEIGHT_STORAGE_KEY, trimmedFontWeight);
+				setHeroGoogleFontWeight(trimmedFontWeight);
+			} else {
+				window.localStorage.removeItem(FONT_WEIGHT_STORAGE_KEY);
+				clearHeroGoogleFontWeight();
 			}
 
 			if (trimmedLetterSpacing) {
@@ -194,11 +246,18 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 					embedCode: "",
 					fontFamily: null,
 					trialFontSize: trimmedFontSize,
+					trialFontWeight: trimmedFontWeight,
 					trialLetterSpacing: trimmedLetterSpacing,
 					trialLineHeight: trimmedLineHeight,
 					status:
-						fontSizeValue || letterSpacingValue || lineHeightValue
-							? `Using ${getTrialSummary(null, fontSizeValue, letterSpacingValue, lineHeightValue)}`
+						fontSizeValue || fontWeightValue || letterSpacingValue || lineHeightValue
+							? `Using ${getTrialSummary(
+									null,
+									fontSizeValue,
+									fontWeightValue,
+									letterSpacingValue,
+									lineHeightValue,
+								)}`
 							: "No trial font",
 					error: null,
 				});
@@ -212,6 +271,7 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 					embedCode,
 					fontFamily: null,
 					trialFontSize: trimmedFontSize,
+					trialFontWeight: trimmedFontWeight,
 					trialLetterSpacing: trimmedLetterSpacing,
 					trialLineHeight: trimmedLineHeight,
 					status: "Could not parse font",
@@ -227,11 +287,13 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 				embedCode: trimmedEmbedCode,
 				fontFamily: parsed.fontFamily,
 				trialFontSize: trimmedFontSize,
+				trialFontWeight: trimmedFontWeight,
 				trialLetterSpacing: trimmedLetterSpacing,
 				trialLineHeight: trimmedLineHeight,
 				status: `Using ${getTrialSummary(
 					parsed.fontFamily,
 					fontSizeValue,
+					fontWeightValue,
 					letterSpacingValue,
 					lineHeightValue,
 				)}`,
@@ -247,11 +309,13 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 		if (typeof window !== "undefined") {
 			window.localStorage.removeItem(EMBED_STORAGE_KEY);
 			window.localStorage.removeItem(FONT_SIZE_STORAGE_KEY);
+			window.localStorage.removeItem(FONT_WEIGHT_STORAGE_KEY);
 			window.localStorage.removeItem(LETTER_SPACING_STORAGE_KEY);
 			window.localStorage.removeItem(LINE_HEIGHT_STORAGE_KEY);
 			removeHeroGoogleFontStylesheet();
 			clearHeroGoogleFontFamily();
 			clearHeroGoogleFontSize();
+			clearHeroGoogleFontWeight();
 			clearHeroGoogleLetterSpacing();
 			clearHeroGoogleLineHeight();
 		}
@@ -266,11 +330,24 @@ export function useHeroGoogleFontSwap(enabled: boolean) {
 
 		const storedEmbedCode = window.localStorage.getItem(EMBED_STORAGE_KEY);
 		const storedFontSize = window.localStorage.getItem(FONT_SIZE_STORAGE_KEY) ?? "";
+		const storedFontWeight = window.localStorage.getItem(FONT_WEIGHT_STORAGE_KEY) ?? "";
 		const storedLetterSpacing = window.localStorage.getItem(LETTER_SPACING_STORAGE_KEY) ?? "";
 		const storedLineHeight = window.localStorage.getItem(LINE_HEIGHT_STORAGE_KEY) ?? "";
 
-		if (storedEmbedCode || storedFontSize || storedLetterSpacing || storedLineHeight) {
-			applyEmbedCode(storedEmbedCode ?? "", storedFontSize, storedLetterSpacing, storedLineHeight);
+		if (
+			storedEmbedCode ||
+			storedFontSize ||
+			storedFontWeight ||
+			storedLetterSpacing ||
+			storedLineHeight
+		) {
+			applyEmbedCode(
+				storedEmbedCode ?? "",
+				storedFontSize,
+				storedFontWeight,
+				storedLetterSpacing,
+				storedLineHeight,
+			);
 		}
 	}, [applyEmbedCode, enabled]);
 
@@ -285,6 +362,7 @@ function HeroGoogleFontSwapControls({
 	embedCode,
 	fontFamily,
 	trialFontSize,
+	trialFontWeight,
 	trialLetterSpacing,
 	trialLineHeight,
 	status,
@@ -294,10 +372,12 @@ function HeroGoogleFontSwapControls({
 }: HeroGoogleFontSwapControlsProps) {
 	const inputId = useId();
 	const fontSizeInputId = useId();
+	const fontWeightInputId = useId();
 	const letterSpacingInputId = useId();
 	const lineHeightInputId = useId();
 	const [draftEmbedCode, setDraftEmbedCode] = useState(embedCode);
 	const [draftFontSize, setDraftFontSize] = useState(trialFontSize);
+	const [draftFontWeight, setDraftFontWeight] = useState(trialFontWeight);
 	const [draftLetterSpacing, setDraftLetterSpacing] = useState(trialLetterSpacing);
 	const [draftLineHeight, setDraftLineHeight] = useState(trialLineHeight);
 	const [isOpen, setIsOpen] = useState(false);
@@ -312,6 +392,10 @@ function HeroGoogleFontSwapControls({
 	}, [trialFontSize]);
 
 	useEffect(() => {
+		setDraftFontWeight(trialFontWeight);
+	}, [trialFontWeight]);
+
+	useEffect(() => {
 		setDraftLetterSpacing(trialLetterSpacing);
 	}, [trialLetterSpacing]);
 
@@ -324,7 +408,13 @@ function HeroGoogleFontSwapControls({
 	}, []);
 
 	const applyDraft = () => {
-		const didApply = onApply(draftEmbedCode, draftFontSize, draftLetterSpacing, draftLineHeight);
+		const didApply = onApply(
+			draftEmbedCode,
+			draftFontSize,
+			draftFontWeight,
+			draftLetterSpacing,
+			draftLineHeight,
+		);
 
 		if (didApply) {
 			setIsOpen(false);
@@ -362,7 +452,13 @@ function HeroGoogleFontSwapControls({
 							const target = event.currentTarget;
 
 							window.setTimeout(() => {
-								onApply(target.value, draftFontSize, draftLetterSpacing, draftLineHeight);
+								onApply(
+									target.value,
+									draftFontSize,
+									draftFontWeight,
+									draftLetterSpacing,
+									draftLineHeight,
+								);
 							}, 0);
 						}}
 					/>
@@ -387,6 +483,29 @@ function HeroGoogleFontSwapControls({
 								value={draftFontSize}
 								placeholder="60"
 								onChange={(event) => setDraftFontSize(event.target.value)}
+							/>
+						</div>
+
+						<div className="min-w-0 flex-1 basis-24">
+							<label
+								htmlFor={fontWeightInputId}
+								className="flex items-center justify-between gap-3 text-xs font-semibold text-secondary"
+							>
+								<span>Weight</span>
+								<span className="font-normal">1-1000</span>
+							</label>
+							<input
+								id={fontWeightInputId}
+								data-hero-google-font-swap-weight-input
+								className="mt-1 w-full rounded-md border border-primary/15 bg-beige/50 px-2 py-1.5 font-mono text-xs text-primary outline-none transition-colors placeholder:text-secondary/70 focus:border-primary/40"
+								type="number"
+								min="1"
+								max="1000"
+								step="1"
+								inputMode="numeric"
+								value={draftFontWeight}
+								placeholder="700"
+								onChange={(event) => setDraftFontWeight(event.target.value)}
 							/>
 						</div>
 
@@ -464,7 +583,13 @@ function HeroGoogleFontSwapControls({
 					className="rounded-full border border-primary/10 bg-white/95 px-3 py-2 font-semibold text-primary shadow-[0_10px_30px_rgba(42,35,29,0.12)] backdrop-blur transition-transform hover:-translate-y-0.5"
 					onClick={() => setIsOpen(true)}
 				>
-					{getTrialButtonLabel(fontFamily, trialFontSize, trialLetterSpacing, trialLineHeight)}
+					{getTrialButtonLabel(
+						fontFamily,
+						trialFontSize,
+						trialFontWeight,
+						trialLetterSpacing,
+						trialLineHeight,
+					)}
 				</button>
 			)}
 		</div>
@@ -487,6 +612,7 @@ export default function HeroGoogleFontSwapWidget({
 			embedCode={heroFontSwap.embedCode}
 			fontFamily={heroFontSwap.fontFamily}
 			trialFontSize={heroFontSwap.trialFontSize}
+			trialFontWeight={heroFontSwap.trialFontWeight}
 			trialLetterSpacing={heroFontSwap.trialLetterSpacing}
 			trialLineHeight={heroFontSwap.trialLineHeight}
 			status={heroFontSwap.status}

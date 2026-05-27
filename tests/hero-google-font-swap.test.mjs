@@ -9,6 +9,7 @@ const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 let parseGoogleFontsEmbed;
 let getHeroGoogleFontFamilyValue;
 let getHeroGoogleFontSizeValue;
+let getHeroGoogleFontWeightValue;
 let getHeroGoogleLetterSpacingValue;
 let getHeroGoogleLineHeightValue;
 
@@ -26,6 +27,7 @@ before(async () => {
 		parseGoogleFontsEmbed,
 		getHeroGoogleFontFamilyValue,
 		getHeroGoogleFontSizeValue,
+		getHeroGoogleFontWeightValue,
 		getHeroGoogleLetterSpacingValue,
 		getHeroGoogleLineHeightValue,
 	} = await import(moduleUrl));
@@ -86,6 +88,17 @@ test("normalizes positive font-size values to pixels", () => {
 	assert.equal(getHeroGoogleFontSizeValue("0"), "");
 	assert.equal(getHeroGoogleFontSizeValue("-1"), "");
 	assert.equal(getHeroGoogleFontSizeValue("large"), "");
+});
+
+test("normalizes whole-number font-weight values", () => {
+	assert.equal(getHeroGoogleFontWeightValue("400"), "400");
+	assert.equal(getHeroGoogleFontWeightValue("700"), "700");
+	assert.equal(getHeroGoogleFontWeightValue("1000"), "1000");
+	assert.equal(getHeroGoogleFontWeightValue(""), "");
+	assert.equal(getHeroGoogleFontWeightValue("0"), "");
+	assert.equal(getHeroGoogleFontWeightValue("1001"), "");
+	assert.equal(getHeroGoogleFontWeightValue("400.5"), "");
+	assert.equal(getHeroGoogleFontWeightValue("bold"), "");
 });
 
 test("normalizes numeric letter-spacing values to pixels", () => {
