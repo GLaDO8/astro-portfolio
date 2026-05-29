@@ -90,6 +90,18 @@ function matchingTests(files) {
 		tests.add("tests/music-widget-assets.test.mjs");
 	}
 
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file === "src/lib/widgetConfig.ts" ||
+				file === "src/components/widgets/BooksWidget.tsx" ||
+				file === "tests/widget-config-books.test.mjs",
+		)
+	) {
+		tests.add("tests/widget-config-books.test.mjs");
+	}
+
 	if (hasAny(files, (file) => file === "src/components/widgets/SnapsWidget.tsx")) {
 		tests.add("tests/snaps-widget-motion.test.mjs");
 	}
