@@ -26,7 +26,9 @@ Labeling is used to ask students to label diagrams and images with the correct a
 ## Old labeling experience
 The old creation experience was a WYSIWYG-style that mimicked the student side interface. 
 
-![image-1](/case-studies/labeling/old-experience.webp)
+![image-1](/case-studies/labeling/old-step-1.png "Step 1: Teachers can start by adding an image or typing the question.")
+
+![image-1](/case-studies/labeling/old-step-2.png "Step 2: Add labels on the image using the option creation panel. The labels appear only after the option is typed.")
 
 ## Investigation and findings
 Question types have two parts, teacher creation and student consumption experience. We investigated both by,
@@ -59,9 +61,11 @@ Our early iterations tried solving this by asking for a label category.
 
 {% labelCategoryIterations /%}
 
-I had this epiphany, “Why not generate a set of questions that teacher can ask?” after image selection? Teachers can preview the labels on hover, simple.
+I had this epiphany, Why not generate a set of questions that teacher can ask, after image selection step? Questions capture teacher's intent on what to ask perfectly, and teachers can preview the labels by hovering on the questions.
 
-{% lottie src="/lottie/labelling.json" label="Image-first Labeling question creation flow" caption="We built a neat interaction to quickly glance at labels generated for each question." loop=true autoplay=true controls=false width="wide" caption="Interactions for question selection and label previews."/%}
+Below is the final interaction pattern we built for showing the generated results.
+
+{% lottie src="/lottie/labelling.json" loop=true autoplay=true controls=false width="wide"/%}
 
 {% accordion title="Prompt engineering and handling label positioning" subtitle="Click to read more about this" %}
 
