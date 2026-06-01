@@ -40,7 +40,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 	return (
 		<motion.section
 			layout={!shouldReduceMotion}
-			className="my-8 overflow-hidden rounded-lg border border-primary/10 bg-white"
+			className="my-8 overflow-hidden rounded-lg border border-primary-neutral/10 bg-white"
 		>
 			<button
 				type="button"
@@ -52,7 +52,7 @@ export default function Accordion({ title, subtitle = defaultSubtitle, children 
 			>
 				<div className="flex flex-col gap-2.5">
 					<p className="font-sans text-lg font-bold text-[#da0288]">{title}</p>
-					<p className="font-sans text-base text-[#70787e]">
+					<p className="font-sans text-base text-secondary-neutral">
 						{isOpen ? collapsedSubtitle : subtitle}
 					</p>
 				</div>

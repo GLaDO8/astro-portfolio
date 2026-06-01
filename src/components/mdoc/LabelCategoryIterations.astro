@@ -5,13 +5,11 @@ import labelCategoryWithNoCount from "@/assets/case-studies/labeling/label-cat-w
 
 const iterations = [
 	{
-		number: "1",
 		text: "We started with asking teachers to provide the category of labels they want to generate, along with no of labels.",
 		image: labelCategoryWithCount,
 		alt: "Label creation UI with separate controls for label category and number of labels.",
 	},
 	{
-		number: "2",
 		text: "But we realised that no of labels and label category are closely associated.\n\nFor example, “Chambers of heart” should ideally be 4 labels. It doesn’t make sense for it to be a choice, so we combined them.",
 		image: labelCategoryWithNoCount,
 		alt: "Label creation UI with label category options that include the number of labels.",
@@ -31,10 +29,7 @@ const iterations = [
 				/>
 
 				<div class="max-w-md">
-					<p class="m-0 mb-5 inline-flex size-10 items-center justify-center bg-pink-100 font-sans text-base font-bold text-pink-700 md:text-lg">
-						{iteration.number}
-					</p>
-					<p class="m-0 whitespace-pre-line font-sans text-base font-medium leading-snug text-primary text-pretty md:text-lg">
+					<p class="m-0 whitespace-pre-line font-sans text-base font-medium leading-snug text-primary-neutral text-pretty md:text-lg">
 						{iteration.text}
 					</p>
 				</div>

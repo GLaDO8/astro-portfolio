@@ -51,7 +51,7 @@ test("lottie tags can hide controls while looping automatically", () => {
 });
 
 test("Lottie component loads JSON by path and cleans up animation instances", () => {
-	assert.match(lottieComponent, /import lottie from "lottie-web"/);
+	assert.match(lottieComponent, /import\("lottie-web"\)/);
 	assert.match(lottieComponent, /lottie\.loadAnimation\(\{/);
 	assert.match(lottieComponent, /path: src/);
 	assert.match(lottieComponent, /controls && \(/);
