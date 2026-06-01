@@ -11,6 +11,7 @@ const { class: className, blurBackground = "var(--color-beige)" } = Astro.props;
 const shellClass = cn("sticky top-4 z-40 mx-auto mb-12 w-full max-w-[39.25rem]", className);
 const blurBackgroundStyle = `--navbar-blur-background: ${blurBackground}`;
 
+/*
 const subdomainLinks = [
 	{
 		href: "https://co2.shrey.fyi",
@@ -19,6 +20,7 @@ const subdomainLinks = [
 		iconHref: "https://co2.shrey.fyi/favicon.ico",
 	},
 ];
+*/
 ---
 
 <!-- progressive blur -->
@@ -45,6 +47,7 @@ const subdomainLinks = [
                 >
                     <span class="pb-0.5 text-lg">shrey.fyi</span>
                 </a>
+                {/*
                 <button
                     type="button"
                     class="group flex size-5 items-center justify-center rounded-full bg-tertiary/45 text-primary/55 transition-all hover:scale-120 hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary/45"
@@ -113,12 +116,14 @@ const subdomainLinks = [
                         }
                     </ul>
                 </div>
+                */}
             </div>
         </nav>
     </div>
 </div>
 
 <script>
+    /*
     const getNavbar = () => document.querySelector<HTMLElement>("[data-navbar]");
 
     const getNavbarMenuElements = (navbar: HTMLElement) => ({
@@ -214,6 +219,7 @@ const subdomainLinks = [
 
     document.addEventListener("astro:page-load", initNavbar);
     initNavbar();
+    */
 </script>
 
 <style>

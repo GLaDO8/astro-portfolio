@@ -115,7 +115,7 @@ export default function SnapsGallery({ snaps, priorityCount = 0 }: SnapsGalleryP
 					<motion.figure
 						key={item.src}
 						className={cn(
-							"rounded-sm flex-none border-12 border-white bg-white shadow-[0_12px_34px_-12px_rgb(42_35_29_/_0.42),0_4px_16px_-8px_rgb(42_35_29_/_0.24),0_1px_3px_rgb(42_35_29_/_0.1)]",
+							"rounded-sm flex-none border-8 border-white bg-white shadow-[0_12px_34px_-12px_rgb(42_35_29_/_0.42),0_4px_16px_-8px_rgb(42_35_29_/_0.24),0_1px_3px_rgb(42_35_29_/_0.1)] sm:border-12",
 							randomRotation(),
 						)}
 						data-snap-span={item.span}
