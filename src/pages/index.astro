@@ -6,61 +6,46 @@ import HeroGoogleFontSwapWidget from "@/dev/HeroGoogleFontSwapWidget";
 import Page from "@/layouts/Page.astro";
 import { getSongData } from "@/lib/widgetConfig";
 
-const homeTextColumn =
-    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
+const homeTextColumn = "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
 const homeWidgetColumn =
-    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
+	"col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const songData = await getSongData();
-const homeStudyOrder = [
-    "wayground-creation",
-    "labelling",
-    "hot-text",
-    "one-more-whistle",
-];
-const studies = (
-    await getCollection(
-        "caseStudies",
-        ({ id, data }) => !data.draft || id === "wayground-creation",
-    )
-)
-    .filter((study) => homeStudyOrder.includes(study.id))
-    .sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
+const homeStudyOrder = ["labelling", "hot-text", "one-more-whistle"];
+const studies = (await getCollection("caseStudies", ({ data }) => !data.draft))
+	.filter((study) => homeStudyOrder.includes(study.id))
+	.sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
 const writings = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 const enableHeroFontSwap = import.meta.env.DEV;
 const homeDescriptionLinkClass =
-    "font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
-const workTitles = {
-    "wayground-creation": "Rethinking how teachers create resources",
-} as const;
+	"font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
 const workReleaseYears = {
-    "wayground-creation": "soon",
-    labelling: 2025,
-    "hot-text": 2024,
+	labelling: 2025,
+	"hot-text": 2024,
 } as const;
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-        {
-            "@type": "WebSite",
-            "@id": "https://shrey.fyi/#website",
-            url: "https://shrey.fyi",
-            name: "Shreyas Gupta",
-            description:
-                "Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-            publisher: { "@id": "https://shrey.fyi/#person" },
-        },
-        {
-            "@type": "Person",
-            "@id": "https://shrey.fyi/#person",
-            name: "Shreyas Gupta",
-            url: "https://shrey.fyi",
-            jobTitle: "Designer",
-            sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-        },
-    ],
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebSite",
+			"@id": "https://shrey.fyi/#website",
+			url: "https://shrey.fyi",
+			name: "Shreyas Gupta",
+			description:
+				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
+			publisher: { "@id": "https://shrey.fyi/#person" },
+		},
+		{
+			"@type": "Person",
+			"@id": "https://shrey.fyi/#person",
+			name: "Shreyas Gupta",
+			url: "https://shrey.fyi",
+			jobTitle: "Designer",
+			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+		},
+	],
 };
 ---
 
@@ -133,42 +118,26 @@ const jsonLd = {
         <div class="mt-6 flex flex-col gap-5">
             {
                 studies.map((study) => {
-                    const title =
-                        workTitles[study.id as keyof typeof workTitles] ??
-                        study.data.title;
                     const year =
                         workReleaseYears[study.id as keyof typeof workReleaseYears] ??
                         study.data.date.getFullYear();
-                    const isUnavailable = study.id === "wayground-creation";
                     const rowClass =
-                        "group flex min-w-0 flex-col gap-1 text-primary no-underline transition-opacity md:flex-row md:items-baseline md:justify-between md:gap-4";
+                        "group flex min-w-0 flex-col gap-1 text-primary no-underline transition-opacity hover:opacity-75 md:flex-row md:items-baseline md:justify-between md:gap-4";
 
-                    const dateClass =
-                        "shrink-0 font-mono text-sm leading-none font-medium tracking-normal text-secondary md:text-lg";
-                    const dateLabel = isUnavailable ? (
-                        <span class={dateClass}>soon</span>
-                    ) : (
-                        <time datetime={String(year)} class={dateClass}>
-                            {year}
-                        </time>
-                    );
-                    const contents = (
-                        <>
-                            <h3 class="min-w-0 text-balance font-sans text-base leading-[1.12] font-medium tracking-[-0.03em] text-primary md:text-xl">
-                                {title}
-                            </h3>
-                            {dateLabel}
-                        </>
-                    );
-
-                    return isUnavailable ? (
-                        <div class={rowClass}>{contents}</div>
-                    ) : (
+                    return (
                         <a
                             href={`/work/${study.id}`}
-                            class:list={[rowClass, "hover:opacity-75"]}
+                            class={rowClass}
                         >
-                            {contents}
+                            <h3 class="min-w-0 text-balance font-sans text-base leading-[1.12] font-medium tracking-[-0.03em] text-primary md:text-xl">
+                                {study.data.title}
+                            </h3>
+                            <time
+                                datetime={String(year)}
+                                class="shrink-0 font-mono text-sm leading-none font-medium tracking-normal text-secondary md:text-lg"
+                            >
+                                {year}
+                            </time>
                         </a>
                     );
                 })
