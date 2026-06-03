@@ -6,52 +6,52 @@ import HeroGoogleFontSwapWidget from "@/dev/HeroGoogleFontSwapWidget";
 import Page from "@/layouts/Page.astro";
 import { getSongData } from "@/lib/widgetConfig";
 
-const homeTextColumn = "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
+const homeTextColumn =
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-10 lg:col-start-4";
 const homeWidgetColumn =
-	"col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
+    "col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3";
 const songData = await getSongData();
 const homeStudyOrder = ["labelling", "hot-text", "one-more-whistle"];
 const studies = (await getCollection("caseStudies", ({ data }) => !data.draft))
-	.filter((study) => homeStudyOrder.includes(study.id))
-	.sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
+    .filter((study) => homeStudyOrder.includes(study.id))
+    .sort((a, b) => homeStudyOrder.indexOf(a.id) - homeStudyOrder.indexOf(b.id));
 const writings = (await getCollection("notes", ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 const enableHeroFontSwap = import.meta.env.DEV;
 const homeDescriptionLinkClass =
-	"font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
+    "font-semibold underline decoration-2 decoration-dotted underline-offset-3 transition-opacity hover:opacity-75";
 const workReleaseYears = {
-	labelling: 2025,
-	"hot-text": 2024,
+    labelling: 2025,
+    "hot-text": 2024,
 } as const;
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [
-		{
-			"@type": "WebSite",
-			"@id": "https://shrey.fyi/#website",
-			url: "https://shrey.fyi",
-			name: "Shreyas Gupta",
-			description:
-				"Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems.",
-			publisher: { "@id": "https://shrey.fyi/#person" },
-		},
-		{
-			"@type": "Person",
-			"@id": "https://shrey.fyi/#person",
-			name: "Shreyas Gupta",
-			url: "https://shrey.fyi",
-			jobTitle: "Designer",
-			sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
-		},
-	],
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://shrey.fyi/#website",
+            url: "https://shrey.fyi",
+            name: "Shreyas Gupta",
+            description: "Design engineer & serial hobbyist.",
+            publisher: { "@id": "https://shrey.fyi/#person" },
+        },
+        {
+            "@type": "Person",
+            "@id": "https://shrey.fyi/#person",
+            name: "Shreyas Gupta",
+            url: "https://shrey.fyi",
+            jobTitle: "Designer",
+            sameAs: ["https://github.com/GLaDO8", "https://x.com/wutamelonshrey"],
+        },
+    ],
 };
 ---
 
 <Page
     title="Shreyas Gupta — Designer"
-    description="Designer, mushroom grower, and cat dad. Writing about design, technology, and everyday systems."
+    description="Design engineer & serial hobbyist."
     bodyClass="bg-beige"
     class="bg-beige gap-y-4 md:gap-y-12"
     seo={{ jsonLd }}
@@ -125,10 +125,7 @@ const jsonLd = {
                         "group flex min-w-0 flex-col gap-2 text-primary no-underline transition-opacity hover:opacity-75 md:flex-row md:items-baseline md:justify-between md:gap-4";
 
                     return (
-                        <a
-                            href={`/work/${study.id}`}
-                            class={rowClass}
-                        >
+                        <a href={`/work/${study.id}`} class={rowClass}>
                             <h3 class="min-w-0 text-balance font-sans text-base leading-[1.12] font-medium tracking-[-0.03em] text-primary md:text-xl">
                                 {study.data.title}
                             </h3>
