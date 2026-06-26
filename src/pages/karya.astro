@@ -1,7 +1,6 @@
 ---
 import { Image } from "astro:assets";
 import researchCall from "@/assets/reachouts/9D060CEB-22DF-49D9-9E78-23CBD5AAC7BA_1_102_o.jpeg";
-import resumeUrl from "@/assets/reachouts/001-shreyas-gupta.pdf?url";
 import fieldworkPlates from "@/assets/reachouts/F9524E03-36D4-4238-B801-5B493ECC50A5_1_102_o 1.png";
 import researchInterface from "@/assets/reachouts/Group 483327.png";
 import fieldworkClassroom from "@/assets/reachouts/Group 483328.png";
@@ -10,27 +9,28 @@ import Document from "@/layouts/Document.astro";
 
 const pitchLinkClass =
 	"font-semibold underline decoration-2 decoration-dotted underline-offset-4 transition-opacity hover:opacity-75";
+const resumeUrl = "/reachouts/shreyas-gupta-resume.pdf";
 
 const fieldworkImages = [
 	{
 		src: fieldworkClassroom,
 		alt: "Fieldwork session with students using laptops in a classroom",
-		class: "w-48 md:w-56",
+		class: "w-48 md:w-56 lg:w-auto lg:flex-[1_1_0]",
 	},
 	{
 		src: fieldworkPlates,
 		alt: "Participants sorting research cards around plates on a table",
-		class: "w-48 md:w-56",
+		class: "w-48 md:w-56 lg:w-auto lg:flex-[1_1_0]",
 	},
 	{
 		src: researchCall,
 		alt: "Remote research interview with four participants on a video call",
-		class: "w-80 md:w-[28rem]",
+		class: "w-80 md:w-[28rem] lg:w-auto lg:flex-[2_1_0]",
 	},
 	{
 		src: researchInterface,
 		alt: "Remote field study with Shreyas and a participant on a video call",
-		class: "w-80 md:w-[28rem]",
+		class: "w-80 md:w-[28rem] lg:w-auto lg:flex-[2_1_0]",
 	},
 ];
 
@@ -89,7 +89,7 @@ const socialLinks = [
 	showNavigation={false}
 	showFooter={false}
 >
-	<article class="mx-auto flex w-full max-w-5xl flex-col gap-14 overflow-hidden">
+	<article class="mx-auto flex w-full max-w-5xl flex-col gap-14">
 		<header class="mx-auto flex w-full max-w-5xl flex-col items-start gap-8 md:px-48">
 			<div class="ml-1 md:ml-0">
 				<PhotoFrameWidget client:visible />
@@ -139,12 +139,12 @@ const socialLinks = [
 
 		<section
 			aria-label="Research and fieldwork images"
-			class="-mx-4 overflow-x-auto px-4 pb-2 md:-mx-8 md:px-8"
+			class="relative left-1/2 w-screen -translate-x-1/2 overflow-x-auto px-4 pb-2 md:px-8 lg:overflow-x-visible"
 		>
-			<div class="flex w-max items-center gap-12 py-2">
+			<div class="flex w-max items-center gap-12 py-2 lg:w-full lg:gap-6">
 				{
 					fieldworkImages.map((image) => (
-						<figure class={`${image.class} shrink-0 bg-white p-2 shadow-[0_4px_16px_rgba(42,35,29,0.16)]`}>
+						<figure class={`${image.class} shrink-0 bg-white p-2 shadow-[0_4px_16px_rgba(42,35,29,0.16)] lg:shrink`}>
 							<Image
 								src={image.src}
 								alt={image.alt}
@@ -188,11 +188,14 @@ const socialLinks = [
 			</section>
 		</div>
 
-		<section aria-label="Peer testimonials" class="-mx-4 overflow-x-auto px-4 pb-3">
-			<div class="flex w-max items-start gap-12 py-2">
+		<section
+			aria-label="Peer testimonials"
+			class="relative left-1/2 w-screen -translate-x-1/2 overflow-x-auto px-4 pb-3 md:px-8 lg:overflow-x-visible"
+		>
+			<div class="flex w-max items-start gap-12 py-2 lg:w-full lg:gap-8">
 				{
 					quotes.map((person) => (
-						<figure class="relative flex w-[21rem] shrink-0 flex-col justify-between gap-8 rounded-sm border border-black/8 bg-white p-5 shadow-xs md:w-[25rem]">
+						<figure class="relative flex w-[21rem] shrink-0 flex-col justify-between gap-8 rounded-sm border border-black/8 bg-white p-5 shadow-xs md:w-[25rem] lg:w-auto lg:flex-1 lg:shrink">
 							<blockquote class="text-pretty font-sans text-base leading-[1.65] font-medium text-primary md:text-lg">
 								"{person.quote}"
 							</blockquote>
