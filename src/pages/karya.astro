@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import researchCall from "@/assets/reachouts/9D060CEB-22DF-49D9-9E78-23CBD5AAC7BA_1_102_o.jpeg";
+import paperWireframes from "@/assets/reachouts/crazy-8-new.png";
 import fieldworkPlates from "@/assets/reachouts/F9524E03-36D4-4238-B801-5B493ECC50A5_1_102_o 1.png";
 import researchInterface from "@/assets/reachouts/Group 483327.png";
 import fieldworkClassroom from "@/assets/reachouts/Group 483328.png";
@@ -16,21 +17,36 @@ const fieldworkImages = [
         src: fieldworkClassroom,
         alt: "Fieldwork session with students using laptops in a classroom",
         class: "w-48 md:w-56 lg:w-auto lg:flex-[1_1_0]",
+        note: "Playtesting new features\nwith school kids",
+        noteClass: "-bottom-6 left-4 w-40 -rotate-2 md:left-6 md:w-48",
     },
     {
         src: fieldworkPlates,
         alt: "Participants sorting research cards around plates on a table",
         class: "w-48 md:w-56 lg:w-auto lg:flex-[1_1_0]",
+        note: "Making dogfooding\nactivities fun",
+        noteClass: "-top-8 left-1/2 w-44 -translate-x-1/2 rotate-3 md:w-44",
+    },
+    {
+        src: paperWireframes,
+        alt: "Paper wireframes sketched across folded sheets on a couch",
+        class: "w-48 md:w-56 lg:w-auto lg:flex-[1_1_0]",
+        note: "Crazy 8 session\nartifacts",
+        noteClass: "-bottom-6 left-1/2 w-40 -translate-x-1/2 rotate-2 md:w-40",
     },
     {
         src: researchCall,
         alt: "Remote research interview with four participants on a video call",
         class: "w-80 md:w-[28rem] lg:w-auto lg:flex-[2_1_0]",
+        note: "Sync with the HCI lab\nat Gothenburg University",
+        noteClass: "-top-8 left-1/2 w-56 -translate-x-1/2 -rotate-3 md:w-52",
     },
     {
         src: researchInterface,
         alt: "Remote field study with Shreyas and a participant on a video call",
         class: "w-80 md:w-[28rem] lg:w-auto lg:flex-[2_1_0]",
+        note: "Interviewing families\nfor my thesis",
+        noteClass: "-right-1 -bottom-6 w-44 rotate-1 md:right-6 md:w-48",
     },
 ];
 
@@ -118,12 +134,14 @@ const socialLinks = [
                 I'm Shreyas, a designer with a background in HCI, fieldwork, data and
                 enterprise systems. I tend to be drawn towards product work that demands
                 deep understanding of user routines, navigating institutional constraints
-                and building across functions, this is why Karya's lead product designer
-                really struck a chord. I put together this page for the team to get an
-                idea of what I do and how I work :)
+                and building across functions.
             </p>
 
-            <p class="mt-12"></p>
+            <p class="mt-12">
+                This is why Karya's lead product designer role really struck a chord. I
+                put together this page for the team to get an idea of what I do and how I
+                work.
+            </p>
 
             <section class="mt-14">
                 <h2
@@ -136,24 +154,27 @@ const socialLinks = [
                     the University of Gothenburg, where I studied the pervasivness and
                     usage of tech families everyday. By building artifacts to understand
                     screen time and fieldwork, I designed non-intrusive ways to study
-                    those patterns without physically disrupting the home, It changed how
-                    I design, made me more attentive to space around the products I built
-                    - constraints, social dynamics and routine realities.
+                    those patterns without physically disrupting the home.
+                </p>
+
+                <p class="mt-12">
+                    It changed how I design, made me more attentive to space around the
+                    products I built - constraints, social dynamics and routine realities.
                 </p>
             </section>
         </div>
 
         <section
             aria-label="Research and fieldwork images"
-            class="relative left-1/2 -my-8 w-screen -translate-x-1/2 overflow-x-auto px-6 pt-8 pb-12 [-ms-overflow-style:none] [scrollbar-width:none] md:pl-52 lg:px-8 [&::-webkit-scrollbar]:hidden"
+            class="relative left-1/2 -my-8 w-screen -translate-x-1/2 overflow-x-auto px-6 pt-20 pb-24 [-ms-overflow-style:none] [scrollbar-width:none] md:pl-44 md:pr-0 lg:px-0 [&::-webkit-scrollbar]:hidden"
         >
             <div
-                class="flex w-max items-center gap-6 py-2 md:-translate-x-8 md:gap-12 lg:ml-60 lg:w-[calc(100%+16rem)] lg:gap-6"
+                class="flex w-max items-center gap-6 py-2 pr-12 md:gap-12 md:pr-16 lg:ml-60 lg:w-[calc(100%+16rem)] lg:gap-6"
             >
                 {
                     fieldworkImages.map((image) => (
                         <figure
-                            class={`${image.class} shrink-0 rounded-sm bg-white p-2 shadow-[0_12px_30px_rgba(42,35,29,0.2),0_0_4px_rgba(122,122,122,0.2)] lg:shrink`}
+                            class={`${image.class} relative shrink-0 rounded-sm bg-white p-2 shadow-[0_12px_30px_rgba(42,35,29,0.2),0_0_4px_rgba(122,122,122,0.2)] lg:shrink`}
                         >
                             <Image
                                 src={image.src}
@@ -162,6 +183,19 @@ const socialLinks = [
                                 decoding="async"
                                 class="h-auto w-full object-cover"
                             />
+                            {image.note && (
+                                <>
+                                    <div
+                                        aria-hidden="true"
+                                        class={`${image.noteClass} pointer-events-none absolute z-10 select-none whitespace-pre bg-yellow-300 px-1 py-2.5 text-center font-sans text-xs leading-tight font-medium text-primary shadow-[0_10px_22px_rgba(42,35,29,0.05)] md:text-sm`}
+                                    >
+                                        {image.note}
+                                    </div>
+                                    <figcaption class="sr-only">
+                                        {image.note.replaceAll("\n", " ")}
+                                    </figcaption>
+                                </>
+                            )}
                         </figure>
                     ))
                 }
@@ -187,28 +221,6 @@ const socialLinks = [
                 <p class="mt-12">
                     Our work was based on a simple principle: use AI to reduce ambiguity,
                     not remove agency.
-                </p>
-            </section>
-
-            <section class="mt-14">
-                <h2
-                    class="text-2xl leading-tight font-bold tracking-[-0.02em] md:text-3xl"
-                >
-                    Craft
-                </h2>
-                <p>
-                    I've been building processes and tools to automate away the pain in my
-                    day to day work (see my <a
-                        href="https://www.raycast.com/GLaDO8"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class={pitchLinkClass}>Raycast extensions</a
-                    > or my <a
-                        href="https://github.com/GLaDO8/claude-context-visualizer"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class={pitchLinkClass}>Claude Code tools</a
-                    >).
                 </p>
             </section>
 
@@ -300,12 +312,15 @@ const socialLinks = [
             class="mx-auto flex w-full max-w-5xl flex-col gap-12 text-pretty font-sans text-lg leading-[1.7] font-medium tracking-[-0.02em] text-primary md:px-48 md:text-2xl"
         >
             <p>
-                Reading the time article reminded me of the thesis behind Snowpiercer -
-                "The engine of society is eternal and we must occupy our preordained
-                positions". Karya is refusing this premise and I write this from my heart
-                to be a part of this team.
+                Karya stood out for me because it is refusing this premise that "the
+                engine of society is eternal and we must occupy our preordained
+                positions", that the design problem is about how work becomes trustworthy
+                and worth doing.
             </p>
-            <p>Would love to talk more about the role!</p>
+            <p>
+                I'd be glad to talk more if this feels useful. My email is
+                gshreyas@icloud.com
+            </p>
 
             <div
                 class="flex flex-col gap-8 pt-2 text-base md:flex-row md:items-center md:justify-between"
