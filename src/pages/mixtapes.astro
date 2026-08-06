@@ -1,0 +1,128 @@
+---
+import Mixtape, { type MixtapeData } from "@/components/mixtapes/Mixtape";
+import Page from "@/layouts/Page.astro";
+
+type MixtapeEntry = MixtapeData & {
+	id: string;
+	status: string;
+	platforms: string[];
+};
+
+const mixtapes: MixtapeEntry[] = [
+	{
+		id: "volume-001",
+		title: "Mixtape 001",
+		description:
+			"A place for songs found across platforms, held together by mood, memory, and repeat listens.",
+		artworkSrc: "/vinyl-album-art.svg",
+		artworkAlt: "Placeholder artwork for Mixtape 001",
+		trackCount: 0,
+		year: "2026",
+		status: "In progress",
+		platforms: ["Apple Music", "Spotify", "YouTube"],
+	},
+];
+
+const featuredMixtape = mixtapes[0];
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "CollectionPage",
+	name: "Mixtapes",
+	description: "Music curations and mixtapes by Shreyas Gupta.",
+	url: "https://shrey.fyi/mixtapes",
+};
+---
+
+<Page
+	title="Mixtapes — Shreyas Gupta"
+	description="Music curations and mixtapes by Shreyas Gupta."
+	bodyClass="bg-beige"
+	class="bg-beige gap-y-16 md:gap-y-20"
+	seo={{ jsonLd }}
+>
+	<section
+		class="col-span-full grid min-w-0 items-center gap-10 pt-2 md:col-span-10 md:col-start-2 lg:col-span-14 lg:col-start-2 lg:grid-cols-[minmax(0,0.78fr)_minmax(28rem,1fr)] lg:gap-12"
+		aria-labelledby="mixtapes-title"
+	>
+		<div class="min-w-0 md:max-w-2xl lg:order-1">
+			<p class="font-mono text-sm leading-none font-medium tracking-normal text-secondary">
+				Curated across platforms
+			</p>
+			<h1
+				id="mixtapes-title"
+				class="mt-5 text-balance font-sans text-5xl leading-[0.95] font-semibold tracking-normal text-primary md:text-7xl"
+			>
+				Mixtapes
+			</h1>
+			<p class="mt-7 max-w-xl text-pretty font-sans text-lg leading-[1.65] font-medium text-secondary md:text-xl">
+				Sets of songs I keep returning to, arranged as small records with custom sleeve art.
+				Each one is meant to share a slice of my taste rather than live inside one streaming
+				service.
+			</p>
+
+			<dl class="mt-9 grid max-w-lg grid-cols-2 gap-x-6 gap-y-5 border-y border-tertiary/70 py-6 font-sans">
+				<div>
+					<dt class="text-sm leading-none font-medium text-secondary">Current tape</dt>
+					<dd class="mt-2 text-base leading-tight font-semibold text-primary">
+						{featuredMixtape.title}
+					</dd>
+				</div>
+				<div>
+					<dt class="text-sm leading-none font-medium text-secondary">Status</dt>
+					<dd class="mt-2 text-base leading-tight font-semibold text-primary">
+						{featuredMixtape.status}
+					</dd>
+				</div>
+				<div>
+					<dt class="text-sm leading-none font-medium text-secondary">Tracks</dt>
+					<dd class="mt-2 text-base leading-tight font-semibold text-primary">
+						{featuredMixtape.trackCount ? featuredMixtape.trackCount : "TBD"}
+					</dd>
+				</div>
+				<div>
+					<dt class="text-sm leading-none font-medium text-secondary">Sources</dt>
+					<dd class="mt-2 text-base leading-tight font-semibold text-primary">
+						{featuredMixtape.platforms.join(", ")}
+					</dd>
+				</div>
+			</dl>
+		</div>
+
+		<div class="relative z-0 -mx-4 flex min-w-0 justify-center overflow-hidden py-4 sm:mx-0 sm:overflow-visible lg:order-2">
+			<Mixtape mixtape={featuredMixtape} variant="large" client:visible />
+		</div>
+	</section>
+
+	<section
+		class="col-span-full min-w-0 md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3"
+		aria-labelledby="mixtape-shelf-title"
+	>
+		<h2
+			id="mixtape-shelf-title"
+			class="font-sans text-base leading-none font-medium tracking-normal text-secondary md:text-lg"
+		>
+			Shelf
+		</h2>
+
+		<div class="mt-6 divide-y divide-tertiary/70 border-y border-tertiary/70">
+			{
+				mixtapes.map((mixtape) => (
+					<article class="grid gap-4 py-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-baseline">
+						<div class="min-w-0">
+							<h3 class="text-balance font-sans text-2xl leading-tight font-semibold text-primary">
+								{mixtape.title}
+							</h3>
+							<p class="mt-2 max-w-2xl text-pretty font-sans text-base leading-relaxed font-medium text-secondary">
+								{mixtape.description}
+							</p>
+						</div>
+						<p class="font-mono text-sm leading-none font-medium text-secondary">
+							{mixtape.status}
+							{mixtape.year ? ` / ${mixtape.year}` : ""}
+						</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+</Page>
