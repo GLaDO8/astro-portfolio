@@ -23,6 +23,16 @@ function json(body: unknown, status = 200, headers: HeadersInit = {}): Response 
 	});
 }
 
+function rejected(error: string, status: number, reason: string): Response {
+	console.warn({
+		event: "health_ingest.rejected",
+		message: "Health ingestion request rejected",
+		reason,
+		status,
+	});
+	return json({ error }, status);
+}
+
 function boundedHeader(request: Request, name: string): string | undefined {
 	const value = request.headers.get(name)?.trim();
 	return value ? value.slice(0, MAX_METADATA_VALUE_LENGTH) : undefined;
@@ -210,41 +220,36 @@ function buildMetadata(
 
 async function archive(request: Request, env: Env): Promise<Response> {
 	if (!(await isAuthorized(request, env.HEALTH_INGEST_TOKEN))) {
-		return json({ error: "Unauthorized" }, 401);
+		return rejected("Unauthorized", 401, "unauthorized");
 	}
 
 	if (!isJson(request)) {
-		return json({ error: "Content-Type must be application/json" }, 415);
+		return rejected("Content-Type must be application/json", 415, "unsupported_content_type");
 	}
 
 	const automationId = request.headers.get("automation-id")?.trim();
 	const sessionId = request.headers.get("session-id")?.trim();
 	if (!automationId || !sessionId) {
-		return json({ error: "automation-id and session-id are required" }, 400);
+		return rejected("automation-id and session-id are required", 400, "missing_source_headers");
 	}
 
 	const contentLength = request.headers.get("content-length");
 	let declaredBytes: number | undefined;
 	if (contentLength && /^\d+$/.test(contentLength)) {
 		declaredBytes = Number(contentLength);
-		if (declaredBytes === 0) return json({ error: "Request body is empty" }, 400);
+		if (declaredBytes === 0) return rejected("Request body is empty", 400, "empty_body");
 		if (declaredBytes > MAX_BODY_BYTES) {
-			return json({ error: "Request body too large" }, 413);
+			return rejected("Request body too large", 413, "body_too_large");
 		}
 	}
 
 	if (request.body === null) {
-		return json({ error: "Request body is empty" }, 400);
+		return rejected("Request body is empty", 400, "empty_body");
 	}
 
 	const ingestId = crypto.randomUUID();
 	const receivedAt = new Date().toISOString();
-	const datePath = receivedAt.slice(0, 10).replaceAll("-", "/");
-	const rawKey = [
-		"raw/health-auto-export",
-		datePath,
-		`${sanitizeKeySegment(receivedAt)}-${sanitizeKeySegment(automationId)}-${sanitizeKeySegment(sessionId)}-${ingestId}.json`,
-	].join("/");
+	const rawKey = `${sanitizeKeySegment(receivedAt)}-${sanitizeKeySegment(automationId)}-${sanitizeKeySegment(sessionId)}-${ingestId}.json`;
 	const state: BodyLimitState = { bytesRead: 0 };
 	const storageOptions = {
 		httpMetadata: { contentType: "application/json" },
@@ -266,34 +271,32 @@ async function archive(request: Request, env: Env): Promise<Response> {
 		}
 	} catch (error) {
 		if (state.violation === "empty") {
-			return json({ error: "Request body is empty" }, 400);
+			return rejected("Request body is empty", 400, "empty_body");
 		}
 		if (state.violation === "too-large") {
-			return json({ error: "Request body too large" }, 413);
+			return rejected("Request body too large", 413, "body_too_large");
 		}
 		if (declaredBytes !== undefined && state.bytesRead !== declaredBytes) {
-			return json({ error: "Content-Length does not match request body" }, 400);
+			return rejected("Content-Length does not match request body", 400, "content_length_mismatch");
 		}
 
-		console.error(
-			JSON.stringify({
-				message: "Raw health archive failed",
-				ingest_id: ingestId,
-				raw_key: rawKey,
-				error_type: error instanceof Error ? error.name : "UnknownError",
-			}),
-		);
+		console.error({
+			event: "health_ingest.archive_failed",
+			message: "Raw health archive failed",
+			ingest_id: ingestId,
+			raw_key: rawKey,
+			error_type: error instanceof Error ? error.name : "UnknownError",
+		});
 		return json({ error: "Archive unavailable" }, 500);
 	}
 
-	console.log(
-		JSON.stringify({
-			message: "Raw health request archived",
-			ingest_id: ingestId,
-			raw_key: rawKey,
-			bytes: state.bytesRead,
-		}),
-	);
+	console.log({
+		event: "health_ingest.archived",
+		message: "Raw health request archived",
+		ingest_id: ingestId,
+		raw_key: rawKey,
+		bytes: state.bytesRead,
+	});
 
 	return json({ ingest_id: ingestId, raw_key: rawKey, status: "archived" });
 }
@@ -309,14 +312,17 @@ async function checkBindings(env: Env): Promise<Response> {
 			throw new Error("D1 health check returned an unexpected result");
 		}
 
+		console.log({
+			event: "health_ingest.health_ok",
+			message: "Cloudflare bindings are healthy",
+		});
 		return json({ status: "ok" });
 	} catch (error) {
-		console.error(
-			JSON.stringify({
-				message: "Cloudflare binding health check failed",
-				error: error instanceof Error ? error.message : String(error),
-			}),
-		);
+		console.error({
+			event: "health_ingest.health_check_failed",
+			message: "Cloudflare binding health check failed",
+			error: error instanceof Error ? error.message : String(error),
+		});
 
 		return json({ status: "unavailable" }, 503);
 	}

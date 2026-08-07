@@ -42,7 +42,7 @@ async function clearBucket(): Promise<void> {
 }
 
 async function archivedKeys(): Promise<string[]> {
-	const listed = await env.HEALTH_RAW.list({ prefix: "raw/health-auto-export/" });
+	const listed = await env.HEALTH_RAW.list();
 	return listed.objects.map(({ key }) => key);
 }
 
@@ -152,9 +152,7 @@ describe("raw archive contract", () => {
 		expect(response.headers.get("cache-control")).toBe("no-store");
 		expect(result.status).toBe("archived");
 		expect(result.ingest_id).toMatch(/^[0-9a-f-]{36}$/);
-		expect(result.raw_key).toMatch(
-			/^raw\/health-auto-export\/\d{4}\/\d{2}\/\d{2}\/[^/]+-metrics-daily-session-001-[0-9a-f-]{36}\.json$/,
-		);
+		expect(result.raw_key).toMatch(/^[^/]+-metrics-daily-session-001-[0-9a-f-]{36}\.json$/);
 
 		const object = await env.HEALTH_RAW.get(result.raw_key);
 		expect(object).not.toBeNull();
@@ -233,11 +231,13 @@ describe("raw archive contract", () => {
 		const payload = JSON.stringify({ metric: "PRIVATE-METRIC", gps: "PRIVATE-GPS" });
 		const log = vi.spyOn(console, "log").mockImplementation(() => undefined);
 		const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
 		const response = await dispatch(request(payload));
 		expect(response.status).toBe(200);
+		expect(log).toHaveBeenCalledWith(expect.objectContaining({ event: "health_ingest.archived" }));
 
-		const output = [...log.mock.calls, ...error.mock.calls].flat().join(" ");
+		const output = JSON.stringify([...log.mock.calls, ...error.mock.calls, ...warn.mock.calls]);
 		expect(output).not.toContain("PRIVATE-METRIC");
 		expect(output).not.toContain("PRIVATE-GPS");
 		expect(output).not.toContain(TOKEN);

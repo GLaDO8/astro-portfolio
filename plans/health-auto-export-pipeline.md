@@ -1,7 +1,7 @@
 # Health Auto Export raw ingestion
 
-Status: Phase 1 implemented and locally verified. No production resources or data have been changed;
-Phase 2 deployment and contract capture remain pending.
+Status: Phase 1 implemented and verified. The archive-only Worker is deployed; manual Health Auto
+Export contract capture remains pending before scheduled syncing is enabled.
 
 ## Outcome
 
@@ -24,10 +24,11 @@ The repository already has a standalone Worker under `workers/health-ingest/`, s
 static Astro site.
 
 - `GET /health` checks the existing `HEALTH_RAW` R2 and `HEALTH_DB` D1 bindings.
-- R2 bucket `health-raw-data` exists and is empty.
+- R2 bucket `health-raw-data` contains the initial manual export objects.
 - D1 database `health-processed-data` exists but remains unused in this phase.
-- `HEALTH_INGEST_TOKEN` is declared but not yet used by the Worker.
-- The Worker has not been deployed.
+- `HEALTH_INGEST_TOKEN` is configured as a production Worker secret and authenticates ingestion.
+- The Worker is deployed at `https://health-ingest.glado8.workers.dev`.
+- Structured, payload-free Worker logs are enabled in Cloudflare Observability.
 
 ## Active architecture
 
@@ -45,7 +46,7 @@ Health Auto Export: Workouts automation ---+--> HTTPS POST
                                                    |
                                                    v
                                            private R2 bucket
-                                           raw/health-auto-export/...
+                                           flat immutable objects
 ```
 
 The HTTP request is successful only after the R2 write resolves. There is no asynchronous processing
@@ -116,11 +117,13 @@ Return `401`, `405`, `413`, `415`, or `5xx` for their corresponding failures.
 Object key:
 
 ```text
-raw/health-auto-export/YYYY/MM/DD/<received-at>-<automation-id>-<session-id>-<ingest-id>.json
+<received-at>-<automation-id>-<session-id>-<ingest-id>.json
 ```
 
 Properties:
 
+- Objects are stored at the bucket root without virtual directory prefixes.
+- Two objects captured before the flat-key deployment retain their original dated-prefix keys.
 - The Worker-generated UUID makes every delivery immutable; repeated requests never overwrite raw
   evidence.
 - The original body bytes are retained unchanged.
