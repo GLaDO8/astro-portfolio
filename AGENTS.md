@@ -2,7 +2,7 @@
 This personal website will be the home to publish my writings, design case studies, experiments, and other creative work.
 
 ## Tech Stack
-Astro 6 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Motion · Biome · TypeScript · Lenis (for smooth scrolling)
+Astro 7.2 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Motion · Biome · TypeScript · Lenis (for smooth scrolling)
 
 ## Key Files
 - `src/layouts/Document.astro` — document and app-shell layout. Owns SEO, font preloading, global CSS, `ClientRouter`, Lenis bootstrapping, skip link, dev-only toolbar mounting, shared max-width shell, optional navbar, main content wrapper, and page enter/leave state used by shell transitions.
