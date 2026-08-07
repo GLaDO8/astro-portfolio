@@ -17,6 +17,7 @@ const BIOME_EXTENSIONS = new Set([
 ]);
 const DESIGN_TOKEN_EXTENSIONS = new Set([".astro", ".css", ".js", ".jsx", ".mdoc", ".ts", ".tsx"]);
 const IGNORED_PREFIXES = ["dist/", ".astro/", "node_modules/", ".codex/", "public/lottie/"];
+const GENERATED_FILES = new Set(["workers/health-ingest/worker-configuration.d.ts"]);
 
 function run(command, args) {
 	console.log(`$ ${[command, ...args].join(" ")}`);
@@ -46,6 +47,7 @@ function changedFiles() {
 
 	return [...new Set([...tracked, ...untracked])]
 		.filter((filePath) => !IGNORED_PREFIXES.some((prefix) => filePath.startsWith(prefix)))
+		.filter((filePath) => !GENERATED_FILES.has(filePath))
 		.filter((filePath) => fs.existsSync(filePath) && fs.statSync(filePath).isFile());
 }
 
@@ -186,6 +188,13 @@ const designFiles = files.filter(
 	(file) => file.startsWith("src/") && DESIGN_TOKEN_EXTENSIONS.has(path.extname(file)),
 );
 const tests = matchingTests(files);
+const healthWorkerChanged = hasAny(
+	files,
+	(file) =>
+		file.startsWith("workers/health-ingest/") ||
+		file === "package.json" ||
+		file === "pnpm-lock.yaml",
+);
 let ok = true;
 
 if (biomeFiles.length > 0) {
@@ -200,6 +209,10 @@ if (tests.length > 0) {
 	ok = run("pnpm", ["exec", "node", "--test", ...tests]) && ok;
 } else {
 	console.log("verify:changed: no focused tests matched these files.");
+}
+
+if (healthWorkerChanged) {
+	ok = run("pnpm", ["health:verify"]) && ok;
 }
 
 process.exitCode = ok ? 0 : process.exitCode || 1;

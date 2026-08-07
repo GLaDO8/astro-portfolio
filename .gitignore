@@ -3,5 +3,11 @@ dist/
 .astro/
 .env
 .env.*
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+!**/.dev.vars.example
+.wrangler/
+**/.wrangler/
 .openlogs/
 .DS_Store

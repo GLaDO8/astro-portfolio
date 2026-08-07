@@ -68,7 +68,15 @@
 		}
 	],
 	"files": {
-		"includes": ["**", "!.claude", "!.codex", "!dist", "!.astro", "!public/lottie/*.json"],
+		"includes": [
+			"**",
+			"!.claude",
+			"!.codex",
+			"!dist",
+			"!.astro",
+			"!public/lottie/*.json",
+			"!workers/health-ingest/worker-configuration.d.ts"
+		],
 		"ignoreUnknown": true,
 		"maxSize": 1048576
 	}

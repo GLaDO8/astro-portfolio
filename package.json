@@ -18,7 +18,17 @@
 		"check": "biome check .",
 		"check:design": "node scripts/check-design-tokens.mjs",
 		"images": "node scripts/optimize-images.mjs",
-		"images:watch": "node scripts/optimize-images.mjs --watch"
+		"images:watch": "node scripts/optimize-images.mjs --watch",
+		"health:dev": "wrangler dev --config workers/health-ingest/wrangler.jsonc",
+		"health:types": "wrangler types workers/health-ingest/worker-configuration.d.ts --config workers/health-ingest/wrangler.jsonc",
+		"health:types:check": "wrangler types workers/health-ingest/worker-configuration.d.ts --config workers/health-ingest/wrangler.jsonc --check",
+		"health:typecheck": "tsc --project workers/health-ingest/tsconfig.json --noEmit",
+		"health:deploy:dry": "wrangler deploy --config workers/health-ingest/wrangler.jsonc --dry-run",
+		"health:verify": "pnpm health:types:check && pnpm health:typecheck && pnpm health:deploy:dry",
+		"health:deploy": "wrangler deploy --config workers/health-ingest/wrangler.jsonc",
+		"health:secret:set": "wrangler secret put HEALTH_INGEST_TOKEN --config workers/health-ingest/wrangler.jsonc",
+		"health:db:migrate:local": "wrangler d1 migrations apply health-processed-data --config workers/health-ingest/wrangler.jsonc --local",
+		"health:db:migrate:remote": "wrangler d1 migrations apply health-processed-data --config workers/health-ingest/wrangler.jsonc --remote"
 	},
 	"dependencies": {
 		"@astrojs/markdoc": "^2.0.6",
@@ -54,6 +64,7 @@
 		"@types/react-dom": "^19.2.4",
 		"sharp": "^0.35.3",
 		"typescript": "^5.9.3",
-		"vite": "8.2.0"
+		"vite": "8.2.0",
+		"wrangler": "^4.119.0"
 	}
 }
