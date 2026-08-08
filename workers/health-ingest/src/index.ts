@@ -4,7 +4,7 @@ const JSON_HEADERS = {
 };
 
 const INGEST_PATH = "/v1/ingest/health-auto-export";
-const MAX_BODY_BYTES = 25 * 1024 * 1024;
+const MAX_BODY_BYTES = 90 * 1024 * 1024;
 const MULTIPART_CHUNK_BYTES = 5 * 1024 * 1024;
 const MAX_KEY_SEGMENT_LENGTH = 64;
 const MAX_METADATA_VALUE_LENGTH = 256;

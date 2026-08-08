@@ -6,7 +6,7 @@ import workoutsFixture from "./fixtures/workouts.json?raw";
 
 const ENDPOINT = "https://health.example/v1/ingest/health-auto-export";
 const TOKEN = "synthetic-test-token";
-const MAX_BODY_BYTES = 25 * 1024 * 1024;
+const MAX_BODY_BYTES = 90 * 1024 * 1024;
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
 
 function request(
@@ -110,7 +110,7 @@ describe("health ingestion routing and validation", () => {
 
 	it("enforces the size limit while streaming", async () => {
 		const chunk = new Uint8Array(1024 * 1024);
-		let remaining = 26;
+		let remaining = 91;
 		const body = new ReadableStream<Uint8Array>({
 			pull(controller) {
 				if (remaining === 0) controller.close();
@@ -124,6 +124,24 @@ describe("health ingestion routing and validation", () => {
 		const response = await dispatch(request(body));
 		expect(response.status).toBe(413);
 		expect(await archivedKeys()).toEqual([]);
+	});
+
+	it("accepts a streamed body beyond the previous 25 MiB ceiling", async () => {
+		const chunk = new Uint8Array(1024 * 1024);
+		let remaining = 26;
+		const body = new ReadableStream<Uint8Array>({
+			pull(controller) {
+				if (remaining === 0) controller.close();
+				else {
+					controller.enqueue(chunk);
+					remaining -= 1;
+				}
+			},
+		});
+
+		const response = await dispatch(request(body));
+		expect(response.status).toBe(200);
+		expect(await archivedKeys()).toHaveLength(1);
 	});
 });
 

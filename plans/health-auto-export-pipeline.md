@@ -68,8 +68,10 @@ Use these initial settings:
 - Metrics: select only metrics we expect to use later; avoid exporting every available empty metric.
 - Workouts: begin without second-level workout metrics or route data unless those details are needed.
 
-Batching is important because Health Auto Export can produce very large requests. The initial Worker
-application limit is 25 MB per request and should be revised after measuring real manual exports.
+Batching is important because Health Auto Export can produce very large requests. The Worker
+application limit is 90 MiB per request, below Cloudflare's 100 MB Free/Pro platform limit. The
+limit was raised after the first unsummarized backfill produced repeated `413` responses around the
+original 25 MiB ceiling.
 
 ## Ingress contract
 
@@ -102,7 +104,7 @@ not infer batch ordering or group requests into a run.
 1. Match only the exact route and `POST` method.
 2. Compare the bearer token using a constant-time digest comparison.
 3. Require the source headers and JSON content type.
-4. Reject requests over 25 MB. Enforce the ceiling while streaming rather than trusting only
+4. Reject requests over 90 MiB. Enforce the ceiling while streaming rather than trusting only
    `Content-Length`.
 5. Generate a UUID ingest ID and sanitize all header-derived key segments.
 6. Stream the original request body directly into R2 without parsing, transforming, or logging it.
@@ -185,6 +187,9 @@ Exit criterion: metrics and workouts are durably archived in private R2 with exa
 request metadata, no payload logging, and no D1 writes.
 
 ## Deferred D1 transformation
+
+The researched next-phase architecture is tracked in `plans/health-transformation-pipeline.md`.
+Provisioning and implementation remain separately review-gated.
 
 Do not provision a Queue, create migrations, parse archived JSON, or write D1 in the current release.
 

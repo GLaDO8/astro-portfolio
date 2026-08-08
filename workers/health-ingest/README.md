@@ -31,7 +31,8 @@ The production endpoints are:
 - `https://health-ingest.glado8.workers.dev/v1/ingest/health-auto-export`
 
 The ingestion route requires a bearer token, `application/json`, `automation-id`, and `session-id`.
-It rejects empty bodies and requests over 25 MiB. Bodies with a declared length stream through a
+It rejects empty bodies and requests over 90 MiB. This stays below Cloudflare's 100 MB request-body
+limit on Free and Pro plans while allowing Health Auto Export's larger JSON batches. Bodies with a declared length stream through a
 fixed-length R2 write; chunked bodies use an abortable multipart upload so the limit is still
 enforced without buffering the complete request. D1 is not accessed by ingestion.
 
