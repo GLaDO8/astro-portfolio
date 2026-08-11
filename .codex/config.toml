@@ -4,3 +4,7 @@ args = [
     "agentation-mcp",
     "server",
 ]
+
+[mcp_servers.health-auto-export]
+url = "http://192.168.0.85:9000/mcp"
+bearer_token_env_var = "HAE_MCP_TOKEN"
