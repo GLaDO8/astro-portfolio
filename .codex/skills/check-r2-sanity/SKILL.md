@@ -23,7 +23,7 @@ Use the report to assess:
 
 - inventory and JSON/envelope integrity;
 - observed payload-date coverage rather than receipt timestamps;
-- metric breadth, units, row/source/timestamp coverage, and core-metric presence;
+- metric breadth, units, metric-aware numeric rows (including summarized sleep fields), row/source/timestamp coverage, and core-metric presence;
 - workout IDs, duplicate deliveries, summary-only versus actual nested series;
 - workout-series and route timestamps outside declared workout intervals;
 - duplicate raw payload digests.

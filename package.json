@@ -28,6 +28,7 @@
 		"health:verify": "pnpm health:test && pnpm health:types:check && pnpm health:typecheck && pnpm health:deploy:dry",
 		"health:deploy": "wrangler deploy --config workers/health-ingest/wrangler.jsonc",
 		"health:secret:set": "wrangler secret put HEALTH_INGEST_TOKEN --config workers/health-ingest/wrangler.jsonc",
+		"health:r2:clear": "node .codex/skills/clear-r2/scripts/clear-r2.mjs",
 		"health:db:migrate:local": "wrangler d1 migrations apply health-processed-data --config workers/health-ingest/wrangler.jsonc --local",
 		"health:db:migrate:remote": "wrangler d1 migrations apply health-processed-data --config workers/health-ingest/wrangler.jsonc --remote"
 	},

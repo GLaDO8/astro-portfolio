@@ -22,6 +22,16 @@ const CORE_METRICS = new Map([
 	["HRV", ["heartratevariability", "hrv", "heartratevariabilitysdnn"]],
 	["flights climbed", ["flightsclimbed"]],
 ]);
+const DEFAULT_NUMERIC_FIELDS = ["qty", "Avg", "Min", "Max"];
+const SLEEP_SUMMARY_NUMERIC_FIELDS = [
+	"asleep",
+	"awake",
+	"core",
+	"deep",
+	"inBed",
+	"rem",
+	"totalSleep",
+];
 
 function fail(message) {
 	console.error(`check-r2-sanity: ${message}`);
@@ -150,6 +160,24 @@ function normalizedMetricName(value) {
 	return String(value ?? "")
 		.toLowerCase()
 		.replace(/[^a-z0-9]/g, "");
+}
+
+function hasInvalidNumericData(metricName, row) {
+	if (!row || typeof row !== "object" || Array.isArray(row)) return true;
+
+	const isSleepSummary = normalizedMetricName(metricName) === "sleepanalysis";
+	const expectedFields = isSleepSummary ? SLEEP_SUMMARY_NUMERIC_FIELDS : DEFAULT_NUMERIC_FIELDS;
+	const presentFields = expectedFields.filter((field) => field in row);
+
+	return (
+		presentFields.length === 0 ||
+		presentFields.some(
+			(field) =>
+				typeof row[field] !== "number" ||
+				!Number.isFinite(row[field]) ||
+				(isSleepSummary && row[field] < 0),
+		)
+	);
 }
 
 function parseTimestamp(value) {
@@ -312,14 +340,8 @@ function analyze(objects, getBody, expectedRange) {
 				for (const row of rows) {
 					if (row && typeof row === "object" && !Array.isArray(row)) {
 						for (const key of Object.keys(row)) aggregate.rowKeys.add(key);
-						const numericKeys = ["qty", "Avg", "Min", "Max"].filter((key) => key in row);
-						if (
-							numericKeys.length === 0 ||
-							numericKeys.some((key) => typeof row[key] !== "number" || !Number.isFinite(row[key]))
-						) {
-							aggregate.invalidNumericRows += 1;
-						}
-					} else {
+					}
+					if (hasInvalidNumericData(name, row)) {
 						aggregate.invalidNumericRows += 1;
 					}
 					const rowDigest = createHash("sha256")
