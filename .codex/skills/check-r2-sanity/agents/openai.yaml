@@ -1,0 +1,4 @@
+interface:
+  display_name: "Check Health R2 Sanity"
+  short_description: "Audit private Health Export data in R2"
+  default_prompt: "Use $check-r2-sanity to audit the quality and coverage of the private Health Export data in R2."

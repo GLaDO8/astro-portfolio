@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clear Health R2"
+  short_description: "Safely clear archived health objects from R2"
+  default_prompt: "Use $clear-r2 to snapshot and clear all archived health objects from the private R2 bucket."

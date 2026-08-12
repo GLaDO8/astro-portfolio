@@ -1,295 +1,214 @@
-# Health transformation and analytics pipeline
+# Health data transformation and exploratory D1 schema
 
-Status: Architecture researched. No D1 schema, Queue, Workflow, R2 notification, transform, or query
-API has been provisioned. The schema remains provisional until representative Health Auto Export v2
-metric and workout envelopes are captured as synthetic fixtures.
+Status: Proposed plan. Read-only discovery is complete; no D1 schema, migration, transform, query API, Queue, Workflow, or R2 event notification has been created.
+
+## Goal
+
+Create a small, durable D1 foundation that lets us build and change health visualizations quickly, without pretending that the final dashboard or analytics are known.
+
+R2 remains the immutable private source of truth. D1 is a rebuildable query layer: normalize only broadly useful facts, perform early visualization transformations at query time, and add materialized derivations only after real charts repeat the same expensive computation.
+
+## Working assumptions to confirm before implementation
+
+1. The first dashboard is private and authenticated.
+2. The first transform loads every numeric metric observed in metric deliveries, not only a chart shortlist.
+3. R2-to-D1 starts as an idempotent manual replay/backfill; automatic event processing comes later.
+4. Raw R2 objects are retained indefinitely and are never exposed to the public site.
+5. Any future public visualization reads from an approved aggregate/projection, never the private canonical tables directly.
+6. Workout payloads remain archived only in R2 and create no D1 rows in the first schema.
+
+These choices maximize exploration while keeping the first implementation bounded. Changing them affects the API or transformer, but not the core fact model.
+
+## Evidence snapshot
+
+Read-only remote inspection at `2026-08-11T15:34:32.913Z` found:
+
+- R2 `health-raw-data`: 90 JSON objects / 55,763,281 bytes;
+- 89 `Daily sync (Minutes)` metric objects / 53,274,902 bytes;
+- one `Daily workout sync (Seconds)` object / 2,488,379 bytes;
+- metric envelope: `{ data: { metrics: [{ name, units, data }] } }`;
+- ordinary metric rows: `{ date, qty, source }`;
+- minute heart-rate rows: `{ date, Avg, Min, Max, source }`;
+- bounded metric samples ranged from 7 to 25 types, spanning dense activity/cardio and sparse body, respiratory, temperature, and nutrition observations.
+
+D1 `health-processed-data` was 24,576 bytes with no application tables or applied migrations; only Wrangler's empty internal migration table existed. The prior `2026-08-10` snapshot had 96 R2 objects; the current exact listing has 90. This audit did not cause the decrease. Reconcile retention/lifecycle behavior before treating the archive as complete.
+
+R2 keys identify delivery lineage, not health coverage. Requested and observed-payload ranges remain separate. Workout payloads are deliberately deferred rather than forced into the regular metric model.
 
 ## Decision
 
-Use a hybrid query model:
-
-1. R2 remains the immutable source of truth.
-2. D1 stores canonical observations and workouts at their useful natural grain.
-3. Reusable daily and workout-level derivations are computed once and versioned.
-4. Dashboard endpoints compose arbitrary date ranges from canonical facts and reusable derivations.
-5. Complete chart payloads are not precomputed for every possible date range.
-
-This keeps the dashboard flexible without recalculating expensive workout analytics on every read.
-
-## Architecture
+Use a narrow normalized schema with two D1 layers:
 
 ```text
-Health Auto Export
-        |
-        v
-archive-only ingestion Worker
-        |
-        v
-immutable R2 object ------------------------------+
-        |                                          |
-        | object-create notification               | replay/backfill
-        v                                          v
-      Queue ------------------------------> transform Workflow
-                                                   |
-                                     parse + normalize + deduplicate
-                                                   |
-                                                   v
-                                          canonical D1 facts
-                                                   |
-                                      reusable derived calculations
-                                                   |
-                                                   v
-                                          private query API
-                                                   |
-                                                   v
-                                              dashboard
+private R2 -> delivery/transform lineage -> general metric samples
+                                         -> query-time hour/day transforms
+                                         -> later reusable derivations
 ```
 
-The ingestion response continues to depend only on the R2 archive write. Parsing and D1 failures
-must never prevent raw evidence from being retained.
+Do not create one wide column per metric while the metric set and visualizations are evolving. Workout objects remain available in R2 for a separate future design.
 
-## Visualization computation boundary
+Do not store chart-shaped JSON in D1. Return chart-ready shapes from bounded functions over canonical numeric facts.
 
-| Visualization | Canonical source | Query or precompute |
+## Proposed D1 schema
+
+Range-query timestamps are integer Unix milliseconds. Retain `local_date` and source UTC offset so day charts follow the day of occurrence. Quantities and counts use SQLite `REAL` because observed counts can be fractional. Normalize source strings and units without silent inference.
+
+### 1. `raw_deliveries`
+
+| Column | Type | Purpose |
 | --- | --- | --- |
-| Workout contribution calendar | workouts | Query by local workout date |
-| Step-count graph | daily metric rollups | Precompute daily sum; query ranges |
-| VO2 max graph | metric observations | Query sparse observations directly |
-| Weight graph | metric observations | Query sparse observations directly |
-| Body-fat graph | metric observations | Query sparse observations directly |
-| HRV graph | observations or daily rollups | Query observations; optionally expose daily aggregate |
-| Workout pace time series | workout minutes | Query minute samples directly |
-| Time in HR zones | workout minutes + zone profile | Precompute versioned per-workout zone totals |
-| Pace-to-HR curve | workout minutes | Query initially; materialize bins only if measured reads are slow |
-| Aerobic decoupling | workout minutes | Precompute per workout with an algorithm version |
-| Pace curve | workout minutes | Define the chart first; precompute only if it means rolling best-effort points |
-| Exercise PRs | future Bevel exercise sets | Separate future schema; do not add placeholder workout columns |
+| `id` | `INTEGER PRIMARY KEY` | Compact internal key |
+| `object_key` | `TEXT NOT NULL UNIQUE` | Exact R2 key |
+| `etag` | `TEXT` | Object version evidence |
+| `automation_id` | `TEXT NOT NULL` | Delivery provenance |
+| `session_id` | `TEXT NOT NULL` | Batch/session provenance |
+| `ingest_id` | `TEXT NOT NULL UNIQUE` | Worker receipt UUID |
+| `received_at_ms` | `INTEGER NOT NULL` | R2 receipt time |
+| `size_bytes` | `INTEGER NOT NULL` | Reconciliation and sizing |
+| `payload_sha256` | `TEXT` | Exact-content identity after transform |
+| `requested_start_ms` / `requested_end_ms` | `INTEGER` | Only when present in payload metadata |
+| `observed_start_ms` / `observed_end_ms` | `INTEGER` | Calculated from contained records |
+| `record_count` | `INTEGER` | Top-level metric rows |
 
-Precomputed data should remain reusable analytic facts, not presentation-specific JSON. A chart can
-therefore change its date range, dimensions, or rendering without requiring a new transformation.
+No personal values or raw payload fragments belong in lineage fields or logs.
 
-## Provisional D1 model
+### 2. `transform_runs`
 
-The exact columns and record identity rules must be confirmed against real version 2 envelopes.
+| Column | Type | Purpose |
+| --- | --- | --- |
+| `delivery_id` | `INTEGER NOT NULL` | References `raw_deliveries` |
+| `transform_version` | `INTEGER NOT NULL` | Replay/version boundary |
+| `status` | `TEXT NOT NULL` | `running`, `complete`, or `failed` |
+| `started_at_ms` / `completed_at_ms` | `INTEGER` | Operational timing |
+| `metric_rows` / `sample_rows` | `INTEGER` | Reconciliation counts |
+| `error_code` | `TEXT` | Bounded non-sensitive failure code |
 
-### Processing and lineage
+Primary key: `(delivery_id, transform_version)`.
 
-`raw_objects`
+### 3. `metric_definitions`
 
-- R2 object key and eTag;
-- ingest ID, byte size, received time, and source metadata;
-- first-seen and latest processing status.
+A small catalog that prevents repeated strings and defines safe aggregation behavior.
 
-`transform_runs`
+| Column | Type | Purpose |
+| --- | --- | --- |
+| `id` | `INTEGER PRIMARY KEY` | Internal key |
+| `code` | `TEXT NOT NULL UNIQUE` | Stable application identifier |
+| `source_name` | `TEXT NOT NULL` | Observed Health Auto Export name |
+| `canonical_unit` | `TEXT NOT NULL` | Unit stored in D1 |
+| `value_shape` | `TEXT NOT NULL` | `scalar` or `range` |
+| `rollup_method` | `TEXT NOT NULL` | `sum`, `average`, `latest`, `range`, or `none` |
+
+`rollup_method` is reviewed metric semantics, not guessed from the unit. This prevents steps, heart
+rate, weight, and VO2 max from being aggregated with the same rule.
 
-- raw object key;
-- transform version;
-- status, attempts, started/completed times, and bounded error code;
-- unique key on `(raw_object_key, transform_version)`.
-
-Workflow state and Queue delivery history are operational signals, not durable lineage. D1 records
-the processing outcome because Workflow history has limited retention.
-
-### Metric facts
-
-`metric_definitions`
-
-- canonical metric code;
-- canonical unit;
-- semantic rollup policy such as sum, average, or latest;
-- display metadata only when shared across queries.
-
-`metric_observations`
-
-- stable source identity or deterministic semantic hash;
-- metric code;
-- observation start/end in UTC;
-- local date and source offset/timezone;
-- normalized numeric value and canonical unit;
-- source/device fields only when present and useful;
-- source raw-object reference and transform version.
-
-Primary query index: `(metric_code, observed_at)`.
-
-`daily_metric_rollups`
-
-- local date and metric code;
-- sum, average, minimum, maximum, latest value, and sample count as applicable;
-- rollup and transform versions;
-- primary key on `(metric_code, local_date, rollup_version)`.
-
-Daily buckets make arbitrary dashboard ranges cheap while raw observations remain available for
-sparse metrics and future analysis.
-
-### Workout facts
-
-`workouts`
-
-- stable source workout identity;
-- activity type, start/end in UTC, local date and timezone/offset;
-- duration, distance, energy, and source-provided workout summaries;
-- source raw-object reference and transform version.
-
-Indexes: `(started_at)` and `(activity_type, started_at)`.
-
-`workout_minutes`
-
-- workout identity and minute index/start time;
-- broadly reusable telemetry such as heart rate, pace/speed, and distance delta;
-- nullable typed columns only for telemetry shared by multiple analytics;
-- primary key on `(workout_id, minute_index)`.
-
-Minute buckets are the canonical analysis grain for running and interval workouts. Strength
-training remains a workout without fabricated pace or heart-rate columns.
-
-### Versioned derivations
-
-`hr_zone_profiles`
-
-- effective date range;
-- method and zone thresholds;
-- version.
-
-`workout_hr_zone_totals`
-
-- workout, zone-profile version, zone, seconds/minutes, and percentage.
-
-`workout_derived_metrics`
-
-- workout;
-- metric or algorithm name;
-- algorithm version;
-- numeric result and bounded parameters needed to interpret it.
-
-Aerobic decoupling must define pause handling, warm-up exclusion, split method, and pace/HR validity
-before implementation. Changing a formula creates a new version and replay, not destructive updates.
-
-Future Bevel strength data should use separate `exercise_sets` and `exercise_prs` tables once its
-source contract is known.
-
-## Identity, overlap, and replay
-
-- Queue delivery is at-least-once and unordered; every write must be idempotent.
-- A raw ingest UUID proves a delivery is unique but does not prove its health records are unique.
-- Prefer stable Health Auto Export or HealthKit record IDs when the envelope provides them.
-- Otherwise derive a deterministic semantic key from metric/workout type, timestamps, source, unit,
-  and value fields confirmed by contract capture.
-- Repeated monthly exports and Since Last Sync overlap must upsert rather than duplicate facts.
-- R2 is retained indefinitely, so D1 can be rebuilt when schemas or algorithms change.
-- Backfill all existing objects before enabling the R2 object-create notification for new objects.
-
-## Processing strategy
-
-Use one Queue and one Workflow type:
-
-1. R2 object-create sends only object key, eTag, and size to the Queue.
-2. The Queue consumer starts a deterministic Workflow for object key plus transform version.
-3. The Workflow claims `transform_runs`, reads R2, parses the envelope, and writes bounded D1 batches.
-4. Stable reusable derivations run after canonical facts commit.
-5. The Workflow marks the durable D1 run complete; failures remain replayable.
-
-For the retained corpus, an authenticated operator action lists both legacy-prefixed and flat R2
-keys and starts Workflows in bounded batches. Do not depend on notifications for old objects.
-
-Large JSON objects should not be blindly loaded with `JSON.parse`. Workers have 128 MB of memory and
-JSON can expand several times beyond its wire size. Use smaller source exports initially and evaluate
-a streaming JSON parser against representative fixtures before transforming large objects.
-
-D1 writes should use prepared statements, indexes for date/filter access, and small transactional
-`batch()` calls. A complete monthly backfill must not be one transaction. Measure query plans and
-`rows_read`/`rows_written` before tuning batch size.
-
-## Export profile for the 2026 backfill
-
-Do not use one unsummarized automation for every metric.
-
-### High-volume daily trends
-
-- Step count and similar activity totals;
-- Summarise Data: on;
-- Time Grouping: days;
-- JSON version 2 and Batch Requests: on.
-
-Daily aggregation preserves the grain required by the listed charts while sharply reducing device
-query and encoding pressure.
-
-### Sparse body and cardiovascular observations
-
-- VO2 max, weight, and body-fat percentage;
-- Summarise Data: off initially;
-- keep this automation small because these observations are naturally sparse.
-
-HRV can join this group for a first test. If it remains too large, export HRV separately or accept a
-daily summary if intraday HRV analysis is not needed.
-
-### Workouts
-
-- Separate workout automation;
-- workout metrics: included;
-- workout metric grouping: minutes;
-- route/GPX data: off initially;
-- JSON version 2 and Batch Requests: on.
-
-Minute workout telemetry supports HR-zone, pace-to-HR, and decoupling analysis with less noise and
-volume than per-second data.
-
-### Backfill ranges
-
-Start detailed exports with seven-day custom ranges. Increase to fourteen days only after repeated
-successful runs. Summary and sparse-metric exports may tolerate a month, but reliability is more
-important than minimizing the number of manual exports.
-
-The Worker accepts up to 90 MiB after the August 2026 limit revision. That solves the observed 25 MiB
-application rejection but does not remove iPhone memory/time constraints, so smaller purpose-specific
-exports remain necessary.
-
-## Delivery phases
-
-### Phase 1: Contract capture and measured sizing
-
-- Capture representative metrics and workout envelopes without committing personal data.
-- Replace minimal fixtures with synthetic envelopes matching observed version 2 structures.
-- Confirm record IDs, timestamps, units, corrections, sources, and workout-minute shapes.
-- Measure rows and estimated D1 bytes from one representative week/month.
-- Define HR zones, pace curve, and decoupling algorithms precisely.
-
-### Phase 2: Canonical D1 transformation
-
-- Add reviewed migrations for lineage, metric facts, workouts, and workout minutes.
-- Implement idempotent parsing, normalization, unit handling, and bounded D1 writes.
-- Add replay tests for overlaps, retries, corrections, malformed objects, and transform upgrades.
-- Backfill retained R2 objects and reconcile counts before enabling new-object processing.
-
-### Phase 3: Derived analytics and private queries
-
-- Add daily metric rollups and versioned workout derivations.
-- Add authenticated, bounded query endpoints for chart-ready ranges.
-- Verify indexes with `EXPLAIN QUERY PLAN` and measure real response sizes/latency.
-- Add materialized pace-to-HR bins only if measured query performance requires them.
-
-### Phase 4: Dashboard and future sources
-
-- Build the evolving dashboard against private range-query contracts.
-- Add Bevel ingestion and exercise/PR tables only after its source contract is captured.
-
-## Current unknowns
-
-- Exact Health Auto Export v2 source record IDs and correction/deletion behavior;
-- whether multiple selected metrics remain disaggregated when Summarise Data is off—the official
-  documentation is inconsistent and needs contract capture;
-- local-day behavior while travelling across timezones;
-- exact HR-zone definition and effective-date behavior;
-- whether pace curve means a workout pace time series or rolling best-effort curve;
-- pause and validity rules for aerobic decoupling;
-- current Cloudflare plan and measured D1 size for representative data.
+### 4. `metric_samples`
+
+Long-form canonical facts for the minute metrics and sparse observations.
+
+| Column | Type | Purpose |
+| --- | --- | --- |
+| `id` | `INTEGER PRIMARY KEY` | Internal key |
+| `metric_id` | `INTEGER NOT NULL` | References `metric_definitions` |
+| `observed_at_ms` | `INTEGER NOT NULL` | Primary time coordinate |
+| `period_start_ms` / `period_end_ms` | `INTEGER` | Preserve intervals when the source provides them |
+| `local_date` | `TEXT NOT NULL` | Source-local `YYYY-MM-DD` |
+| `utc_offset_minutes` | `INTEGER NOT NULL` | Preserves source offset |
+| `value` | `REAL NOT NULL` | Scalar or average value |
+| `value_min` / `value_max` | `REAL` | Observed range when provided |
+| `source_name` | `TEXT` | Watch/phone/app provenance |
+| `source_record_id` | `TEXT` | Used only when genuinely supplied |
+| `semantic_key` | `TEXT NOT NULL UNIQUE` | Deterministic retry deduplication |
+| `first_delivery_id` / `last_delivery_id` | `INTEGER NOT NULL` | Compact lineage |
+| `seen_count` | `INTEGER NOT NULL DEFAULT 1` | Overlap/retry evidence |
+| `transform_version` | `INTEGER NOT NULL` | Producer contract |
+
+Without a stable source record ID, `semantic_key` includes observed fields including value. It deduplicates exact repeats without inventing correction/deletion semantics.
+
+Indexes:
+
+- `(metric_id, observed_at_ms)` for range queries;
+- `(metric_id, local_date)` for local-day aggregation.
+
+## Query and transformation strategy
+
+The first private API exposes bounded, allowlisted query functions rather than arbitrary SQL:
+
+- metric samples by metric code and date range;
+- a requested hour/day rollup using the reviewed `rollup_method`.
+
+The first charts should be schema probes, not a commitment to the final dashboard:
+
+1. daily steps or activity energy tests additive rollups;
+2. intraday heart rate tests averages, ranges, source provenance, and time bucketing;
+3. HRV/weight/VO2 trends test sparse observations and latest-value semantics.
+
+Do not create daily rollups or chart payload tables in the first migration. Add a derived table only when two real query paths reuse it or measured reads are too expensive.
+
+## Delivery plan
+
+### Phase 1: Freeze the observed contract
+
+- Replace minimal fixtures with synthetic, non-personal replicas of the current metric shapes.
+- Inventory metric names, units, row shapes, timestamp offsets, and source values across the metric corpus.
+- Review the `metric_definitions` codes and rollup methods explicitly.
+- Explain the 96-to-90 R2 object-count decrease and verify bucket lifecycle/retention settings.
+- Estimate D1 rows and bytes from a representative week before migration approval.
+
+Verify: every observed row shape maps to a proposed table without preserving personal payloads in the
+repository.
+
+### Phase 2: Local schema and manual transformer
+
+- Add one reviewed local migration for the four tables and minimal indexes above.
+- Implement streaming/bounded parsing and prepared D1 batches below the 100-parameter limit.
+- Make replay idempotent across identical objects, overlapping exports, and transformer versions.
+- Transform one representative week into local D1 first.
+
+Verify: source counts, unique counts, per-metric counts, observed ranges, and digests reconcile with metric objects in R2; `EXPLAIN QUERY PLAN` confirms indexed range access. Workout objects create no D1 rows.
+
+### Phase 3: Remote backfill and exploratory dashboard
+
+- Apply the approved migration remotely as a separate explicit operation.
+- Backfill retained metric objects in bounded manual batches; do not combine the corpus into one D1
+  transaction or blindly parse large objects in memory.
+- Add the private allowlisted range-query API and build the schema-probe charts.
+- Measure D1 bytes, rows read/written, latency, and response sizes.
+
+Verify: complete delivery reconciliation, repeatable replay with zero duplicate facts, privacy review,
+and chart queries that remain bounded by date and metric.
+
+### Phase 4: Evolve from measured visualization needs
+
+- Adjust canonical fields only when a real chart exposes missing semantics.
+- Materialize reusable daily metric derivations only after measuring repeated query cost.
+- On a breaking redesign, create parallel replacement tables, replay from R2, validate both query
+  paths, switch readers, and retire old tables only with explicit approval.
+- Add scheduled or R2-event-driven processing only after the transform is stable and replay-safe.
+
+## Constraints
+
+- D1 is a private query layer, not the health-data source of truth.
+- Raw health data and deferred workout payloads remain private.
+- Never log health values or payload fragments.
+- Use versioned migrations, prepared statements, bounded batches, and explicit indexes.
+- Current D1 limits include 100 bound parameters per query, 2 MB per row/string/blob, and
+  single-threaded execution; verify current limits again at implementation time.
+- D1 Free is capped at 500 MB per database and Paid at 10 GB. Measured sizing determines whether all
+  minute history belongs in one database; do not decide this from R2 compressed bytes alone.
+- The archive ingestion response remains dependent only on the completed R2 write. Transform failures
+  must never block raw retention.
+
+## Deferred questions
+
+- Exact correction/deletion semantics when Health Auto Export does not supply a stable record ID;
+- timezone behavior during travel when only a numeric offset is present;
+- the complete workout schema, identity rules, and derived analytics;
+- which aggregates, if any, are approved for future public publication;
+- measured D1 size of the complete transformed corpus.
 
 ## Primary references
 
-- Health Auto Export REST API: https://help.healthyapps.dev/en/health-auto-export/automations/rest-api/
-- Health Auto Export automation performance: https://help.healthyapps.dev/en/health-auto-export/automations/
-- Cloudflare Workers limits: https://developers.cloudflare.com/workers/platform/limits/
 - Cloudflare D1 limits: https://developers.cloudflare.com/d1/platform/limits/
 - Cloudflare D1 indexes: https://developers.cloudflare.com/d1/best-practices/use-indexes/
-- Cloudflare R2 event notifications: https://developers.cloudflare.com/r2/buckets/event-notifications/
-- Cloudflare Queue delivery guarantees: https://developers.cloudflare.com/queues/reference/delivery-guarantees/
-- Cloudflare Workflows limits: https://developers.cloudflare.com/workflows/reference/limits/
+- Health Auto Export REST API: https://help.healthyapps.dev/en/health-auto-export/automations/rest-api/
+- Existing archive design: `plans/health-auto-export-pipeline.md`
