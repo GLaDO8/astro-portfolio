@@ -6,7 +6,7 @@ const projectRoot = new URL("../../../", import.meta.url);
 const wranglerPath = new URL("node_modules/.bin/wrangler", projectRoot);
 const wranglerConfig = new URL("workers/health-ingest/wrangler.jsonc", projectRoot);
 
-const HEALTH_QUERY = `
+export const HEALTH_QUERY = `
 WITH RECURSIVE bounds AS (
   SELECT MIN(local_date) AS first_date, MAX(local_date) AS last_date FROM metric_samples
 ), dates(local_date) AS (
@@ -51,13 +51,36 @@ WHERE md.code = 'vo2_max' ORDER BY ms.observed_at_ms;
 
 SELECT metric_code, collected_at_ms, value, unit, qualifier
 FROM medical_metrics
-WHERE metric_code IN ('hba1c', 'cholesterol_ldl_calculated', 'vitamin_d_25_oh')
+WHERE metric_code IN (
+  'hba1c',
+  'vitamin_d_25_oh',
+  'cholesterol_total',
+  'cholesterol_hdl',
+  'cholesterol_ldl_calculated',
+  'cholesterol_vldl_calculated',
+  'cholesterol_non_hdl',
+  'triglycerides',
+  'rbc_count',
+  'sodium',
+  'potassium',
+  'chloride'
+)
 ORDER BY collected_at_ms, metric_code;
+
+WITH ranked_weight AS (
+  SELECT ms.local_date, ms.value,
+    ROW_NUMBER() OVER (
+      PARTITION BY ms.local_date ORDER BY ms.observed_at_ms DESC, ms.id DESC
+    ) AS recency
+  FROM metric_samples ms JOIN metric_definitions md ON md.id = ms.metric_id
+  WHERE md.code = 'weight_body_mass'
+)
+SELECT local_date, value FROM ranked_weight WHERE recency = 1 ORDER BY local_date;
 `;
 
 export function normalizeHealthQueryOutput(payload) {
-	if (!Array.isArray(payload) || payload.length !== 5) {
-		throw new Error("Expected five result sets from D1.");
+	if (!Array.isArray(payload) || payload.length !== 6) {
+		throw new Error("Expected six result sets from D1.");
 	}
 
 	const resultSets = payload.map((item) => {
@@ -73,6 +96,7 @@ export function normalizeHealthQueryOutput(payload) {
 		sleep: resultSets[2],
 		vo2Max: resultSets[3],
 		medical: resultSets[4],
+		weight: resultSets[5],
 	};
 }
 

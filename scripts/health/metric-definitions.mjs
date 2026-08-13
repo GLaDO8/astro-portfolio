@@ -33,6 +33,7 @@ export const METRIC_DEFINITIONS = Object.freeze(
 		["walking_running_distance", "km", "sum"],
 		["walking_speed", "km/hr", "average"],
 		["walking_step_length", "cm", "average"],
+		["weight_body_mass", "kg", "latest"],
 	].map(([code, unit, rollupMethod]) => Object.freeze({ code, unit, rollupMethod })),
 );
 

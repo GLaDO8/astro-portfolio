@@ -2,10 +2,25 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import astroConfig from "../astro.config.mjs";
+import { rollUpWeeklyExerciseTime } from "../src/components/health/healthData.ts";
 import {
+	HEALTH_QUERY,
 	healthDevIntegration,
 	normalizeHealthQueryOutput,
 } from "../src/dev/health/healthDevIntegration.mjs";
+
+const requestedMedicalCodes = [
+	"cholesterol_total",
+	"cholesterol_hdl",
+	"cholesterol_ldl_calculated",
+	"cholesterol_vldl_calculated",
+	"cholesterol_non_hdl",
+	"triglycerides",
+	"rbc_count",
+	"sodium",
+	"potassium",
+	"chloride",
+];
 
 test("ignores the 1Password-mounted env file in the Vite watcher", () => {
 	assert.deepEqual(astroConfig.vite?.server?.watch?.ignored, ["**/.env"]);
@@ -51,6 +66,7 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 				},
 			],
 		},
+		{ results: [{ local_date: "2026-01-09", value: 70.25 }] },
 	];
 
 	assert.deepEqual(normalizeHealthQueryOutput(payload), {
@@ -59,9 +75,66 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 		sleep: payload[2].results,
 		vo2Max: payload[3].results,
 		medical: payload[4].results,
+		weight: payload[5].results,
 	});
 });
 
 test("rejects incomplete D1 output", () => {
-	assert.throws(() => normalizeHealthQueryOutput([{ results: [] }]), /five result sets/);
+	assert.throws(() => normalizeHealthQueryOutput([{ results: [] }]), /six result sets/);
+});
+
+test("selects sparse body-mass observations chronologically", () => {
+	assert.match(HEALTH_QUERY, /WHERE md\.code = 'weight_body_mass'/);
+	assert.match(HEALTH_QUERY, /PARTITION BY ms\.local_date ORDER BY ms\.observed_at_ms DESC/);
+	assert.match(HEALTH_QUERY, /WHERE recency = 1 ORDER BY local_date/);
+});
+
+test("selects every requested lipid, RBC, and electrolyte metric", () => {
+	const medicalQuery = HEALTH_QUERY.match(/SELECT metric_code[\s\S]+?;/)?.[0];
+	assert.ok(medicalQuery, "Expected a medical_metrics query.");
+
+	for (const code of requestedMedicalCodes) {
+		assert.match(medicalQuery, new RegExp(`'${code}'`));
+	}
+});
+
+test("rolls Apple Exercise Time into Monday-starting weeks", () => {
+	assert.deepEqual(
+		rollUpWeeklyExerciseTime([
+			{ local_date: "2026-08-02", exercise_minutes: 15 },
+			{ local_date: "2026-08-03", exercise_minutes: 20 },
+			{ local_date: "2026-08-09", exercise_minutes: 30 },
+			{ local_date: "2026-08-10", exercise_minutes: 40 },
+		]),
+		[
+			{ date: "2026-07-27", value: 15 },
+			{ date: "2026-08-03", value: 50 },
+			{ date: "2026-08-10", value: 40 },
+		],
+	);
+});
+
+test("sums observed exercise days without inventing missing days or weeks", () => {
+	assert.deepEqual(
+		rollUpWeeklyExerciseTime([
+			{ local_date: "2026-08-03", exercise_minutes: null },
+			{ local_date: "2026-08-05", exercise_minutes: 25 },
+			{ local_date: "2026-08-09", exercise_minutes: 35 },
+			{ local_date: "2026-08-17", exercise_minutes: 10 },
+		]),
+		[
+			{ date: "2026-08-03", value: 60 },
+			{ date: "2026-08-17", value: 10 },
+		],
+	);
+});
+
+test("keeps an observed week with no exercise value empty", () => {
+	assert.deepEqual(
+		rollUpWeeklyExerciseTime([
+			{ local_date: "2026-08-24", exercise_minutes: null },
+			{ local_date: "2026-08-26", exercise_minutes: null },
+		]),
+		[{ date: "2026-08-24", value: null }],
+	);
 });

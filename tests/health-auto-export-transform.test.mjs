@@ -15,23 +15,60 @@ async function fixture(name) {
 	return JSON.parse(await fs.readFile(path.join(fixtures, name), "utf8"));
 }
 
-test("the reviewed metric allowlist contains 33 unique non-sleep definitions", () => {
-	assert.equal(METRIC_DEFINITIONS.length, 33);
-	assert.equal(new Set(METRIC_DEFINITIONS.map(({ code }) => code)).size, 33);
+test("the reviewed metric allowlist contains 34 unique non-sleep definitions", () => {
+	assert.equal(METRIC_DEFINITIONS.length, 34);
+	assert.equal(new Set(METRIC_DEFINITIONS.map(({ code }) => code)).size, 34);
 	assert.ok(METRIC_DEFINITIONS.every(({ code }) => code !== "sleep_analysis"));
 });
 
 test("the explicit corpus manifest is complete and excludes the extra full-January export", () => {
-	assert.equal(HEALTH_EXPORT_MANIFEST.length, 13);
+	assert.equal(HEALTH_EXPORT_MANIFEST.length, 15);
 	assert.equal(
 		HEALTH_EXPORT_MANIFEST.reduce((sum, { sizeBytes }) => sum + sizeBytes, 0),
-		146_378_416,
+		155_343_751,
 	);
 	assert.ok(
 		HEALTH_EXPORT_MANIFEST.every(
 			({ basename }) => basename !== "HealthAutoExport-2026-01-01-2026-01-31",
 		),
 	);
+	assert.equal(
+		HEALTH_EXPORT_MANIFEST.find(
+			({ payloadSha256 }) =>
+				payloadSha256 === "c0ac50ae2fceeef997a70a4aa47f28c5c199f91d230117c8e2a214a191cb39cb",
+		)?.receivedAtMs,
+		1786638077097,
+	);
+});
+
+test("normalizes sparse body-mass observations in kilograms", async () => {
+	const result = normalizeHealthAutoExport(await fixture("weight.json"));
+	assert.equal(result.metricSamples.length, 1);
+	assert.deepEqual(
+		{
+			metricCode: result.metricSamples[0].metricCode,
+			unit: result.metricSamples[0].unit,
+			localDate: result.metricSamples[0].localDate,
+			value: result.metricSamples[0].value,
+		},
+		{
+			metricCode: "weight_body_mass",
+			unit: "kg",
+			localDate: "2026-01-09",
+			value: 70.25,
+		},
+	);
+});
+
+test("the weight migration rejects conflicting values for one source timestamp", async () => {
+	const migration = await fs.readFile(
+		"workers/health-ingest/migrations/health-auto-export/0002_add_weight_body_mass.sql",
+		"utf8",
+	);
+	assert.match(migration, /CREATE TRIGGER metric_samples_weight_conflict/);
+	assert.match(migration, /existing\.observed_at_ms = NEW\.observed_at_ms/);
+	assert.match(migration, /existing\.semantic_key <> NEW\.semantic_key/);
+	assert.match(migration, /RAISE\(ABORT, 'weight_observation_conflict'\)/);
 });
 
 test("normalizes scalar rows and preserves offsets and missing sources", async () => {

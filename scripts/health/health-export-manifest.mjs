@@ -35,6 +35,11 @@ const entries = [
 		"c94499b9f17c78f0b4785862b7c48a97ca1c69da74cab805a1c8491165197e09",
 	],
 	[
+		"2026-04-16-2026-04-30",
+		8959474,
+		"c7812ced550379fe9fe478b593d92d6d34817cc36ea3cc3abd4464e51dff9356",
+	],
+	[
 		"2026-05-01-2026-05-15",
 		10499997,
 		"f1da223496caca4617adf395793dda481123092e2c665dd5d260d19df5ef9dcf",
@@ -64,15 +69,22 @@ const entries = [
 		13301430,
 		"14c40ec7d242b4b201b2ee0137153746cf26eecf0c62eb0b49174affc5f298a4",
 	],
+	[
+		"2026-01-01-2026-07-31",
+		5861,
+		"c0ac50ae2fceeef997a70a4aa47f28c5c199f91d230117c8e2a214a191cb39cb",
+		1786638077097,
+	],
 ];
 
 export const HEALTH_EXPORT_MANIFEST = Object.freeze(
-	entries.map(([range, sizeBytes, payloadSha256]) => {
+	entries.map(([range, sizeBytes, payloadSha256, receivedAtMs]) => {
 		const basename = `HealthAutoExport-${range}`;
 		return Object.freeze({
 			basename,
 			sizeBytes,
 			payloadSha256,
+			receivedAtMs,
 			objectKey: `manual-import-${basename}-${payloadSha256.slice(0, 16)}.json`,
 		});
 	}),

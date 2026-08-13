@@ -142,7 +142,7 @@ async function processFile(filePath, options) {
 			const sql = buildSql({
 				objectKey,
 				payloadSha256,
-				receivedAtMs: Math.trunc(stats.mtimeMs),
+				receivedAtMs: manifest?.receivedAtMs ?? Math.trunc(stats.mtimeMs),
 				normalized,
 			});
 			await fs.writeFile(sqlFile, sql, { mode: 0o600 });
