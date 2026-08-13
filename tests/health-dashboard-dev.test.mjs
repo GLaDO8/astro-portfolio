@@ -1,10 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import astroConfig from "../astro.config.mjs";
 import {
 	healthDevIntegration,
 	normalizeHealthQueryOutput,
 } from "../src/dev/health/healthDevIntegration.mjs";
+
+test("ignores the 1Password-mounted env file in the Vite watcher", () => {
+	assert.deepEqual(astroConfig.vite?.server?.watch?.ignored, ["**/.env"]);
+});
 
 test("registers the health page and endpoint only for astro dev", () => {
 	const integration = healthDevIntegration();

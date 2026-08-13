@@ -135,6 +135,11 @@ export default defineConfig({
 		prefetchAll: true,
 	},
 	vite: {
+		server: {
+			watch: {
+				ignored: ["**/.env"],
+			},
+		},
 		optimizeDeps: {
 			include: ["@google/model-viewer"],
 		},
