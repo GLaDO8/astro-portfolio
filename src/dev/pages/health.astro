@@ -1,0 +1,33 @@
+---
+import HealthDashboard from "@/components/health/HealthDashboard";
+import Page from "@/layouts/Page.astro";
+---
+
+<Page
+    title="Health dashboard — local development"
+    description="A private local dashboard for selected Apple Health and medical-report metrics."
+    bodyClass="bg-beige"
+    class="bg-beige gap-y-10"
+    preloadCodeFont
+    seo={{ noindex: true }}
+>
+    <header class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3">
+        <p class="font-mono text-xs font-semibold tracking-[0.12em] text-secondary uppercase">
+            Local development · private health data
+        </p>
+        <h1
+            class="mt-4 max-w-4xl font-sans text-4xl leading-[1.05] font-bold tracking-[-0.04em] text-primary md:text-6xl"
+        >
+            Health, in context
+        </h1>
+        <p class="mt-5 max-w-2xl font-sans text-base leading-relaxed text-secondary md:text-lg">
+            A first view of daily activity, recovery, sleep, fitness, and selected medical-report
+            trends from D1. This route and its data bridge exist only while the Astro development
+            server is running.
+        </p>
+    </header>
+
+    <div class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3">
+        <HealthDashboard client:load />
+    </div>
+</Page>

@@ -4,6 +4,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
+import { healthDataPlugin, healthDevIntegration } from "./src/dev/health/healthDevIntegration.mjs";
 
 const sidequestsPageUrl = new URL("./src/pages/sidequests.astro", import.meta.url);
 
@@ -94,7 +95,7 @@ const sidequestsPositionerPlugin = () => ({
 
 export default defineConfig({
 	site: "https://shrey.fyi",
-	integrations: [react(), markdoc(), sitemap()],
+	integrations: [react(), markdoc(), sitemap(), healthDevIntegration()],
 	fonts: [
 		{
 			provider: fontProviders.local(),
@@ -137,7 +138,7 @@ export default defineConfig({
 		optimizeDeps: {
 			include: ["@google/model-viewer"],
 		},
-		plugins: [tailwindcss(), sidequestsPositionerPlugin()],
+		plugins: [tailwindcss(), sidequestsPositionerPlugin(), healthDataPlugin()],
 	},
 	output: "static",
 });

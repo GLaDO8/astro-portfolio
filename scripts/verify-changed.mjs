@@ -167,6 +167,20 @@ function matchingTests(files) {
 		tests.add("tests/design-token-check.test.mjs");
 	}
 
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file === "astro.config.mjs" ||
+				file.startsWith("src/components/health/") ||
+				file.startsWith("src/dev/health/") ||
+				file.startsWith("src/dev/pages/health.") ||
+				file === "tests/health-dashboard-dev.test.mjs",
+		)
+	) {
+		tests.add("tests/health-dashboard-dev.test.mjs");
+	}
+
 	if (hasAny(files, (file) => file === "scripts/optimize-images.mjs")) {
 		tests.add("tests/optimize-images.test.mjs");
 	}

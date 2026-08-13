@@ -19,6 +19,14 @@
 	--color-primary-neutral: #202427; /* text primary on white */
 	--color-secondary-neutral: #687078; /* text secondary on white */
 	--color-tertiary: #ddd2c1; /* subtle divider */
+	--color-health-warm: #c85f3f;
+	--color-health-gold: #a47a25;
+	--color-health-blue: #5b728f;
+	--color-health-green: #638270;
+	--color-health-teal: #367c86;
+	--color-health-sleep-core: #9183c4;
+	--color-health-sleep-deep: #544483;
+	--color-health-sleep-rem: #c49ac8;
 
 	/* Grid */
 	--grid-template-columns-16: repeat(16, minmax(0, 1fr));
