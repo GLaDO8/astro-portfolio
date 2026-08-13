@@ -1,0 +1,31 @@
+{
+	"data": {
+		"metrics": [
+			{
+				"name": "sleep_analysis",
+				"units": "hr",
+				"data": [
+					{
+						"date": "2026-01-03 08:00:00 +0530",
+						"asleep": 7.2,
+						"awake": 0.3,
+						"core": 4.1,
+						"deep": 1.2,
+						"rem": 1.9,
+						"inBed": 7.8,
+						"inBedStart": "2026-01-02 23:45:00 +0530",
+						"inBedEnd": "2026-01-03 07:35:00 +0530",
+						"sleepStart": "2026-01-03 00:05:00 +0530",
+						"sleepEnd": "2026-01-03 07:30:00 +0530",
+						"source": "Synthetic Phone",
+						"totalSleep": 7.2
+					},
+					{
+						"date": "2026-01-04 08:00:00 +0530",
+						"totalSleep": 6.5
+					}
+				]
+			}
+		]
+	}
+}

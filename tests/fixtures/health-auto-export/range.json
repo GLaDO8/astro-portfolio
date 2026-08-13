@@ -1,0 +1,19 @@
+{
+	"data": {
+		"metrics": [
+			{
+				"name": "heart_rate",
+				"units": "count/min",
+				"data": [
+					{
+						"date": "2026-01-02 09:30:00 -0400",
+						"Avg": 71.5,
+						"Min": 65,
+						"Max": 80,
+						"source": "Synthetic Watch"
+					}
+				]
+			}
+		]
+	}
+}

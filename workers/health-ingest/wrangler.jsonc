@@ -29,7 +29,7 @@
 			"binding": "HEALTH_DB",
 			"database_name": "health-processed-data",
 			"database_id": "7f570a9a-fab7-4f17-a69a-c7717320802f",
-			"migrations_dir": "migrations"
+			"migrations_dir": "migrations/health-auto-export"
 		}
 	]
 }

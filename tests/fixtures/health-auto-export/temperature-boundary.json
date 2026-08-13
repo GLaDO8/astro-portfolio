@@ -1,0 +1,14 @@
+{
+	"data": {
+		"metrics": [
+			{
+				"name": "apple_sleeping_wrist_temperature",
+				"units": "degC",
+				"data": [
+					{ "date": "2026-01-31 23:00:00 +0530", "qty": 36.2, "source": "Synthetic Watch" },
+					{ "date": "2026-02-01 00:06:00 +0530", "qty": 36.3, "source": "Synthetic Phone" }
+				]
+			}
+		]
+	}
+}

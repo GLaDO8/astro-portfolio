@@ -19,6 +19,20 @@ pnpm health:dev
 pnpm health:deploy:dry
 ```
 
+The raw archive and transformation pipeline are separate. Transform exact local JSON files with:
+
+```sh
+pnpm health:transform:test
+pnpm health:transform:dry -- <exact-json-path>...
+pnpm health:db:migrate:local -- --persist-to <isolated-directory>
+pnpm health:transform:local -- --persist-to <same-isolated-directory> <exact-json-path>...
+```
+
+Do not glob Downloads: the reviewed corpus is an explicit 13-file manifest and an extra full-January
+export is intentionally excluded. Dry-run validates and reports only hashes, counts, ranges, and
+timings. Local mode writes only Wrangler's local D1 state. The importer uses private mode-restricted
+temporary SQL files and deletes them after each source file.
+
 The Worker exposes:
 
 - `GET /health`, which verifies both bindings without writing data.
@@ -65,3 +79,13 @@ pnpm exec wrangler tail health-ingest --format pretty
 Useful event names are `health_ingest.archived`, `health_ingest.rejected`,
 `health_ingest.archive_failed`, `health_ingest.health_ok`, and
 `health_ingest.health_check_failed`. Request bodies and health values are never logged.
+
+Remote migration and transformation are production mutations. They remain approval-gated after all
+local reconciliation checks pass. Remote transformation additionally requires the configured D1 ID:
+
+```sh
+pnpm health:transform:remote -- --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f <exact-json-path>
+```
+
+The archive route remains archive-only: transformation failures cannot affect webhook ingestion or
+immutable R2 retention.

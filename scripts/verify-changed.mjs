@@ -171,6 +171,20 @@ function matchingTests(files) {
 		tests.add("tests/optimize-images.test.mjs");
 	}
 
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file.startsWith("scripts/health/") ||
+				file.startsWith("tests/fixtures/health-auto-export/") ||
+				file === "tests/health-auto-export-transform.test.mjs" ||
+				file.startsWith("workers/health-ingest/migrations/health-auto-export/") ||
+				file === "workers/health-ingest/wrangler.jsonc",
+		)
+	) {
+		tests.add("tests/health-auto-export-transform.test.mjs");
+	}
+
 	return [...tests].filter((file) => fs.existsSync(file));
 }
 

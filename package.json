@@ -29,6 +29,10 @@
 		"health:deploy": "wrangler deploy --config workers/health-ingest/wrangler.jsonc",
 		"health:secret:set": "wrangler secret put HEALTH_INGEST_TOKEN --config workers/health-ingest/wrangler.jsonc",
 		"health:r2:clear": "node .codex/skills/clear-r2/scripts/clear-r2.mjs",
+		"health:transform:test": "node --test tests/health-auto-export-transform.test.mjs",
+		"health:transform:dry": "node scripts/health/import-health-auto-export.mjs",
+		"health:transform:local": "node scripts/health/import-health-auto-export.mjs --local",
+		"health:transform:remote": "node scripts/health/import-health-auto-export.mjs --remote",
 		"health:db:migrate:local": "wrangler d1 migrations apply health-processed-data --config workers/health-ingest/wrangler.jsonc --local",
 		"health:db:migrate:remote": "wrangler d1 migrations apply health-processed-data --config workers/health-ingest/wrangler.jsonc --remote"
 	},

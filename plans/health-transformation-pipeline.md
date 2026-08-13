@@ -1,6 +1,6 @@
 # Health Auto Export to D1 implementation plan
 
-Status: Ready for review. The 13 selected JSON exports are already archived unchanged and hash-verified in private R2. No D1 migration or backfill is authorized until the local gates pass and the remote operation is explicitly approved.
+Status: Implemented, migrated, and backfilled on August 13, 2026. The 13 selected JSON exports remain archived unchanged and hash-verified in private R2. Production D1 reconciles exactly with the verified local corpus.
 
 ## Outcome
 
@@ -166,6 +166,19 @@ The importer processes one exact file or R2 object at a time:
 Use the explicit 13-file manifest. Never glob Downloads because an extra unselected full-January export exists.
 
 ## Verification gates
+
+Local verification result: Gates 1–3 passed. The explicit corpus produced 13 complete deliveries,
+826,828 metric samples, 179 sleep summaries, 33 seeded definitions, and 163/163 unique normalized
+wrist-temperature wake dates. Replay added zero facts; foreign-key checks were empty; both metric
+indexes were used; the April 16–29 date spine returned 14 `NULL` days. During corpus validation,
+three heart-rate rows had rounded averages just outside their reported min/max bounds, so validation
+correctly enforces finite `Avg`/`Min`/`Max` and `Min <= Max` without inventing a tighter source rule.
+
+Remote verification result: Gates 4–5 passed after explicit approval. The isolated migration added
+only the reviewed health schema and left `medical_metrics` intact. Production contains 13 unique,
+complete delivery hashes, 826,828 metric samples, 179 sleep summaries, 33 definitions, and 163/163
+unique wrist-temperature wake dates. A replay added zero facts; `PRAGMA foreign_key_check` was empty;
+both range-query indexes were selected; and the April 16–29 date spine returned 14 `NULL` days.
 
 ### Gate 1: Pure normalization
 
