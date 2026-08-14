@@ -126,6 +126,8 @@ async function processFile(filePath, options) {
 		payloadSha256,
 		bytes: bytes.byteLength,
 		inputRows: normalized.inputRows,
+		ignoredRows: normalized.ignoredRows,
+		ignoredMetrics: normalized.ignoredMetrics,
 		metricSamples: normalized.metricSamples.length,
 		sleepSummaries: normalized.sleepSummaries.length,
 		exactDuplicates: normalized.exactDuplicates,

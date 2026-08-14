@@ -75,6 +75,12 @@ const entries = [
 		"c0ac50ae2fceeef997a70a4aa47f28c5c199f91d230117c8e2a214a191cb39cb",
 		1786638077097,
 	],
+	[
+		"2026-08-01-2026-08-13",
+		9567738,
+		"aec32617fecd59090fe5a46c3f966c0e4c0826bd9e129be813703968db9c9064",
+		1786684879014,
+	],
 ];
 
 export const HEALTH_EXPORT_MANIFEST = Object.freeze(

@@ -22,10 +22,10 @@ test("the reviewed metric allowlist contains 34 unique non-sleep definitions", (
 });
 
 test("the explicit corpus manifest is complete and excludes the extra full-January export", () => {
-	assert.equal(HEALTH_EXPORT_MANIFEST.length, 15);
+	assert.equal(HEALTH_EXPORT_MANIFEST.length, 16);
 	assert.equal(
 		HEALTH_EXPORT_MANIFEST.reduce((sum, { sizeBytes }) => sum + sizeBytes, 0),
-		155_343_751,
+		164_911_489,
 	);
 	assert.ok(
 		HEALTH_EXPORT_MANIFEST.every(
@@ -39,6 +39,36 @@ test("the explicit corpus manifest is complete and excludes the extra full-Janua
 		)?.receivedAtMs,
 		1786638077097,
 	);
+});
+
+test("intentionally excludes caffeine and total fat from D1 normalization", () => {
+	const result = normalizeHealthAutoExport({
+		data: {
+			metrics: [
+				{
+					name: "caffeine",
+					units: "mg",
+					data: [{ date: "2026-08-01 08:00:00 +0530", qty: 100 }],
+				},
+				{
+					name: "total_fat",
+					units: "g",
+					data: [{ date: "2026-08-01 12:00:00 +0530", qty: 10 }],
+				},
+				{
+					name: "step_count",
+					units: "count",
+					data: [{ date: "2026-08-01 12:00:00 +0530", qty: 1000 }],
+				},
+			],
+		},
+	});
+
+	assert.deepEqual(result.ignoredMetrics, ["caffeine", "total_fat"]);
+	assert.equal(result.ignoredRows, 2);
+	assert.equal(result.inputRows, 1);
+	assert.equal(result.metricSamples.length, 1);
+	assert.equal(result.metricSamples[0].metricCode, "step_count");
 });
 
 test("normalizes sparse body-mass observations in kilograms", async () => {

@@ -5,6 +5,7 @@ import { METRIC_DEFINITIONS_BY_CODE, SLEEP_DEFINITION } from "./metric-definitio
 const TIMESTAMP = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}) ([+-])(\d{2})(\d{2})$/;
 const SCALAR_KEYS = new Set(["date", "qty", "source"]);
 const RANGE_KEYS = new Set(["Avg", "Max", "Min", "date", "source"]);
+const IGNORED_METRIC_CODES = new Set(["caffeine", "total_fat"]);
 const SLEEP_KEYS = new Set([
 	"asleep",
 	"awake",
@@ -219,6 +220,8 @@ export function normalizeHealthAutoExport(payload) {
 	const temperatureDays = new Map();
 	let inputRows = 0;
 	let exactDuplicates = 0;
+	let ignoredRows = 0;
+	const ignoredMetrics = [];
 
 	for (const metric of payload.data.metrics) {
 		assertObject(metric, "invalid_envelope");
@@ -228,6 +231,11 @@ export function normalizeHealthAutoExport(payload) {
 			!Array.isArray(metric.data)
 		) {
 			fail("invalid_envelope", "Metric groups require name, units, and data.");
+		}
+		if (IGNORED_METRIC_CODES.has(metric.name)) {
+			ignoredRows += metric.data.length;
+			ignoredMetrics.push(metric.name);
+			continue;
 		}
 		const isSleep = metric.name === SLEEP_DEFINITION.code;
 		const definition = METRIC_DEFINITIONS_BY_CODE.get(metric.name);
@@ -278,6 +286,8 @@ export function normalizeHealthAutoExport(payload) {
 		metricSamples,
 		sleepSummaries,
 		inputRows,
+		ignoredRows,
+		ignoredMetrics,
 		exactDuplicates,
 		observedStartMs: Math.min(...timestamps),
 		observedEndMs: Math.max(...timestamps),

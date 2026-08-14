@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import astroConfig from "../astro.config.mjs";
-import { rollUpWeeklyExerciseTime } from "../src/components/health/healthData.ts";
+import {
+	getAppleHealthDataRange,
+	getLatestMedicalDate,
+	rollUpWeeklyExerciseTime,
+} from "../src/components/health/healthData.ts";
 import {
 	HEALTH_QUERY,
 	healthDevIntegration,
@@ -136,5 +140,48 @@ test("keeps an observed week with no exercise value empty", () => {
 			{ local_date: "2026-08-26", exercise_minutes: null },
 		]),
 		[{ date: "2026-08-24", value: null }],
+	);
+});
+
+test("finds the Apple Health range without medical report dates or empty spine rows", () => {
+	assert.deepEqual(
+		getAppleHealthDataRange({
+			activity: [
+				{ local_date: "2025-12-30", steps: null, active_energy_kj: null, exercise_minutes: null },
+				{ local_date: "2026-01-03", steps: 1234, active_energy_kj: null, exercise_minutes: null },
+			],
+			recovery: [],
+			sleep: [{ local_date: "2026-01-02", total_sleep_hours: 7.5 }],
+			vo2Max: [{ local_date: "2026-01-08", value: 42 }],
+			medical: [{ collected_at_ms: Date.parse("2025-12-31T20:00:00Z"), value: 5.4 }],
+			weight: [{ local_date: "2026-01-06", value: 70 }],
+		}),
+		{ firstDate: "2026-01-02", lastDate: "2026-01-08" },
+	);
+});
+
+test("finds the latest blood test date in India", () => {
+	assert.equal(
+		getLatestMedicalDate([
+			{ collected_at_ms: Date.parse("2025-12-31T10:00:00Z"), value: 5.2 },
+			{ collected_at_ms: Date.parse("2025-12-31T20:00:00Z"), value: 5.4 },
+		]),
+		"2026-01-01",
+	);
+});
+
+test("returns no Apple Health range when every Apple Health value is missing", () => {
+	assert.equal(
+		getAppleHealthDataRange({
+			activity: [
+				{ local_date: "2026-01-01", steps: null, active_energy_kj: null, exercise_minutes: null },
+			],
+			recovery: [{ local_date: "2026-01-02", resting_heart_rate: null, hrv: null }],
+			sleep: [],
+			vo2Max: [],
+			medical: [{ collected_at_ms: Date.parse("2026-01-03T10:00:00Z"), value: 5.4 }],
+			weight: [],
+		}),
+		null,
 	);
 });
