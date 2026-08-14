@@ -3,6 +3,7 @@ import { extent, line, scaleLinear, scaleUtc } from "d3";
 interface TrendDatum {
 	date: string;
 	value: number | null;
+	qualifier?: string | null;
 }
 
 interface TrendChartProps {
@@ -60,7 +61,7 @@ export default function TrendChart({
 		[HEIGHT - MARGIN.bottom, MARGIN.top],
 	);
 	const path = line<(typeof points)[number]>()
-		.defined((point) => point.value !== null)
+		.defined((point) => point.value !== null && point.qualifier == null)
 		.x((point) => x(point.instant))
 		.y((point) => y(point.value ?? 0))(points);
 	const xTicks = x.ticks(4);
@@ -69,6 +70,7 @@ export default function TrendChart({
 	const observed = points.filter(
 		(point): point is typeof point & { value: number } => point.value !== null,
 	);
+	const qualifiedCount = observed.filter((point) => point.qualifier != null).length;
 	const latest = observed.at(-1);
 	const titleId = `chart-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
@@ -80,6 +82,7 @@ export default function TrendChart({
 				</figcaption>
 				{latest ? (
 					<span className="shrink-0 font-mono text-sm font-semibold text-primary">
+						{latest.qualifier ?? ""}
 						{formatValue(latest.value)} {unit}
 					</span>
 				) : null}
@@ -93,9 +96,12 @@ export default function TrendChart({
 			>
 				<title>{title}</title>
 				<desc id={`${titleId}-desc`}>
-					{observed.length} observations from {points[0]?.date} to {points.at(-1)?.date}. Values
-					range from {formatValue(valueExtent[0])} to {formatValue(valueExtent[1])} {unit}. Missing
-					dates are not treated as zero.
+					{observed.length} observations from {points[0]?.date} to {points.at(-1)?.date}. Reported
+					numeric values range from {formatValue(valueExtent[0])} to {formatValue(valueExtent[1])}{" "}
+					{unit}. Missing dates are not treated as zero.
+					{qualifiedCount > 0
+						? ` ${qualifiedCount} reported ${qualifiedCount === 1 ? "limit is" : "limits are"} shown at the assay boundary rather than as exact points.`
+						: ""}
 				</desc>
 				{yTicks.map((tick) => (
 					<g key={tick}>
@@ -135,15 +141,38 @@ export default function TrendChart({
 				))}
 				{path ? <path d={path} fill="none" stroke={color} strokeWidth="2.5" /> : null}
 				{observed.length <= 40
-					? observed.map((point) => (
-							<circle
-								key={`${point.date}-${point.value}`}
-								cx={x(point.instant)}
-								cy={y(point.value)}
-								r="3.5"
-								fill={color}
-							/>
-						))
+					? observed.map((point) =>
+							point.qualifier ? (
+								<g key={`${point.date}-${point.qualifier}-${point.value}`}>
+									<title>
+										{point.date}: {point.qualifier}
+										{formatValue(point.value)} {unit}
+									</title>
+									<text
+										x={x(point.instant)}
+										y={y(point.value)}
+										textAnchor="middle"
+										dominantBaseline="middle"
+										fill={color}
+										className="font-mono text-base font-bold"
+									>
+										{point.qualifier}
+									</text>
+								</g>
+							) : (
+								<circle
+									key={`${point.date}-${point.value}`}
+									cx={x(point.instant)}
+									cy={y(point.value)}
+									r="3.5"
+									fill={color}
+								>
+									<title>
+										{point.date}: {formatValue(point.value)} {unit}
+									</title>
+								</circle>
+							),
+						)
 					: null}
 			</svg>
 		</figure>

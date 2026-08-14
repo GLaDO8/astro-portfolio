@@ -6,6 +6,7 @@ import {
 	toIndiaDate,
 } from "./healthData";
 import MetricSummary from "./MetricSummary";
+import { type MedicalMetricCode, medicalDefinitions, medicalSections } from "./medicalMetrics";
 import SleepChart from "./SleepChart";
 import TrendChart from "./TrendChart";
 import UnavailableChart from "./UnavailableChart";
@@ -32,20 +33,6 @@ interface SleepRow {
 	rem_hours: number | null;
 }
 
-type MedicalMetricCode =
-	| "hba1c"
-	| "vitamin_d_25_oh"
-	| "cholesterol_total"
-	| "cholesterol_hdl"
-	| "cholesterol_ldl_calculated"
-	| "cholesterol_vldl_calculated"
-	| "cholesterol_non_hdl"
-	| "triglycerides"
-	| "rbc_count"
-	| "sodium"
-	| "potassium"
-	| "chloride";
-
 interface MedicalRow {
 	metric_code: MedicalMetricCode;
 	collected_at_ms: number;
@@ -62,88 +49,6 @@ interface HealthData {
 	medical: MedicalRow[];
 	weight: { local_date: string; value: number }[];
 }
-
-interface MedicalDefinition {
-	title: string;
-	description: string;
-	color: string;
-}
-
-const medicalDefinitions: Record<MedicalMetricCode, MedicalDefinition> = {
-	cholesterol_total: {
-		title: "Total cholesterol",
-		description: "Cholesterol carried across the major lipoprotein particles.",
-		color: "var(--color-health-warm)",
-	},
-	cholesterol_hdl: {
-		title: "HDL cholesterol",
-		description: "Cholesterol carried in high-density lipoprotein particles.",
-		color: "var(--color-health-green)",
-	},
-	cholesterol_ldl_calculated: {
-		title: "Calculated LDL cholesterol",
-		description: "Lab-estimated cholesterol carried in LDL particles.",
-		color: "var(--color-health-blue)",
-	},
-	cholesterol_vldl_calculated: {
-		title: "Calculated VLDL cholesterol",
-		description: "Lab-estimated cholesterol carried in very-low-density lipoprotein particles.",
-		color: "var(--color-health-gold)",
-	},
-	cholesterol_non_hdl: {
-		title: "Non-HDL cholesterol",
-		description: "Total cholesterol minus HDL, including LDL and other atherogenic particles.",
-		color: "var(--color-health-teal)",
-	},
-	triglycerides: {
-		title: "Triglycerides",
-		description: "Circulating triglyceride concentration; meals and fasting status can affect it.",
-		color: "var(--color-health-warm)",
-	},
-	hba1c: {
-		title: "HbA1c",
-		description: "Estimated average glucose exposure over roughly two to three months.",
-		color: "var(--color-health-warm)",
-	},
-	vitamin_d_25_oh: {
-		title: "25-hydroxy vitamin D",
-		description: "The main circulating measurement used to assess vitamin D status.",
-		color: "var(--color-health-gold)",
-	},
-	rbc_count: {
-		title: "Red blood cell count",
-		description: "The number of red blood cells per blood volume.",
-		color: "var(--color-health-warm)",
-	},
-	sodium: {
-		title: "Sodium",
-		description: "An electrolyte involved in fluid balance and nerve and muscle function.",
-		color: "var(--color-health-blue)",
-	},
-	potassium: {
-		title: "Potassium",
-		description: "An electrolyte involved in nerve, muscle, and heart electrical function.",
-		color: "var(--color-health-green)",
-	},
-	chloride: {
-		title: "Chloride",
-		description: "An electrolyte involved in fluid and acid-base balance.",
-		color: "var(--color-health-teal)",
-	},
-} as const;
-
-const lipidCodes = [
-	"cholesterol_total",
-	"cholesterol_hdl",
-	"cholesterol_ldl_calculated",
-	"cholesterol_vldl_calculated",
-	"cholesterol_non_hdl",
-	"triglycerides",
-] as const;
-
-const electrolyteCodes = ["sodium", "potassium", "chloride"] as const;
-
-const otherMedicalCodes = ["hba1c", "vitamin_d_25_oh"] as const;
 
 const average = (values: Array<number | null>) => {
 	const observed = values.filter((value): value is number => value !== null);
@@ -268,6 +173,7 @@ export default function HealthDashboard() {
 				data={rows.map((row) => ({
 					date: toIndiaDate(row.collected_at_ms),
 					value: row.value,
+					qualifier: row.qualifier,
 				}))}
 				unit={rows[0]?.unit ?? ""}
 				color={definition.color}
@@ -409,21 +315,23 @@ export default function HealthDashboard() {
 						interpretation aids, not diagnoses; use the source report and clinical context for
 						decisions.
 					</p>
-					<h3 className="mt-8 font-sans text-lg font-semibold text-primary">Lipid Profile</h3>
-					<div className="mt-3 grid gap-x-8 lg:grid-cols-3">{lipidCodes.map(medicalChart)}</div>
-
-					<h3 className="mt-8 font-sans text-lg font-semibold text-primary">Blood Count</h3>
-					<div className="mt-3 grid gap-x-8 lg:grid-cols-3">{medicalChart("rbc_count")}</div>
-
-					<h3 className="mt-8 font-sans text-lg font-semibold text-primary">Electrolytes</h3>
-					<div className="mt-3 grid gap-x-8 lg:grid-cols-3">
-						{electrolyteCodes.map(medicalChart)}
-					</div>
-
-					<h3 className="mt-8 font-sans text-lg font-semibold text-primary">Other Markers</h3>
-					<div className="mt-3 grid gap-x-8 lg:grid-cols-3">
-						{otherMedicalCodes.map(medicalChart)}
-					</div>
+					{medicalSections.map((section) => (
+						<div key={section.title}>
+							<h3 className="mt-8 font-sans text-lg font-semibold text-primary">{section.title}</h3>
+							{section.groups.map((group) => (
+								<div key={group.codes[0]}>
+									{"title" in group && group.title ? (
+										<h4 className="mt-5 font-sans text-sm font-semibold text-secondary">
+											{group.title}
+										</h4>
+									) : null}
+									<div className="mt-3 grid gap-x-8 lg:grid-cols-3">
+										{group.codes.map(medicalChart)}
+									</div>
+								</div>
+							))}
+						</div>
+					))}
 				</section>
 			</div>
 		</div>

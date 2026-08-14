@@ -7,6 +7,7 @@ import {
 	getLatestMedicalDate,
 	rollUpWeeklyExerciseTime,
 } from "../src/components/health/healthData.ts";
+import { medicalDefinitions, medicalSections } from "../src/components/health/medicalMetrics.ts";
 import {
 	HEALTH_QUERY,
 	healthDevIntegration,
@@ -14,6 +15,8 @@ import {
 } from "../src/dev/health/healthDevIntegration.mjs";
 
 const requestedMedicalCodes = [
+	"hba1c",
+	"vitamin_d_25_oh",
 	"cholesterol_total",
 	"cholesterol_hdl",
 	"cholesterol_ldl_calculated",
@@ -21,9 +24,53 @@ const requestedMedicalCodes = [
 	"cholesterol_non_hdl",
 	"triglycerides",
 	"rbc_count",
+	"hemoglobin",
+	"hematocrit",
+	"mcv",
+	"mch",
+	"mchc",
+	"rdw_cv",
+	"wbc_count",
+	"neutrophils_percent",
+	"lymphocytes_percent",
+	"monocytes_percent",
+	"eosinophils_percent",
+	"basophils_percent",
+	"absolute_neutrophil_count",
+	"absolute_lymphocyte_count",
+	"absolute_monocyte_count",
+	"absolute_eosinophil_count",
+	"absolute_basophil_count",
+	"platelet_count",
+	"mean_platelet_volume",
+	"alt",
+	"ast",
+	"alkaline_phosphatase",
+	"ggt",
+	"bilirubin_total",
+	"bilirubin_direct",
+	"bilirubin_indirect",
+	"albumin",
+	"globulin",
+	"protein_total",
+	"creatinine_serum",
+	"egfr",
+	"bun",
+	"urea",
+	"uric_acid",
 	"sodium",
 	"potassium",
 	"chloride",
+	"calcium",
+	"phosphorus",
+	"tsh",
+	"t3_total",
+	"t4_total",
+	"iron_serum",
+	"tibc",
+	"uibc",
+	"transferrin_saturation",
+	"vitamin_b12",
 ];
 
 test("ignores the 1Password-mounted env file in the Vite watcher", () => {
@@ -93,13 +140,24 @@ test("selects sparse body-mass observations chronologically", () => {
 	assert.match(HEALTH_QUERY, /WHERE recency = 1 ORDER BY local_date/);
 });
 
-test("selects every requested lipid, RBC, and electrolyte metric", () => {
+test("selects every requested first-batch medical metric", () => {
 	const medicalQuery = HEALTH_QUERY.match(/SELECT metric_code[\s\S]+?;/)?.[0];
 	assert.ok(medicalQuery, "Expected a medical_metrics query.");
+	assert.match(medicalQuery, /value, unit, qualifier/);
 
 	for (const code of requestedMedicalCodes) {
 		assert.match(medicalQuery, new RegExp(`'${code}'`));
 	}
+});
+
+test("renders every selected medical metric in exactly one dashboard group", () => {
+	const sectionCodes = medicalSections.flatMap((section) =>
+		section.groups.flatMap((group) => group.codes),
+	);
+
+	assert.equal(new Set(sectionCodes).size, sectionCodes.length);
+	assert.deepEqual(sectionCodes.toSorted(), Object.keys(medicalDefinitions).toSorted());
+	assert.deepEqual(sectionCodes.toSorted(), requestedMedicalCodes.toSorted());
 });
 
 test("rolls Apple Exercise Time into Monday-starting weeks", () => {
