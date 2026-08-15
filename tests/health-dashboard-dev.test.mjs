@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import path from "node:path";
 import test from "node:test";
 
 import astroConfig from "../astro.config.mjs";
@@ -9,10 +10,41 @@ import {
 } from "../src/components/health/healthData.ts";
 import { medicalDefinitions, medicalSections } from "../src/components/health/medicalMetrics.ts";
 import {
+	assertReadOnlyHealthQuery,
 	HEALTH_QUERY,
+	healthDataPlugin,
 	healthDevIntegration,
 	normalizeHealthQueryOutput,
+	resolveDashboardTarget,
 } from "../src/dev/health/healthDevIntegration.mjs";
+
+function createMiddlewareHarness(plugin) {
+	let handler;
+	plugin.configureServer({
+		middlewares: {
+			use(route, nextHandler) {
+				assert.equal(route, "/__dev/health-data");
+				handler = nextHandler;
+			},
+		},
+	});
+
+	return async function request(method = "GET") {
+		const headers = new Map();
+		let body = "";
+		const response = {
+			statusCode: 200,
+			setHeader(name, value) {
+				headers.set(name, value);
+			},
+			end(value = "") {
+				body = value;
+			},
+		};
+		await handler({ method }, response);
+		return { statusCode: response.statusCode, headers, body };
+	};
+}
 
 const requestedMedicalCodes = [
 	"hba1c",
@@ -132,6 +164,114 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 
 test("rejects incomplete D1 output", () => {
 	assert.throws(() => normalizeHealthQueryOutput([{ results: [] }]), /six result sets/);
+});
+
+test("defaults the dashboard to local and guards exceptional remote reads", () => {
+	assert.deepEqual(resolveDashboardTarget({}), {
+		mode: "local",
+		persistTo: expectAbsolutePath(resolveDashboardTarget({}).persistTo),
+	});
+	assert.throws(
+		() => resolveDashboardTarget({ HEALTH_DASHBOARD_D1_TARGET: "remote" }),
+		/dashboard_target_invalid/,
+	);
+	assert.equal(
+		resolveDashboardTarget({
+			HEALTH_DASHBOARD_D1_TARGET: "remote",
+			HEALTH_DASHBOARD_REMOTE_CONFIRM: "7f570a9a-fab7-4f17-a69a-c7717320802f",
+		}).mode,
+		"remote",
+	);
+});
+
+function expectAbsolutePath(value) {
+	assert.equal(path.isAbsolute(value), true);
+	return value;
+}
+
+test("accepts only read-only dashboard SQL", () => {
+	assert.doesNotThrow(() => assertReadOnlyHealthQuery(HEALTH_QUERY));
+	for (const sql of [
+		"DELETE FROM metric_samples;",
+		"PRAGMA foreign_keys = OFF;",
+		"WITH selected AS (SELECT 1) UPDATE medical_metrics SET value = 1;",
+	]) {
+		assert.throws(() => assertReadOnlyHealthQuery(sql), /health_query_not_read_only/);
+	}
+});
+
+test("local dashboard GETs re-query and return no-store shaped JSON", async () => {
+	let calls = 0;
+	const query = async () => {
+		calls += 1;
+		return { activity: [], recovery: [], sleep: [], vo2Max: [], medical: [], weight: [] };
+	};
+	const request = createMiddlewareHarness(
+		healthDataPlugin({
+			env: {},
+			queryHealthData: query,
+			log: () => {},
+		}),
+	);
+
+	const first = await request();
+	const second = await request();
+	assert.equal(calls, 2);
+	assert.equal(first.statusCode, 200);
+	assert.equal(first.headers.get("Cache-Control"), "no-store");
+	assert.deepEqual(JSON.parse(first.body), await query());
+	assert.equal(second.statusCode, 200);
+});
+
+test("remote dashboard caches success but does not retry a failed request", async () => {
+	const env = {
+		HEALTH_DASHBOARD_D1_TARGET: "remote",
+		HEALTH_DASHBOARD_REMOTE_CONFIRM: "7f570a9a-fab7-4f17-a69a-c7717320802f",
+	};
+	let successCalls = 0;
+	const successRequest = createMiddlewareHarness(
+		healthDataPlugin({
+			env,
+			queryHealthData: async () => {
+				successCalls += 1;
+				return { activity: [], recovery: [], sleep: [], vo2Max: [], medical: [], weight: [] };
+			},
+			log: () => {},
+		}),
+	);
+	await successRequest();
+	await successRequest();
+	assert.equal(successCalls, 1);
+
+	let failureCalls = 0;
+	const failureRequest = createMiddlewareHarness(
+		healthDataPlugin({
+			env,
+			queryHealthData: async () => {
+				failureCalls += 1;
+				throw new Error("private detail");
+			},
+			log: () => {},
+		}),
+	);
+	const failure = await failureRequest();
+	assert.equal(failureCalls, 1);
+	assert.equal(failure.statusCode, 500);
+	assert.equal(failure.headers.get("Cache-Control"), "no-store");
+	assert.deepEqual(JSON.parse(failure.body), {
+		error: "health_database_unavailable",
+		source: "remote",
+	});
+	assert.doesNotMatch(failure.body, /private detail/);
+});
+
+test("dashboard middleware rejects non-GET requests", async () => {
+	const request = createMiddlewareHarness(
+		healthDataPlugin({ env: {}, queryHealthData: async () => assert.fail(), log: () => {} }),
+	);
+	const response = await request("POST");
+	assert.equal(response.statusCode, 405);
+	assert.equal(response.headers.get("Allow"), "GET");
 });
 
 test("selects sparse body-mass observations chronologically", () => {

@@ -121,7 +121,8 @@ export default function HealthDashboard() {
 		fetch("/__dev/health-data", { signal: controller.signal })
 			.then(async (response) => {
 				if (!response.ok) {
-					throw new Error("Health data request failed.");
+					const payload = (await response.json().catch(() => null)) as { source?: unknown } | null;
+					throw new Error(payload?.source === "remote" ? "remote" : "local");
 				}
 				return response.json() as Promise<HealthData>;
 			})
@@ -130,7 +131,11 @@ export default function HealthDashboard() {
 				if (requestError instanceof DOMException && requestError.name === "AbortError") {
 					return;
 				}
-				setError("Could not read D1. Check your Cloudflare login and reload this page.");
+				setError(
+					requestError instanceof Error && requestError.message === "remote"
+						? "Could not read remote D1. Check the explicitly configured remote session and reload."
+						: "Could not read local D1. Run pnpm health:db:bootstrap:local, import the reviewed JSON, and reload.",
+				);
 			});
 
 		return () => controller.abort();

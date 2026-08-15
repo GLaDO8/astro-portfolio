@@ -33,8 +33,10 @@
 		"health:transform:dry": "node scripts/health/import-health-auto-export.mjs",
 		"health:transform:local": "node scripts/health/import-health-auto-export.mjs --local",
 		"health:transform:remote": "node scripts/health/import-health-auto-export.mjs --remote",
-		"health:db:migrate:local": "wrangler d1 migrations apply health-processed-data --config workers/health-ingest/wrangler.jsonc --local",
-		"health:db:migrate:remote": "wrangler d1 migrations apply health-processed-data --config workers/health-ingest/wrangler.jsonc --remote"
+		"health:db:bootstrap:local": "node scripts/health/bootstrap-local-d1.mjs",
+		"health:db:clone:local": "node scripts/health/clone-remote-d1-to-local.mjs",
+		"health:db:migrate:remote": "node scripts/health/migrate-health-d1.mjs --remote",
+		"health:dashboard:remote": "HEALTH_DASHBOARD_D1_TARGET=remote HEALTH_DASHBOARD_REMOTE_CONFIRM=7f570a9a-fab7-4f17-a69a-c7717320802f astro dev"
 	},
 	"dependencies": {
 		"@astrojs/markdoc": "^2.0.6",

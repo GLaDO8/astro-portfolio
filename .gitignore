@@ -11,3 +11,4 @@ dist/
 **/.wrangler/
 .openlogs/
 .DS_Store
+health-data

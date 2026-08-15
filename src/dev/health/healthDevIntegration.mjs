@@ -1,10 +1,8 @@
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-
-const execFileAsync = promisify(execFile);
-const projectRoot = new URL("../../../", import.meta.url);
-const wranglerPath = new URL("node_modules/.bin/wrangler", projectRoot);
-const wranglerConfig = new URL("workers/health-ingest/wrangler.jsonc", projectRoot);
+import {
+	PRODUCTION_DATABASE_ID,
+	resolveD1Target,
+	runD1,
+} from "../../../scripts/health/d1-runner.mjs";
 
 export const HEALTH_QUERY = `
 WITH RECURSIVE bounds AS (
@@ -144,41 +142,60 @@ export function normalizeHealthQueryOutput(payload) {
 	};
 }
 
-async function queryHealthData() {
-	const { stdout } = await execFileAsync(
-		wranglerPath.pathname,
-		[
-			"d1",
-			"execute",
-			"health-processed-data",
-			"--config",
-			wranglerConfig.pathname,
-			"--remote",
-			"--json",
-			"--command",
-			HEALTH_QUERY,
-		],
-		{ cwd: projectRoot.pathname, maxBuffer: 8 * 1024 * 1024 },
-	);
-
-	return normalizeHealthQueryOutput(JSON.parse(stdout));
+export function resolveDashboardTarget(env = process.env) {
+	const requestedMode = env.HEALTH_DASHBOARD_D1_TARGET;
+	if (requestedMode === undefined || requestedMode === "local") {
+		if (env.HEALTH_DASHBOARD_REMOTE_CONFIRM) throw new Error("dashboard_target_invalid");
+		return resolveD1Target({ mode: "local" });
+	}
+	if (
+		requestedMode !== "remote" ||
+		env.HEALTH_DASHBOARD_REMOTE_CONFIRM !== PRODUCTION_DATABASE_ID
+	) {
+		throw new Error("dashboard_target_invalid");
+	}
+	return resolveD1Target({
+		mode: "remote",
+		expectedDatabaseId: env.HEALTH_DASHBOARD_REMOTE_CONFIRM,
+	});
 }
 
-async function queryHealthDataWithRetry() {
-	try {
-		return await queryHealthData();
-	} catch {
-		return queryHealthData();
+export function assertReadOnlyHealthQuery(sql) {
+	const statements = sql
+		.split(";")
+		.map((statement) => statement.trim())
+		.filter(Boolean);
+	const writePattern =
+		/\b(ALTER|ATTACH|CREATE|DELETE|DETACH|DROP|INSERT|PRAGMA|REINDEX|REPLACE|UPDATE|VACUUM)\b/i;
+	if (
+		statements.length === 0 ||
+		statements.some(
+			(statement) => !/^(SELECT|WITH)\b/i.test(statement) || writePattern.test(statement),
+		)
+	) {
+		throw new Error("health_query_not_read_only");
 	}
 }
 
-export function healthDataPlugin() {
+export async function queryHealthData(target, execute = runD1) {
+	assertReadOnlyHealthQuery(HEALTH_QUERY);
+	const payload = await execute({ command: HEALTH_QUERY, target, json: true });
+	return normalizeHealthQueryOutput(payload);
+}
+
+export function healthDataPlugin({
+	env = process.env,
+	queryHealthData: query = queryHealthData,
+	log = console.info,
+} = {}) {
+	const target = resolveDashboardTarget(env);
 	let dataPromise;
 
 	return {
 		name: "health-dashboard-dev-data",
 		apply: "serve",
 		configureServer(server) {
+			log(`[health dashboard] D1 target: ${target.mode}`);
 			server.middlewares.use("/__dev/health-data", async (request, response) => {
 				if (request.method !== "GET") {
 					response.statusCode = 405;
@@ -188,18 +205,26 @@ export function healthDataPlugin() {
 				}
 
 				try {
-					dataPromise ??= queryHealthDataWithRetry();
-					const data = await dataPromise;
+					let requestPromise;
+					if (target.mode === "remote") {
+						dataPromise ??= query(target);
+						requestPromise = dataPromise;
+					} else {
+						requestPromise = query(target);
+					}
+					const data = await requestPromise;
 					response.statusCode = 200;
 					response.setHeader("Cache-Control", "no-store");
 					response.setHeader("Content-Type", "application/json; charset=utf-8");
 					response.end(JSON.stringify(data));
 				} catch {
-					dataPromise = undefined;
+					if (target.mode === "remote") dataPromise = undefined;
 					response.statusCode = 500;
 					response.setHeader("Cache-Control", "no-store");
 					response.setHeader("Content-Type", "application/json; charset=utf-8");
-					response.end(JSON.stringify({ error: "Could not read the health database." }));
+					response.end(
+						JSON.stringify({ error: "health_database_unavailable", source: target.mode }),
+					);
 				}
 			});
 		},

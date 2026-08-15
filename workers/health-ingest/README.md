@@ -5,8 +5,9 @@ This Worker is the private backend boundary for Apple Health exports. It is conf
 - R2 `health-raw-data` as `HEALTH_RAW`
 - D1 `health-processed-data` as `HEALTH_DB`
 
-The Astro site remains a separate static application. Local Wrangler development uses local R2 and
-D1 emulation by default; it does not connect to the production health stores.
+The Astro site remains a separate static application. Its development-only `/health` dashboard and
+the transformation tools use one persisted local D1 database by default. Normal local development
+does not connect to the production health stores.
 
 ## Commands
 
@@ -19,19 +20,50 @@ pnpm health:dev
 pnpm health:deploy:dry
 ```
 
-The raw archive and transformation pipeline are separate. Transform exact local JSON files with:
+`health:dev` starts the health-ingestion Worker. It does not start the Astro site or its `/health`
+dashboard; use `pnpm dev` for that.
+
+## Local dashboard database
+
+Bootstrap the shared local schema, import reviewed Health Auto Export files, and then start Astro:
 
 ```sh
-pnpm health:transform:test
-pnpm health:transform:dry -- <exact-json-path>...
-pnpm health:db:migrate:local -- --persist-to <isolated-directory>
-pnpm health:transform:local -- --persist-to <same-isolated-directory> <exact-json-path>...
+pnpm health:db:bootstrap:local
+pnpm health:transform:dry <exact-json-path>...
+pnpm health:transform:local <exact-json-path>...
+pnpm dev
 ```
 
-Do not glob Downloads: the reviewed corpus is an explicit 13-file manifest and an extra full-January
-export is intentionally excluded. Dry-run validates and reports only hashes, counts, ranges, and
-timings. Local mode writes only Wrangler's local D1 state. The importer uses private mode-restricted
-temporary SQL files and deletes them after each source file.
+Bootstrap, import, and dashboard queries share the ignored
+`workers/health-ingest/.wrangler/dashboard-local` persistence directory. Bootstrap is schema-only
+and rerunnable. It creates an empty `medical_metrics` table alongside the Health Auto Export schema;
+it does not fetch from R2 or seed personal medical values.
+
+Do not glob Downloads. Use only exact reviewed files, and keep private source JSON outside this
+repository. Dry-run validates and reports only hashes, counts, ranges, and timings. Local mode writes
+only the shared local D1 state. The importer uses private mode-restricted temporary SQL files and
+deletes them after each source file.
+
+For isolated tests or migration experiments, the local bootstrap and transformation commands accept
+`--persist-to <isolated-directory>`. Both commands must receive the same directory.
+
+### Optional full-parity clone
+
+The reviewed JSON corpus cannot rebuild the existing medical-report values. With explicit approval,
+create a one-time read-only remote export and private local copy instead:
+
+```sh
+pnpm health:db:clone:local --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f
+```
+
+Choose either this clone or schema bootstrap plus source replay for the canonical local database.
+The clone refuses to overwrite or merge into an initialized local database. It never migrates or
+writes remote D1, and it removes its plaintext export after reconciliation.
+
+The local D1 directory contains private health data. Do not commit, share, or copy it into public
+build output. To rebuild it, stop Astro, move the canonical directory to a private backup location,
+then rerun bootstrap and the reviewed imports. Remove the backup only after the rebuilt database has
+been reconciled.
 
 The Worker exposes:
 
@@ -80,12 +112,18 @@ Useful event names are `health_ingest.archived`, `health_ingest.rejected`,
 `health_ingest.archive_failed`, `health_ingest.health_ok`, and
 `health_ingest.health_check_failed`. Request bodies and health values are never logged.
 
-Remote migration and transformation are production mutations. They remain approval-gated after all
-local reconciliation checks pass. Remote transformation additionally requires the configured D1 ID:
+Remote dashboard reads, migrations, and transformations are exceptional operations. They remain
+separately named and approval-gated after local reconciliation checks pass. Remote mutations require
+the configured D1 ID:
 
 ```sh
-pnpm health:transform:remote -- --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f <exact-json-path>
+pnpm health:dashboard:remote
+pnpm health:transform:remote --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f <exact-json-path>
+pnpm health:db:migrate:remote --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f
 ```
+
+Normal `pnpm dev`, bootstrap, local transformation, tests, and verification never fall back to
+remote D1.
 
 The archive route remains archive-only: transformation failures cannot affect webhook ingestion or
 immutable R2 retention.

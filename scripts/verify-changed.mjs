@@ -199,6 +199,54 @@ function matchingTests(files) {
 		tests.add("tests/health-auto-export-transform.test.mjs");
 	}
 
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file === "scripts/health/d1-runner.mjs" ||
+				file === "scripts/health/migrate-health-d1.mjs" ||
+				file === "tests/health-d1-runner.test.mjs",
+		)
+	) {
+		tests.add("tests/health-d1-runner.test.mjs");
+	}
+
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file === "package.json" ||
+				file === "scripts/verify-changed.mjs" ||
+				file === "scripts/health/d1-runner.mjs" ||
+				file === "scripts/health/bootstrap-local-d1.mjs" ||
+				file === "scripts/health/import-health-auto-export.mjs" ||
+				file === "scripts/health/migrate-health-d1.mjs" ||
+				file === "src/dev/health/healthDevIntegration.mjs" ||
+				file === "tests/health-d1-local.test.mjs" ||
+				file === "workers/health-ingest/README.md" ||
+				file === "workers/health-ingest/migrations/README.md" ||
+				file === "workers/health-ingest/migrations/0001_medical_metrics.sql" ||
+				file.startsWith("workers/health-ingest/migrations/health-auto-export/") ||
+				file === "workers/health-ingest/wrangler.jsonc" ||
+				file === "plans/local-d1-first-migration.md" ||
+				file === "plans/local-health-dashboard.md" ||
+				file.startsWith("tests/fixtures/health-auto-export/"),
+		)
+	) {
+		tests.add("tests/health-d1-local.test.mjs");
+	}
+
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file === "scripts/health/clone-remote-d1-to-local.mjs" ||
+				file === "tests/health-d1-clone.test.mjs",
+		)
+	) {
+		tests.add("tests/health-d1-clone.test.mjs");
+	}
+
 	return [...tests].filter((file) => fs.existsSync(file));
 }
 

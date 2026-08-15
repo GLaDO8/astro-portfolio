@@ -1,16 +1,13 @@
-import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 
+import { PRODUCTION_DATABASE_ID, resolveD1Target, runD1 } from "./d1-runner.mjs";
 import { HEALTH_EXPORT_MANIFEST_BY_HASH } from "./health-export-manifest.mjs";
 import { normalizeHealthAutoExport } from "./normalize-health-auto-export.mjs";
-
-const DATABASE_NAME = "health-processed-data";
-const DATABASE_ID = "7f570a9a-fab7-4f17-a69a-c7717320802f";
-const CONFIG_PATH = "workers/health-ingest/wrangler.jsonc";
 
 function usage(message) {
 	if (message) console.error(message);
@@ -20,21 +17,39 @@ function usage(message) {
 	process.exitCode = 2;
 }
 
-function parseArguments(argv) {
+export function parseArguments(argv) {
 	let mode = "dry-run";
 	let databaseId = null;
 	let persistTo = null;
+	let selectedMode = false;
 	const files = [];
 	for (let index = 0; index < argv.length; index += 1) {
 		const argument = argv[index];
-		if (argument === "--local" || argument === "--remote") mode = argument.slice(2);
-		else if (argument === "--database-id") databaseId = argv[++index];
-		else if (argument === "--persist-to") persistTo = argv[++index];
+		if (argument === "--") continue;
+		if (argument === "--local" || argument === "--remote") {
+			if (selectedMode) return null;
+			selectedMode = true;
+			mode = argument.slice(2);
+		} else if (
+			argument === "--database-id" &&
+			databaseId === null &&
+			argv[index + 1] &&
+			!argv[index + 1].startsWith("-")
+		)
+			databaseId = argv[++index];
+		else if (
+			argument === "--persist-to" &&
+			persistTo === null &&
+			argv[index + 1] &&
+			!argv[index + 1].startsWith("-")
+		)
+			persistTo = argv[++index];
 		else if (argument.startsWith("-")) return null;
 		else files.push(argument);
 	}
 	if (files.length === 0) return null;
-	if (mode === "remote" && databaseId !== DATABASE_ID) return null;
+	if (mode === "remote" && databaseId !== PRODUCTION_DATABASE_ID) return null;
+	if (mode !== "remote" && databaseId) return null;
 	if (mode !== "local" && persistTo) return null;
 	return { mode, databaseId, persistTo, files };
 }
@@ -55,7 +70,7 @@ function batches(values, size = 100) {
 	return output;
 }
 
-function buildSql({ objectKey, payloadSha256, receivedAtMs, normalized }) {
+export function buildSql({ objectKey, payloadSha256, receivedAtMs, normalized }) {
 	const sql = [
 		"PRAGMA foreign_keys = ON;",
 		`INSERT INTO raw_deliveries (object_key, payload_sha256, received_at_ms, observed_start_ms, observed_end_ms, transform_status) VALUES (${sqlText(objectKey)}, ${sqlText(payloadSha256)}, ${receivedAtMs}, ${normalized.observedStartMs}, ${normalized.observedEndMs}, 'pending') ON CONFLICT(payload_sha256) DO NOTHING;`,
@@ -91,27 +106,69 @@ function buildSql({ objectKey, payloadSha256, receivedAtMs, normalized }) {
 	return `${sql.join("\n")}\n`;
 }
 
-function executeSql(sqlFile, { mode, persistTo }) {
-	const args = [
-		"d1",
-		"execute",
-		DATABASE_NAME,
-		"--config",
-		CONFIG_PATH,
-		`--${mode}`,
-		"--file",
-		sqlFile,
-	];
-	if (persistTo) args.push("--persist-to", persistTo);
-	const result = spawnSync(path.resolve("node_modules/.bin/wrangler"), args, {
-		encoding: "utf8",
-		env: { ...process.env, WRANGLER_SEND_METRICS: "false" },
-		maxBuffer: 10 * 1024 * 1024,
-	});
-	if (result.status !== 0) throw new Error("d1_execute_failed");
+function nullFlag(value) {
+	return value === null ? 1 : 0;
 }
 
-async function processFile(filePath, options) {
+export function buildReconciliationSql({ payloadSha256, normalized }) {
+	const sql = [
+		"PRAGMA foreign_keys = ON;",
+		"CREATE TABLE local_reconciliation_assertion (value INTEGER NOT NULL CHECK (value = 0)) STRICT;",
+		"CREATE TABLE local_expected_metric_sample (semantic_key TEXT PRIMARY KEY, value_min_null INTEGER NOT NULL, value_max_null INTEGER NOT NULL, source_name_null INTEGER NOT NULL) WITHOUT ROWID, STRICT;",
+	];
+
+	for (const batch of batches(normalized.metricSamples, 500)) {
+		const rows = batch
+			.map(
+				(sample) =>
+					`(${sqlText(sample.semanticKey)}, ${nullFlag(sample.valueMin)}, ${nullFlag(sample.valueMax)}, ${nullFlag(sample.sourceName)})`,
+			)
+			.join(",\n");
+		sql.push(
+			`INSERT INTO local_expected_metric_sample (semantic_key, value_min_null, value_max_null, source_name_null) VALUES\n${rows};`,
+		);
+	}
+
+	sql.push(
+		"INSERT INTO local_reconciliation_assertion SELECT COUNT(*) FROM local_expected_metric_sample AS expected LEFT JOIN metric_samples AS actual USING (semantic_key) WHERE actual.semantic_key IS NULL OR (expected.value_min_null = 1 AND actual.value_min IS NOT NULL) OR (expected.value_max_null = 1 AND actual.value_max IS NOT NULL) OR (expected.source_name_null = 1 AND actual.source_name IS NOT NULL);",
+		"CREATE TABLE local_expected_sleep_summary (semantic_key TEXT PRIMARY KEY, sleep_start_ms_null INTEGER NOT NULL, sleep_end_ms_null INTEGER NOT NULL, total_sleep_hours_null INTEGER NOT NULL, awake_hours_null INTEGER NOT NULL, core_hours_null INTEGER NOT NULL, deep_hours_null INTEGER NOT NULL, rem_hours_null INTEGER NOT NULL, source_name_null INTEGER NOT NULL) WITHOUT ROWID, STRICT;",
+	);
+
+	for (const batch of batches(normalized.sleepSummaries, 500)) {
+		const rows = batch
+			.map(
+				(sleep) =>
+					`(${sqlText(sleep.semanticKey)}, ${nullFlag(sleep.sleepStartMs)}, ${nullFlag(sleep.sleepEndMs)}, ${nullFlag(sleep.totalSleepHours)}, ${nullFlag(sleep.awakeHours)}, ${nullFlag(sleep.coreHours)}, ${nullFlag(sleep.deepHours)}, ${nullFlag(sleep.remHours)}, ${nullFlag(sleep.sourceName)})`,
+			)
+			.join(",\n");
+		sql.push(
+			`INSERT INTO local_expected_sleep_summary (semantic_key, sleep_start_ms_null, sleep_end_ms_null, total_sleep_hours_null, awake_hours_null, core_hours_null, deep_hours_null, rem_hours_null, source_name_null) VALUES\n${rows};`,
+		);
+	}
+
+	sql.push(
+		"INSERT INTO local_reconciliation_assertion SELECT COUNT(*) FROM local_expected_sleep_summary AS expected LEFT JOIN sleep_summaries AS actual USING (semantic_key) WHERE actual.semantic_key IS NULL OR (expected.sleep_start_ms_null = 1 AND actual.sleep_start_ms IS NOT NULL) OR (expected.sleep_end_ms_null = 1 AND actual.sleep_end_ms IS NOT NULL) OR (expected.total_sleep_hours_null = 1 AND actual.total_sleep_hours IS NOT NULL) OR (expected.awake_hours_null = 1 AND actual.awake_hours IS NOT NULL) OR (expected.core_hours_null = 1 AND actual.core_hours IS NOT NULL) OR (expected.deep_hours_null = 1 AND actual.deep_hours IS NOT NULL) OR (expected.rem_hours_null = 1 AND actual.rem_hours IS NOT NULL) OR (expected.source_name_null = 1 AND actual.source_name IS NOT NULL);",
+		`INSERT INTO local_reconciliation_assertion SELECT CASE WHEN COUNT(*) = 1 THEN 0 ELSE 1 END FROM raw_deliveries WHERE payload_sha256 = ${sqlText(payloadSha256)} AND transform_status = 'complete';`,
+		"INSERT INTO local_reconciliation_assertion SELECT COUNT(*) FROM pragma_foreign_key_check;",
+		"DROP TABLE local_expected_sleep_summary;",
+		"DROP TABLE local_expected_metric_sample;",
+		"DROP TABLE local_reconciliation_assertion;",
+	);
+	return `${sql.join("\n")}\n`;
+}
+
+async function reconcileLocalImport({ target, payloadSha256, normalized, run, sqlFile }) {
+	await fs.writeFile(sqlFile, buildReconciliationSql({ payloadSha256, normalized }), {
+		mode: 0o600,
+	});
+	try {
+		await run({ target, file: sqlFile });
+	} catch {
+		throw new Error("local_reconciliation_failed");
+	}
+}
+
+export async function processFile(filePath, options, { run = runD1 } = {}) {
 	const startedAt = performance.now();
 	const [bytes, stats] = await Promise.all([fs.readFile(filePath), fs.stat(filePath)]);
 	const payloadSha256 = createHash("sha256").update(bytes).digest("hex");
@@ -137,9 +194,17 @@ async function processFile(filePath, options) {
 	};
 
 	if (options.mode !== "dry-run") {
+		const target =
+			options.mode === "remote"
+				? resolveD1Target({ mode: "remote", expectedDatabaseId: options.databaseId })
+				: resolveD1Target({
+						mode: "local",
+						...(options.persistTo ? { persistTo: options.persistTo } : {}),
+					});
 		const tempDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "health-transform-"));
 		await fs.chmod(tempDirectory, 0o700);
 		const sqlFile = path.join(tempDirectory, "import.sql");
+		const reconciliationFile = path.join(tempDirectory, "reconcile.sql");
 		try {
 			const sql = buildSql({
 				objectKey,
@@ -148,7 +213,16 @@ async function processFile(filePath, options) {
 				normalized,
 			});
 			await fs.writeFile(sqlFile, sql, { mode: 0o600 });
-			executeSql(sqlFile, options);
+			await run({ file: sqlFile, target });
+			if (target.mode === "local") {
+				await reconcileLocalImport({
+					target,
+					payloadSha256,
+					normalized,
+					run,
+					sqlFile: reconciliationFile,
+				});
+			}
 		} finally {
 			await fs.rm(tempDirectory, { recursive: true, force: true });
 		}
@@ -158,10 +232,12 @@ async function processFile(filePath, options) {
 	return report;
 }
 
-const options = parseArguments(process.argv.slice(2));
-if (!options) {
-	usage("Invalid arguments or missing exact file paths.");
-} else {
+export async function main(argv = process.argv.slice(2)) {
+	const options = parseArguments(argv);
+	if (!options) {
+		usage("Invalid arguments or missing exact file paths.");
+		return;
+	}
 	try {
 		for (const filePath of options.files) await processFile(filePath, options);
 	} catch (error) {
@@ -173,4 +249,8 @@ if (!options) {
 		);
 		process.exitCode = 1;
 	}
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+	await main();
 }

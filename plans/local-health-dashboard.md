@@ -1,8 +1,15 @@
 # Local health dashboard
 
+Status: Superseded by [Local D1 first migration](./local-d1-first-migration.md)
+
+This document records the original remote-read implementation. The dashboard remains development
+only, server-side, and excluded from production builds, but normal development now reads the shared
+persisted local D1 database. Remote reads are an explicit, separately guarded exception.
+
 ## Goal
 
-Add a private development-only `/health` dashboard that reads the existing remote D1 database through the local Astro dev server and renders a small set of Apple Health and medical-report trends.
+Add a private development-only `/health` dashboard that reads D1 through the local Astro dev server
+and renders a small set of Apple Health and medical-report trends.
 
 ## Success criteria
 
@@ -17,4 +24,3 @@ Add a private development-only `/health` dashboard that reads the existing remot
 1. Add a dev-only Astro integration and D1 JSON endpoint under `src/dev/`; inject the page only for the `dev` command.
 2. Add the page entrypoint under `src/dev/pages/` and shared health UI under `src/components/health/`.
 3. Add focused tests for route exclusion and D1 response shaping, then run repository verification and browser checks.
-
