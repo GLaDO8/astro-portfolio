@@ -351,6 +351,6 @@ rg -n "__dev/health-data|health-processed-data|HEALTH_DB|medical_metrics" dist
 
 ## Later phase: materialized rollups
 
-Only after this plan is complete should the project introduce the previously recommended day/week/
-month materialized rollups. That later plan should use this local D1 workflow to benchmark schema,
-refresh, correction, and query behavior before any remote migration is proposed.
+This completed foundation is followed by
+[Health materialized rollups and refresh](./health-materialized-rollups.md). Its first implementation
+phase remains local-only; remote migration and reader promotion require a separate approval gate.

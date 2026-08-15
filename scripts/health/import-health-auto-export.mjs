@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 import { PRODUCTION_DATABASE_ID, resolveD1Target, runD1 } from "./d1-runner.mjs";
 import { HEALTH_EXPORT_MANIFEST_BY_HASH } from "./health-export-manifest.mjs";
+import { buildTouchedRollupReconciliationSql, buildTouchedRollupSql } from "./metric-rollups.mjs";
 import { normalizeHealthAutoExport } from "./normalize-health-auto-export.mjs";
 
 function usage(message) {
@@ -70,7 +71,13 @@ function batches(values, size = 100) {
 	return output;
 }
 
-export function buildSql({ objectKey, payloadSha256, receivedAtMs, normalized }) {
+export function buildSql({
+	objectKey,
+	payloadSha256,
+	receivedAtMs,
+	normalized,
+	includeRollups = true,
+}) {
 	const sql = [
 		"PRAGMA foreign_keys = ON;",
 		`INSERT INTO raw_deliveries (object_key, payload_sha256, received_at_ms, observed_start_ms, observed_end_ms, transform_status) VALUES (${sqlText(objectKey)}, ${sqlText(payloadSha256)}, ${receivedAtMs}, ${normalized.observedStartMs}, ${normalized.observedEndMs}, 'pending') ON CONFLICT(payload_sha256) DO NOTHING;`,
@@ -97,6 +104,13 @@ export function buildSql({ objectKey, payloadSha256, receivedAtMs, normalized })
 			.join(",\n");
 		sql.push(
 			`WITH rows(local_date, sleep_start_ms, sleep_end_ms, total_sleep_hours, awake_hours, core_hours, deep_hours, rem_hours, source_name, semantic_key) AS (VALUES\n${rows}\n), delivery AS (SELECT id FROM raw_deliveries WHERE payload_sha256 = ${sqlText(payloadSha256)} AND transform_status = 'pending') INSERT INTO sleep_summaries (delivery_id, local_date, sleep_start_ms, sleep_end_ms, total_sleep_hours, awake_hours, core_hours, deep_hours, rem_hours, source_name, semantic_key) SELECT delivery.id, rows.local_date, rows.sleep_start_ms, rows.sleep_end_ms, rows.total_sleep_hours, rows.awake_hours, rows.core_hours, rows.deep_hours, rows.rem_hours, rows.source_name, rows.semantic_key FROM rows CROSS JOIN delivery WHERE true ON CONFLICT(semantic_key) DO NOTHING;`,
+		);
+	}
+
+	if (includeRollups) {
+		sql.push(...buildTouchedRollupSql({ metricSamples: normalized.metricSamples, payloadSha256 }));
+		sql.push(
+			`WITH delivery AS (SELECT id FROM raw_deliveries WHERE payload_sha256 = ${sqlText(payloadSha256)} AND transform_status = 'pending') UPDATE metric_rollup_state SET data_revision = data_revision + 1, last_complete_delivery_id = (SELECT id FROM delivery), first_local_date = (SELECT MIN(local_date) FROM metric_samples), last_local_date = (SELECT MAX(local_date) FROM metric_samples), refreshed_at_ms = unixepoch('subsec') * 1000 WHERE singleton = 1 AND EXISTS (SELECT 1 FROM delivery);`,
 		);
 	}
 
@@ -149,6 +163,7 @@ export function buildReconciliationSql({ payloadSha256, normalized }) {
 	sql.push(
 		"INSERT INTO local_reconciliation_assertion SELECT COUNT(*) FROM local_expected_sleep_summary AS expected LEFT JOIN sleep_summaries AS actual USING (semantic_key) WHERE actual.semantic_key IS NULL OR (expected.sleep_start_ms_null = 1 AND actual.sleep_start_ms IS NOT NULL) OR (expected.sleep_end_ms_null = 1 AND actual.sleep_end_ms IS NOT NULL) OR (expected.total_sleep_hours_null = 1 AND actual.total_sleep_hours IS NOT NULL) OR (expected.awake_hours_null = 1 AND actual.awake_hours IS NOT NULL) OR (expected.core_hours_null = 1 AND actual.core_hours IS NOT NULL) OR (expected.deep_hours_null = 1 AND actual.deep_hours IS NOT NULL) OR (expected.rem_hours_null = 1 AND actual.rem_hours IS NOT NULL) OR (expected.source_name_null = 1 AND actual.source_name IS NOT NULL);",
 		`INSERT INTO local_reconciliation_assertion SELECT CASE WHEN COUNT(*) = 1 THEN 0 ELSE 1 END FROM raw_deliveries WHERE payload_sha256 = ${sqlText(payloadSha256)} AND transform_status = 'complete';`,
+		...buildTouchedRollupReconciliationSql(normalized.metricSamples),
 		"INSERT INTO local_reconciliation_assertion SELECT COUNT(*) FROM pragma_foreign_key_check;",
 		"DROP TABLE local_expected_sleep_summary;",
 		"DROP TABLE local_expected_metric_sample;",
@@ -211,6 +226,7 @@ export async function processFile(filePath, options, { run = runD1 } = {}) {
 				payloadSha256,
 				receivedAtMs: manifest?.receivedAtMs ?? Math.trunc(stats.mtimeMs),
 				normalized,
+				includeRollups: target.mode === "local",
 			});
 			await fs.writeFile(sqlFile, sql, { mode: 0o600 });
 			await run({ file: sqlFile, target });

@@ -14,24 +14,29 @@ Bootstrap applies the existing medical schema first, verifies an exact match if 
 and then applies the Health Auto Export stream to the shared local D1 directory. It does not move,
 copy, merge, or renumber either migration history, and it does not seed personal medical values.
 
+The Health Auto Export stream is ordered as follows:
+
+1. `0001_health_auto_export.sql` creates deliveries, metric facts, sleep summaries, and definitions.
+2. `0002_add_weight_body_mass.sql` adds body-mass support.
+3. `0003_metric_rollups.sql` adds the disposable day/week/month projection and singleton refresh
+   state, and marks the two unreviewed sound-level operators as unsupported.
+
+Migration `0003` initializes an empty database as `ready`. If facts already exist, it initializes as
+`needs_backfill`; run `pnpm health:rollups:backfill:local` before using the local dashboard.
+
 For an isolated migration experiment, use:
 
 ```sh
 pnpm health:db:bootstrap:local --persist-to <isolated-directory>
 ```
 
-Before any remote apply, list the remote migrations read-only and verify that only the reviewed
-health migration is pending:
+Remote promotion of `0003` is deferred. You may list remote migrations read-only:
 
 ```sh
 pnpm exec wrangler d1 migrations list health-processed-data --config workers/health-ingest/wrangler.jsonc --remote
 ```
 
-Remote migration is an explicit production mutation and requires separate approval:
-
-```sh
-pnpm health:db:migrate:remote --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f
-```
-
-The remote command applies only the migration directory configured in `wrangler.jsonc`; it does not
-compose or apply the standalone medical migration.
+Do not apply the pending migration remotely in this phase. The repository migration command fails
+closed while rollup promotion is deferred. A separately approved promotion plan must snapshot
+remote state, apply only the reviewed migration, backfill and reconcile bounded chunks, then switch
+the reader only after state is ready. The standalone medical migration remains separate.

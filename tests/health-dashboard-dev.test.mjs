@@ -6,15 +6,16 @@ import astroConfig from "../astro.config.mjs";
 import {
 	getAppleHealthDataRange,
 	getLatestMedicalDate,
-	rollUpWeeklyExerciseTime,
 } from "../src/components/health/healthData.ts";
 import { medicalDefinitions, medicalSections } from "../src/components/health/medicalMetrics.ts";
 import {
 	assertReadOnlyHealthQuery,
 	HEALTH_QUERY,
+	HEALTH_STATE_QUERY,
 	healthDataPlugin,
 	healthDevIntegration,
 	normalizeHealthQueryOutput,
+	queryHealthData,
 	resolveDashboardTarget,
 } from "../src/dev/health/healthDevIntegration.mjs";
 
@@ -150,20 +151,40 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 			],
 		},
 		{ results: [{ local_date: "2026-01-09", value: 70.25 }] },
+		{ results: [{ code: "step_count", local_date: "2026-01-09", value: 1234 }] },
 	];
+	const state = {
+		aggregation_version: 1,
+		first_local_date: "2026-01-01",
+		last_local_date: "2026-01-09",
+		first_sleep_date: null,
+		last_sleep_date: null,
+	};
 
-	assert.deepEqual(normalizeHealthQueryOutput(payload), {
+	assert.deepEqual(normalizeHealthQueryOutput(payload, state), {
 		activity: payload[0].results,
 		recovery: payload[1].results,
 		sleep: payload[2].results,
 		vo2Max: payload[3].results,
 		medical: payload[4].results,
 		weight: payload[5].results,
+		summaries: { step_count: { local_date: "2026-01-09", value: 1234 } },
+		coverage: { firstDate: "2026-01-01", lastDate: "2026-01-09" },
+		aggregation: {
+			version: 1,
+			grains: {
+				activity: "week",
+				recovery: "week",
+				vo2Max: "day",
+				weight: "day",
+				summaries: "day",
+			},
+		},
 	});
 });
 
 test("rejects incomplete D1 output", () => {
-	assert.throws(() => normalizeHealthQueryOutput([{ results: [] }]), /six result sets/);
+	assert.throws(() => normalizeHealthQueryOutput([{ results: [] }], {}), /seven result sets/);
 });
 
 test("defaults the dashboard to local and guards exceptional remote reads", () => {
@@ -175,12 +196,13 @@ test("defaults the dashboard to local and guards exceptional remote reads", () =
 		() => resolveDashboardTarget({ HEALTH_DASHBOARD_D1_TARGET: "remote" }),
 		/dashboard_target_invalid/,
 	);
-	assert.equal(
-		resolveDashboardTarget({
-			HEALTH_DASHBOARD_D1_TARGET: "remote",
-			HEALTH_DASHBOARD_REMOTE_CONFIRM: "7f570a9a-fab7-4f17-a69a-c7717320802f",
-		}).mode,
-		"remote",
+	assert.throws(
+		() =>
+			resolveDashboardTarget({
+				HEALTH_DASHBOARD_D1_TARGET: "remote",
+				HEALTH_DASHBOARD_REMOTE_CONFIRM: "7f570a9a-fab7-4f17-a69a-c7717320802f",
+			}),
+		/dashboard_target_invalid/,
 	);
 });
 
@@ -191,12 +213,32 @@ function expectAbsolutePath(value) {
 
 test("accepts only read-only dashboard SQL", () => {
 	assert.doesNotThrow(() => assertReadOnlyHealthQuery(HEALTH_QUERY));
+	assert.doesNotThrow(() => assertReadOnlyHealthQuery(HEALTH_STATE_QUERY));
 	for (const sql of [
 		"DELETE FROM metric_samples;",
 		"PRAGMA foreign_keys = OFF;",
 		"WITH selected AS (SELECT 1) UPDATE medical_metrics SET value = 1;",
 	]) {
 		assert.throws(() => assertReadOnlyHealthQuery(sql), /health_query_not_read_only/);
+	}
+});
+
+test("rejects stale or version-mismatched rollup state without a raw fallback", async () => {
+	for (const state of [
+		{ aggregation_version: 1, status: "needs_backfill" },
+		{ aggregation_version: 2, status: "ready" },
+	]) {
+		let calls = 0;
+		await assert.rejects(
+			() =>
+				queryHealthData({ mode: "local" }, async ({ command }) => {
+					calls += 1;
+					assert.doesNotMatch(command, /metric_samples/);
+					return [{ results: [state] }];
+				}),
+			/health_rollup_backfill_required/,
+		);
+		assert.equal(calls, 1);
 	}
 });
 
@@ -223,46 +265,23 @@ test("local dashboard GETs re-query and return no-store shaped JSON", async () =
 	assert.equal(second.statusCode, 200);
 });
 
-test("remote dashboard caches success but does not retry a failed request", async () => {
-	const env = {
-		HEALTH_DASHBOARD_D1_TARGET: "remote",
-		HEALTH_DASHBOARD_REMOTE_CONFIRM: "7f570a9a-fab7-4f17-a69a-c7717320802f",
-	};
-	let successCalls = 0;
-	const successRequest = createMiddlewareHarness(
-		healthDataPlugin({
-			env,
-			queryHealthData: async () => {
-				successCalls += 1;
-				return { activity: [], recovery: [], sleep: [], vo2Max: [], medical: [], weight: [] };
-			},
-			log: () => {},
-		}),
-	);
-	await successRequest();
-	await successRequest();
-	assert.equal(successCalls, 1);
-
-	let failureCalls = 0;
+test("returns an actionable local error when rollups need backfill", async () => {
 	const failureRequest = createMiddlewareHarness(
 		healthDataPlugin({
-			env,
+			env: {},
 			queryHealthData: async () => {
-				failureCalls += 1;
-				throw new Error("private detail");
+				throw new Error("health_rollup_backfill_required");
 			},
 			log: () => {},
 		}),
 	);
 	const failure = await failureRequest();
-	assert.equal(failureCalls, 1);
-	assert.equal(failure.statusCode, 500);
+	assert.equal(failure.statusCode, 503);
 	assert.equal(failure.headers.get("Cache-Control"), "no-store");
 	assert.deepEqual(JSON.parse(failure.body), {
-		error: "health_database_unavailable",
-		source: "remote",
+		error: "health_rollup_backfill_required",
+		action: "pnpm health:rollups:backfill:local",
 	});
-	assert.doesNotMatch(failure.body, /private detail/);
 });
 
 test("dashboard middleware rejects non-GET requests", async () => {
@@ -274,10 +293,13 @@ test("dashboard middleware rejects non-GET requests", async () => {
 	assert.equal(response.headers.get("Allow"), "GET");
 });
 
-test("selects sparse body-mass observations chronologically", () => {
-	assert.match(HEALTH_QUERY, /WHERE md\.code = 'weight_body_mass'/);
-	assert.match(HEALTH_QUERY, /PARTITION BY ms\.local_date ORDER BY ms\.observed_at_ms DESC/);
-	assert.match(HEALTH_QUERY, /WHERE recency = 1 ORDER BY local_date/);
+test("selects rollups without raw metric scans or date spines", () => {
+	assert.doesNotMatch(HEALTH_QUERY, /metric_samples|WITH RECURSIVE/i);
+	assert.match(HEALTH_QUERY, /metric_rollups/g);
+	assert.match(HEALTH_QUERY, /code = 'weight_body_mass'/);
+	assert.match(HEALTH_QUERY, /mr\.grain = 'day'/);
+	assert.match(HEALTH_QUERY, /mr\.grain = 'week'/);
+	assert.match(HEALTH_QUERY, /date\(state\.last_local_date, '-6 days'\)/);
 });
 
 test("selects every requested first-batch medical metric", () => {
@@ -300,59 +322,10 @@ test("renders every selected medical metric in exactly one dashboard group", () 
 	assert.deepEqual(sectionCodes.toSorted(), requestedMedicalCodes.toSorted());
 });
 
-test("rolls Apple Exercise Time into Monday-starting weeks", () => {
-	assert.deepEqual(
-		rollUpWeeklyExerciseTime([
-			{ local_date: "2026-08-02", exercise_minutes: 15 },
-			{ local_date: "2026-08-03", exercise_minutes: 20 },
-			{ local_date: "2026-08-09", exercise_minutes: 30 },
-			{ local_date: "2026-08-10", exercise_minutes: 40 },
-		]),
-		[
-			{ date: "2026-07-27", value: 15 },
-			{ date: "2026-08-03", value: 50 },
-			{ date: "2026-08-10", value: 40 },
-		],
-	);
-});
-
-test("sums observed exercise days without inventing missing days or weeks", () => {
-	assert.deepEqual(
-		rollUpWeeklyExerciseTime([
-			{ local_date: "2026-08-03", exercise_minutes: null },
-			{ local_date: "2026-08-05", exercise_minutes: 25 },
-			{ local_date: "2026-08-09", exercise_minutes: 35 },
-			{ local_date: "2026-08-17", exercise_minutes: 10 },
-		]),
-		[
-			{ date: "2026-08-03", value: 60 },
-			{ date: "2026-08-17", value: 10 },
-		],
-	);
-});
-
-test("keeps an observed week with no exercise value empty", () => {
-	assert.deepEqual(
-		rollUpWeeklyExerciseTime([
-			{ local_date: "2026-08-24", exercise_minutes: null },
-			{ local_date: "2026-08-26", exercise_minutes: null },
-		]),
-		[{ date: "2026-08-24", value: null }],
-	);
-});
-
-test("finds the Apple Health range without medical report dates or empty spine rows", () => {
+test("uses ready rollup and sleep coverage without medical report dates", () => {
 	assert.deepEqual(
 		getAppleHealthDataRange({
-			activity: [
-				{ local_date: "2025-12-30", steps: null, active_energy_kj: null, exercise_minutes: null },
-				{ local_date: "2026-01-03", steps: 1234, active_energy_kj: null, exercise_minutes: null },
-			],
-			recovery: [],
-			sleep: [{ local_date: "2026-01-02", total_sleep_hours: 7.5 }],
-			vo2Max: [{ local_date: "2026-01-08", value: 42 }],
-			medical: [{ collected_at_ms: Date.parse("2025-12-31T20:00:00Z"), value: 5.4 }],
-			weight: [{ local_date: "2026-01-06", value: 70 }],
+			coverage: { firstDate: "2026-01-02", lastDate: "2026-01-08" },
 		}),
 		{ firstDate: "2026-01-02", lastDate: "2026-01-08" },
 	);
@@ -371,14 +344,7 @@ test("finds the latest blood test date in India", () => {
 test("returns no Apple Health range when every Apple Health value is missing", () => {
 	assert.equal(
 		getAppleHealthDataRange({
-			activity: [
-				{ local_date: "2026-01-01", steps: null, active_energy_kj: null, exercise_minutes: null },
-			],
-			recovery: [{ local_date: "2026-01-02", resting_heart_rate: null, hrv: null }],
-			sleep: [],
-			vo2Max: [],
-			medical: [{ collected_at_ms: Date.parse("2026-01-03T10:00:00Z"), value: 5.4 }],
-			weight: [],
+			coverage: { firstDate: null, lastDate: null },
 		}),
 		null,
 	);

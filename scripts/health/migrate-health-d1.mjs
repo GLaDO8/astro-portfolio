@@ -35,7 +35,7 @@ export function parseMigrationArguments(argv) {
 		if (databaseId !== PRODUCTION_DATABASE_ID || persistTo) {
 			throw new Error("migration_remote_confirmation_required");
 		}
-		return { target: resolveD1Target({ mode: "remote", expectedDatabaseId: databaseId }) };
+		throw new Error("migration_remote_rollup_promotion_deferred");
 	}
 	if (mode === "local" && !databaseId) {
 		return {

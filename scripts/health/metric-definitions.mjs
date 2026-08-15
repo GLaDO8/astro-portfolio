@@ -1,3 +1,5 @@
+export const METRIC_AGGREGATION_VERSION = 1;
+
 export const METRIC_DEFINITIONS = Object.freeze(
 	[
 		["active_energy", "kJ", "sum"],
@@ -12,10 +14,10 @@ export const METRIC_DEFINITIONS = Object.freeze(
 		["body_mass_index", "count", "latest"],
 		["carbohydrates", "g", "sum"],
 		["dietary_energy", "kJ", "sum"],
-		["environmental_audio_exposure", "dBASPL", "average"],
+		["environmental_audio_exposure", "dBASPL", "none"],
 		["fiber", "g", "sum"],
 		["flights_climbed", "count", "sum"],
-		["headphone_audio_exposure", "dBASPL", "average"],
+		["headphone_audio_exposure", "dBASPL", "none"],
 		["heart_rate", "count/min", "range"],
 		["heart_rate_variability", "ms", "average"],
 		["lean_body_mass", "kg", "latest"],

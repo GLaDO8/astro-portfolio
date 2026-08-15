@@ -19,10 +19,16 @@ const HEALTH_MIGRATIONS = [
 		PROJECT_ROOT,
 		"workers/health-ingest/migrations/health-auto-export/0002_add_weight_body_mass.sql",
 	),
+	path.join(
+		PROJECT_ROOT,
+		"workers/health-ingest/migrations/health-auto-export/0003_metric_rollups.sql",
+	),
 ];
 const USER_TABLES = [
 	"medical_metrics",
 	"metric_definitions",
+	"metric_rollups",
+	"metric_rollup_state",
 	"metric_samples",
 	"raw_deliveries",
 	"sleep_summaries",
@@ -63,6 +69,29 @@ const EXPECTED_COLUMNS = {
 		["value_max", "REAL", 0, 0],
 		["source_name", "TEXT", 0, 0],
 		["semantic_key", "TEXT", 1, 0],
+	],
+	metric_rollups: [
+		["metric_id", "INTEGER", 1, 1],
+		["grain", "TEXT", 1, 2],
+		["period_start", "TEXT", 1, 3],
+		["sample_count", "INTEGER", 1, 0],
+		["value_sum", "REAL", 1, 0],
+		["value_min", "REAL", 1, 0],
+		["value_max", "REAL", 1, 0],
+		["latest_value", "REAL", 1, 0],
+		["latest_observed_at_ms", "INTEGER", 1, 0],
+		["latest_sample_id", "INTEGER", 1, 0],
+		["aggregation_version", "INTEGER", 1, 0],
+	],
+	metric_rollup_state: [
+		["singleton", "INTEGER", 0, 1],
+		["aggregation_version", "INTEGER", 1, 0],
+		["status", "TEXT", 1, 0],
+		["data_revision", "INTEGER", 1, 0],
+		["last_complete_delivery_id", "INTEGER", 0, 0],
+		["first_local_date", "TEXT", 0, 0],
+		["last_local_date", "TEXT", 0, 0],
+		["refreshed_at_ms", "INTEGER", 1, 0],
 	],
 	sleep_summaries: [
 		["id", "INTEGER", 0, 1],
@@ -109,10 +138,10 @@ async function expectedSchemaObjects() {
 }
 
 function columnQuery() {
-	return USER_TABLES.map(
-		(table) =>
-			`SELECT ${JSON.stringify(table)} AS table_name, name, type, "notnull" AS is_not_null, pk FROM pragma_table_info(${JSON.stringify(table)})`,
-	).join(" UNION ALL ");
+	return `SELECT tables.name AS table_name, columns.name, columns.type, columns."notnull" AS is_not_null, columns.pk
+FROM sqlite_schema AS tables
+JOIN pragma_table_info(tables.name) AS columns
+WHERE tables.name IN (${USER_TABLES.map((table) => `'${table}'`).join(", ")})`;
 }
 
 async function inspectLocal(target, run) {
@@ -148,7 +177,11 @@ SELECT name, type, sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER B
 	const migrations = resultRows(payload, 1).map(({ name }) => name);
 	if (
 		JSON.stringify(migrations) !==
-		JSON.stringify(["0001_health_auto_export.sql", "0002_add_weight_body_mass.sql"])
+		JSON.stringify([
+			"0001_health_auto_export.sql",
+			"0002_add_weight_body_mass.sql",
+			"0003_metric_rollups.sql",
+		])
 	) {
 		throw new Error("local_d1_migration_drift");
 	}

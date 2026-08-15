@@ -37,8 +37,42 @@ pnpm dev
 
 Bootstrap, import, and dashboard queries share the ignored
 `workers/health-ingest/.wrangler/dashboard-local` persistence directory. Bootstrap is schema-only
-and rerunnable. It creates an empty `medical_metrics` table alongside the Health Auto Export schema;
-it does not fetch from R2 or seed personal medical values.
+apart from initializing rollup state, and it is rerunnable. It creates an empty `medical_metrics`
+table alongside the Health Auto Export schema; it does not fetch from R2 or seed personal medical
+values. A fresh empty database starts with rollup state `ready`. Applying migration `0003` to a
+local database that already has facts sets the state to `needs_backfill`.
+
+### Materialized metric rollups
+
+`metric_samples` remains the lossless source of truth. `metric_rollups` is a disposable versioned
+projection at day, Monday-starting week, and calendar-month grains. Sleep and medical rows remain in
+their existing tables. Missing periods remain absent rather than becoming zero.
+
+After upgrading an existing local database, rebuild the complete projection before opening the
+dashboard:
+
+```sh
+pnpm health:rollups:backfill:local
+```
+
+The backfill clears only `metric_rollups`, builds daily rows in calendar-month chunks, composes week
+and month rows from daily sufficient statistics, reconciles both directions, and marks state ready
+only after all checks pass. It is safe to rerun. An interrupted run remains non-ready, and the local
+dashboard returns the backfill command instead of silently scanning raw facts.
+
+Every successful local import refreshes only its touched day buckets and affected weeks/months in
+the same atomic SQL execution as its facts. Exact replay does no rollup work. Unchanged overlaps do
+not rewrite identical rows. For a bounded correction or reconciliation, use an inclusive range:
+
+```sh
+pnpm health:rollups:refresh:local -- --start YYYY-MM-DD --end YYYY-MM-DD
+pnpm health:rollups:refresh:local -- --metric step_count --start YYYY-MM-DD --end YYYY-MM-DD
+```
+
+Both commands are intrinsically local-only and log only version, range, bucket counts, duration, and
+reconciliation status. The dashboard reads complete weekly activity/recovery trends, sparse daily
+VO2 max and weight observations, and daily summary values. Its response stays private, dev-only,
+and `no-store`.
 
 The medical sync reads only the remote D1 `medical_metrics` table. It replaces that table in the
 shared local database, compares every ordered local row with the remote snapshot, and removes its
@@ -118,15 +152,15 @@ Useful event names are `health_ingest.archived`, `health_ingest.rejected`,
 `health_ingest.archive_failed`, `health_ingest.health_ok`, and
 `health_ingest.health_check_failed`. Request bodies and health values are never logged.
 
-Remote dashboard reads, migrations, and transformations are exceptional operations. They remain
-separately named and approval-gated after local reconciliation checks pass. Remote mutations require
-the configured D1 ID:
+Remote transformations remain exceptional and exact-ID guarded:
 
 ```sh
-pnpm health:dashboard:remote
 pnpm health:transform:remote --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f <exact-json-path>
-pnpm health:db:migrate:remote --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f
 ```
+
+Migration `0003`, its backfill, and rollup-backed dashboard reads are intentionally local-only in
+this phase. The remote migration command fails closed until a separate promotion plan is approved;
+do not invoke Wrangler migrations directly to bypass that gate.
 
 Normal `pnpm dev`, bootstrap, local transformation, tests, and verification never fall back to
 remote D1.

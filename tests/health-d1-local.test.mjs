@@ -14,11 +14,8 @@ import {
 	processFile,
 } from "../scripts/health/import-health-auto-export.mjs";
 import { normalizeHealthAutoExport } from "../scripts/health/normalize-health-auto-export.mjs";
-import {
-	HEALTH_QUERY,
-	normalizeHealthQueryOutput,
-	queryHealthData,
-} from "../src/dev/health/healthDevIntegration.mjs";
+import { backfillRollups, refreshRollups } from "../scripts/health/refresh-health-rollups.mjs";
+import { queryHealthData } from "../src/dev/health/healthDevIntegration.mjs";
 
 const fixtures = path.resolve("tests/fixtures/health-auto-export");
 
@@ -33,6 +30,10 @@ async function withTemporaryD1(run) {
 
 function rows(payload, index = 0) {
 	return payload[index].results;
+}
+
+function stablePayload(payload) {
+	return payload.map(({ results, success }) => ({ results, success }));
 }
 
 async function counts(target) {
@@ -77,7 +78,7 @@ test("bootstraps the composed local schema without credentials and is rerunnable
 		);
 		assert.equal(first.medicalRows, 0);
 		assert.equal(first.metricDefinitions, 34);
-		assert.equal(first.migrations, 2);
+		assert.equal(first.migrations, 3);
 		assert.ok(targets.every((target) => target.mode === "local" && target.persistTo === persistTo));
 	});
 });
@@ -126,8 +127,25 @@ test("imports synthetic facts, preserves nulls, and replays idempotently", async
 		const afterOverlap = await counts(target);
 		assert.deepEqual(afterOverlap, [beforeOverlap[0] + 1, beforeOverlap[1] + 1, beforeOverlap[2]]);
 		const beforeReplay = await counts(target);
+		const rollupsBeforeReplay = await runD1({
+			target,
+			json: true,
+			command:
+				"SELECT * FROM metric_rollups ORDER BY metric_id, grain, period_start; SELECT * FROM metric_rollup_state;",
+		});
 		await processFile(path.join(fixtures, "scalar.json"), options);
 		assert.deepEqual(await counts(target), beforeReplay);
+		assert.deepEqual(
+			stablePayload(
+				await runD1({
+					target,
+					json: true,
+					command:
+						"SELECT * FROM metric_rollups ORDER BY metric_id, grain, period_start; SELECT * FROM metric_rollup_state;",
+				}),
+			),
+			stablePayload(rollupsBeforeReplay),
+		);
 
 		const payload = await runD1({
 			target,
@@ -149,6 +167,9 @@ test("imports synthetic facts, preserves nulls, and replays idempotently", async
 			"vo2Max",
 			"medical",
 			"weight",
+			"summaries",
+			"coverage",
+			"aggregation",
 		]);
 		assert.deepEqual(dashboard.medical, []);
 	});
@@ -160,6 +181,12 @@ test("a late database conflict rolls back the delivery and earlier facts", async
 		const options = { mode: "local", databaseId: null, persistTo };
 		await processFile(path.join(fixtures, "weight.json"), options);
 		const before = await counts(target);
+		const rollupsBefore = await runD1({
+			target,
+			json: true,
+			command:
+				"SELECT * FROM metric_rollups ORDER BY metric_id, grain, period_start; SELECT * FROM metric_rollup_state;",
+		});
 
 		const scalar = JSON.parse(await fs.readFile(path.join(fixtures, "scalar.json"), "utf8"));
 		const weight = JSON.parse(await fs.readFile(path.join(fixtures, "weight.json"), "utf8"));
@@ -180,6 +207,17 @@ test("a late database conflict rolls back the delivery and earlier facts", async
 		await fs.writeFile(sqlFile, sql, { mode: 0o600 });
 		await assert.rejects(() => runD1({ target, file: sqlFile }), /d1_execute_failed/);
 		assert.deepEqual(await counts(target), before);
+		assert.deepEqual(
+			stablePayload(
+				await runD1({
+					target,
+					json: true,
+					command:
+						"SELECT * FROM metric_rollups ORDER BY metric_id, grain, period_start; SELECT * FROM metric_rollup_state;",
+				}),
+			),
+			stablePayload(rollupsBefore),
+		);
 		const delivery = await runD1({
 			target,
 			json: true,
@@ -189,13 +227,13 @@ test("a late database conflict rolls back the delivery and earlier facts", async
 	});
 });
 
-test("dashboard query returns six result sets against an empty composed database", async () => {
+test("dashboard query returns ready rollup metadata against an empty composed database", async () => {
 	await withTemporaryD1(async (persistTo) => {
 		const { target } = await bootstrapLocalD1({ persistTo });
-		const payload = await runD1({ target, command: HEALTH_QUERY, json: true });
-		const normalized = normalizeHealthQueryOutput(payload);
-		assert.deepEqual(normalized.medical, []);
-		assert.equal(payload.length, 6);
+		const dashboard = await queryHealthData(target);
+		assert.deepEqual(dashboard.medical, []);
+		assert.equal(dashboard.aggregation.version, 1);
+		assert.deepEqual(dashboard.coverage, { firstDate: null, lastDate: null });
 	});
 });
 
@@ -223,4 +261,55 @@ test("local reconciliation uses bounded staging inserts and database assertions"
 	assert.match(sql, /LEFT JOIN metric_samples AS actual USING \(semantic_key\)/);
 	assert.match(sql, /pragma_foreign_key_check/);
 	assert.match(sql, /transform_status = 'complete'/);
+});
+
+test("backfill is rerunnable, preserves facts, and bounded repair deletes empty buckets", async () => {
+	await withTemporaryD1(async (persistTo) => {
+		const { target } = await bootstrapLocalD1({ persistTo });
+		const options = { mode: "local", databaseId: null, persistTo };
+		await processFile(path.join(fixtures, "scalar.json"), options);
+		const canonicalBefore = await counts(target);
+
+		const first = await backfillRollups({ target });
+		const firstSnapshot = await runD1({
+			target,
+			json: true,
+			command:
+				"SELECT * FROM metric_rollups ORDER BY metric_id, grain, period_start; SELECT aggregation_version, status, data_revision, last_complete_delivery_id, first_local_date, last_local_date FROM metric_rollup_state;",
+		});
+		const second = await backfillRollups({ target });
+		const secondSnapshot = await runD1({
+			target,
+			json: true,
+			command:
+				"SELECT * FROM metric_rollups ORDER BY metric_id, grain, period_start; SELECT aggregation_version, status, data_revision, last_complete_delivery_id, first_local_date, last_local_date FROM metric_rollup_state;",
+		});
+		assert.deepEqual(second, first);
+		assert.deepEqual(stablePayload(secondSnapshot), stablePayload(firstSnapshot));
+		assert.deepEqual(await counts(target), canonicalBefore);
+		assert.deepEqual(rows(secondSnapshot, 1), [
+			{
+				aggregation_version: 1,
+				status: "ready",
+				data_revision: 1,
+				last_complete_delivery_id: 1,
+				first_local_date: "2026-01-01",
+				last_local_date: "2026-01-01",
+			},
+		]);
+
+		await runD1({
+			target,
+			command:
+				"INSERT INTO metric_rollups SELECT id, 'day', '2026-01-02', 1, 999, 999, 999, 999, 1, 1, 1 FROM metric_definitions WHERE code = 'step_count';",
+		});
+		await refreshRollups({ metric: "step_count", start: "2026-01-02", end: "2026-01-02", target });
+		const repaired = await runD1({
+			target,
+			json: true,
+			command:
+				"SELECT COUNT(*) AS count FROM metric_rollups mr JOIN metric_definitions md ON md.id = mr.metric_id WHERE md.code = 'step_count' AND mr.grain = 'day' AND mr.period_start = '2026-01-02';",
+		});
+		assert.equal(rows(repaired)[0].count, 0);
+	});
 });

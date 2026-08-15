@@ -13,6 +13,7 @@ interface TrendChartProps {
 	unit: string;
 	color?: string;
 	formatValue?: (value: number) => string;
+	intervalDays?: number;
 }
 
 const WIDTH = 720;
@@ -30,8 +31,28 @@ export default function TrendChart({
 	unit,
 	color = "var(--color-health-warm)",
 	formatValue = defaultFormat,
+	intervalDays,
 }: TrendChartProps) {
 	const points = data.map((datum) => ({ ...datum, instant: parseDate(datum.date) }));
+	const linePoints = points.flatMap((point, index) => {
+		const previous = points[index - 1];
+		if (
+			intervalDays === undefined ||
+			!previous ||
+			point.instant.getTime() - previous.instant.getTime() <= intervalDays * 1.5 * 86_400_000
+		) {
+			return [point];
+		}
+		return [
+			{
+				date: "gap",
+				value: null,
+				qualifier: null,
+				instant: new Date((previous.instant.getTime() + point.instant.getTime()) / 2),
+			},
+			point,
+		];
+	});
 	const values = points.flatMap((point) => (point.value === null ? [] : [point.value]));
 	const dateExtent = extent(points, (point) => point.instant);
 	const valueExtent = extent(values);
@@ -60,10 +81,10 @@ export default function TrendChart({
 		[valueExtent[0] - padding, valueExtent[1] + padding],
 		[HEIGHT - MARGIN.bottom, MARGIN.top],
 	);
-	const path = line<(typeof points)[number]>()
+	const path = line<(typeof linePoints)[number]>()
 		.defined((point) => point.value !== null && point.qualifier == null)
 		.x((point) => x(point.instant))
-		.y((point) => y(point.value ?? 0))(points);
+		.y((point) => y(point.value ?? 0))(linePoints);
 	const xTicks = x.ticks(4);
 	const yTicks = y.ticks(4);
 	const spansMultipleYears = dateExtent[1].getUTCFullYear() !== dateExtent[0].getUTCFullYear();
@@ -140,7 +161,7 @@ export default function TrendChart({
 					</text>
 				))}
 				{path ? <path d={path} fill="none" stroke={color} strokeWidth="2.5" /> : null}
-				{observed.length <= 40
+				{observed.length <= 40 || intervalDays !== undefined
 					? observed.map((point) =>
 							point.qualifier ? (
 								<g key={`${point.date}-${point.qualifier}-${point.value}`}>

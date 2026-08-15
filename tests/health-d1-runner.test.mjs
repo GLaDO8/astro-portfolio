@@ -217,9 +217,9 @@ test("reuses the guarded target for migrations and remote exports", async () => 
 
 test("guards local and remote migration targets", () => {
 	assert.equal(parseMigrationArguments(["--local"]).target.mode, "local");
-	assert.equal(
-		parseMigrationArguments(["--remote", "--database-id", PRODUCTION_DATABASE_ID]).target.mode,
-		"remote",
+	assert.throws(
+		() => parseMigrationArguments(["--remote", "--database-id", PRODUCTION_DATABASE_ID]),
+		/migration_remote_rollup_promotion_deferred/,
 	);
 	for (const argv of [
 		[],
@@ -256,6 +256,14 @@ test("package commands keep normal health development local", () => {
 	assert.doesNotMatch(scripts["health:db:bootstrap:local"], /remote/i);
 	assert.doesNotMatch(scripts["health:medical:sync:local"], /--remote/);
 	assert.doesNotMatch(scripts["health:transform:local"], /remote/i);
-	assert.match(scripts["health:dashboard:remote"], /HEALTH_DASHBOARD_REMOTE_CONFIRM/);
+	assert.equal(scripts["health:dashboard:remote"], undefined);
 	assert.match(scripts["health:db:migrate:remote"], /migrate-health-d1\.mjs --remote/);
+	assert.equal(
+		scripts["health:rollups:backfill:local"],
+		"node scripts/health/refresh-health-rollups.mjs --backfill",
+	);
+	assert.equal(
+		scripts["health:rollups:refresh:local"],
+		"node scripts/health/refresh-health-rollups.mjs --refresh",
+	);
 });

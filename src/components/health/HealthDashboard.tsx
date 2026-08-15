@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-	getAppleHealthDataRange,
-	getLatestMedicalDate,
-	rollUpWeeklyExerciseTime,
-	toIndiaDate,
-} from "./healthData";
+import { getAppleHealthDataRange, getLatestMedicalDate, toIndiaDate } from "./healthData";
 import MetricSummary from "./MetricSummary";
 import { type MedicalMetricCode, medicalDefinitions, medicalSections } from "./medicalMetrics";
 import SleepChart from "./SleepChart";
@@ -48,6 +43,12 @@ interface HealthData {
 	vo2Max: { local_date: string; value: number }[];
 	medical: MedicalRow[];
 	weight: { local_date: string; value: number }[];
+	summaries: Record<string, { local_date: string; value: number }>;
+	coverage: { firstDate: string | null; lastDate: string | null };
+	aggregation: {
+		version: number;
+		grains: Record<string, "day" | "week" | "month">;
+	};
 }
 
 const average = (values: Array<number | null>) => {
@@ -56,8 +57,6 @@ const average = (values: Array<number | null>) => {
 		? observed.reduce((total, value) => total + value, 0) / observed.length
 		: null;
 };
-
-const latest = (values: Array<number | null>) => values.findLast((value) => value !== null) ?? null;
 
 const formatNumber = (value: number | null, digits = 0) =>
 	value === null
@@ -96,9 +95,9 @@ function HealthHeader({ data, hasError }: { data: HealthData | null; hasError?: 
 				Health, in context
 			</h1>
 			<p className="mt-5 max-w-2xl font-sans text-base leading-relaxed text-secondary md:text-lg">
-				A first view of daily activity, recovery, sleep, fitness, and selected medical-report trends
-				from D1. This route and its data bridge exist only while the Astro development server is
-				running.
+				A first view of weekly activity and recovery, daily observations, sleep, fitness, and
+				selected medical-report trends from D1. This route and its data bridge exist only while the
+				Astro development server is running.
 			</p>
 			<div
 				className="mt-5 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-secondary"
@@ -121,8 +120,10 @@ export default function HealthDashboard() {
 		fetch("/__dev/health-data", { signal: controller.signal })
 			.then(async (response) => {
 				if (!response.ok) {
-					const payload = (await response.json().catch(() => null)) as { source?: unknown } | null;
-					throw new Error(payload?.source === "remote" ? "remote" : "local");
+					const payload = (await response.json().catch(() => null)) as { error?: unknown } | null;
+					throw new Error(
+						payload?.error === "health_rollup_backfill_required" ? "backfill" : "local",
+					);
 				}
 				return response.json() as Promise<HealthData>;
 			})
@@ -132,8 +133,8 @@ export default function HealthDashboard() {
 					return;
 				}
 				setError(
-					requestError instanceof Error && requestError.message === "remote"
-						? "Could not read remote D1. Check the explicitly configured remote session and reload."
+					requestError instanceof Error && requestError.message === "backfill"
+						? "Health rollups are not ready. Run pnpm health:rollups:backfill:local, then reload."
 						: "Could not read local D1. Run pnpm health:db:bootstrap:local, import the reviewed JSON, and reload.",
 				);
 			});
@@ -161,11 +162,10 @@ export default function HealthDashboard() {
 		);
 	}
 
-	const latestActivity = data.activity.at(-1);
+	const latestSteps = data.summaries.step_count;
 	const averageSleep = average(data.sleep.map((row) => row.total_sleep_hours));
-	const latestRestingHeartRate = latest(data.recovery.map((row) => row.resting_heart_rate));
+	const latestRestingHeartRate = data.summaries.resting_heart_rate;
 	const latestVo2Max = data.vo2Max.at(-1)?.value ?? null;
-	const weeklyExerciseTime = rollUpWeeklyExerciseTime(data.activity);
 
 	const medicalChart = (code: MedicalMetricCode) => {
 		const definition = medicalDefinitions[code];
@@ -192,9 +192,9 @@ export default function HealthDashboard() {
 			<div className="space-y-14">
 				<dl className="grid grid-cols-2 gap-x-5 gap-y-6 lg:grid-cols-4">
 					<MetricSummary
-						label="Latest steps"
-						value={formatNumber(latestActivity?.steps ?? null)}
-						detail={latestActivity?.local_date ?? "No observation"}
+						label="Latest daily steps"
+						value={formatNumber(latestSteps?.value ?? null)}
+						detail={latestSteps?.local_date ?? "No observation"}
 					/>
 					<MetricSummary
 						label="Average sleep"
@@ -203,7 +203,7 @@ export default function HealthDashboard() {
 					/>
 					<MetricSummary
 						label="Resting heart rate"
-						value={`${formatNumber(latestRestingHeartRate)} bpm`}
+						value={`${formatNumber(latestRestingHeartRate?.value ?? null)} bpm`}
 						detail="Latest daily observation"
 					/>
 					<MetricSummary
@@ -221,32 +221,39 @@ export default function HealthDashboard() {
 						Activity
 					</h2>
 					<p className="mt-2 max-w-2xl font-sans text-sm leading-relaxed text-secondary">
-						Daily totals use HealthKit’s reconciled samples. Missing days stay empty.
+						Weekly totals use HealthKit’s reconciled samples. Only complete Monday-starting weeks
+						are shown; missing weeks stay empty.
 					</p>
 					<div className="mt-5 grid gap-x-8 lg:grid-cols-2">
 						<TrendChart
 							title="Steps"
-							description="Daily step count"
+							description="Step total for each complete Monday-starting week"
 							data={data.activity.map((row) => ({ date: row.local_date, value: row.steps }))}
 							unit="steps"
+							intervalDays={7}
 							formatValue={(value) => formatNumber(value)}
 						/>
 						<TrendChart
 							title="Weekly Apple Exercise Time"
 							description="Weekly total of Apple Exercise Time, grouped into Monday-starting weeks"
-							data={weeklyExerciseTime}
+							data={data.activity.map((row) => ({
+								date: row.local_date,
+								value: row.exercise_minutes,
+							}))}
 							unit="min"
+							intervalDays={7}
 							color="var(--color-health-green)"
 							formatValue={(value) => formatNumber(value)}
 						/>
 						<TrendChart
 							title="Active energy"
-							description="Daily active energy, converted from stored kilojoules for display"
+							description="Weekly active energy, converted from stored kilojoules for display"
 							data={data.activity.map((row) => ({
 								date: row.local_date,
 								value: row.active_energy_kj === null ? null : row.active_energy_kj / 4.184,
 							}))}
 							unit="kcal"
+							intervalDays={7}
 							color="var(--color-health-gold)"
 							formatValue={(value) => formatNumber(value)}
 						/>
@@ -257,6 +264,7 @@ export default function HealthDashboard() {
 							description="Recorded body-mass observations; days without a measurement remain empty"
 							data={data.weight.map((row) => ({ date: row.local_date, value: row.value }))}
 							unit="kg"
+							intervalDays={1}
 							color="var(--color-health-blue)"
 							formatValue={(value) => formatNumber(value, 1)}
 						/>
@@ -280,19 +288,21 @@ export default function HealthDashboard() {
 					<div className="mt-5 grid gap-x-8 lg:grid-cols-2">
 						<TrendChart
 							title="Resting heart rate"
-							description="Daily average of available resting-heart-rate samples"
+							description="Weighted average across each complete Monday-starting week"
 							data={data.recovery.map((row) => ({
 								date: row.local_date,
 								value: row.resting_heart_rate,
 							}))}
 							unit="bpm"
+							intervalDays={7}
 							color="var(--color-health-blue)"
 						/>
 						<TrendChart
 							title="Heart rate variability"
-							description="Daily average HRV; measurement context can affect this value"
+							description="Weighted weekly average HRV; measurement context can affect this value"
 							data={data.recovery.map((row) => ({ date: row.local_date, value: row.hrv }))}
 							unit="ms"
+							intervalDays={7}
 							color="var(--color-health-green)"
 						/>
 					</div>
@@ -303,6 +313,7 @@ export default function HealthDashboard() {
 							description="Sparse Apple Health cardiorespiratory-fitness estimates"
 							data={data.vo2Max.map((row) => ({ date: row.local_date, value: row.value }))}
 							unit="mL/kg/min"
+							intervalDays={1}
 							color="var(--color-health-teal)"
 						/>
 					</div>

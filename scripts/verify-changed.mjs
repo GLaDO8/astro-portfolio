@@ -203,6 +203,29 @@ function matchingTests(files) {
 		hasAny(
 			files,
 			(file) =>
+				file === "package.json" ||
+				file === "scripts/verify-changed.mjs" ||
+				file === "scripts/health/metric-definitions.mjs" ||
+				file === "scripts/health/metric-rollups.mjs" ||
+				file === "scripts/health/refresh-health-rollups.mjs" ||
+				file === "scripts/health/import-health-auto-export.mjs" ||
+				file === "scripts/health/bootstrap-local-d1.mjs" ||
+				file === "src/dev/health/healthDevIntegration.mjs" ||
+				file === "tests/health-rollups.test.mjs" ||
+				file === "workers/health-ingest/migrations/health-auto-export/0003_metric_rollups.sql" ||
+				file === "workers/health-ingest/README.md" ||
+				file === "workers/health-ingest/migrations/README.md" ||
+				file === "plans/health-materialized-rollups.md",
+		)
+	) {
+		tests.add("tests/health-rollups.test.mjs");
+		tests.add("tests/health-d1-local.test.mjs");
+	}
+
+	if (
+		hasAny(
+			files,
+			(file) =>
 				file === "scripts/health/d1-runner.mjs" ||
 				file === "scripts/health/migrate-health-d1.mjs" ||
 				file === "tests/health-d1-runner.test.mjs",
