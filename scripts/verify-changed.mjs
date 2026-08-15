@@ -247,6 +247,19 @@ function matchingTests(files) {
 		tests.add("tests/health-d1-clone.test.mjs");
 	}
 
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file === "package.json" ||
+				file === "scripts/health/sync-medical-metrics-to-local.mjs" ||
+				file === "tests/health-medical-local-sync.test.mjs" ||
+				file === "workers/health-ingest/README.md",
+		)
+	) {
+		tests.add("tests/health-medical-local-sync.test.mjs");
+	}
+
 	return [...tests].filter((file) => fs.existsSync(file));
 }
 

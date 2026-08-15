@@ -245,11 +245,16 @@ test("package commands keep normal health development local", () => {
 	const scripts = JSON.parse(fs.readFileSync("package.json", "utf8")).scripts;
 	assert.equal(scripts["health:db:bootstrap:local"], "node scripts/health/bootstrap-local-d1.mjs");
 	assert.equal(
+		scripts["health:medical:sync:local"],
+		"node scripts/health/sync-medical-metrics-to-local.mjs",
+	);
+	assert.equal(
 		scripts["health:transform:local"],
 		"node scripts/health/import-health-auto-export.mjs --local",
 	);
 	assert.doesNotMatch(scripts.dev, /remote/i);
 	assert.doesNotMatch(scripts["health:db:bootstrap:local"], /remote/i);
+	assert.doesNotMatch(scripts["health:medical:sync:local"], /--remote/);
 	assert.doesNotMatch(scripts["health:transform:local"], /remote/i);
 	assert.match(scripts["health:dashboard:remote"], /HEALTH_DASHBOARD_REMOTE_CONFIRM/);
 	assert.match(scripts["health:db:migrate:remote"], /migrate-health-d1\.mjs --remote/);

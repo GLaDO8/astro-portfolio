@@ -31,6 +31,7 @@ Bootstrap the shared local schema, import reviewed Health Auto Export files, and
 pnpm health:db:bootstrap:local
 pnpm health:transform:dry <exact-json-path>...
 pnpm health:transform:local <exact-json-path>...
+pnpm health:medical:sync:local --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f
 pnpm dev
 ```
 
@@ -38,6 +39,11 @@ Bootstrap, import, and dashboard queries share the ignored
 `workers/health-ingest/.wrangler/dashboard-local` persistence directory. Bootstrap is schema-only
 and rerunnable. It creates an empty `medical_metrics` table alongside the Health Auto Export schema;
 it does not fetch from R2 or seed personal medical values.
+
+The medical sync reads only the remote D1 `medical_metrics` table. It replaces that table in the
+shared local database, compares every ordered local row with the remote snapshot, and removes its
+private temporary SQL file before exiting. It does not read or parse the source PDFs, change remote
+D1, or touch the local Apple Health tables. The exact database ID is required as confirmation.
 
 Do not glob Downloads. Use only exact reviewed files, and keep private source JSON outside this
 repository. Dry-run validates and reports only hashes, counts, ranges, and timings. Local mode writes
