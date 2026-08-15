@@ -109,6 +109,12 @@ WHERE mr.metric_id = (SELECT id FROM metric_definitions WHERE code = 'weight_bod
   AND mr.grain = 'day'
 ORDER BY mr.period_start;
 
+SELECT mr.period_start AS local_date, mr.latest_value AS value
+FROM metric_rollups mr
+WHERE mr.metric_id = (SELECT id FROM metric_definitions WHERE code = 'body_fat_percentage')
+  AND mr.grain = 'day'
+ORDER BY mr.period_start;
+
 WITH ranked AS (
   SELECT md.code, mr.period_start AS local_date,
     CASE md.rollup_method
@@ -138,8 +144,8 @@ function lastCoverageDate(...dates) {
 }
 
 export function normalizeHealthQueryOutput(payload, state) {
-	if (!Array.isArray(payload) || payload.length !== 7) {
-		throw new Error("Expected seven result sets from D1.");
+	if (!Array.isArray(payload) || payload.length !== 8) {
+		throw new Error("Expected eight result sets from D1.");
 	}
 
 	const resultSets = payload.map((item) => {
@@ -150,7 +156,7 @@ export function normalizeHealthQueryOutput(payload, state) {
 	});
 
 	const summaries = Object.fromEntries(
-		resultSets[6].map(({ code, local_date, value }) => [code, { local_date, value }]),
+		resultSets[7].map(({ code, local_date, value }) => [code, { local_date, value }]),
 	);
 	return {
 		activity: resultSets[0],
@@ -159,6 +165,7 @@ export function normalizeHealthQueryOutput(payload, state) {
 		vo2Max: resultSets[3],
 		medical: resultSets[4],
 		weight: resultSets[5],
+		bodyFat: resultSets[6],
 		summaries,
 		coverage: {
 			firstDate: coverageDate(state.first_local_date, state.first_sleep_date),
@@ -171,6 +178,7 @@ export function normalizeHealthQueryOutput(payload, state) {
 				recovery: "week",
 				vo2Max: "day",
 				weight: "day",
+				bodyFat: "day",
 				summaries: "day",
 			},
 		},

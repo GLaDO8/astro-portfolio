@@ -167,6 +167,7 @@ test("imports synthetic facts, preserves nulls, and replays idempotently", async
 			"vo2Max",
 			"medical",
 			"weight",
+			"bodyFat",
 			"summaries",
 			"coverage",
 			"aggregation",

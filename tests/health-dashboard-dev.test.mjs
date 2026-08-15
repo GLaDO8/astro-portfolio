@@ -151,6 +151,7 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 			],
 		},
 		{ results: [{ local_date: "2026-01-09", value: 70.25 }] },
+		{ results: [{ local_date: "2026-01-09", value: 18.5 }] },
 		{ results: [{ code: "step_count", local_date: "2026-01-09", value: 1234 }] },
 	];
 	const state = {
@@ -168,6 +169,7 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 		vo2Max: payload[3].results,
 		medical: payload[4].results,
 		weight: payload[5].results,
+		bodyFat: payload[6].results,
 		summaries: { step_count: { local_date: "2026-01-09", value: 1234 } },
 		coverage: { firstDate: "2026-01-01", lastDate: "2026-01-09" },
 		aggregation: {
@@ -177,6 +179,7 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 				recovery: "week",
 				vo2Max: "day",
 				weight: "day",
+				bodyFat: "day",
 				summaries: "day",
 			},
 		},
@@ -184,7 +187,7 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 });
 
 test("rejects incomplete D1 output", () => {
-	assert.throws(() => normalizeHealthQueryOutput([{ results: [] }], {}), /seven result sets/);
+	assert.throws(() => normalizeHealthQueryOutput([{ results: [] }], {}), /eight result sets/);
 });
 
 test("defaults the dashboard to local and guards exceptional remote reads", () => {
@@ -297,6 +300,7 @@ test("selects rollups without raw metric scans or date spines", () => {
 	assert.doesNotMatch(HEALTH_QUERY, /metric_samples|WITH RECURSIVE/i);
 	assert.match(HEALTH_QUERY, /metric_rollups/g);
 	assert.match(HEALTH_QUERY, /code = 'weight_body_mass'/);
+	assert.match(HEALTH_QUERY, /code = 'body_fat_percentage'/);
 	assert.match(HEALTH_QUERY, /mr\.grain = 'day'/);
 	assert.match(HEALTH_QUERY, /mr\.grain = 'week'/);
 	assert.match(HEALTH_QUERY, /date\(state\.last_local_date, '-6 days'\)/);

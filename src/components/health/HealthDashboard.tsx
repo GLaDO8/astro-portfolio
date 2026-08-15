@@ -43,6 +43,7 @@ interface HealthData {
 	vo2Max: { local_date: string; value: number }[];
 	medical: MedicalRow[];
 	weight: { local_date: string; value: number }[];
+	bodyFat: { local_date: string; value: number }[];
 	summaries: Record<string, { local_date: string; value: number }>;
 	coverage: { firstDate: string | null; lastDate: string | null };
 	aggregation: {
@@ -266,6 +267,15 @@ export default function HealthDashboard() {
 							unit="kg"
 							intervalDays={1}
 							color="var(--color-health-blue)"
+							formatValue={(value) => formatNumber(value, 1)}
+						/>
+						<TrendChart
+							title="Body Fat"
+							description="Recorded body-fat estimates; measurement method and conditions can affect comparability"
+							data={data.bodyFat.map((row) => ({ date: row.local_date, value: row.value }))}
+							unit="%"
+							intervalDays={1}
+							color="var(--color-health-teal)"
 							formatValue={(value) => formatNumber(value, 1)}
 						/>
 						<UnavailableChart
