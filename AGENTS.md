@@ -21,7 +21,7 @@ Astro 7.2 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Mo
 - Dev-only UI and helpers belong under `src/dev/`, not alongside production components or shared library code.
 
 ## Agent workflow
-- For narrow changes, prefer `pnpm run verify:changed`.
+- For narrow changes, prefer `pnpm run verify:changed`. Do not run it for read-only tasks.
 - For Markdoc/content/routing changes, prefer `pnpm run verify:content`.
 - Use `pnpm run build:astro` for Astro's build without the `pnpm images` prepass, and `pnpm run build` for the full production build.
 - Browser verification should be one focused probe per concern: collect computed styles, bounding rects, parent chain, and `outerHTML` for the actual visible element in a single `agent-browser eval` whenever possible.
