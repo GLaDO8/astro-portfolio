@@ -1,10 +1,12 @@
-import { env } from "cloudflare:workers";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { applyD1Migrations, env } from "cloudflare:test";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import countEventsMigration from "../migrations/health-auto-export/0004_count_events.sql?raw";
 import worker from "../src/index";
 import metricsFixture from "./fixtures/metrics.json?raw";
 import workoutsFixture from "./fixtures/workouts.json?raw";
 
 const ENDPOINT = "https://health.example/v1/ingest/health-auto-export";
+const COUNT_ENDPOINT = "https://health.example/v1/log/count";
 const TOKEN = "synthetic-test-token";
 const MAX_BODY_BYTES = 90 * 1024 * 1024;
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
@@ -46,9 +48,37 @@ async function archivedKeys(): Promise<string[]> {
 	return listed.objects.map(({ key }) => key);
 }
 
+function countRequest(
+	body: unknown = {
+		count: 2,
+		idempotency_key: "shortcut-run-001",
+		observed_at: "2026-08-16T07:15:00+05:30",
+		type: "nighttime_urination",
+	},
+	headers: HeadersInit = {},
+	method = "POST",
+): Request<unknown, IncomingRequestCfProperties> {
+	return new IncomingRequest(COUNT_ENDPOINT, {
+		method,
+		headers: {
+			authorization: `Bearer ${TOKEN}`,
+			"content-type": "application/json",
+			...headers,
+		},
+		body: body === null ? null : JSON.stringify(body),
+	});
+}
+
+beforeAll(async () => {
+	await applyD1Migrations(env.HEALTH_DB, [
+		{ name: "0004_count_events.sql", queries: [countEventsMigration] },
+	]);
+});
+
 beforeEach(async () => {
 	vi.restoreAllMocks();
 	await clearBucket();
+	await env.HEALTH_DB.prepare("DELETE FROM count_events").run();
 });
 
 describe("health ingestion routing and validation", () => {
@@ -142,6 +172,175 @@ describe("health ingestion routing and validation", () => {
 		const response = await dispatch(request(body));
 		expect(response.status).toBe(200);
 		expect(await archivedKeys()).toHaveLength(1);
+	});
+});
+
+describe("generic count logging", () => {
+	it("requires POST and bearer authentication", async () => {
+		const wrongMethod = await dispatch(countRequest(null, {}, "GET"));
+		expect(wrongMethod.status).toBe(405);
+		expect(wrongMethod.headers.get("allow")).toBe("POST");
+
+		const unauthorized = await dispatch(countRequest(undefined, { authorization: "Bearer wrong" }));
+		expect(unauthorized.status).toBe(401);
+	});
+
+	it("requires a small valid JSON request", async () => {
+		const wrongType = await dispatch(countRequest(undefined, { "content-type": "text/plain" }));
+		expect(wrongType.status).toBe(415);
+
+		const malformed = await dispatch(
+			new IncomingRequest(COUNT_ENDPOINT, {
+				method: "POST",
+				headers: {
+					authorization: `Bearer ${TOKEN}`,
+					"content-type": "application/json",
+				},
+				body: "{",
+			}),
+		);
+		expect(malformed.status).toBe(400);
+		expect(await malformed.json()).toEqual({ error: "Invalid JSON" });
+
+		const oversized = await dispatch(
+			countRequest(undefined, { "content-length": String(8 * 1024 + 1) }),
+		);
+		expect(oversized.status).toBe(413);
+	});
+
+	it.each([
+		[{ count: 2, idempotency_key: "key", observed_at: "2026-08-16T07:15:00+05:30" }, "type"],
+		[
+			{
+				count: 2,
+				idempotency_key: "key",
+				observed_at: "2026-08-16T07:15:00+05:30",
+				type: "Night time",
+			},
+			"type",
+		],
+		[
+			{
+				count: -1,
+				idempotency_key: "key",
+				observed_at: "2026-08-16T07:15:00+05:30",
+				type: "nighttime_urination",
+			},
+			"count",
+		],
+		[
+			{
+				count: 1.5,
+				idempotency_key: "key",
+				observed_at: "2026-08-16T07:15:00+05:30",
+				type: "nighttime_urination",
+			},
+			"count",
+		],
+		[
+			{
+				count: 2,
+				idempotency_key: "key",
+				observed_at: "2026-08-16T07:15:00",
+				type: "nighttime_urination",
+			},
+			"observed_at",
+		],
+		[
+			{
+				count: 2,
+				idempotency_key: "",
+				observed_at: "2026-08-16T07:15:00+05:30",
+				type: "nighttime_urination",
+			},
+			"idempotency_key",
+		],
+	])("rejects an invalid payload field: %s", async (body, field) => {
+		const response = await dispatch(countRequest(body));
+		expect(response.status).toBe(400);
+		expect(await response.json()).toEqual({ error: `Invalid ${field}` });
+	});
+
+	it("stores a count observation and its local time context", async () => {
+		const response = await dispatch(countRequest());
+		const result = await response.json<{ count_event_id: string; status: string }>();
+
+		expect(response.status).toBe(201);
+		expect(response.headers.get("cache-control")).toBe("no-store");
+		expect(result.status).toBe("created");
+		expect(result.count_event_id).toMatch(/^[0-9a-f-]{36}$/);
+
+		const row = await env.HEALTH_DB.prepare(
+			"SELECT id, count_type, count_value, observed_at_ms, local_date, utc_offset_minutes, idempotency_key FROM count_events",
+		).first();
+		expect(row).toEqual({
+			count_type: "nighttime_urination",
+			count_value: 2,
+			id: result.count_event_id,
+			idempotency_key: "shortcut-run-001",
+			local_date: "2026-08-16",
+			observed_at_ms: Date.parse("2026-08-16T07:15:00+05:30"),
+			utc_offset_minutes: 330,
+		});
+	});
+
+	it("accepts zero as an observed count", async () => {
+		const response = await dispatch(
+			countRequest({
+				count: 0,
+				idempotency_key: "shortcut-run-zero",
+				observed_at: "2026-08-17T07:15:00+05:30",
+				type: "nighttime_urination",
+			}),
+		);
+
+		expect(response.status).toBe(201);
+		expect(
+			await env.HEALTH_DB.prepare("SELECT count_value FROM count_events").first("count_value"),
+		).toBe(0);
+	});
+
+	it("returns the original event for an exact retry", async () => {
+		const first = await dispatch(countRequest());
+		const second = await dispatch(countRequest());
+		const firstResult = await first.json<{ count_event_id: string }>();
+		const secondResult = await second.json<{ count_event_id: string; status: string }>();
+
+		expect(first.status).toBe(201);
+		expect(second.status).toBe(200);
+		expect(secondResult).toEqual({
+			count_event_id: firstResult.count_event_id,
+			status: "duplicate",
+		});
+		expect(
+			await env.HEALTH_DB.prepare("SELECT COUNT(*) AS count FROM count_events").first("count"),
+		).toBe(1);
+	});
+
+	it("rejects reuse of an idempotency key with different data", async () => {
+		await dispatch(countRequest());
+		const response = await dispatch(
+			countRequest({
+				count: 3,
+				idempotency_key: "shortcut-run-001",
+				observed_at: "2026-08-16T07:15:00+05:30",
+				type: "nighttime_urination",
+			}),
+		);
+
+		expect(response.status).toBe(409);
+		expect(await response.json()).toEqual({ error: "Idempotency key conflict" });
+	});
+
+	it("does not expose count data in structured logs", async () => {
+		const log = vi.spyOn(console, "log").mockImplementation(() => undefined);
+		const response = await dispatch(countRequest());
+		expect(response.status).toBe(201);
+
+		const output = JSON.stringify(log.mock.calls);
+		expect(output).not.toContain("nighttime_urination");
+		expect(output).not.toContain("shortcut-run-001");
+		expect(output).not.toContain("2026-08-16");
 	});
 });
 

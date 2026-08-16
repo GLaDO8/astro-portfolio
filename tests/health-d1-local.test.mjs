@@ -78,7 +78,8 @@ test("bootstraps the composed local schema without credentials and is rerunnable
 		);
 		assert.equal(first.medicalRows, 0);
 		assert.equal(first.metricDefinitions, 34);
-		assert.equal(first.migrations, 3);
+		assert.equal(first.migrations, 4);
+		assert.equal(first.tables, 8);
 		assert.ok(targets.every((target) => target.mode === "local" && target.persistTo === persistTo));
 	});
 });

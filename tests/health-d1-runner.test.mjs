@@ -217,9 +217,12 @@ test("reuses the guarded target for migrations and remote exports", async () => 
 
 test("guards local and remote migration targets", () => {
 	assert.equal(parseMigrationArguments(["--local"]).target.mode, "local");
-	assert.throws(
-		() => parseMigrationArguments(["--remote", "--database-id", PRODUCTION_DATABASE_ID]),
-		/migration_remote_rollup_promotion_deferred/,
+	assert.deepEqual(
+		parseMigrationArguments(["--remote", "--database-id", PRODUCTION_DATABASE_ID]).target,
+		{
+			expectedDatabaseId: PRODUCTION_DATABASE_ID,
+			mode: "remote",
+		},
 	);
 	for (const argv of [
 		[],

@@ -20,6 +20,8 @@ The Health Auto Export stream is ordered as follows:
 2. `0002_add_weight_body_mass.sql` adds body-mass support.
 3. `0003_metric_rollups.sql` adds the disposable day/week/month projection and singleton refresh
    state, and marks the two unreviewed sound-level operators as unsupported.
+4. `0004_count_events.sql` adds idempotent, manually observed count events for the authenticated
+   iOS Shortcuts endpoint. These facts remain separate from Apple Health samples and rollups.
 
 Migration `0003` initializes an empty database as `ready`. If facts already exist, it initializes as
 `needs_backfill`; run `pnpm health:rollups:backfill:local` before using the local dashboard.

@@ -23,8 +23,13 @@ const HEALTH_MIGRATIONS = [
 		PROJECT_ROOT,
 		"workers/health-ingest/migrations/health-auto-export/0003_metric_rollups.sql",
 	),
+	path.join(
+		PROJECT_ROOT,
+		"workers/health-ingest/migrations/health-auto-export/0004_count_events.sql",
+	),
 ];
 const USER_TABLES = [
+	"count_events",
 	"medical_metrics",
 	"metric_definitions",
 	"metric_rollups",
@@ -35,6 +40,16 @@ const USER_TABLES = [
 ];
 
 const EXPECTED_COLUMNS = {
+	count_events: [
+		["id", "TEXT", 1, 1],
+		["count_type", "TEXT", 1, 0],
+		["count_value", "INTEGER", 1, 0],
+		["observed_at_ms", "INTEGER", 1, 0],
+		["local_date", "TEXT", 1, 0],
+		["utc_offset_minutes", "INTEGER", 1, 0],
+		["recorded_at_ms", "INTEGER", 1, 0],
+		["idempotency_key", "TEXT", 1, 0],
+	],
 	medical_metrics: [
 		["metric_code", "TEXT", 1, 1],
 		["collected_at_ms", "INTEGER", 1, 2],
@@ -181,6 +196,7 @@ SELECT name, type, sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER B
 			"0001_health_auto_export.sql",
 			"0002_add_weight_body_mass.sql",
 			"0003_metric_rollups.sql",
+			"0004_count_events.sql",
 		])
 	) {
 		throw new Error("local_d1_migration_drift");
@@ -205,6 +221,7 @@ SELECT name, type, sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER B
 		"metric_samples_observed_at",
 		"metric_samples_local_date",
 		"sleep_summaries_local_date",
+		"count_events_type_observed_at",
 		"metric_samples_wrist_temperature_conflict",
 		"metric_samples_weight_conflict",
 	]) {

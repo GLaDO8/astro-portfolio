@@ -4,7 +4,9 @@ const JSON_HEADERS = {
 };
 
 const INGEST_PATH = "/v1/ingest/health-auto-export";
+const COUNT_PATH = "/v1/log/count";
 const MAX_BODY_BYTES = 90 * 1024 * 1024;
+const MAX_COUNT_BODY_BYTES = 8 * 1024;
 const MULTIPART_CHUNK_BYTES = 5 * 1024 * 1024;
 const MAX_KEY_SEGMENT_LENGTH = 64;
 const MAX_METADATA_VALUE_LENGTH = 256;
@@ -14,6 +16,25 @@ type BodyViolation = "empty" | "too-large";
 type BodyLimitState = {
 	bytesRead: number;
 	violation?: BodyViolation;
+};
+
+type CountObservation = {
+	count: number;
+	idempotencyKey: string;
+	localDate: string;
+	observedAtMs: number;
+	type: string;
+	utcOffsetMinutes: number;
+};
+
+type CountEventRow = {
+	count_value: number;
+	count_type: string;
+	id: string;
+	idempotency_key: string;
+	local_date: string;
+	observed_at_ms: number;
+	utc_offset_minutes: number;
 };
 
 function json(body: unknown, status = 200, headers: HeadersInit = {}): Response {
@@ -27,6 +48,16 @@ function rejected(error: string, status: number, reason: string): Response {
 	console.warn({
 		event: "health_ingest.rejected",
 		message: "Health ingestion request rejected",
+		reason,
+		status,
+	});
+	return json({ error }, status);
+}
+
+function countRejected(error: string, status: number, reason: string): Response {
+	console.warn({
+		event: "count_log.rejected",
+		message: "Count logging request rejected",
 		reason,
 		status,
 	});
@@ -66,7 +97,177 @@ function isJson(request: Request): boolean {
 	return contentType?.split(";", 1)[0]?.trim().toLowerCase() === "application/json";
 }
 
-function limitBody(body: ReadableStream<Uint8Array>): {
+async function readBoundedJson(request: Request): Promise<unknown> {
+	if (request.body === null) throw new Error("invalid_json");
+
+	const limited = limitBody(request.body, MAX_COUNT_BODY_BYTES);
+	try {
+		return await new Response(limited.stream).json();
+	} catch {
+		if (limited.state.violation === "too-large") throw new Error("body_too_large");
+		throw new Error("invalid_json");
+	}
+}
+
+function parseObservedAt(
+	value: unknown,
+): Pick<CountObservation, "localDate" | "observedAtMs" | "utcOffsetMinutes"> | null {
+	if (typeof value !== "string") return null;
+
+	const match =
+		/^(\d{4})-(\d{2})-(\d{2})T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,3})?(Z|([+-])([01]\d|2[0-3]):([0-5]\d))$/.exec(
+			value,
+		);
+	if (match === null) return null;
+
+	const [, year, month, day, zone, sign, offsetHour, offsetMinute] = match;
+	const observedAtMs = Date.parse(value);
+	if (!Number.isFinite(observedAtMs)) return null;
+	const daysInMonth = new Date(Date.UTC(Number(year), Number(month), 0)).getUTCDate();
+	if (Number(month) < 1 || Number(month) > 12 || Number(day) < 1 || Number(day) > daysInMonth) {
+		return null;
+	}
+
+	const utcOffsetMinutes =
+		zone === "Z" ? 0 : (sign === "+" ? 1 : -1) * (Number(offsetHour) * 60 + Number(offsetMinute));
+
+	return {
+		localDate: `${year}-${month}-${day}`,
+		observedAtMs,
+		utcOffsetMinutes,
+	};
+}
+
+function parseCountObservation(value: unknown): CountObservation | Response {
+	if (typeof value !== "object" || value === null || Array.isArray(value)) {
+		return countRejected("Invalid JSON object", 400, "invalid_object");
+	}
+
+	const body = value as Record<string, unknown>;
+	if (typeof body.type !== "string" || !/^[a-z][a-z0-9_]{0,63}$/.test(body.type)) {
+		return countRejected("Invalid type", 400, "invalid_type");
+	}
+	if (!Number.isSafeInteger(body.count) || (body.count as number) < 0) {
+		return countRejected("Invalid count", 400, "invalid_count");
+	}
+
+	const observedAt = parseObservedAt(body.observed_at);
+	if (observedAt === null) {
+		return countRejected("Invalid observed_at", 400, "invalid_observed_at");
+	}
+	if (
+		typeof body.idempotency_key !== "string" ||
+		!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/.test(body.idempotency_key)
+	) {
+		return countRejected("Invalid idempotency_key", 400, "invalid_idempotency_key");
+	}
+
+	return {
+		count: body.count as number,
+		idempotencyKey: body.idempotency_key,
+		...observedAt,
+		type: body.type,
+	};
+}
+
+function isSameCountEvent(row: CountEventRow, observation: CountObservation): boolean {
+	return (
+		row.count_type === observation.type &&
+		row.count_value === observation.count &&
+		row.observed_at_ms === observation.observedAtMs &&
+		row.local_date === observation.localDate &&
+		row.utc_offset_minutes === observation.utcOffsetMinutes &&
+		row.idempotency_key === observation.idempotencyKey
+	);
+}
+
+async function logCount(request: Request, env: Env): Promise<Response> {
+	if (!(await isAuthorized(request, env.HEALTH_INGEST_TOKEN))) {
+		return countRejected("Unauthorized", 401, "unauthorized");
+	}
+	if (!isJson(request)) {
+		return countRejected("Content-Type must be application/json", 415, "unsupported_content_type");
+	}
+
+	const contentLength = request.headers.get("content-length");
+	if (
+		contentLength &&
+		/^\d+$/.test(contentLength) &&
+		Number(contentLength) > MAX_COUNT_BODY_BYTES
+	) {
+		return countRejected("Request body too large", 413, "body_too_large");
+	}
+
+	let body: unknown;
+	try {
+		body = await readBoundedJson(request);
+	} catch (error) {
+		if (error instanceof Error && error.message === "body_too_large") {
+			return countRejected("Request body too large", 413, "body_too_large");
+		}
+		return countRejected("Invalid JSON", 400, "invalid_json");
+	}
+
+	const observation = parseCountObservation(body);
+	if (observation instanceof Response) return observation;
+
+	const countEventId = crypto.randomUUID();
+	try {
+		const insert = await env.HEALTH_DB.prepare(
+			`INSERT INTO count_events (
+				id, count_type, count_value, observed_at_ms, local_date,
+				utc_offset_minutes, recorded_at_ms, idempotency_key
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			ON CONFLICT(idempotency_key) DO NOTHING`,
+		)
+			.bind(
+				countEventId,
+				observation.type,
+				observation.count,
+				observation.observedAtMs,
+				observation.localDate,
+				observation.utcOffsetMinutes,
+				Date.now(),
+				observation.idempotencyKey,
+			)
+			.run();
+
+		if (insert.meta.changes === 1) {
+			console.log({ event: "count_log.created", message: "Count observation stored" });
+			return json({ count_event_id: countEventId, status: "created" }, 201);
+		}
+
+		const existing = await env.HEALTH_DB.prepare(
+			`SELECT id, count_type, count_value, observed_at_ms, local_date,
+				utc_offset_minutes, idempotency_key
+			FROM count_events WHERE idempotency_key = ?`,
+		)
+			.bind(observation.idempotencyKey)
+			.first<CountEventRow>();
+
+		if (existing !== null && isSameCountEvent(existing, observation)) {
+			console.log({ event: "count_log.duplicate", message: "Count observation already stored" });
+			return json({ count_event_id: existing.id, status: "duplicate" });
+		}
+		if (existing !== null) {
+			return countRejected("Idempotency key conflict", 409, "idempotency_conflict");
+		}
+
+		throw new Error("Count insert was ignored without an idempotency match");
+	} catch (error) {
+		console.error({
+			event: "count_log.write_failed",
+			message: "Count observation write failed",
+			error_type: error instanceof Error ? error.name : "UnknownError",
+		});
+		return json({ error: "Count storage unavailable" }, 500);
+	}
+}
+
+function limitBody(
+	body: ReadableStream<Uint8Array>,
+	maxBytes = MAX_BODY_BYTES,
+): {
 	stream: ReadableStream<Uint8Array>;
 	state: BodyLimitState;
 } {
@@ -87,7 +288,7 @@ function limitBody(body: ReadableStream<Uint8Array>): {
 			}
 
 			state.bytesRead += value.byteLength;
-			if (state.bytesRead > MAX_BODY_BYTES) {
+			if (state.bytesRead > maxBytes) {
 				state.violation = "too-large";
 				await reader.cancel("Request body exceeds the ingestion limit");
 				controller.error(new Error("Request body too large"));
@@ -346,6 +547,14 @@ export default {
 			}
 
 			return archive(request, env);
+		}
+
+		if (url.pathname === COUNT_PATH) {
+			if (request.method !== "POST") {
+				return json({ error: "Method not allowed" }, 405, { allow: "POST" });
+			}
+
+			return logCount(request, env);
 		}
 
 		return json({ error: "Not found" }, 404);

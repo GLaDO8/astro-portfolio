@@ -110,17 +110,56 @@ The Worker exposes:
 - `GET /health`, which verifies both bindings without writing data.
 - `POST /v1/ingest/health-auto-export`, which authenticates a Health Auto Export request and
   archives its unchanged body in R2.
+- `POST /v1/log/count`, which stores one idempotent, manually observed count in D1.
 
 The production endpoints are:
 
 - `https://health-ingest.glado8.workers.dev/health`
 - `https://health-ingest.glado8.workers.dev/v1/ingest/health-auto-export`
+- `https://health-ingest.glado8.workers.dev/v1/log/count`
 
 The ingestion route requires a bearer token, `application/json`, `automation-id`, and `session-id`.
 It rejects empty bodies and requests over 90 MiB. This stays below Cloudflare's 100 MB request-body
 limit on Free and Pro plans while allowing Health Auto Export's larger JSON batches. Bodies with a declared length stream through a
 fixed-length R2 write; chunked bodies use an abortable multipart upload so the limit is still
 enforced without buffering the complete request. D1 is not accessed by ingestion.
+
+## Count logging from iOS Shortcuts
+
+The count route uses the same bearer token as the archive route and accepts JSON bodies up to 8
+KiB. A count is the complete value observed at a point in time, not an increment. Zero is valid.
+The type must be a lowercase snake-case identifier; the timestamp must contain `Z` or an explicit
+UTC offset. Create a new UUID in the Shortcut for each observation and reuse it if the request is
+retried.
+
+```json
+{
+  "type": "nighttime_urination",
+  "count": 2,
+  "observed_at": "2026-08-16T07:15:00+05:30",
+  "idempotency_key": "8B614B68-E39C-45D4-BD85-D0B32F3AAB65"
+}
+```
+
+Configure **Get Contents of URL** in Shortcuts with:
+
+- URL: `https://health-ingest.glado8.workers.dev/v1/log/count`
+- Method: `POST`
+- Header `Authorization`: `Bearer <HEALTH_INGEST_TOKEN>`
+- Header `Content-Type`: `application/json`
+- Request Body: JSON containing the four fields above
+
+A new observation returns `201` with `{ "count_event_id": "...", "status": "created" }`. An exact
+retry returns `200` and `status: "duplicate"`. Reusing a key with changed data returns `409`.
+The database stores the observed instant, supplied local date, and UTC offset so later views do not
+have to infer timezone context.
+
+Migration `0004_count_events.sql` creates the required table. Apply it through the tracked migration
+command so any earlier migrations run in order:
+
+```sh
+pnpm health:db:migrate:remote -- --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f
+```
 
 ## Secrets
 
@@ -148,7 +187,8 @@ dashboard under Workers & Pages > health-ingest > Observability, or stream them 
 pnpm exec wrangler tail health-ingest --format pretty
 ```
 
-Useful event names are `health_ingest.archived`, `health_ingest.rejected`,
+Useful event names are `health_ingest.archived`, `health_ingest.rejected`, `count_log.created`,
+`count_log.duplicate`, `count_log.rejected`, `count_log.write_failed`,
 `health_ingest.archive_failed`, `health_ingest.health_ok`, and
 `health_ingest.health_check_failed`. Request bodies and health values are never logged.
 
@@ -158,9 +198,9 @@ Remote transformations remain exceptional and exact-ID guarded:
 pnpm health:transform:remote --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f <exact-json-path>
 ```
 
-Migration `0003`, its backfill, and rollup-backed dashboard reads are intentionally local-only in
-this phase. The remote migration command fails closed until a separate promotion plan is approved;
-do not invoke Wrangler migrations directly to bypass that gate.
+Migration `0003` creates the remote rollup schema before `0004`. Its data backfill and
+rollup-backed dashboard reads remain deferred; a populated database stays `needs_backfill` until a
+separately reviewed backfill is run.
 
 Normal `pnpm dev`, bootstrap, local transformation, tests, and verification never fall back to
 remote D1.
