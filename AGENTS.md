@@ -16,7 +16,6 @@ Astro 7.2 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Mo
 - Create semantic tokens from `@theme` in `src/styles/global.css` only when the style is reusable across multiple components.
 - Prefer using Motion library APIs for animations over complex custom CSS animations.
 - Use `cn()` for conditional class composition and concatenation.
-- Promote reusable values to `@theme` in `src/styles/global.css`
 - Avoid arbitrary one-off spacing/sizing values like `pt-[23px]`. If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
 - Arbitrary colors (`bg-[#hex]`) are OK temporarily; promote to `@theme` token if reused.
 - Dev-only UI and helpers belong under `src/dev/`, not alongside production components or shared library code.

@@ -14,3 +14,8 @@
 14. Blood pressure - calculate on wake after pee with a 5 min rest. take two readings and average
   15. 7 and 28 day average with day to day variation 
 16. Night time urination is a helpful indicator of sleep quality, measure this.
+17. Orthostatic HR/BP response
+18. Urine specific gravity strips - 10 parameters
+19. HR-on/off kinetics
+  20. time from exercise onset to 50% and 63% eventual HR increase and stable state HR
+  21. s
