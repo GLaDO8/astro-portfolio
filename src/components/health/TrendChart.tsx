@@ -1,4 +1,5 @@
 import { extent, line, scaleLinear, scaleUtc } from "d3";
+import type { ReferenceBand, ReferenceBandTone } from "./medicalReferenceRanges";
 
 interface TrendDatum {
 	date: string;
@@ -14,6 +15,10 @@ interface TrendChartProps {
 	color?: string;
 	formatValue?: (value: number) => string;
 	intervalDays?: number;
+	referenceRange?: {
+		summary: string;
+		bands: readonly ReferenceBand[];
+	};
 }
 
 const WIDTH = 720;
@@ -23,6 +28,12 @@ const MARGIN = { top: 18, right: 16, bottom: 30, left: 48 };
 const parseDate = (value: string) => new Date(`${value}T00:00:00Z`);
 const defaultFormat = (value: number) =>
 	value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+const bandColors: Record<ReferenceBandTone, string> = {
+	low: "var(--color-health-blue)",
+	reference: "var(--color-health-green)",
+	caution: "var(--color-health-gold)",
+	high: "var(--color-health-warm)",
+};
 
 export default function TrendChart({
 	title,
@@ -32,6 +43,7 @@ export default function TrendChart({
 	color = "var(--color-health-warm)",
 	formatValue = defaultFormat,
 	intervalDays,
+	referenceRange,
 }: TrendChartProps) {
 	const points = data.map((datum) => ({ ...datum, instant: parseDate(datum.date) }));
 	const linePoints = points.flatMap((point, index) => {
@@ -71,16 +83,21 @@ export default function TrendChart({
 		);
 	}
 
+	const referenceBoundaries =
+		referenceRange?.bands
+			.flatMap((band) => [band.min, band.max])
+			.filter((value) => value !== undefined) ?? [];
+	const domainValues = [...values, ...referenceBoundaries];
+	const domainExtent = extent(domainValues);
 	const padding = Math.max(
-		(valueExtent[1] - valueExtent[0]) * 0.12,
-		Math.abs(valueExtent[1]) * 0.02,
+		((domainExtent[1] ?? valueExtent[1]) - (domainExtent[0] ?? valueExtent[0])) * 0.06,
+		Math.abs(domainExtent[1] ?? valueExtent[1]) * 0.01,
 		1,
 	);
 	const x = scaleUtc(dateExtent, [MARGIN.left, WIDTH - MARGIN.right]);
-	const y = scaleLinear(
-		[valueExtent[0] - padding, valueExtent[1] + padding],
-		[HEIGHT - MARGIN.bottom, MARGIN.top],
-	);
+	const domainMin = (domainExtent[0] ?? valueExtent[0]) - padding;
+	const domainMax = (domainExtent[1] ?? valueExtent[1]) + padding;
+	const y = scaleLinear([domainMin, domainMax], [HEIGHT - MARGIN.bottom, MARGIN.top]);
 	const path = line<(typeof linePoints)[number]>()
 		.defined((point) => point.value !== null && point.qualifier == null)
 		.x((point) => x(point.instant))
@@ -109,6 +126,11 @@ export default function TrendChart({
 				) : null}
 			</div>
 			<p className="mt-1 font-sans text-xs leading-relaxed text-secondary">{description}</p>
+			{referenceRange ? (
+				<p className="mt-1 font-sans text-xs leading-relaxed text-secondary">
+					Reference bands · {referenceRange.summary}
+				</p>
+			) : null}
 			<svg
 				className="mt-4 h-auto w-full overflow-visible"
 				viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -123,7 +145,23 @@ export default function TrendChart({
 					{qualifiedCount > 0
 						? ` ${qualifiedCount} reported ${qualifiedCount === 1 ? "limit is" : "limits are"} shown at the assay boundary rather than as exact points.`
 						: ""}
+					{referenceRange ? ` Generalized chart bands: ${referenceRange.summary}.` : ""}
 				</desc>
+				{referenceRange?.bands.map((band) => {
+					const lower = Math.max(domainMin, band.min ?? domainMin);
+					const upper = Math.min(domainMax, band.max ?? domainMax);
+					return (
+						<rect
+							key={`${band.label}-${band.min ?? "min"}-${band.max ?? "max"}`}
+							x={MARGIN.left}
+							y={y(upper)}
+							width={WIDTH - MARGIN.left - MARGIN.right}
+							height={Math.max(0, y(lower) - y(upper))}
+							fill={bandColors[band.tone]}
+							opacity="0.1"
+						/>
+					);
+				})}
 				{yTicks.map((tick) => (
 					<g key={tick}>
 						<line

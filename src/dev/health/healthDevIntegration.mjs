@@ -32,7 +32,7 @@ WHERE mr.grain = 'week'
   AND mr.period_start <= date(state.last_local_date, '-6 days')
 GROUP BY mr.period_start ORDER BY mr.period_start;
 
-SELECT local_date, total_sleep_hours, awake_hours, core_hours, deep_hours, rem_hours
+SELECT local_date, sleep_start_ms, sleep_end_ms, total_sleep_hours, awake_hours, core_hours, deep_hours, rem_hours
 FROM sleep_summaries ORDER BY local_date;
 
 SELECT mr.period_start AS local_date, mr.latest_value AS value

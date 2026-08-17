@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
-import { getAppleHealthDataRange, getLatestMedicalDate, toIndiaDate } from "./healthData";
+import {
+	formatClockHour,
+	getAbsoluteVo2Max,
+	getAppleHealthDataRange,
+	getLatestMedicalDate,
+	getSleepRegularity,
+	toIndiaDate,
+} from "./healthData";
 import MetricSummary from "./MetricSummary";
 import { type MedicalMetricCode, medicalDefinitions, medicalSections } from "./medicalMetrics";
+import { medicalReferenceRanges } from "./medicalReferenceRanges";
 import SleepChart from "./SleepChart";
 import TrendChart from "./TrendChart";
-import UnavailableChart from "./UnavailableChart";
 
 interface ActivityRow {
 	local_date: string;
@@ -21,6 +28,8 @@ interface RecoveryRow {
 
 interface SleepRow {
 	local_date: string;
+	sleep_start_ms: number | null;
+	sleep_end_ms: number | null;
 	total_sleep_hours: number | null;
 	awake_hours: number | null;
 	core_hours: number | null;
@@ -167,9 +176,12 @@ export default function HealthDashboard() {
 	const averageSleep = average(data.sleep.map((row) => row.total_sleep_hours));
 	const latestRestingHeartRate = data.summaries.resting_heart_rate;
 	const latestVo2Max = data.vo2Max.at(-1)?.value ?? null;
+	const absoluteVo2Max = getAbsoluteVo2Max(data.vo2Max, data.weight);
+	const sleepRegularity = getSleepRegularity(data.sleep).slice(27);
 
 	const medicalChart = (code: MedicalMetricCode) => {
 		const definition = medicalDefinitions[code];
+		const referenceRange = medicalReferenceRanges[code];
 		const rows = data.medical.filter((row) => row.metric_code === code);
 		return (
 			<TrendChart
@@ -183,6 +195,7 @@ export default function HealthDashboard() {
 				}))}
 				unit={rows[0]?.unit ?? ""}
 				color={definition.color}
+				referenceRange={rows[0]?.unit === referenceRange.unit ? referenceRange : undefined}
 			/>
 		);
 	};
@@ -278,10 +291,6 @@ export default function HealthDashboard() {
 							color="var(--color-health-teal)"
 							formatValue={(value) => formatNumber(value, 1)}
 						/>
-						<UnavailableChart
-							title="Pace Curve"
-							description="A reliable pace curve needs workout-level time and distance samples, which are not yet transformed into D1."
-						/>
 					</div>
 				</section>
 
@@ -323,6 +332,76 @@ export default function HealthDashboard() {
 							description="Sparse Apple Health cardiorespiratory-fitness estimates"
 							data={data.vo2Max.map((row) => ({ date: row.local_date, value: row.value }))}
 							unit="mL/kg/min"
+							intervalDays={1}
+							color="var(--color-health-teal)"
+						/>
+						<TrendChart
+							title="Absolute VO₂"
+							description="Derived oxygen use from each relative VO₂ estimate and the latest body weight recorded on or before that day"
+							data={absoluteVo2Max}
+							unit="mL/min"
+							intervalDays={1}
+							color="var(--color-health-gold)"
+							formatValue={(value) => formatNumber(value)}
+						/>
+					</div>
+					<h3 className="mt-8 font-sans text-lg font-semibold text-primary">Sleep Regularity</h3>
+					<p className="mt-2 max-w-2xl font-sans text-sm leading-relaxed text-secondary">
+						Clock timing is anchored to India time. Variability is the population standard deviation
+						over the latest 28 recorded nights; lower means more regular, not necessarily better
+						sleep.
+					</p>
+					<div className="mt-3 grid gap-x-8 lg:grid-cols-2">
+						<TrendChart
+							title="Sleep Midpoint"
+							description="Midpoint between recorded sleep start and end"
+							data={sleepRegularity.map((row) => ({ date: row.date, value: row.midpointHour }))}
+							unit=""
+							intervalDays={1}
+							color="var(--color-health-sleep-deep)"
+							formatValue={formatClockHour}
+						/>
+						<TrendChart
+							title="Sleep Onset Variability"
+							description="Rolling variability in recorded sleep start time"
+							data={sleepRegularity.map((row) => ({
+								date: row.date,
+								value: row.onsetVariabilityMinutes,
+							}))}
+							unit="min"
+							intervalDays={1}
+							color="var(--color-health-sleep-core)"
+						/>
+						<TrendChart
+							title="Wake-Time Variability"
+							description="Rolling variability in recorded sleep end time"
+							data={sleepRegularity.map((row) => ({
+								date: row.date,
+								value: row.wakeVariabilityMinutes,
+							}))}
+							unit="min"
+							intervalDays={1}
+							color="var(--color-health-sleep-rem)"
+						/>
+						<TrendChart
+							title="Sleep Midpoint Variability"
+							description="Rolling variability in the midpoint of each sleep window"
+							data={sleepRegularity.map((row) => ({
+								date: row.date,
+								value: row.midpointVariabilityMinutes,
+							}))}
+							unit="min"
+							intervalDays={1}
+							color="var(--color-health-sleep-deep)"
+						/>
+						<TrendChart
+							title="Sleep Duration Variability"
+							description="Rolling variability in recorded total sleep duration"
+							data={sleepRegularity.map((row) => ({
+								date: row.date,
+								value: row.durationVariabilityMinutes,
+							}))}
+							unit="min"
 							intervalDays={1}
 							color="var(--color-health-teal)"
 						/>

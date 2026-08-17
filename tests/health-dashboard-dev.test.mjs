@@ -1,13 +1,17 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 
 import astroConfig from "../astro.config.mjs";
 import {
+	getAbsoluteVo2Max,
 	getAppleHealthDataRange,
 	getLatestMedicalDate,
+	getSleepRegularity,
 } from "../src/components/health/healthData.ts";
 import { medicalDefinitions, medicalSections } from "../src/components/health/medicalMetrics.ts";
+import { medicalReferenceRanges } from "../src/components/health/medicalReferenceRanges.ts";
 import {
 	assertReadOnlyHealthQuery,
 	HEALTH_QUERY,
@@ -131,6 +135,14 @@ test("registers the health page and endpoint only for astro dev", () => {
 		});
 		assert.deepEqual(routes, []);
 	}
+});
+
+test("does not render a pace curve placeholder without pace data", () => {
+	const dashboard = readFileSync(
+		new URL("../src/components/health/HealthDashboard.tsx", import.meta.url),
+		"utf8",
+	);
+	assert.doesNotMatch(dashboard, /Pace Curve|UnavailableChart/);
 });
 
 test("normalizes the selected D1 result sets without Wrangler metadata", () => {
@@ -304,6 +316,7 @@ test("selects rollups without raw metric scans or date spines", () => {
 	assert.match(HEALTH_QUERY, /mr\.grain = 'day'/);
 	assert.match(HEALTH_QUERY, /mr\.grain = 'week'/);
 	assert.match(HEALTH_QUERY, /date\(state\.last_local_date, '-6 days'\)/);
+	assert.match(HEALTH_QUERY, /sleep_start_ms, sleep_end_ms/);
 });
 
 test("selects every requested first-batch medical metric", () => {
@@ -324,6 +337,82 @@ test("renders every selected medical metric in exactly one dashboard group", () 
 	assert.equal(new Set(sectionCodes).size, sectionCodes.length);
 	assert.deepEqual(sectionCodes.toSorted(), Object.keys(medicalDefinitions).toSorted());
 	assert.deepEqual(sectionCodes.toSorted(), requestedMedicalCodes.toSorted());
+	assert.deepEqual(
+		Object.keys(medicalReferenceRanges).toSorted(),
+		requestedMedicalCodes.toSorted(),
+	);
+	for (const code of requestedMedicalCodes) {
+		const range = medicalReferenceRanges[code];
+		assert.ok(range.unit);
+		assert.ok(range.summary);
+		assert.ok(range.bands.length >= 2);
+		for (let index = 1; index < range.bands.length; index += 1) {
+			assert.equal(range.bands[index - 1].max, range.bands[index].min);
+		}
+	}
+});
+
+test("derives absolute VO2 from the latest weight on or before each observation", () => {
+	assert.deepEqual(
+		getAbsoluteVo2Max(
+			[
+				{ local_date: "2026-01-10", value: 40 },
+				{ local_date: "2026-01-20", value: 42 },
+			],
+			[
+				{ local_date: "2026-01-09", value: 70 },
+				{ local_date: "2026-01-15", value: 68 },
+			],
+		),
+		[
+			{ date: "2026-01-10", value: 2800, weightDate: "2026-01-09" },
+			{ date: "2026-01-20", value: 2856, weightDate: "2026-01-15" },
+		],
+	);
+});
+
+test("calculates rolling sleep timing and duration variability without inventing nights", () => {
+	const india = 5.5 * 60 * 60 * 1000;
+	const atIndiaTime = (day, hour, minute = 0) => Date.UTC(2026, 0, day, hour, minute) - india;
+	const rows = [
+		{
+			local_date: "2026-01-02",
+			sleep_start_ms: atIndiaTime(1, 23),
+			sleep_end_ms: atIndiaTime(2, 7),
+			total_sleep_hours: 7.5,
+		},
+		{
+			local_date: "2026-01-03",
+			sleep_start_ms: atIndiaTime(2, 23, 30),
+			sleep_end_ms: atIndiaTime(3, 7, 30),
+			total_sleep_hours: 7,
+		},
+	];
+
+	assert.deepEqual(getSleepRegularity(rows, 2), [
+		{
+			date: "2026-01-02",
+			onsetHour: -1,
+			wakeHour: 7,
+			midpointHour: 3,
+			durationHours: 7.5,
+			onsetVariabilityMinutes: 0,
+			wakeVariabilityMinutes: 0,
+			midpointVariabilityMinutes: 0,
+			durationVariabilityMinutes: 0,
+		},
+		{
+			date: "2026-01-03",
+			onsetHour: -0.5,
+			wakeHour: 7.5,
+			midpointHour: 3.5,
+			durationHours: 7,
+			onsetVariabilityMinutes: 15,
+			wakeVariabilityMinutes: 15,
+			midpointVariabilityMinutes: 15,
+			durationVariabilityMinutes: 15,
+		},
+	]);
 });
 
 test("uses ready rollup and sleep coverage without medical report dates", () => {

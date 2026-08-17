@@ -9,6 +9,16 @@ This file documents every `metric_code` currently stored in the `medical_metrics
 - Terms such as *high*, *low*, and *diabetes* are interpretation categories, not diagnoses. A result may need repeat testing and clinical review.
 - Similar-looking tests are kept separate when they answer different questions, such as fasting versus random glucose and CRP versus hs-CRP.
 
+## Charting range contract
+
+The prose below remains the complete interpretation record for all 94 imported metric codes. The current dashboard's 56 numeric charts use the typed `src/components/health/medicalReferenceRanges.ts` module for generalized background bands.
+
+- The module stores the D1 unit, basis (`guideline`, `adult-male`, or `source-lab-consensus`), a compact display summary, and ordered numeric bands.
+- Guideline categories take priority when they answer a defined question, such as HbA1c, conventional lipids, eGFR, vitamin B12, and 25-hydroxy vitamin D.
+- Otherwise, the chart uses an adult-male or source-lab consensus interval after comparing the Tata 1mg, Vijaya Diagnostic Centre, and Orange Health Labs reports.
+- A generalized band never replaces the interval printed on the source report. Method-, assay-, specimen-, age-, sex-, fasting-, and context-dependent metrics retain that caveat here and in dashboard copy.
+- The source reports' intervals are not stored in the current `medical_metrics` rows, so the dashboard must not present a generalized band as though it came from the individual report.
+
 ## Glucose and insulin
 
 | Metric code | Display name | Unit | What it represents | Reference / interpretation range |
