@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CurrentWeightWidget from "./CurrentWeightWidget";
 import {
 	formatClockHour,
 	getAbsoluteVo2Max,
@@ -98,17 +99,9 @@ function HealthHeader({ data, hasError }: { data: HealthData | null; hasError?: 
 
 	return (
 		<header>
-			<p className="font-mono text-xs font-semibold tracking-[0.12em] text-secondary uppercase">
-				Local development · private health data
-			</p>
 			<h1 className="mt-4 max-w-4xl font-sans text-4xl leading-[1.05] font-bold tracking-[-0.04em] text-primary md:text-6xl">
-				Health, in context
+				Health dashboard
 			</h1>
-			<p className="mt-5 max-w-2xl font-sans text-base leading-relaxed text-secondary md:text-lg">
-				A first view of weekly activity and recovery, daily observations, sleep, fitness, and
-				selected medical-report trends from D1. This route and its data bridge exist only while the
-				Astro development server is running.
-			</p>
 			<div
 				className="mt-5 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-secondary"
 				aria-live="polite"
@@ -226,6 +219,12 @@ export default function HealthDashboard() {
 						detail="mL/kg/min · latest estimate"
 					/>
 				</dl>
+
+				<section aria-labelledby="body-weight-heading">
+					<div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+						<CurrentWeightWidget data={data.weight} />
+					</div>
+				</section>
 
 				<section aria-labelledby="activity-heading">
 					<h2

@@ -5,10 +5,14 @@ import test from "node:test";
 
 import astroConfig from "../astro.config.mjs";
 import {
+	formatMonthDayYear,
 	getAbsoluteVo2Max,
 	getAppleHealthDataRange,
+	getDatedValueWindowSummary,
+	getLatestDatedValue,
 	getLatestMedicalDate,
 	getSleepRegularity,
+	getTrailingWeeklyAverages,
 } from "../src/components/health/healthData.ts";
 import { medicalDefinitions, medicalSections } from "../src/components/health/medicalMetrics.ts";
 import { medicalReferenceRanges } from "../src/components/health/medicalReferenceRanges.ts";
@@ -367,6 +371,72 @@ test("derives absolute VO2 from the latest weight on or before each observation"
 		[
 			{ date: "2026-01-10", value: 2800, weightDate: "2026-01-09" },
 			{ date: "2026-01-20", value: 2856, weightDate: "2026-01-15" },
+		],
+	);
+});
+
+test("selects and formats the latest dated weight observation", () => {
+	assert.deepEqual(
+		getLatestDatedValue([
+			{ local_date: "2026-01-09", value: 70.2 },
+			{ local_date: "2025-12-31", value: 71.1 },
+			{ local_date: "2026-02-03", value: 69.8 },
+		]),
+		{ local_date: "2026-02-03", value: 69.8 },
+	);
+	assert.equal(getLatestDatedValue([]), null);
+	assert.equal(formatMonthDayYear("2026-02-03"), "Feb 3, 2026");
+});
+
+test("summarizes the 30-day weight window ending on the latest observation", () => {
+	assert.deepEqual(
+		getDatedValueWindowSummary(
+			[
+				{ local_date: "2026-02-03", value: 69.8 },
+				{ local_date: "2026-01-04", value: 72.4 },
+				{ local_date: "2026-01-20", value: 70.1 },
+				{ local_date: "2026-01-05", value: 71.2 },
+			],
+			30,
+		),
+		{
+			observations: [
+				{ local_date: "2026-01-05", value: 71.2 },
+				{ local_date: "2026-01-20", value: 70.1 },
+				{ local_date: "2026-02-03", value: 69.8 },
+			],
+			first: { local_date: "2026-01-05", value: 71.2 },
+			latest: { local_date: "2026-02-03", value: 69.8 },
+			minValue: 69.8,
+			maxValue: 71.2,
+			change: -1.4,
+		},
+	);
+	assert.equal(getDatedValueWindowSummary([], 30), null);
+});
+
+test("calculates four trailing weekly weight averages without using the two boundary days", () => {
+	assert.deepEqual(
+		getTrailingWeeklyAverages(
+			[
+				{ local_date: "2026-01-01", value: 100 },
+				{ local_date: "2026-01-03", value: 70 },
+				{ local_date: "2026-01-09", value: 72 },
+				{ local_date: "2026-01-10", value: 72 },
+				{ local_date: "2026-01-16", value: 74 },
+				{ local_date: "2026-01-17", value: 74 },
+				{ local_date: "2026-01-23", value: 76 },
+				{ local_date: "2026-01-24", value: 76 },
+				{ local_date: "2026-01-30", value: 78 },
+			],
+			"2026-01-30",
+			4,
+		),
+		[
+			{ week: 1, value: 71, observationCount: 2 },
+			{ week: 2, value: 73, observationCount: 2 },
+			{ week: 3, value: 75, observationCount: 2 },
+			{ week: 4, value: 77, observationCount: 2 },
 		],
 	);
 });

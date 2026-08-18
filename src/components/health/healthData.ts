@@ -7,6 +7,13 @@ interface DatedValue {
 	value: number;
 }
 
+const monthDayYear = new Intl.DateTimeFormat("en-US", {
+	month: "short",
+	day: "numeric",
+	year: "numeric",
+	timeZone: "UTC",
+});
+
 interface SleepTimingInput {
 	local_date: string;
 	sleep_start_ms: number | null;
@@ -70,6 +77,83 @@ export function getLatestMedicalDate(rows: Array<{ collected_at_ms: number }>) {
 	}
 
 	return latestTimestamp === null ? null : toIndiaDate(latestTimestamp);
+}
+
+export function getLatestDatedValue<T extends { local_date: string }>(rows: readonly T[]) {
+	let latest: T | null = null;
+
+	for (const row of rows) {
+		if (latest === null || row.local_date > latest.local_date) {
+			latest = row;
+		}
+	}
+
+	return latest;
+}
+
+export function formatMonthDayYear(date: string) {
+	return monthDayYear.format(new Date(`${date}T00:00:00Z`));
+}
+
+export function getDatedValueWindowSummary<T extends DatedValue>(rows: readonly T[], days: number) {
+	const latest = getLatestDatedValue(rows);
+	if (latest === null) return null;
+
+	const windowStart = new Date(`${latest.local_date}T00:00:00Z`);
+	windowStart.setUTCDate(windowStart.getUTCDate() - (days - 1));
+	const windowStartDate = windowStart.toISOString().slice(0, 10);
+	const observations = rows
+		.filter((row) => row.local_date >= windowStartDate && row.local_date <= latest.local_date)
+		.toSorted((left, right) => left.local_date.localeCompare(right.local_date));
+	const first = observations[0];
+	let minValue = first.value;
+	let maxValue = first.value;
+
+	for (const observation of observations.slice(1)) {
+		minValue = Math.min(minValue, observation.value);
+		maxValue = Math.max(maxValue, observation.value);
+	}
+
+	return {
+		observations,
+		first,
+		latest,
+		minValue,
+		maxValue,
+		change: observations.length > 1 ? Number((latest.value - first.value).toFixed(10)) : null,
+	};
+}
+
+export function getTrailingWeeklyAverages<T extends DatedValue>(
+	observations: readonly T[],
+	latestDate: string,
+	weekCount: number,
+) {
+	const latestTime = Date.parse(`${latestDate}T00:00:00Z`);
+	const buckets = Array.from({ length: weekCount }, () => ({ sum: 0, count: 0 }));
+
+	for (const observation of observations) {
+		const daysBeforeLatest = Math.round(
+			(latestTime - Date.parse(`${observation.local_date}T00:00:00Z`)) / DAY_MS,
+		);
+		if (daysBeforeLatest < 0 || daysBeforeLatest >= weekCount * 7) continue;
+
+		const weekIndex = weekCount - 1 - Math.floor(daysBeforeLatest / 7);
+		buckets[weekIndex].sum += observation.value;
+		buckets[weekIndex].count += 1;
+	}
+
+	return buckets.flatMap((bucket, index) =>
+		bucket.count === 0
+			? []
+			: [
+					{
+						week: index + 1,
+						value: bucket.sum / bucket.count,
+						observationCount: bucket.count,
+					},
+				],
+	);
 }
 
 export function getAbsoluteVo2Max(vo2Rows: DatedValue[], weightRows: DatedValue[]) {
