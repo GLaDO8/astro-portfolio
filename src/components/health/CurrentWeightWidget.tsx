@@ -13,8 +13,8 @@ interface CurrentWeightWidgetProps {
 const WINDOW_DAYS = 30;
 const ARC_CENTER = { x: 150, y: 165 };
 const ARC_RADIUS = 150;
-const ARC_START = -Math.PI / 6;
-const ARC_END = Math.PI / 6;
+const ARC_START = -Math.PI / 4;
+const ARC_END = Math.PI / 4;
 const arcPath =
 	arc()
 		.innerRadius(143)
@@ -39,20 +39,38 @@ function pointOnArc(angle: number) {
 function TrendArrowIcon({ direction }: { direction: "up" | "down" }) {
 	return (
 		<svg
-			className={cn("size-5 shrink-0 text-health-blue", direction === "up" && "rotate-180")}
-			width="20"
-			height="20"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
+			className={cn("size-4 shrink-0", direction === "up" && "rotate-180")}
+			width="16"
+			height="16"
+			viewBox="4 4 16 16"
 			aria-hidden="true"
 		>
-			<circle cx="12" cy="12" r="10" />
-			<polyline points="8 12 12 16 16 12" />
-			<line x1="12" y1="8" x2="12" y2="16" />
+			<circle
+				cx="12"
+				cy="12"
+				r="6.666"
+				fill="var(--color-primary)"
+				stroke="var(--color-primary)"
+				strokeWidth="1.55"
+			/>
+			<polyline
+				points="9.333 12 12 14.667 14.666 12"
+				fill="none"
+				stroke="white"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+			<line
+				x1="12"
+				y1="9.334"
+				x2="12"
+				y2="14.667"
+				stroke="white"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
 		</svg>
 	);
 }
@@ -86,7 +104,7 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 
 	return (
 		<article
-			className="min-h-72 min-w-0 overflow-hidden rounded-md border border-primary/10 bg-white p-5 shadow-sm"
+			className="min-w-0 overflow-hidden rounded-md border border-primary/10 bg-white py-5 px-3 shadow-sm"
 			aria-labelledby="current-weight-title"
 		>
 			<h3 id="current-weight-title" className="sr-only">
@@ -98,13 +116,13 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 			>
 				{formatMonthDayYear(latest.local_date)}
 			</time>
-			<p className="mt-2 text-center font-mono text-5xl font-semibold text-primary tabular-nums">
+			<p className="mt-2 text-center font-mono text-4xl font-semibold text-primary tabular-nums">
 				{formatWeight(latest.value)}
 				<span className="text-2xl font-medium text-primary">&nbsp;kg</span>
 			</p>
 
 			<svg
-				className="mt-4 h-auto w-full"
+				className="mt-2 h-auto w-full"
 				viewBox="0 0 300 82"
 				role="img"
 				aria-labelledby="current-weight-arc-title current-weight-arc-description"
@@ -130,7 +148,7 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 							cy={point.y}
 							r="4"
 							fill="var(--color-secondary)"
-							opacity={0.3 + (average.week - 1) * 0.15}
+							opacity={0.15 + (average.week - 1) * 0.25}
 						>
 							<title>
 								Week {average.week} average: {formatWeight(average.value)} kg from{" "}
@@ -142,10 +160,11 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 				<circle
 					cx={latestPoint.x}
 					cy={latestPoint.y}
-					r="8"
+					r="11"
 					fill="var(--color-primary)"
 					stroke="white"
-					strokeWidth="3"
+					strokeWidth="4"
+					className="drop-shadow-md"
 				>
 					<title>
 						Latest: {formatWeight(latest.value)} kg on {latest.local_date}
@@ -153,7 +172,7 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 				</circle>
 				<text
 					x={arcStartPoint.x}
-					y="74"
+					y="82"
 					textAnchor="middle"
 					className="fill-secondary font-mono text-sm tabular-nums"
 				>
@@ -161,7 +180,7 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 				</text>
 				<text
 					x={arcEndPoint.x}
-					y="74"
+					y="82"
 					textAnchor="middle"
 					className="fill-secondary font-mono text-sm tabular-nums"
 				>
@@ -169,8 +188,8 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 				</text>
 			</svg>
 
-			<div className="mt-2 text-center">
-				<p className="flex items-center justify-center gap-2 font-mono text-xl font-semibold text-primary tabular-nums">
+			<div className="-mt-6 text-center">
+				<p className="flex items-center justify-center gap-1 font-mono text-md font-semibold text-primary tabular-nums uppercase">
 					{trendDirection ? <TrendArrowIcon direction={trendDirection} /> : null}
 					{changeLabel}
 				</p>
