@@ -8,9 +8,11 @@ import {
 
 interface CurrentWeightWidgetProps {
 	data: readonly { local_date: string; value: number }[];
+	windowDays?: number;
+	rangeLabel?: string;
 }
 
-const WINDOW_DAYS = 30;
+const DEFAULT_WINDOW_DAYS = 30;
 const ARC_CENTER = { x: 150, y: 165 };
 const ARC_RADIUS = 150;
 const ARC_START = -Math.PI / 4;
@@ -75,8 +77,12 @@ function TrendArrowIcon({ direction }: { direction: "up" | "down" }) {
 	);
 }
 
-export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) {
-	const summary = getDatedValueWindowSummary(data, WINDOW_DAYS);
+export default function CurrentWeightWidget({
+	data,
+	windowDays = DEFAULT_WINDOW_DAYS,
+	rangeLabel = "30D",
+}: CurrentWeightWidgetProps) {
+	const summary = getDatedValueWindowSummary(data, windowDays);
 
 	if (summary === null) {
 		return (
@@ -95,7 +101,11 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 	const domainPadding = minValue === maxValue ? 0.5 : 0;
 	const weightDomain: [number, number] = [minValue - domainPadding, maxValue + domainPadding];
 	const valueAngle = scaleLinear(weightDomain, [ARC_START, ARC_END]).clamp(true);
-	const weeklyAverages = getTrailingWeeklyAverages(observations, latest.local_date, 4);
+	const weeklyAverages = getTrailingWeeklyAverages(
+		observations,
+		latest.local_date,
+		Math.ceil(windowDays / 7),
+	);
 	const latestPoint = pointOnArc(valueAngle(latest.value));
 	const arcStartPoint = pointOnArc(ARC_START);
 	const arcEndPoint = pointOnArc(ARC_END);
@@ -127,7 +137,7 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 				role="img"
 				aria-labelledby="current-weight-arc-title current-weight-arc-description"
 			>
-				<title id="current-weight-arc-title">30-day weight range</title>
+				<title id="current-weight-arc-title">{rangeLabel} weight range</title>
 				<desc id="current-weight-arc-description">
 					The observed range is {formatWeight(minValue)} to {formatWeight(maxValue)} kilograms. The
 					grey dots show available weekly averages from the oldest week to the newest week. The
@@ -148,7 +158,9 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 							cy={point.y}
 							r="4"
 							fill="var(--color-secondary)"
-							opacity={0.15 + (average.week - 1) * 0.25}
+							opacity={
+								0.15 + ((average.week - 1) / Math.max(1, Math.ceil(windowDays / 7) - 1)) * 0.75
+							}
 						>
 							<title>
 								Week {average.week} average: {formatWeight(average.value)} kg from{" "}
@@ -193,9 +205,7 @@ export default function CurrentWeightWidget({ data }: CurrentWeightWidgetProps) 
 					{trendDirection ? <TrendArrowIcon direction={trendDirection} /> : null}
 					{changeLabel}
 				</p>
-				<p className="mt-1 font-sans text-xs font-medium text-secondary uppercase">
-					{WINDOW_DAYS} days
-				</p>
+				<p className="mt-1 font-sans text-xs font-medium text-secondary uppercase">{rangeLabel}</p>
 			</div>
 		</article>
 	);

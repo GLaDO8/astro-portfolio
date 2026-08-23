@@ -7,6 +7,13 @@ interface DatedValue {
 	value: number;
 }
 
+export type AppleHealthRange = "30d" | "3m" | "6m" | "12m";
+
+interface RollingBaselineInput {
+	date: string;
+	value: number | null;
+}
+
 const monthDayYear = new Intl.DateTimeFormat("en-US", {
 	month: "short",
 	day: "numeric",
@@ -39,6 +46,47 @@ const indiaDateTime = new Intl.DateTimeFormat("en-CA", {
 });
 
 const DAY_MS = 86_400_000;
+
+export function getAppleHealthWindowStart(latestDate: string, range: AppleHealthRange) {
+	const start = new Date(`${latestDate}T00:00:00Z`);
+	if (range === "30d") {
+		start.setUTCDate(start.getUTCDate() - 29);
+	} else {
+		const day = start.getUTCDate();
+		start.setUTCDate(1);
+		start.setUTCMonth(start.getUTCMonth() - Number.parseInt(range, 10));
+		const lastDayOfMonth = new Date(
+			Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 0),
+		).getUTCDate();
+		start.setUTCDate(Math.min(day, lastDayOfMonth));
+	}
+	return start.toISOString().slice(0, 10);
+}
+
+export function getRollingBaseline(rows: readonly RollingBaselineInput[], windowDays: number) {
+	const observed = rows
+		.filter((row): row is RollingBaselineInput & { value: number } => row.value !== null)
+		.toSorted((left, right) => left.date.localeCompare(right.date));
+
+	return observed.map((row) => {
+		const windowStart = new Date(`${row.date}T00:00:00Z`);
+		windowStart.setUTCDate(windowStart.getUTCDate() - (windowDays - 1));
+		const startDate = windowStart.toISOString().slice(0, 10);
+		const values = observed
+			.filter((candidate) => candidate.date >= startDate && candidate.date <= row.date)
+			.map((candidate) => candidate.value);
+		const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+		const deviation = standardDeviation(values) ?? 0;
+
+		return {
+			date: row.date,
+			value: mean,
+			lower: mean - deviation,
+			upper: mean + deviation,
+			observationCount: values.length,
+		};
+	});
+}
 
 function zonedHourFromLocalDate(timestamp: number, localDate: string) {
 	const parts = Object.fromEntries(

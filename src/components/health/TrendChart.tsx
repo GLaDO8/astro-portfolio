@@ -1,4 +1,4 @@
-import { extent, line, scaleLinear, scaleUtc } from "d3";
+import { area, extent, line, scaleLinear, scaleUtc } from "d3";
 import type { ReferenceBand, ReferenceBandTone } from "./medicalReferenceRanges";
 
 interface TrendDatum {
@@ -18,6 +18,10 @@ interface TrendChartProps {
 	referenceRange?: {
 		summary: string;
 		bands: readonly ReferenceBand[];
+	};
+	rollingBaseline?: {
+		label: string;
+		data: Array<{ date: string; value: number; lower: number; upper: number }>;
 	};
 }
 
@@ -44,8 +48,11 @@ export default function TrendChart({
 	formatValue = defaultFormat,
 	intervalDays,
 	referenceRange,
+	rollingBaseline,
 }: TrendChartProps) {
 	const points = data.map((datum) => ({ ...datum, instant: parseDate(datum.date) }));
+	const baselinePoints =
+		rollingBaseline?.data.map((datum) => ({ ...datum, instant: parseDate(datum.date) })) ?? [];
 	const linePoints = points.flatMap((point, index) => {
 		const previous = points[index - 1];
 		if (
@@ -87,7 +94,8 @@ export default function TrendChart({
 		referenceRange?.bands
 			.flatMap((band) => [band.min, band.max])
 			.filter((value) => value !== undefined) ?? [];
-	const domainValues = [...values, ...referenceBoundaries];
+	const baselineBoundaries = baselinePoints.flatMap((point) => [point.lower, point.upper]);
+	const domainValues = [...values, ...referenceBoundaries, ...baselineBoundaries];
 	const domainExtent = extent(domainValues);
 	const padding = Math.max(
 		((domainExtent[1] ?? valueExtent[1]) - (domainExtent[0] ?? valueExtent[0])) * 0.06,
@@ -102,6 +110,13 @@ export default function TrendChart({
 		.defined((point) => point.value !== null && point.qualifier == null)
 		.x((point) => x(point.instant))
 		.y((point) => y(point.value ?? 0))(linePoints);
+	const baselineBandPath = area<(typeof baselinePoints)[number]>()
+		.x((point) => x(point.instant))
+		.y0((point) => y(point.lower))
+		.y1((point) => y(point.upper))(baselinePoints);
+	const baselineMeanPath = line<(typeof baselinePoints)[number]>()
+		.x((point) => x(point.instant))
+		.y((point) => y(point.value))(baselinePoints);
 	const xTicks = x.ticks(4);
 	const yTicks = y.ticks(4);
 	const spansMultipleYears = dateExtent[1].getUTCFullYear() !== dateExtent[0].getUTCFullYear();
@@ -131,6 +146,11 @@ export default function TrendChart({
 					Reference bands · {referenceRange.summary}
 				</p>
 			) : null}
+			{rollingBaseline ? (
+				<p className="mt-1 font-sans text-xs leading-relaxed text-secondary">
+					{rollingBaseline.label} · mean ± 1 standard deviation
+				</p>
+			) : null}
 			<svg
 				className="mt-4 h-auto w-full overflow-visible"
 				viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -146,6 +166,9 @@ export default function TrendChart({
 						? ` ${qualifiedCount} reported ${qualifiedCount === 1 ? "limit is" : "limits are"} shown at the assay boundary rather than as exact points.`
 						: ""}
 					{referenceRange ? ` Generalized chart bands: ${referenceRange.summary}.` : ""}
+					{rollingBaseline
+						? ` The ${rollingBaseline.label} is shown as a moving mean with a band of one standard deviation on either side.`
+						: ""}
 				</desc>
 				{referenceRange?.bands.map((band) => {
 					const lower = Math.max(domainMin, band.min ?? domainMin);
@@ -162,6 +185,7 @@ export default function TrendChart({
 						/>
 					);
 				})}
+				{baselineBandPath ? <path d={baselineBandPath} fill={color} opacity="0.12" /> : null}
 				{yTicks.map((tick) => (
 					<g key={tick}>
 						<line
@@ -199,6 +223,15 @@ export default function TrendChart({
 					</text>
 				))}
 				{path ? <path d={path} fill="none" stroke={color} strokeWidth="2.5" /> : null}
+				{baselineMeanPath ? (
+					<path
+						d={baselineMeanPath}
+						fill="none"
+						stroke={color}
+						strokeWidth="2"
+						strokeDasharray="6 5"
+					/>
+				) : null}
 				{observed.length <= 40 || intervalDays !== undefined
 					? observed.map((point) =>
 							point.qualifier ? (

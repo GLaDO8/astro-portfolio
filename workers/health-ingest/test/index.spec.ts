@@ -1,12 +1,14 @@
 import { applyD1Migrations, env } from "cloudflare:test";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import countEventsMigration from "../migrations/health-auto-export/0004_count_events.sql?raw";
+import measurementEventsMigration from "../migrations/health-auto-export/0005_measurement_events.sql?raw";
 import worker from "../src/index";
 import metricsFixture from "./fixtures/metrics.json?raw";
 import workoutsFixture from "./fixtures/workouts.json?raw";
 
 const ENDPOINT = "https://health.example/v1/ingest/health-auto-export";
 const COUNT_ENDPOINT = "https://health.example/v1/log/count";
+const GRIP_STRENGTH_ENDPOINT = "https://health.example/v1/log/grip-strength";
 const TOKEN = "synthetic-test-token";
 const MAX_BODY_BYTES = 90 * 1024 * 1024;
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
@@ -69,9 +71,32 @@ function countRequest(
 	});
 }
 
+function gripStrengthRequest(
+	body: unknown = {
+		grip_strength_left: 42.7,
+		grip_strength_right: 44.1,
+		idempotency_key: "shortcut-grip-run-001",
+		observed_at: "2026-08-17T09:30:00+05:30",
+		unit: "kg",
+	},
+	headers: HeadersInit = {},
+	method = "POST",
+): Request<unknown, IncomingRequestCfProperties> {
+	return new IncomingRequest(GRIP_STRENGTH_ENDPOINT, {
+		method,
+		headers: {
+			authorization: `Bearer ${TOKEN}`,
+			"content-type": "application/json",
+			...headers,
+		},
+		body: body === null ? null : JSON.stringify(body),
+	});
+}
+
 beforeAll(async () => {
 	await applyD1Migrations(env.HEALTH_DB, [
 		{ name: "0004_count_events.sql", queries: [countEventsMigration] },
+		{ name: "0005_measurement_events.sql", queries: [measurementEventsMigration] },
 	]);
 });
 
@@ -79,6 +104,7 @@ beforeEach(async () => {
 	vi.restoreAllMocks();
 	await clearBucket();
 	await env.HEALTH_DB.prepare("DELETE FROM count_events").run();
+	await env.HEALTH_DB.prepare("DELETE FROM measurement_events").run();
 });
 
 describe("health ingestion routing and validation", () => {
@@ -341,6 +367,200 @@ describe("generic count logging", () => {
 		expect(output).not.toContain("nighttime_urination");
 		expect(output).not.toContain("shortcut-run-001");
 		expect(output).not.toContain("2026-08-16");
+	});
+});
+
+describe("grip strength logging", () => {
+	it("requires POST and bearer authentication", async () => {
+		const wrongMethod = await dispatch(gripStrengthRequest(null, {}, "GET"));
+		expect(wrongMethod.status).toBe(405);
+		expect(wrongMethod.headers.get("allow")).toBe("POST");
+
+		const unauthorized = await dispatch(
+			gripStrengthRequest(undefined, { authorization: "Bearer wrong" }),
+		);
+		expect(unauthorized.status).toBe(401);
+	});
+
+	it("requires a small valid JSON request", async () => {
+		const wrongType = await dispatch(
+			gripStrengthRequest(undefined, { "content-type": "text/plain" }),
+		);
+		expect(wrongType.status).toBe(415);
+
+		const malformed = await dispatch(
+			new IncomingRequest(GRIP_STRENGTH_ENDPOINT, {
+				method: "POST",
+				headers: {
+					authorization: `Bearer ${TOKEN}`,
+					"content-type": "application/json",
+				},
+				body: "{",
+			}),
+		);
+		expect(malformed.status).toBe(400);
+		expect(await malformed.json()).toEqual({ error: "Invalid JSON" });
+
+		const oversized = await dispatch(
+			gripStrengthRequest(undefined, { "content-length": String(8 * 1024 + 1) }),
+		);
+		expect(oversized.status).toBe(413);
+	});
+
+	it.each([
+		[
+			{
+				grip_strength_right: 44.1,
+				idempotency_key: "key",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "kg",
+			},
+			"grip_strength_left",
+		],
+		[
+			{
+				grip_strength_left: 42.7,
+				idempotency_key: "key",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "kg",
+			},
+			"grip_strength_right",
+		],
+		[
+			{
+				grip_strength_left: -1,
+				grip_strength_right: 44.1,
+				idempotency_key: "key",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "kg",
+			},
+			"grip_strength_left",
+		],
+		[
+			{
+				grip_strength_left: 42.7,
+				grip_strength_right: 44.1,
+				idempotency_key: "key",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "kgf",
+			},
+			"unit",
+		],
+		[
+			{
+				grip_strength_left: 42.7,
+				grip_strength_right: 44.1,
+				idempotency_key: "key",
+				observed_at: "2026-08-17T09:30:00",
+				unit: "kg",
+			},
+			"observed_at",
+		],
+		[
+			{
+				grip_strength_left: 42.7,
+				grip_strength_right: 44.1,
+				idempotency_key: "",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "kg",
+			},
+			"idempotency_key",
+		],
+	])("rejects an invalid payload field: %s", async (body, field) => {
+		const response = await dispatch(gripStrengthRequest(body));
+		expect(response.status).toBe(400);
+		expect(await response.json()).toEqual({ error: `Invalid ${field}` });
+	});
+
+	it("stores a bilateral decimal measurement and its local time context", async () => {
+		const response = await dispatch(gripStrengthRequest());
+		const result = await response.json<{ measurement_event_id: string; status: string }>();
+
+		expect(response.status).toBe(201);
+		expect(response.headers.get("cache-control")).toBe("no-store");
+		expect(result.status).toBe("created");
+		expect(result.measurement_event_id).toMatch(/^[0-9a-f-]{36}$/);
+
+		const row = await env.HEALTH_DB.prepare(
+			`SELECT id, measurement_type, grip_strength_left, grip_strength_right, unit,
+				observed_at_ms, local_date, utc_offset_minutes, idempotency_key
+			FROM measurement_events`,
+		).first();
+		expect(row).toEqual({
+			grip_strength_left: 42.7,
+			grip_strength_right: 44.1,
+			id: result.measurement_event_id,
+			idempotency_key: "shortcut-grip-run-001",
+			local_date: "2026-08-17",
+			measurement_type: "grip_strength",
+			observed_at_ms: Date.parse("2026-08-17T09:30:00+05:30"),
+			unit: "kg",
+			utc_offset_minutes: 330,
+		});
+	});
+
+	it("accepts readings reported in pounds", async () => {
+		const response = await dispatch(
+			gripStrengthRequest({
+				grip_strength_left: 94.1,
+				grip_strength_right: 97.2,
+				idempotency_key: "shortcut-grip-run-lb",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "lb",
+			}),
+		);
+
+		expect(response.status).toBe(201);
+		expect(await env.HEALTH_DB.prepare("SELECT unit FROM measurement_events").first("unit")).toBe(
+			"lb",
+		);
+	});
+
+	it("returns the original event for an exact retry", async () => {
+		const first = await dispatch(gripStrengthRequest());
+		const second = await dispatch(gripStrengthRequest());
+		const firstResult = await first.json<{ measurement_event_id: string }>();
+		const secondResult = await second.json<{ measurement_event_id: string; status: string }>();
+
+		expect(first.status).toBe(201);
+		expect(second.status).toBe(200);
+		expect(secondResult).toEqual({
+			measurement_event_id: firstResult.measurement_event_id,
+			status: "duplicate",
+		});
+		expect(
+			await env.HEALTH_DB.prepare("SELECT COUNT(*) AS count FROM measurement_events").first(
+				"count",
+			),
+		).toBe(1);
+	});
+
+	it("rejects reuse of an idempotency key with changed readings", async () => {
+		await dispatch(gripStrengthRequest());
+		const response = await dispatch(
+			gripStrengthRequest({
+				grip_strength_left: 43.2,
+				grip_strength_right: 44.1,
+				idempotency_key: "shortcut-grip-run-001",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "kg",
+			}),
+		);
+
+		expect(response.status).toBe(409);
+		expect(await response.json()).toEqual({ error: "Idempotency key conflict" });
+	});
+
+	it("does not expose measurement data in structured logs", async () => {
+		const log = vi.spyOn(console, "log").mockImplementation(() => undefined);
+		const response = await dispatch(gripStrengthRequest());
+		expect(response.status).toBe(201);
+
+		const output = JSON.stringify(log.mock.calls);
+		expect(output).not.toContain("42.7");
+		expect(output).not.toContain("44.1");
+		expect(output).not.toContain("shortcut-grip-run-001");
+		expect(output).not.toContain("2026-08-17");
 	});
 });
 

@@ -22,6 +22,8 @@ The Health Auto Export stream is ordered as follows:
    state, and marks the two unreviewed sound-level operators as unsupported.
 4. `0004_count_events.sql` adds idempotent, manually observed count events for the authenticated
    iOS Shortcuts endpoint. These facts remain separate from Apple Health samples and rollups.
+5. `0005_measurement_events.sql` adds idempotent bilateral grip-strength measurements with decimal
+   values and explicit units. These measurements remain separate from count events.
 
 Migration `0003` initializes an empty database as `ready`. If facts already exist, it initializes as
 `needs_backfill`; run `pnpm health:rollups:backfill:local` before using the local dashboard.

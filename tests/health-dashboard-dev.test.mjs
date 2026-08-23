@@ -8,9 +8,11 @@ import {
 	formatMonthDayYear,
 	getAbsoluteVo2Max,
 	getAppleHealthDataRange,
+	getAppleHealthWindowStart,
 	getDatedValueWindowSummary,
 	getLatestDatedValue,
 	getLatestMedicalDate,
+	getRollingBaseline,
 	getSleepRegularity,
 	getTrailingWeeklyAverages,
 } from "../src/components/health/healthData.ts";
@@ -192,7 +194,7 @@ test("normalizes the selected D1 result sets without Wrangler metadata", () => {
 			version: 1,
 			grains: {
 				activity: "week",
-				recovery: "week",
+				recovery: "day",
 				vo2Max: "day",
 				weight: "day",
 				bodyFat: "day",
@@ -321,6 +323,34 @@ test("selects rollups without raw metric scans or date spines", () => {
 	assert.match(HEALTH_QUERY, /mr\.grain = 'week'/);
 	assert.match(HEALTH_QUERY, /date\(state\.last_local_date, '-6 days'\)/);
 	assert.match(HEALTH_QUERY, /sleep_start_ms, sleep_end_ms/);
+	assert.match(
+		HEALTH_QUERY,
+		/heart_rate_variability'[\s\S]+?mr\.grain = 'day'/,
+		"HRV needs daily rollups for a seven-day baseline",
+	);
+});
+
+test("anchors Apple Health windows to the latest available date", () => {
+	assert.equal(getAppleHealthWindowStart("2026-08-18", "30d"), "2026-07-20");
+	assert.equal(getAppleHealthWindowStart("2026-08-18", "3m"), "2026-05-18");
+	assert.equal(getAppleHealthWindowStart("2026-08-18", "6m"), "2026-02-18");
+	assert.equal(getAppleHealthWindowStart("2026-08-18", "12m"), "2025-08-18");
+	assert.equal(getAppleHealthWindowStart("2026-05-31", "3m"), "2026-02-28");
+	assert.equal(getAppleHealthWindowStart("2024-02-29", "12m"), "2023-02-28");
+});
+
+test("calculates a trailing seven-day HRV mean and standard-deviation band", () => {
+	const rows = [
+		{ date: "2026-01-01", value: 40 },
+		{ date: "2026-01-02", value: 50 },
+		{ date: "2026-01-08", value: 70 },
+	];
+
+	assert.deepEqual(getRollingBaseline(rows, 7), [
+		{ date: "2026-01-01", value: 40, lower: 40, upper: 40, observationCount: 1 },
+		{ date: "2026-01-02", value: 45, lower: 40, upper: 50, observationCount: 2 },
+		{ date: "2026-01-08", value: 60, lower: 50, upper: 70, observationCount: 2 },
+	]);
 });
 
 test("selects every requested first-batch medical metric", () => {

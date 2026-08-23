@@ -5,8 +5,9 @@ const JSON_HEADERS = {
 
 const INGEST_PATH = "/v1/ingest/health-auto-export";
 const COUNT_PATH = "/v1/log/count";
+const GRIP_STRENGTH_PATH = "/v1/log/grip-strength";
 const MAX_BODY_BYTES = 90 * 1024 * 1024;
-const MAX_COUNT_BODY_BYTES = 8 * 1024;
+const MAX_LOG_BODY_BYTES = 8 * 1024;
 const MULTIPART_CHUNK_BYTES = 5 * 1024 * 1024;
 const MAX_KEY_SEGMENT_LENGTH = 64;
 const MAX_METADATA_VALUE_LENGTH = 256;
@@ -18,13 +19,16 @@ type BodyLimitState = {
 	violation?: BodyViolation;
 };
 
-type CountObservation = {
-	count: number;
-	idempotencyKey: string;
+type ObservationTime = {
 	localDate: string;
 	observedAtMs: number;
-	type: string;
 	utcOffsetMinutes: number;
+};
+
+type CountObservation = ObservationTime & {
+	count: number;
+	idempotencyKey: string;
+	type: string;
 };
 
 type CountEventRow = {
@@ -34,6 +38,25 @@ type CountEventRow = {
 	idempotency_key: string;
 	local_date: string;
 	observed_at_ms: number;
+	utc_offset_minutes: number;
+};
+
+type GripStrengthObservation = ObservationTime & {
+	gripStrengthLeft: number;
+	gripStrengthRight: number;
+	idempotencyKey: string;
+	unit: "kg" | "lb";
+};
+
+type MeasurementEventRow = {
+	grip_strength_left: number;
+	grip_strength_right: number;
+	id: string;
+	idempotency_key: string;
+	local_date: string;
+	measurement_type: string;
+	observed_at_ms: number;
+	unit: string;
 	utc_offset_minutes: number;
 };
 
@@ -58,6 +81,16 @@ function countRejected(error: string, status: number, reason: string): Response 
 	console.warn({
 		event: "count_log.rejected",
 		message: "Count logging request rejected",
+		reason,
+		status,
+	});
+	return json({ error }, status);
+}
+
+function measurementRejected(error: string, status: number, reason: string): Response {
+	console.warn({
+		event: "measurement_log.rejected",
+		message: "Measurement logging request rejected",
 		reason,
 		status,
 	});
@@ -100,7 +133,7 @@ function isJson(request: Request): boolean {
 async function readBoundedJson(request: Request): Promise<unknown> {
 	if (request.body === null) throw new Error("invalid_json");
 
-	const limited = limitBody(request.body, MAX_COUNT_BODY_BYTES);
+	const limited = limitBody(request.body, MAX_LOG_BODY_BYTES);
 	try {
 		return await new Response(limited.stream).json();
 	} catch {
@@ -109,9 +142,7 @@ async function readBoundedJson(request: Request): Promise<unknown> {
 	}
 }
 
-function parseObservedAt(
-	value: unknown,
-): Pick<CountObservation, "localDate" | "observedAtMs" | "utcOffsetMinutes"> | null {
+function parseObservedAt(value: unknown): ObservationTime | null {
 	if (typeof value !== "string") return null;
 
 	const match =
@@ -135,6 +166,46 @@ function parseObservedAt(
 		localDate: `${year}-${month}-${day}`,
 		observedAtMs,
 		utcOffsetMinutes,
+	};
+}
+
+function isValidMeasurement(value: unknown): value is number {
+	return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1000;
+}
+
+function parseGripStrengthObservation(value: unknown): GripStrengthObservation | Response {
+	if (typeof value !== "object" || value === null || Array.isArray(value)) {
+		return measurementRejected("Invalid JSON object", 400, "invalid_object");
+	}
+
+	const body = value as Record<string, unknown>;
+	if (!isValidMeasurement(body.grip_strength_left)) {
+		return measurementRejected("Invalid grip_strength_left", 400, "invalid_grip_strength_left");
+	}
+	if (!isValidMeasurement(body.grip_strength_right)) {
+		return measurementRejected("Invalid grip_strength_right", 400, "invalid_grip_strength_right");
+	}
+	if (body.unit !== "kg" && body.unit !== "lb") {
+		return measurementRejected("Invalid unit", 400, "invalid_unit");
+	}
+
+	const observedAt = parseObservedAt(body.observed_at);
+	if (observedAt === null) {
+		return measurementRejected("Invalid observed_at", 400, "invalid_observed_at");
+	}
+	if (
+		typeof body.idempotency_key !== "string" ||
+		!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/.test(body.idempotency_key)
+	) {
+		return measurementRejected("Invalid idempotency_key", 400, "invalid_idempotency_key");
+	}
+
+	return {
+		gripStrengthLeft: body.grip_strength_left,
+		gripStrengthRight: body.grip_strength_right,
+		idempotencyKey: body.idempotency_key,
+		...observedAt,
+		unit: body.unit,
 	};
 }
 
@@ -181,6 +252,22 @@ function isSameCountEvent(row: CountEventRow, observation: CountObservation): bo
 	);
 }
 
+function isSameMeasurementEvent(
+	row: MeasurementEventRow,
+	observation: GripStrengthObservation,
+): boolean {
+	return (
+		row.measurement_type === "grip_strength" &&
+		row.grip_strength_left === observation.gripStrengthLeft &&
+		row.grip_strength_right === observation.gripStrengthRight &&
+		row.unit === observation.unit &&
+		row.observed_at_ms === observation.observedAtMs &&
+		row.local_date === observation.localDate &&
+		row.utc_offset_minutes === observation.utcOffsetMinutes &&
+		row.idempotency_key === observation.idempotencyKey
+	);
+}
+
 async function logCount(request: Request, env: Env): Promise<Response> {
 	if (!(await isAuthorized(request, env.HEALTH_INGEST_TOKEN))) {
 		return countRejected("Unauthorized", 401, "unauthorized");
@@ -190,11 +277,7 @@ async function logCount(request: Request, env: Env): Promise<Response> {
 	}
 
 	const contentLength = request.headers.get("content-length");
-	if (
-		contentLength &&
-		/^\d+$/.test(contentLength) &&
-		Number(contentLength) > MAX_COUNT_BODY_BYTES
-	) {
+	if (contentLength && /^\d+$/.test(contentLength) && Number(contentLength) > MAX_LOG_BODY_BYTES) {
 		return countRejected("Request body too large", 413, "body_too_large");
 	}
 
@@ -261,6 +344,93 @@ async function logCount(request: Request, env: Env): Promise<Response> {
 			error_type: error instanceof Error ? error.name : "UnknownError",
 		});
 		return json({ error: "Count storage unavailable" }, 500);
+	}
+}
+
+async function logGripStrength(request: Request, env: Env): Promise<Response> {
+	if (!(await isAuthorized(request, env.HEALTH_INGEST_TOKEN))) {
+		return measurementRejected("Unauthorized", 401, "unauthorized");
+	}
+	if (!isJson(request)) {
+		return measurementRejected(
+			"Content-Type must be application/json",
+			415,
+			"unsupported_content_type",
+		);
+	}
+
+	const contentLength = request.headers.get("content-length");
+	if (contentLength && /^\d+$/.test(contentLength) && Number(contentLength) > MAX_LOG_BODY_BYTES) {
+		return measurementRejected("Request body too large", 413, "body_too_large");
+	}
+
+	let body: unknown;
+	try {
+		body = await readBoundedJson(request);
+	} catch (error) {
+		if (error instanceof Error && error.message === "body_too_large") {
+			return measurementRejected("Request body too large", 413, "body_too_large");
+		}
+		return measurementRejected("Invalid JSON", 400, "invalid_json");
+	}
+
+	const observation = parseGripStrengthObservation(body);
+	if (observation instanceof Response) return observation;
+
+	const measurementEventId = crypto.randomUUID();
+	try {
+		const insert = await env.HEALTH_DB.prepare(
+			`INSERT INTO measurement_events (
+				id, measurement_type, grip_strength_left, grip_strength_right, unit,
+				observed_at_ms, local_date, utc_offset_minutes, recorded_at_ms, idempotency_key
+			) VALUES (?, 'grip_strength', ?, ?, ?, ?, ?, ?, ?, ?)
+			ON CONFLICT(idempotency_key) DO NOTHING`,
+		)
+			.bind(
+				measurementEventId,
+				observation.gripStrengthLeft,
+				observation.gripStrengthRight,
+				observation.unit,
+				observation.observedAtMs,
+				observation.localDate,
+				observation.utcOffsetMinutes,
+				Date.now(),
+				observation.idempotencyKey,
+			)
+			.run();
+
+		if (insert.meta.changes === 1) {
+			console.log({ event: "measurement_log.created", message: "Measurement observation stored" });
+			return json({ measurement_event_id: measurementEventId, status: "created" }, 201);
+		}
+
+		const existing = await env.HEALTH_DB.prepare(
+			`SELECT id, measurement_type, grip_strength_left, grip_strength_right, unit,
+				observed_at_ms, local_date, utc_offset_minutes, idempotency_key
+			FROM measurement_events WHERE idempotency_key = ?`,
+		)
+			.bind(observation.idempotencyKey)
+			.first<MeasurementEventRow>();
+
+		if (existing !== null && isSameMeasurementEvent(existing, observation)) {
+			console.log({
+				event: "measurement_log.duplicate",
+				message: "Measurement observation already stored",
+			});
+			return json({ measurement_event_id: existing.id, status: "duplicate" });
+		}
+		if (existing !== null) {
+			return measurementRejected("Idempotency key conflict", 409, "idempotency_conflict");
+		}
+
+		throw new Error("Measurement insert was ignored without an idempotency match");
+	} catch (error) {
+		console.error({
+			event: "measurement_log.write_failed",
+			message: "Measurement observation write failed",
+			error_type: error instanceof Error ? error.name : "UnknownError",
+		});
+		return json({ error: "Measurement storage unavailable" }, 500);
 	}
 }
 
@@ -555,6 +725,14 @@ export default {
 			}
 
 			return logCount(request, env);
+		}
+
+		if (url.pathname === GRIP_STRENGTH_PATH) {
+			if (request.method !== "POST") {
+				return json({ error: "Method not allowed" }, 405, { allow: "POST" });
+			}
+
+			return logGripStrength(request, env);
 		}
 
 		return json({ error: "Not found" }, 404);

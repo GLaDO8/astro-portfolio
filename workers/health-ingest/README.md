@@ -111,12 +111,14 @@ The Worker exposes:
 - `POST /v1/ingest/health-auto-export`, which authenticates a Health Auto Export request and
   archives its unchanged body in R2.
 - `POST /v1/log/count`, which stores one idempotent, manually observed count in D1.
+- `POST /v1/log/grip-strength`, which stores one bilateral dynamometer observation in D1.
 
 The production endpoints are:
 
 - `https://health-ingest.glado8.workers.dev/health`
 - `https://health-ingest.glado8.workers.dev/v1/ingest/health-auto-export`
 - `https://health-ingest.glado8.workers.dev/v1/log/count`
+- `https://health-ingest.glado8.workers.dev/v1/log/grip-strength` (after migration and deployment)
 
 The ingestion route requires a bearer token, `application/json`, `automation-id`, and `session-id`.
 It rejects empty bodies and requests over 90 MiB. This stays below Cloudflare's 100 MB request-body
@@ -160,6 +162,28 @@ command so any earlier migrations run in order:
 ```sh
 pnpm health:db:migrate:remote -- --database-id 7f570a9a-fab7-4f17-a69a-c7717320802f
 ```
+
+## Grip-strength logging from iOS Shortcuts
+
+The grip-strength route uses the same bearer token and 8 KiB JSON limit as count logging. Both hand
+readings are required, may contain decimals, and must use the same explicit `kg` or `lb` unit. A row
+represents one complete bilateral session.
+
+```json
+{
+  "grip_strength_left": 42.7,
+  "grip_strength_right": 44.1,
+  "unit": "kg",
+  "observed_at": "2026-08-17T09:30:00+05:30",
+  "idempotency_key": "8B614B68-E39C-45D4-BD85-D0B32F3AAB65"
+}
+```
+
+After applying the migration and deploying the Worker, send this body to
+`https://health-ingest.glado8.workers.dev/v1/log/grip-strength` with the same `Authorization` and
+`Content-Type` headers as count logging. A new observation returns `201` with a
+`measurement_event_id`; exact retries return `200`, and changed data under the same key returns
+`409`. Migration `0005_measurement_events.sql` creates the table and index.
 
 ## Secrets
 

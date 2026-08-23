@@ -26,10 +26,8 @@ SELECT mr.period_start AS local_date,
   MAX(CASE WHEN md.code = 'heart_rate_variability' THEN mr.value_sum / mr.sample_count END) AS hrv
 FROM metric_rollups mr JOIN metric_definitions md ON md.id = mr.metric_id
 JOIN metric_rollup_state state ON state.singleton = 1
-WHERE mr.grain = 'week'
+WHERE mr.grain = 'day'
   AND md.code IN ('resting_heart_rate', 'heart_rate_variability')
-  AND mr.period_start >= date(state.first_local_date, '+' || ((8 - CAST(strftime('%w', state.first_local_date) AS INTEGER)) % 7) || ' days')
-  AND mr.period_start <= date(state.last_local_date, '-6 days')
 GROUP BY mr.period_start ORDER BY mr.period_start;
 
 SELECT local_date, sleep_start_ms, sleep_end_ms, total_sleep_hours, awake_hours, core_hours, deep_hours, rem_hours
@@ -175,7 +173,7 @@ export function normalizeHealthQueryOutput(payload, state) {
 			version: Number(state.aggregation_version),
 			grains: {
 				activity: "week",
-				recovery: "week",
+				recovery: "day",
 				vo2Max: "day",
 				weight: "day",
 				bodyFat: "day",
