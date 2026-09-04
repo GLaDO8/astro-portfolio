@@ -73,8 +73,8 @@ function countRequest(
 
 function gripStrengthRequest(
 	body: unknown = {
-		grip_strength_left: 42.7,
-		grip_strength_right: 44.1,
+		grip_strength_left: "42.7",
+		grip_strength_right: "44.1",
 		idempotency_key: "shortcut-grip-run-001",
 		observed_at: "2026-08-17T09:30:00+05:30",
 		unit: "kg",
@@ -438,6 +438,26 @@ describe("grip strength logging", () => {
 		],
 		[
 			{
+				grip_strength_left: "42 kg",
+				grip_strength_right: "44.1",
+				idempotency_key: "key",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "kg",
+			},
+			"grip_strength_left",
+		],
+		[
+			{
+				grip_strength_left: "42.7",
+				grip_strength_right: "1e2",
+				idempotency_key: "key",
+				observed_at: "2026-08-17T09:30:00+05:30",
+				unit: "kg",
+			},
+			"grip_strength_right",
+		],
+		[
+			{
 				grip_strength_left: 42.7,
 				grip_strength_right: 44.1,
 				idempotency_key: "key",
@@ -539,8 +559,8 @@ describe("grip strength logging", () => {
 		await dispatch(gripStrengthRequest());
 		const response = await dispatch(
 			gripStrengthRequest({
-				grip_strength_left: 43.2,
-				grip_strength_right: 44.1,
+				grip_strength_left: "43.2",
+				grip_strength_right: "44.1",
 				idempotency_key: "shortcut-grip-run-001",
 				observed_at: "2026-08-17T09:30:00+05:30",
 				unit: "kg",

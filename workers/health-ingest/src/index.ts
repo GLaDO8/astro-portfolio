@@ -169,8 +169,16 @@ function parseObservedAt(value: unknown): ObservationTime | null {
 	};
 }
 
-function isValidMeasurement(value: unknown): value is number {
-	return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1000;
+function parseMeasurementValue(value: unknown): number | null {
+	if (typeof value === "number") {
+		return Number.isFinite(value) && value >= 0 && value <= 1000 ? value : null;
+	}
+	if (typeof value !== "string" || !/^(?:0|[1-9]\d{0,3})(?:\.\d+)?$/.test(value)) {
+		return null;
+	}
+
+	const parsed = Number(value);
+	return Number.isFinite(parsed) && parsed <= 1000 ? parsed : null;
 }
 
 function parseGripStrengthObservation(value: unknown): GripStrengthObservation | Response {
@@ -179,10 +187,12 @@ function parseGripStrengthObservation(value: unknown): GripStrengthObservation |
 	}
 
 	const body = value as Record<string, unknown>;
-	if (!isValidMeasurement(body.grip_strength_left)) {
+	const gripStrengthLeft = parseMeasurementValue(body.grip_strength_left);
+	if (gripStrengthLeft === null) {
 		return measurementRejected("Invalid grip_strength_left", 400, "invalid_grip_strength_left");
 	}
-	if (!isValidMeasurement(body.grip_strength_right)) {
+	const gripStrengthRight = parseMeasurementValue(body.grip_strength_right);
+	if (gripStrengthRight === null) {
 		return measurementRejected("Invalid grip_strength_right", 400, "invalid_grip_strength_right");
 	}
 	if (body.unit !== "kg" && body.unit !== "lb") {
@@ -201,8 +211,8 @@ function parseGripStrengthObservation(value: unknown): GripStrengthObservation |
 	}
 
 	return {
-		gripStrengthLeft: body.grip_strength_left,
-		gripStrengthRight: body.grip_strength_right,
+		gripStrengthLeft,
+		gripStrengthRight,
 		idempotencyKey: body.idempotency_key,
 		...observedAt,
 		unit: body.unit,

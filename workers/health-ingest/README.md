@@ -166,13 +166,14 @@ pnpm health:db:migrate:remote -- --database-id 7f570a9a-fab7-4f17-a69a-c77173208
 ## Grip-strength logging from iOS Shortcuts
 
 The grip-strength route uses the same bearer token and 8 KiB JSON limit as count logging. Both hand
-readings are required, may contain decimals, and must use the same explicit `kg` or `lb` unit. A row
-represents one complete bilateral session.
+readings are required and may be JSON numbers or plain decimal strings. Text values are normalized
+to numeric D1 values; do not include the unit in either reading. Both readings must use the same
+explicit `kg` or `lb` unit. A row represents one complete bilateral session.
 
 ```json
 {
-  "grip_strength_left": 42.7,
-  "grip_strength_right": 44.1,
+  "grip_strength_left": "42.7",
+  "grip_strength_right": "44.1",
   "unit": "kg",
   "observed_at": "2026-08-17T09:30:00+05:30",
   "idempotency_key": "8B614B68-E39C-45D4-BD85-D0B32F3AAB65"
