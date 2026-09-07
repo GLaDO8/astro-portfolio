@@ -65,6 +65,7 @@ const jsonLd = {
         {readableDate}
     </time>
     <h1
+        data-notes-title
         class="col-span-full md:col-span-10 md:col-start-2 lg:col-span-12 lg:col-start-3 font-sans font-bold text-4xl leading-[1.15] tracking-[-0.02em] text-primary-neutral mb-16 text-center text-balance md:text-5xl md:leading-[1.1] lg:text-6xl"
     >
         {writing.data.title}
@@ -73,7 +74,7 @@ const jsonLd = {
     <article
         class="col-span-full md:col-span-8 md:col-start-3 lg:col-span-8 lg:col-start-5"
     >
-        <ArticleProse>
+        <ArticleProse class="notes-prose">
             <Content />
         </ArticleProse>
     </article>

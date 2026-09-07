@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import AgentationToolbar from "@/dev/AgentationToolbar";
 import DevMeasurer from "@/dev/DevMeasurer";
 import { devOverlayStylePreserver } from "@/dev/devOverlayStyles.js";
 import SidequestsPositioner from "@/dev/SidequestsPositioner";
+
+const NotesTypographyPanel = lazy(() => import("@/dev/NotesTypographyPanel"));
 
 type AstroBeforeSwapEvent = Event & {
 	newDocument?: Document;
@@ -55,6 +57,11 @@ export default function DevToolbars() {
 
 	return (
 		<>
+			{typeof document !== "undefined" && document.querySelector(".notes-prose") ? (
+				<Suspense fallback={null}>
+					<NotesTypographyPanel key={`notes-typography:${routeKey}`} />
+				</Suspense>
+			) : null}
 			<DevMeasurer key={`measurer:${routeKey}`} />
 			<AgentationToolbar key={`agentation:${routeKey}`} />
 			<SidequestsPositioner key={`sidequests-positioner:${routeKey}`} />
