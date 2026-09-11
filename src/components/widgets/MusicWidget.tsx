@@ -1,6 +1,7 @@
+import { cn } from "cn";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { cn } from "@/lib/cn";
+
 import type { SongData } from "@/lib/widgetConfig";
 import pauseIconSvg from "../../assets/widgets/pause.svg?raw";
 import playIconSvg from "../../assets/widgets/play.svg?raw";

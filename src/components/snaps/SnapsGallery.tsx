@@ -1,7 +1,7 @@
 import type { ImageMetadata } from "astro";
+import { cn } from "cn";
 import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
-import { cn } from "@/lib/cn";
 
 export type SnapsGalleryItem = {
 	readonly src: string;

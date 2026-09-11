@@ -1,7 +1,8 @@
 import { useSound } from "@web-kits/audio/react";
+import { cn } from "cn";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Fragment, useCallback, useRef, useState } from "react";
-import { cn } from "@/lib/cn";
+
 import shuffled from "@/lib/fisher-shuffle";
 
 type Description = {

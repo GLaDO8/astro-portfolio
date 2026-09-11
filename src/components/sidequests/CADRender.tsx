@@ -1,6 +1,5 @@
+import { cn } from "cn";
 import { createElement, useEffect, useRef } from "react";
-
-import { cn } from "@/lib/cn";
 
 export type CADModel = {
 	readonly id: string;

@@ -1,41 +1,59 @@
 # Shreyas's Personal Website
-This personal website will be the home to publish my writings, design case studies, experiments, and other creative work.
 
-## Tech Stack
-Astro 7.2 (static) · React 19 · Tailwind CSS v4 (Vite plugin) · Markdoc · Motion · Biome · TypeScript · Lenis (for smooth scrolling)
+Personal site for writing, design case studies, experiments, and creative work.
+Prefer simple, focused implementations appropriate for a personal site.
 
-## Key Files
-- `src/layouts/Document.astro` — document and app-shell layout. Owns SEO, font preloading, global CSS, `ClientRouter`, Lenis bootstrapping, skip link, dev-only toolbar mounting, shared max-width shell, optional navbar, main content wrapper, and page enter/leave state used by shell transitions.
-- `src/layouts/Page.astro` — standard interior page layout. Composes `Document` and applies the default content grid for non-home pages.
-- `src/components/Navbar.astro` — shared top navigation. Owns progressive navbar blur, sticky placement, persisted transition wrapper, active-link detection, subdomain menu behavior, and client-side re-sync after Astro route transitions.
+## Stack and navigation
 
-## Code style and conventions
-- Simplicity first, this is a personal website not enterprise software. Start with the simplest implementation then layer in complexity as needed.
-- Use `pnpm` for all repo scripts. Do not use `npm` unless the task is explicitly about npm compatibility.
-- Keep every planning artifact inside `plans/`. This repo-local rule overrides the general planning-doc instruction to symlink an active plan at `./plan.md`.
-- Create semantic tokens from `@theme` in `src/styles/global.css` only when the style is reusable across multiple components.
-- Prefer using Motion library APIs for animations over complex custom CSS animations.
-- Use `cn()` for conditional class composition and concatenation.
-- Avoid arbitrary one-off spacing/sizing values like `pt-[23px]`. If arbitrary values are dictated by Figma or Paper MCP, use the nearest Tailwind scale value.
-- Arbitrary colors (`bg-[#hex]`) are OK temporarily; promote to `@theme` token if reused.
-- Dev-only UI and helpers belong under `src/dev/`, not alongside production components or shared library code.
+Astro (static), React, Tailwind CSS v4 (Vite plugin), Markdoc, Motion,
+Biome, TypeScript, and Lenis. See `package.json` and `pnpm-lock.yaml`
+for dependency versions.
 
-## Agent workflow
-- For narrow changes, prefer `pnpm run verify:changed`. Do not run it for read-only tasks.
-- For Markdoc/content/routing changes, prefer `pnpm run verify:content`.
-- Use `pnpm run build:astro` for Astro's build without the `pnpm images` prepass, and `pnpm run build` for the full production build.
-- Browser verification should be one focused probe per concern: collect computed styles, bounding rects, parent chain, and `outerHTML` for the actual visible element in a single `agent-browser eval` whenever possible.
+- `src/layouts/Document.astro` — shared document/app shell, global setup,
+  and route-transition lifecycle.
+- `src/layouts/Page.astro` — standard interior-page layout and content grid.
+- `src/components/Navbar.astro` — shared navigation and route-change syncing.
+- `src/styles/global.css` — global styles and shared `@theme` tokens.
 
-## Understand the DOM
-For structural styling, complex DOM changes, or CSS/layout debugging, inspect the rendered DOM first. The rendered DOM is the source of truth. Do not infer selector paths from Astro/React source alone when the change depends on parent/child relationships in the final DOM.
+## Project conventions
 
-This includes:
-- parent-driven styling like `*:` selectors, arbitrary selector variants, descendant/child combinators, and group/peer patterns
-- Astro wrapper behavior such as `astro-island`, slots, scoped styles, and generated markup
-- React/Astro component boundaries where the source tree may not match the final DOM tree
+- Use `pnpm` for package management and repo scripts; use npm only for
+  explicitly requested npm-compatibility work.
+- Keep planning artifacts in `plans/`; do not create or symlink root
+  `plan.md`, even if general planning guidance requests it.
+- Keep dev-only UI and helpers under `src/dev/`.
+- Use `cn()` from the `cn` package for conditional or concatenated classes
+  (`import { cn } from "cn"`); do not add a local wrapper.
+- Prefer Tailwind's spacing/sizing scale over arbitrary values.
+  Round Figma/Paper measurements to the nearest scale value.
+- Add semantic `@theme` tokens only for styles reused across components.
+  One-off arbitrary colors are acceptable; promote them when reused.
+- Prefer Motion APIs over complex custom CSS animations.
 
-Use the following workflow:
-- **Inspect before editing** — Use `agent-browser eval` to run `getComputedStyle()` on the target element and its parent chain for relevant properties. Dump `outerHTML` to see the actual rendered markup and any injected inline styles or wrapper elements.
-- **Identify the winning rule** — Before writing overrides, determine what's currently winning the cascade (inline styles, scoped selectors, utility classes, browser defaults). Know the specificity you're fighting.
-- **Verify after each change** — Re-run `getComputedStyle()` to confirm the target property changed on the actual visible element, not just a wrapper. Screenshots show *what's wrong*; computed styles show *why*.
-- Changes which aren't minor need to be verified by inspecting the DOM, see instructions below.
+## Verification
+
+- Read-only tasks: do not run verification scripts.
+- Narrow code changes: start with `pnpm run verify:changed`.
+  It checks working-tree changes and selects tests by file; run additional
+  relevant tests when the changed behavior is not covered.
+- Markdoc, content, or routing changes: use `pnpm run verify:content`,
+  which runs content tests and an Astro build.
+- `pnpm run build:astro` skips image preprocessing.
+  `pnpm run build` runs image preprocessing and the production build.
+- After relevant checks pass, broaden or repeat verification only for
+  new edits, failures, or unresolved risks. Avoid duplicate builds.
+
+## UI and DOM changes
+
+For structural styling, complex DOM changes, or CSS/layout debugging,
+inspect the rendered DOM before editing. Do not infer final parent/child
+relationships across Astro/React boundaries from source alone.
+
+Use one focused `agent-browser eval` per concern where possible:
+inspect the visible target's computed styles, bounding rect, relevant
+parent chain, and `outerHTML`. Identify the winning CSS rule before
+adding overrides.
+
+After each coherent fix, recheck the affected properties on the actual
+visible element. Verify changed interactions in the browser when relevant.
+If browser verification is unavailable, state what remains unverified.

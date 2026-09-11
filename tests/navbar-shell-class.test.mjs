@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { cn } from "../src/lib/cn.ts";
+import { cn } from "cn";
 
 const navbarComponent = readFileSync("src/components/Navbar.astro", "utf8");
 const sidequestsPage = readFileSync("src/pages/sidequests.astro", "utf8");

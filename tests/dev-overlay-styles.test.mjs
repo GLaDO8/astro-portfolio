@@ -97,3 +97,14 @@ test("restores cached overlay styles after a swap without duplicating existing t
 		".tooltip{opacity:1}",
 	);
 });
+
+test("preserves DialKit controls across navigation", () => {
+	const preserver = createDevOverlayStylePreserver();
+	const currentDocument = new FakeDocument([["dialkit-styles", ".dialkit-button{padding:8px}"]]);
+	const incomingDocument = new FakeDocument();
+	preserver.copy({ sourceDocument: currentDocument, targetDocument: incomingDocument });
+	assert.equal(
+		incomingDocument.getElementById("dialkit-styles")?.textContent,
+		".dialkit-button{padding:8px}",
+	);
+});

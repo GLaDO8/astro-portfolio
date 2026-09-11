@@ -4,7 +4,7 @@ import DevMeasurer from "@/dev/DevMeasurer";
 import { devOverlayStylePreserver } from "@/dev/devOverlayStyles.js";
 import SidequestsPositioner from "@/dev/SidequestsPositioner";
 
-const NotesTypographyPanel = lazy(() => import("@/dev/NotesTypographyPanel"));
+const TypographyLab = lazy(() => import("@/dev/TypographyLab"));
 
 type AstroBeforeSwapEvent = Event & {
 	newDocument?: Document;
@@ -57,11 +57,9 @@ export default function DevToolbars() {
 
 	return (
 		<>
-			{typeof document !== "undefined" && document.querySelector(".notes-prose") ? (
-				<Suspense fallback={null}>
-					<NotesTypographyPanel key={`notes-typography:${routeKey}`} />
-				</Suspense>
-			) : null}
+			<Suspense fallback={null}>
+				<TypographyLab key={`typography:${routeKey}`} />
+			</Suspense>
 			<DevMeasurer key={`measurer:${routeKey}`} />
 			<AgentationToolbar key={`agentation:${routeKey}`} />
 			<SidequestsPositioner key={`sidequests-positioner:${routeKey}`} />

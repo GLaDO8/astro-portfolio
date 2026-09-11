@@ -1,4 +1,8 @@
-const DEV_OVERLAY_STYLE_IDS = new Set(["agentation-color-tokens", "mesurer-styles"]);
+const DEV_OVERLAY_STYLE_IDS = new Set([
+	"agentation-color-tokens",
+	"mesurer-styles",
+	"dialkit-styles",
+]);
 const DEV_OVERLAY_STYLE_PREFIXES = ["feedback-tool-styles-"];
 
 const isDevOverlayStyle = (node) => {

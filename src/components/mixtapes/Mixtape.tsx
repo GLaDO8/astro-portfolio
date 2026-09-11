@@ -1,6 +1,6 @@
+import { cn } from "cn";
 import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { cn } from "@/lib/cn";
 
 const VINYL_LABEL_CLIP_ID = "mixtape-vinyl-label";
 const VINYL_LABEL_PATH =
@@ -196,7 +196,6 @@ export default function Mixtape({ className, mixtape, variant = "compact" }: Pro
 							transition={{ type: "spring", visualDuration: 0.25, bounce: 0.5 }}
 							className="absolute -top-1 left-9 z-20 size-30"
 						>
-
 							<div
 								ref={recordSurfaceRef}
 								className={cn(

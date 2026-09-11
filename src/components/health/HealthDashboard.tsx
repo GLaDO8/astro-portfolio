@@ -1,5 +1,5 @@
+import { cn } from "cn";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/cn";
 import CurrentWeightWidget from "./CurrentWeightWidget";
 import {
 	type AppleHealthRange,
@@ -108,7 +108,6 @@ function AppleHealthRangeControl({
 }) {
 	return (
 		<fieldset className="flex flex-wrap items-center gap-x-4 border-tertiary py-3">
-
 			<div className="flex rounded-full bg-tertiary/60 p-1">
 				{appleHealthRanges.map((option) => (
 					<button

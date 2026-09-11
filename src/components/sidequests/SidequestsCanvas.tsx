@@ -1,7 +1,7 @@
+import { cn } from "cn";
 import { type PointerEvent, type ReactNode, useCallback, useEffect, useRef } from "react";
 
 import { hideCADModelViewerScrollbars } from "@/components/sidequests/CADRender";
-import { cn } from "@/lib/cn";
 
 type SidequestsCanvasProps = {
 	readonly children: ReactNode;

@@ -1,9 +1,9 @@
 import type { ImageMetadata } from "astro";
+import { cn } from "cn";
 import { motion, useReducedMotion } from "motion/react";
 import snapOne from "@/assets/snaps/thumbnails/DSCF4135-Enhanced-NR-2-thumb.webp";
 import snapTwo from "@/assets/snaps/thumbnails/DSCF4283-thumb.webp";
 import snapThree from "@/assets/snaps/thumbnails/DSCF4449-thumb.webp";
-import { cn } from "@/lib/cn";
 
 const widgetVariants = {
 	rest: {},

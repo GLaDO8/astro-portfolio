@@ -42,6 +42,6 @@
 
 /* @theme inline is great for mapping Tailwind font tokens to Astro font variables. */
 @theme inline {
-	--font-sans: var(--font-commissioner);
+	--font-sans: var(--font-preview, var(--font-commissioner));
 	--font-mono: var(--font-recursive);
 }
