@@ -104,6 +104,18 @@ function matchingTests(files) {
 		tests.add("tests/widget-config-books.test.mjs");
 	}
 
+	if (
+		hasAny(
+			files,
+			(file) =>
+				file === "src/lib/widgetProximity.ts" ||
+				file === "src/components/widgets/HomeWidgetStrip.astro" ||
+				file === "tests/widget-proximity.test.mjs",
+		)
+	) {
+		tests.add("tests/widget-proximity.test.mjs");
+	}
+
 	if (hasAny(files, (file) => file === "src/components/widgets/SnapsWidget.tsx")) {
 		tests.add("tests/snaps-widget-motion.test.mjs");
 	}
