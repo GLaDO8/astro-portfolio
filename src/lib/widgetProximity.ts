@@ -1,9 +1,9 @@
 import { cancelFrame, frame, springValue, styleEffect } from "motion";
 
 const PROXIMITY_RANGE = 280;
-const MAX_ROTATION = 7;
+const MAX_ROTATION = 12;
 const CENTER_EASING_DISTANCE = 120;
-const ROTATION_SPRING = { stiffness: 180, damping: 24, mass: 0.7 };
+const ROTATION_SPRING = { stiffness: 500, damping: 20, mass: 0.7 };
 
 type Point = { x: number; y: number };
 type Bounds = { left: number; right: number; top: number; bottom: number };
@@ -21,7 +21,7 @@ export function widgetRotation(pointer: Point, center: Point, strength: number) 
 	// Use the unsigned vertical distance so the rotation direction stays consistent
 	// above and below the card: cursor right = counterclockwise, cursor left = clockwise.
 	const angleFromVertical = Math.atan2(-dx, Math.abs(dy));
-	// The angle is undefined at the center; fade there to avoid a sudden ±7° flip.
+	// The angle is undefined at the center; fade there to avoid a sudden direction flip.
 	const centerEase = Math.min(1, Math.hypot(dx, dy) / CENTER_EASING_DISTANCE);
 	return (angleFromVertical / (Math.PI / 2)) * MAX_ROTATION * centerEase * strength;
 }

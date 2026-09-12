@@ -92,10 +92,10 @@ test("proximityStrength measures Euclidean distance from the nearest corner", ()
 
 test("widgets left of the cursor rotate counterclockwise and those right rotate clockwise", () => {
 	for (const [dx, dy, expected] of [
-		[210, 0, -7],
-		[-210, 0, 7],
-		[210, -210, -3.5],
-		[-210, -210, 3.5],
+		[210, 0, -12],
+		[-210, 0, 12],
+		[210, -210, -6],
+		[-210, -210, 6],
 		[0, 210, 0],
 		[0, -210, 0],
 	]) {
@@ -103,7 +103,7 @@ test("widgets left of the cursor rotate counterclockwise and those right rotate 
 	}
 });
 
-test("widgetRotation stays within 7 degrees and scales with proximity strength", () => {
+test("widgetRotation stays within 12 degrees and scales with proximity strength", () => {
 	for (const strength of [0.25, 0.5, 1]) {
 		for (const distance of [210, 420, 840, 10000]) {
 			for (const angle of [0, 45, 90, 135, 180, 225, 270, 315]) {
@@ -113,7 +113,7 @@ test("widgetRotation stays within 7 degrees and scales with proximity strength",
 					y: center.y + Math.sin(radians) * distance,
 				};
 				const rotation = widgetRotation(pointer, center, strength);
-				assert.ok(Math.abs(rotation) <= 7 * strength + epsilon);
+				assert.ok(Math.abs(rotation) <= 12 * strength + epsilon);
 				assertClose(rotation, widgetRotation(pointer, center, 1) * strength);
 			}
 		}
@@ -158,11 +158,11 @@ test("rotation follows the angle from the vertical centerline", () => {
 	assert.ok(magnitudeAt(100, -200) < magnitudeAt(200, -200));
 	assert.ok(magnitudeAt(200, -200) < magnitudeAt(300, -200));
 	assert.ok(magnitudeAt(200, -400) < magnitudeAt(200, -200));
-	assertClose(magnitudeAt(200, -200), 3.5);
+	assertClose(magnitudeAt(200, -200), 6);
 });
 
 test("rotation eases through the center rather than flipping abruptly", () => {
-	assertClose(widgetRotation({ x: center.x + 60, y: center.y }, center, 1), -3.5);
-	assertClose(widgetRotation({ x: center.x - 60, y: center.y }, center, 1), 3.5);
+	assertClose(widgetRotation({ x: center.x + 60, y: center.y }, center, 1), -6);
+	assertClose(widgetRotation({ x: center.x - 60, y: center.y }, center, 1), 6);
 	assert.ok(Math.abs(widgetRotation({ x: center.x + 0.01, y: center.y }, center, 1)) < 0.001);
 });
