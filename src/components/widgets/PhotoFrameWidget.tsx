@@ -7,7 +7,7 @@ export default function PhotoFrameWidget() {
 		<motion.div
 			className="relative h-36 w-40 shrink-0 pt-2 scale-105 sm:h-auto sm:w-auto"
 			transition={{ type: "spring", visualDuration: 0.25, bounce: 0.5 }}
-			whileHover={{ scale: 1.1, rotate: -12 }}
+			whileHover={{ scale: 1.1, rotate: 8 }}
 		>
 			<img
 				src={halftone.src}

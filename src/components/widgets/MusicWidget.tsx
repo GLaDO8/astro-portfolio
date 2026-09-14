@@ -471,7 +471,7 @@ export default function MusicWidget({ songData }: Props) {
 		>
 			{canPlayPreview ? (
 				// biome-ignore lint/a11y/useMediaCaption: Music preview has no spoken dialogue.
-				<audio ref={audioRef} src={previewUrl} preload="none">
+				<audio ref={audioRef} src={previewUrl} preload="auto">
 					{trackUrl ? <a href={trackUrl}>Open on Apple Music</a> : null}
 				</audio>
 			) : null}
@@ -579,7 +579,9 @@ export default function MusicWidget({ songData }: Props) {
 						/>
 					</motion.div>
 
-					<div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] rotate-[-3deg] isolate z-30">
+
+					{/*sleeve*/}
+					<div className="absolute left-0 top-1 h-[6.8rem] w-[6.8rem] -rotate-3 isolate z-30">
 						<div className="absolute inset-0 z-0 mask-[url(/sleeve.webp)] mask-center mask-no-repeat mask-size-[100%_100%] brightness-110 contrast-110">
 							<img
 								src={albumArt}
@@ -588,18 +590,18 @@ export default function MusicWidget({ songData }: Props) {
 								draggable={false}
 							/>
 						</div>
-						<img
+						{/*<img
 							src="/sleeve.webp"
 							alt=""
 							aria-hidden="true"
-							className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover mix-blend-lighten opacity-90"
+							className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover mix-blend-lighten opacity-100"
 							draggable={false}
-						/>
+						/>*/}
 						<img
 							src="/sleeve.webp"
 							alt=""
 							aria-hidden="true"
-							className="pointer-events-none absolute inset-0 z-20 h-full w-full object-cover mix-blend-exclusion opacity-60"
+							className="pointer-events-none absolute inset-0 z-20 h-full w-full object-cover mix-blend-exclusion opacity-70"
 							draggable={false}
 						/>
 						{canPlayPreview ? (
