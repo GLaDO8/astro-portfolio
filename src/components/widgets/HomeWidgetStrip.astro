@@ -30,9 +30,7 @@ const { songData } = Astro.props;
                 aria-hidden="true"
             >
                 <div data-home-widget class="mt-5 shrink-0">
-                    <div data-home-widget-tilt>
-                        <PhotoFrameWidget client:visible />
-                    </div>
+                    <PhotoFrameWidget client:visible />
                 </div>
             </div>
 
@@ -42,9 +40,7 @@ const { songData } = Astro.props;
                 aria-hidden="true"
             >
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <MusicWidget songData={songData} client:visible />
-                    </div>
+                    <MusicWidget songData={songData} client:visible />
                 </div>
             </div>
             <a
@@ -55,9 +51,7 @@ const { songData } = Astro.props;
                 tabindex="-1"
             >
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <SidequestWidget client:visible />
-                    </div>
+                    <SidequestWidget client:visible />
                 </div>
             </a>
             <a
@@ -68,24 +62,18 @@ const { songData } = Astro.props;
                 tabindex="-1"
             >
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <SnapsWidget client:visible />
-                    </div>
+                    <SnapsWidget client:visible />
                 </div>
             </a>
             <div class="ml-10 rotate-[9deg] md:ml-0">
                 <div data-home-widget class="mt-5 shrink-0 md:ml-8">
-                    <div data-home-widget-tilt>
-                        <PhotoFrameWidget client:visible />
-                    </div>
+                    <PhotoFrameWidget client:visible />
                 </div>
             </div>
 
             <div class="ml-12 md:ml-0 shrink-0 rotate-[-7deg]">
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <MusicWidget songData={songData} client:visible />
-                    </div>
+                    <MusicWidget songData={songData} client:visible />
                 </div>
             </div>
             <a
@@ -94,9 +82,7 @@ const { songData } = Astro.props;
                 aria-label="Open sidequests"
             >
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <SidequestWidget client:visible />
-                    </div>
+                    <SidequestWidget client:visible />
                 </div>
             </a>
             <a
@@ -105,9 +91,7 @@ const { songData } = Astro.props;
                 aria-label="Open photo roll"
             >
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <SnapsWidget client:visible />
-                    </div>
+                    <SnapsWidget client:visible />
                 </div>
             </a>
             <div
@@ -116,9 +100,7 @@ const { songData } = Astro.props;
                 aria-hidden="true"
             >
                 <div data-home-widget class="mt-5 shrink-0">
-                    <div data-home-widget-tilt>
-                        <PhotoFrameWidget client:visible />
-                    </div>
+                    <PhotoFrameWidget client:visible />
                 </div>
             </div>
 
@@ -128,9 +110,7 @@ const { songData } = Astro.props;
                 aria-hidden="true"
             >
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <MusicWidget songData={songData} client:visible />
-                    </div>
+                    <MusicWidget songData={songData} client:visible />
                 </div>
             </div>
             <a
@@ -141,9 +121,7 @@ const { songData } = Astro.props;
                 tabindex="-1"
             >
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <SidequestWidget client:visible />
-                    </div>
+                    <SidequestWidget client:visible />
                 </div>
             </a>
             <a
@@ -154,9 +132,7 @@ const { songData } = Astro.props;
                 tabindex="-1"
             >
                 <div data-home-widget>
-                    <div data-home-widget-tilt>
-                        <SnapsWidget client:visible />
-                    </div>
+                    <SnapsWidget client:visible />
                 </div>
             </a>
         </div>
@@ -191,21 +167,6 @@ const { songData } = Astro.props;
     import { defineSound, ensureReady, type SoundDefinition } from "@web-kits/audio";
     import { animate } from "motion/mini";
     import { spring, stagger } from "motion";
-    import { setupWidgetProximity } from "@/lib/widgetProximity";
-
-    let cleanupProximity: (() => void) | undefined;
-    const initProximity = () => {
-        cleanupProximity?.();
-        const strip = document.querySelector<HTMLElement>("[data-home-widget-strip]");
-        cleanupProximity = strip ? setupWidgetProximity(strip) : undefined;
-    };
-
-    document.addEventListener("astro:page-load", initProximity);
-    document.addEventListener("astro:before-swap", () => {
-        cleanupProximity?.();
-        cleanupProximity = undefined;
-    });
-    initProximity();
 
     const widgetHoverSound = {
         source: { type: "sine", frequency: { start: 500, end: 880 } },
