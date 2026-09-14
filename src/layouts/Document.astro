@@ -41,7 +41,7 @@ const {
 	navClass,
 	navBlurBackground,
 	constrainShell = true,
-	showNavigation = true,
+	showNavigation = Astro.url.pathname !== "/",
 	showFooter = true,
 	preloadCodeFont = false,
 	seo = {},

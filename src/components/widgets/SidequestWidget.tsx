@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import callipers from "@/assets/widgets/callipers.webp";
+import mat from "@/assets/widgets/cutting-mat-60x40.svg?url";
 import hammer from "@/assets/widgets/hammer.webp";
-import mat from "@/assets/widgets/mat.webp";
 import pencil from "@/assets/widgets/pencil.webp";
 import rpi from "@/assets/widgets/rpi.webp";
 import sdcard from "@/assets/widgets/sdcard.webp";
@@ -59,7 +59,7 @@ export default function SidequestWidget() {
 
 	return (
 		<motion.div
-			className="relative h-64 w-64 shrink-0 cursor-pointer pt-4"
+			className="relative h-68 w-64 shrink-0 cursor-pointer pt-4"
 			initial="rest"
 			animate="rest"
 			whileHover={shouldReduceMotion ? undefined : "hover"}
@@ -75,14 +75,14 @@ export default function SidequestWidget() {
 				transition={toolTransition}
 			>
 				<img
-					src={mat.src}
+					src={mat}
 					alt=""
-					width={mat.width}
-					height={mat.height}
-					className="h-auto w-full rounded-sm bg-white object-cover p-1.5 shadow-[0_12px_30px_rgba(42,35,29,0.2),0_0_4px_rgba(122,122,122,0.2)] scale-[0.95]"
+					width={1300}
+					height={900}
+					className="h-auto w-full rounded-sm bg-white p-1.5 shadow-[0_12px_30px_rgba(42,35,29,0.2),0_0_4px_rgba(122,122,122,0.2)]"
 					draggable={false}
 				/>
-				<p className="absolute -bottom-7 left-18 z-40 font-sans text-sm font-semibold text-primary">
+				<p className="absolute -bottom-7 inset-x-0 z-40 text-center font-sans text-sm font-semibold text-primary">
 					Sidequests
 				</p>
 			</motion.div>
