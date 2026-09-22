@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "smol-toml";
+import { generateVinylSvg, layoutVinylAlbum } from "./vinylRecord.mjs";
 
 export interface SongData {
 	artist: string;
@@ -9,6 +10,7 @@ export interface SongData {
 	albumArt: string;
 	previewUrl: string;
 	trackUrl: string;
+	vinylSrc?: string;
 	message: string;
 	label: string;
 }
@@ -54,6 +56,8 @@ function parseAppleMusicUrl(url: string): {
 }
 
 interface iTunesResult {
+	trackId?: number;
+	collectionId?: number;
 	artistName: string;
 	trackName?: string;
 	collectionName: string;
@@ -79,11 +83,66 @@ async function fetchFromiTunes(config: WidgetToml["song"]): Promise<iTunesResult
 		throw new Error("widget.toml must have either url or query");
 	}
 
-	const res = await fetch(apiUrl);
+	const res = await fetch(apiUrl, { signal: AbortSignal.timeout(15_000) });
+	if (!res.ok) throw new Error(`iTunes returned HTTP ${res.status}`);
 	const data = await res.json();
 	const result = data.results?.[0];
 	if (!result) throw new Error(`No iTunes results`);
 	return result;
+}
+
+/** Called by Astro at build time; album failures must not disable song playback. */
+async function getVinylSrc(
+	result: iTunesResult,
+	config: WidgetToml["song"],
+): Promise<string | undefined> {
+	try {
+		if (!result.trackId || !result.collectionId) return undefined;
+		const country = config.url ? (parseAppleMusicUrl(config.url)?.country ?? "us") : "us";
+		const response = await fetch(
+			`https://itunes.apple.com/lookup?id=${result.collectionId}&country=${country}&entity=song&limit=200`,
+			{ signal: AbortSignal.timeout(15_000) },
+		);
+		if (!response.ok) throw new Error(`iTunes album lookup returned HTTP ${response.status}`);
+		const data: {
+			results?: Array<{
+				wrapperType?: string;
+				kind?: string;
+				collectionId?: number;
+				trackCount?: number;
+				trackId?: number;
+				discNumber?: number;
+				trackNumber?: number;
+				trackTimeMillis?: number;
+			}>;
+		} = await response.json();
+		const collection = data.results?.find(
+			(item) => item.wrapperType === "collection" && item.collectionId === result.collectionId,
+		);
+		const tracks = data.results?.filter(
+			(item) => item.kind === "song" && item.collectionId === result.collectionId,
+		);
+		if (!collection || !tracks?.length || tracks.length !== collection.trackCount) {
+			throw new Error("Incomplete album track list");
+		}
+		const layout = layoutVinylAlbum(
+			tracks.map((track) => ({
+				id: track.trackId,
+				discNumber: track.discNumber,
+				trackNumber: track.trackNumber,
+				durationMs: track.trackTimeMillis,
+			})),
+			result.trackId,
+		);
+		const side = layout.sides[layout.selectedSide];
+		const svg = generateVinylSvg(side.tracks, {
+			title: `${result.collectionName} — vinyl ${side.record}, side ${side.face}`,
+		});
+		return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+	} catch (error) {
+		console.warn("[music] Vinyl generation failed, using static record:", error);
+		return undefined;
+	}
 }
 
 function readWidgetToml(): WidgetToml {
@@ -103,6 +162,7 @@ export async function getSongData(): Promise<SongData> {
 
 	try {
 		const result = await fetchFromiTunes(config.song);
+		const vinylSrc = await getVinylSrc(result, config.song);
 		return {
 			artist: result.artistName,
 			title: result.trackName ?? result.collectionName,
@@ -110,6 +170,7 @@ export async function getSongData(): Promise<SongData> {
 			albumArt: result.artworkUrl100.replace("100x100bb", "600x600bb"),
 			previewUrl: result.previewUrl ?? "",
 			trackUrl: result.trackViewUrl ?? result.collectionViewUrl ?? config.song.url ?? "",
+			vinylSrc,
 			message,
 			label,
 		};

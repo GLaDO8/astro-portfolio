@@ -37,6 +37,7 @@ test("MusicWidget SSR emits browser-loadable preview icon URLs", async () => {
 				albumArt: "/album.jpg",
 				previewUrl: "/preview.m4a",
 				trackUrl: "/track",
+				vinylSrc: "data:image/svg+xml,%3Csvg%2F%3E",
 				message: "",
 				label: "",
 			},
@@ -45,6 +46,8 @@ test("MusicWidget SSR emits browser-loadable preview icon URLs", async () => {
 
 	assert.match(html, /aria-label="Play Track preview"/);
 	assert.doesNotMatch(html, /src="file:\/\//);
+	assert.match(html, /src="data:image\/svg\+xml,%3Csvg%2F%3E"/);
+	assert.doesNotMatch(html, /record content\.webp/);
 });
 
 test("MusicWidget omits the preview control when no preview is available", async () => {
@@ -91,6 +94,7 @@ test("MusicWidget omits the preview control when no preview is available", async
 		"playback-error",
 	);
 	assert.doesNotMatch(html, /<button/);
+	assert.match(html, /record content\.webp/);
 	assert.doesNotMatch(html, /aria-label="Preview unavailable for Track"/);
 });
 
