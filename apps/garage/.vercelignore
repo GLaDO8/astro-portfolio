@@ -1,0 +1,8 @@
+.local-data/
+.local-admin-password
+.env
+.env.*
+.dev.vars*
+.wrangler/
+.worker-build/
+worker-configuration.d.ts

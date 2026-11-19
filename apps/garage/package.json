@@ -1,0 +1,24 @@
+{
+	"name": "@shrey/garage",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite --config vite.config.ts --host 127.0.0.1 --port 4322 --strictPort",
+		"build": "vite build --config vite.config.ts"
+	},
+	"dependencies": {
+		"@vercel/blob": "^2.8.2",
+		"@vercel/functions": "^3.10.6",
+		"cn": "^0.2.6",
+		"pg": "^8.23.1",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8"
+	},
+	"devDependencies": {
+		"@electric-sql/pglite": "^0.5.15",
+		"@tailwindcss/vite": "^4.3.3",
+		"@types/pg": "^8.23.1",
+		"tailwindcss": "^4.3.3",
+		"vite": "8.3.5"
+	}
+}
